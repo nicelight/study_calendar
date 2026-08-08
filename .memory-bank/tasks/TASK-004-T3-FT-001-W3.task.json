@@ -1,0 +1,32 @@
+{
+  "id": "TASK-004-T3-FT-001-W3",
+  "title": "Implement confirmed external identity binding and failure atomicity",
+  "status": "blocked",
+  "wave": "W3",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-002"],
+  "depends_on": ["TASK-015-T3-FT-001-W2"],
+  "touched_files": ["src/lib/server/modules/identity-access/", "src/lib/server/adapters/", "tests/identity-access/"],
+  "tier": "T3",
+  "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
+  "verify": ["Telegram and Google binding resolve to the invited account; a confirmed session is required for the second provider.", "Provider outage or callback failure returns an explicit error with no partial identity state."],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-001.md", ".protocols/FT-001/plan.md"],
+  "evidence_required": [
+    "FT-001-AC-001 RED: a valid invitation flow does not bind the pre-created role-bearing account or rejects client role selection; GREEN: Telegram and Google each bind exactly the invitation account and retain role/membership; artifact: .tasks/TASK-004-T3-FT-001-W3/ and .protocols/TASK-004-T3-FT-001-W3/verification.md.",
+    "FT-001-AC-002 RED: adding the second provider succeeds without current-session reconfirmation or resolves to a different account; GREEN: reconfirmed session binds the other provider to the same account and unauthenticated add is rejected; artifact: .tasks/TASK-004-T3-FT-001-W3/ and .protocols/TASK-004-T3-FT-001-W3/verification.md.",
+    "FT-001-AC-004 RED: provider outage or callback failure leaves partial identity state or no explicit failure; GREEN: explicit failure is returned and persisted account/identity state is unchanged; artifact: .tasks/TASK-004-T3-FT-001-W3/ and .protocols/TASK-004-T3-FT-001-W3/verification.md."
+  ],
+  "purpose": "Complete external provider binding without weakening session confirmation or atomicity rules.",
+  "success_outcome": "Both accepted providers can bind to the same account, second-provider addition rejects without re-confirmation, and failed callbacks leave no partial binding.",
+  "anti_goals": ["Do not trust provider responses in routes or UI without the boundary.", "Do not merge duplicate identities."],
+  "source_artifacts": [".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-001", ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-002", ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-004", ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary", ".memory-bank/contracts/access-control.md"],
+  "normative_inputs": [".memory-bank/spec-backbone.md", ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary", ".memory-bank/contracts/access-control.md", ".memory-bank/states/lifecycle-map.md#access-and-membership"],
+  "constraints": ["Provider adapters remain behind Identity & Access.", "Unauthenticated add attempts are rejected."],
+  "invariants": ["A provider identity is bound to at most one account.", "Failed provider operations are atomic."],
+  "verification_targets": [
+    "FT-001-AC-001: provider invitation integration for Telegram and Google, role-choice rejection, and cross-center denial with exact account/role/membership assertions.",
+    "FT-001-AC-002: Telegram/Google second-provider success and confirmed-session negative scenario proving both identities resolve to one account.",
+    "FT-001-AC-004: provider outage and failed-callback simulation with explicit error plus state-before/state-after persistence evidence."
+  ],
+  "runtime_context": {"forbidden_scope": [".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json", ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"], "stop_conditions": ["Stop if provider contract or accepted privacy boundary is materially unresolved."]}
+}

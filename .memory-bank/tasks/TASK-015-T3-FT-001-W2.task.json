@@ -1,0 +1,110 @@
+{
+  "id": "TASK-015-T3-FT-001-W2",
+  "title": "Repair authoritative account provisioning boundary",
+  "status": "in_progress",
+  "wave": "W2",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-002", "REQ-014"],
+  "depends_on": ["TASK-002-T3-FT-000-W1"],
+  "touched_files": [
+    "src/lib/server/modules/center-scheduling/",
+    "src/lib/server/modules/identity-access/",
+    "src/lib/server/composition-root.ts",
+    "tests/identity-access/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "A focused adversarial boundary probe proves that only server-resolved actor plus own-center Admin authorization can reach the provisioning write.",
+    "The valid own-center Admin path creates the requested role-bearing account and one invitation; unauthenticated, non-Admin, and cross-center attempts leave persistence unchanged.",
+    "Duplicate, expired/revoked/reused, and induced-failure paths preserve account, role, membership, invitation, and binding state before/after; account and invitation roll back together.",
+    "A read-only public-surface probe proves no public createAccount or issueInvitation write bypass remains beside provisionAccount."
+    ,"Independent /verify result: focused provisioning probe 4/4 passed; check/build/full test (2 files/8 tests)/diff-check passed; fresh evidence in .protocols/TASK-015-T3-FT-001-W2/verification.md and .tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-VERIFY-final-report-docs-01.md; VERDICT: PASS."
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md"
+  ],
+  "evidence_required": [
+    "FT-001-AC-005 RED: an unauthenticated, non-Admin, cross-center, caller-forged center/role, or alternate createAccount/issueInvitation call can write provisioning state; GREEN: each is rejected before Identity & Access persistence changes, while a valid own-center Admin succeeds; artifact: .tasks/TASK-015-T3-FT-001-W2/ and .protocols/TASK-015-T3-FT-001-W2/verification.md.",
+    "FT-001-AC-005 RED: duplicate or induced provisioning failure leaves only account or only invitation persisted; GREEN: account and invitation state is equal before/after rollback; artifact: .tasks/TASK-015-T3-FT-001-W2/ and .protocols/TASK-015-T3-FT-001-W2/verification.md.",
+    "FT-001-AC-003 RED: expired, revoked, reused, or duplicate identity/invitation paths mutate account, role, membership, invitation, or binding state; GREEN: each rejection preserves the state snapshot; artifact: .tasks/TASK-015-T3-FT-001-W2/ and .protocols/TASK-015-T3-FT-001-W2/verification.md."
+  ],
+  "purpose": "Restore the accepted Account Provisioning Boundary after TASK-003 exposed alternate unprotected public writes.",
+  "success_outcome": "One server-authorized provisionAccount path creates account and invitation atomically; all unauthorized, alternate, duplicate, reuse, and rollback paths are denied without partial state.",
+  "anti_goals": [
+    "Do not reuse TASK-003 evidence or change its failed lifecycle.",
+    "Do not trust caller-supplied role or center.",
+    "Do not expose public createAccount or issueInvitation provisioning writes.",
+    "Do not move membership writes out of Center & Scheduling or introduce a new architecture boundary."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-003",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-005",
+    ".memory-bank/architecture/system-architecture.md#accepted-target",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/domains/core-domain.md#ownership-map",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/bugs/TASK-003-provisioning-boundary-bypass.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Center & Scheduling resolves server-side actor and own-center Admin authorization before the Identity & Access write.",
+    "Identity & Access exclusively writes account, role, invitation, external identity, and session state.",
+    "Account and invitation creation is one atomic transaction.",
+    "Tests use isolated disposable state with safe rerun and cleanup; no credentials, network, or production database."
+  ],
+  "invariants": [
+    "No caller-trusted center or role is used for authorization.",
+    "Only provisionAccount is the public provisioning write command.",
+    "Unauthenticated, non-Admin, and cross-center requests cannot create account or invitation state.",
+    "Rejected duplicate, reuse, and rollback paths leave state unchanged."
+  ],
+  "verification_targets": [
+    "FT-001-AC-005: focused server-side matrix for unauthenticated, non-Admin, cross-center, valid own-center Admin, caller-forged scope, duplicate, and rollback cases with state-before/state-after snapshots.",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow: source/runtime probe confirms routes and composition only adapt/wire the owner boundary.",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary: read-only source/runtime probe for one public provisioning command, authorization order, ownership, and absence of alternate write bypasses.",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules: adversarial authorization and atomicity matrix for server-resolved actor/scope, caller-scope rejection, and one authoritative provisioning write.",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules: isolated disposable persistence comparison proves account and invitation commit or roll back together.",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership: rejection and reuse checks preserve invitation/account/identity lifecycle state.",
+    "FT-001-AC-003: expired, revoked, reused, and duplicate identity/invitation rejection without account, role, membership, invitation, or binding mutation.",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership: task-scoped commands, state-before/state-after evidence, safe rerun, and cleanup are recorded in the task protocol/artifact paths."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json",
+      ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if satisfying the accepted command requires changing the modular-monolith boundary, ownership graph, or shared database decision.",
+      "Stop if the implementation would require a caller-trusted role/center or a second public provisioning write."
+    ]
+  }
+}

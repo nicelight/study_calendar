@@ -1,0 +1,30 @@
+{
+  "id": "TASK-007-T3-FT-006-W4",
+  "title": "Implement historical prices and charge foundations",
+  "status": "blocked",
+  "wave": "W4",
+  "feature": "FT-006",
+  "reqs": ["REQ-010", "REQ-011", "REQ-012", "REQ-014", "REQ-015"],
+  "depends_on": ["TASK-005-T3-FT-002-W3"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/", "src/lib/server/modules/center-scheduling/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
+  "verify": ["A charge stores the applied default or student-specific price and later price changes affect only future charges.", "Attendance/charge correction replay preserves exact historical facts and audit ownership."],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-001 RED: a charge loses the applied default/student price or changes after a later price setting; GREEN: each charge persists the exact applicable historical price and later settings affect only future charges; artifact: .tasks/TASK-007-T3-FT-006-W4/ and .protocols/TASK-007-T3-FT-006-W4/verification.md.",
+    "FT-006-AC-004 RED: attendance correction or charge cancellation produces non-deterministic allocations/balance or no audit; GREEN: replay from historical sequence is deterministic and audit records author/time/change; artifact: .tasks/TASK-007-T3-FT-006-W4/ and .protocols/TASK-007-T3-FT-006-W4/verification.md."
+  ],
+  "purpose": "Establish the immutable financial charge facts required by payment allocation and attendance reconciliation.",
+  "success_outcome": "Charges snapshot the applicable historical price, retain exact values, and support deterministic correction/replay with audit evidence.",
+  "anti_goals": ["Do not rewrite historical charges after a price setting changes.", "Do not let consumers write financial tables."],
+  "source_artifacts": [".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-001", ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-004", ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants", ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary"],
+  "normative_inputs": [".memory-bank/spec-backbone.md", ".memory-bank/contracts/financial-ledger.md", ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary", ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules"],
+  "constraints": ["Use exact monetary representation and transactional persistence.", "Financial Ledger owns charge, price, and audit state."],
+  "invariants": ["Historical charge price is immutable.", "Replay produces the same financial facts for the same input sequence."],
+  "verification_targets": [
+    "FT-006-AC-001: before/after price-setting integration with exact-value charge persistence and future-charge-only effect.",
+    "FT-006-AC-004: isolated attendance/charge correction replay and audit scenario proving deterministic allocation/balance and author/time/change facts."
+  ],
+  "runtime_context": {"forbidden_scope": [".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json", ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"], "stop_conditions": ["Stop if monetary exactness or storage source of truth requires a global architecture change."]}
+}

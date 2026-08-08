@@ -1,0 +1,34 @@
+{
+  "id": "TASK-014-T3-FT-003-W8",
+  "title": "Implement authorized shared and personal day context",
+  "status": "blocked",
+  "wave": "W8",
+  "feature": "FT-003",
+  "reqs": ["REQ-005", "REQ-006", "REQ-014", "REQ-016"],
+  "depends_on": ["TASK-008-T3-FT-006-W5", "TASK-009-T3-FT-005-W5", "TASK-010-T3-FT-005-W6", "TASK-012-T2-FT-004-W6", "TASK-013-T2-FT-003-W7"],
+  "touched_files": ["src/lib/server/modules/lesson-context/", "src/routes/", "tests/lesson-context/"],
+  "tier": "T3",
+  "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
+  "verify": ["Shared day exposes common material and personal day composes the same material with only the selected student's authorized progress, discussion, and financial projection.", "Navigation preserves date/class/student context and guessed or cross-student access is denied server-side."],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-003.md", ".protocols/FT-003/plan.md"],
+  "evidence_required": [
+    "FT-003-AC-003 RED: an authorized class day omits or leaks shared topic/practical/homework material; GREEN: permitted teacher/student/parent sees the common lesson material through Lesson Context; artifact: .tasks/TASK-014-T3-FT-003-W8/ and .protocols/TASK-014-T3-FT-003-W8/verification.md.",
+    "FT-003-AC-004 RED: personal view duplicates/changes shared material or includes another student's data; GREEN: the same lesson material is reused and only selected student's authorized data is composed; artifact: .tasks/TASK-014-T3-FT-003-W8/ and .protocols/TASK-014-T3-FT-003-W8/verification.md.",
+    "FT-003-AC-005 RED: date/class/student context is lost during navigation or return; GREEN: date, class, and student identity survive the transition and return to the corresponding shared day; artifact: .tasks/TASK-014-T3-FT-003-W8/ and .protocols/TASK-014-T3-FT-003-W8/verification.md.",
+    "FT-003-AC-006 RED: guessed URL/UI access returns another student's grade, discussion, or financial data; GREEN: server-side role/membership/student checks deny the request and no private data crosses context; artifact: .tasks/TASK-014-T3-FT-003-W8/ and .protocols/TASK-014-T3-FT-003-W8/verification.md."
+  ],
+  "purpose": "Complete the Lesson Context orchestration boundary over all accepted provider projections.",
+  "success_outcome": "Authorized users receive the correct shared/personal day view, context transitions are stable, and no other student's private data can be reached through UI or guessed URL.",
+  "anti_goals": ["Do not write progress, collaboration, financial, or scheduling state from Lesson Context.", "Do not trust client-supplied student or role context."],
+  "source_artifacts": [".memory-bank/features/FT-003-calendar-and-lesson-context.md#FT-003-AC-003", ".memory-bank/features/FT-003-calendar-and-lesson-context.md#FT-003-AC-004", ".memory-bank/features/FT-003-calendar-and-lesson-context.md#FT-003-AC-005", ".memory-bank/features/FT-003-calendar-and-lesson-context.md#FT-003-AC-006", ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow", ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary", ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary", ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary"],
+  "normative_inputs": [".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow", ".memory-bank/contracts/boundary-map.md#actor-context-boundary", ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary", ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary", ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary", ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary", ".memory-bank/contracts/access-control.md"],
+  "constraints": ["Lesson Context is the orchestration owner and consumes only named public boundaries.", "Every protected read combines actor facts with provider-owned resource scope."],
+  "invariants": ["Shared material is reused, not duplicated into personal state.", "Personal data never crosses selected-student authorization."],
+  "verification_targets": [
+    "FT-003-AC-003: role-based shared-day smoke for teacher/student/parent with common material assertions.",
+    "FT-003-AC-004: selected-student personal-day composition with shared-material identity and provider-owned personal projection assertions.",
+    "FT-003-AC-005: class/personal navigation smoke with exact date/class/student URL or session context preservation and return path.",
+    "FT-003-AC-006: guessed-student and cross-context negative authorization checks for grade, discussion, and financial projection, plus non-mutation comparison."
+  ],
+  "runtime_context": {"forbidden_scope": [".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json", ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"], "stop_conditions": ["Stop if a provider boundary or cross-slice ownership must change; route to /spec-design."]}
+}

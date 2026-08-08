@@ -1,0 +1,123 @@
+{
+  "id": "TASK-002-T3-FT-000-W1",
+  "title": "Final Foundation gate: integrated build, start, test, and smoke",
+  "status": "done",
+  "wave": "W1",
+  "feature": "FT-000",
+  "reqs": [
+    "REQ-000"
+  ],
+  "depends_on": [
+    "TASK-001-T3-FT-000-W0"
+  ],
+  "touched_files": [
+    ".protocols/TASK-002-T3-FT-000-W1/",
+    ".tasks/TASK-002-T3-FT-000-W1/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "integrated-check-build-test",
+      "command": "npm run check && npm run build && npm run test",
+      "required": true
+    },
+    {
+      "name": "single-server-foundation-smoke",
+      "command": "npm run dev -- --host 127.0.0.1",
+      "required": true
+    }
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-002-T3-FT-000-W1/verification.md",
+      "evidence": [
+        "npm run check && npm run build && npm run test: PASS",
+        "single-server route: HTTP 200",
+        "unauthenticated protected request: HTTP 401",
+        "authenticated public boundary: HTTP 200",
+        "isolated database rollback: state before == state after; cleanup confirmed",
+        ".protocols/TASK-002-T3-FT-000-W1/red-verification.md: semantic-pass"
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/foundation.md",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/runbooks/mvp-verification.md",
+    ".memory-bank/tasks/plans/IMPL-FT-000.md",
+    ".protocols/FT-000/plan.md",
+    ".protocols/FT-000/decision-log.md"
+  ],
+  "evidence_required": [
+    "REQ-000 and mvp-verification.md#foundation-smoke-path: RED = the integrated server/DB/protected-request path cannot satisfy one or more Foundation smoke steps; GREEN = one server serves a representative route, reaches the isolated shared-database fixture, denies an unauthenticated protected request, and allows the authenticated fixture to reach an accepted public boundary; artifact = .protocols/TASK-002-T3-FT-000-W1/verification.md.",
+    "foundation.md#foundation-exit-criteria: RED = a required minimal-path, compatibility, or material-pressure check is absent or fails; GREEN = check/build/test and the complete integrated smoke pass with no new P0/P1 design pressure, otherwise execution stops and routes the branch to /spec-design; artifact = .protocols/TASK-002-T3-FT-000-W1/verification.md and .tasks/TASK-002-T3-FT-000-W1/.",
+    "core-domain.md#persistence-and-transaction-rules: RED = the integrated failed binding/transaction probe leaves partial state; GREEN = state-before and state-after are equal after the failed probe and the isolated fixture is cleaned safely; artifact = .tasks/TASK-002-T3-FT-000-W1/ and .protocols/TASK-002-T3-FT-000-W1/verification.md."
+  ],
+  "purpose": "Serve as the sole final Foundation gate by proving the W0 substrate works as one integrated SvelteKit server, shared database path, protected request path, and smoke harness.",
+  "success_outcome": "The project-native check/build/test commands pass, one server starts on 127.0.0.1, the representative route and isolated database fixture work, protected access denies without an actor and reaches the accepted public boundary with an authenticated fixture, failed binding/transaction leaves no partial state, and no material Foundation design pressure is unresolved.",
+  "anti_goals": [
+    "Do not add or execute product feature behavior or create product task records.",
+    "Do not copy dependency-task proof into this gate; verify only the integrated Foundation outcome.",
+    "Do not mark the gate done from planning or bypass required verification/semantic evidence."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".agents/skills/",
+      ".claude/",
+      "AGENTS.md",
+      "SVELTE_RULES.md",
+      ".memory-bank/features/FT-001-authentication-and-binding.md",
+      ".memory-bank/features/FT-002-center-and-scheduling.md",
+      ".memory-bank/features/FT-003-calendar-and-lesson-context.md",
+      ".memory-bank/features/FT-004-day-collaboration.md",
+      ".memory-bank/features/FT-005-learning-progress.md",
+      ".memory-bank/features/FT-006-financial-ledger.md"
+    ],
+    "stop_conditions": [
+      "Any integrated check requires product behavior, a new slice, or an architecture/boundary change beyond the accepted Foundation target.",
+      "A protected request, shared-database path, or no-partial-state probe cannot be proved with isolated/disposable state.",
+      "A new material design question appears; preserve current evidence and route to /spec-design."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/foundation.md#minimal-work-path",
+    ".memory-bank/foundation.md#foundation-exit-criteria",
+    ".memory-bank/requirements.md#req-000--executable-foundation-baseline",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/runbooks/mvp-verification.md#foundation-smoke-path",
+    ".memory-bank/tasks/plans/IMPL-FT-000.md",
+    ".protocols/FT-000/plan.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/architecture/system-architecture.md#accepted-target",
+    ".memory-bank/architecture/system-architecture.md#deployment",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "The final gate is the only final Foundation gate and depends on every required Foundation implementation/probe task.",
+    "Prove one SvelteKit server and one shared database; do not add a second service, store, or event bus.",
+    "Use the accepted public boundaries and server-side authorization path without implementing product behavior.",
+    "Record all commands, results, isolation conditions, and cleanup in task-scoped evidence; leave lifecycle closure to the owning execution workflow."
+  ],
+  "invariants": [
+    "Unauthenticated protected access is denied by the server.",
+    "Authenticated access reaches a public module boundary only after server-side actor/scope resolution.",
+    "The shared database remains the persisted source of truth with explicit transaction boundaries.",
+    "A failed binding/transaction leaves no partial state and fixture cleanup is safe to rerun."
+  ],
+  "verification_targets": [
+    "Run npm run check && npm run build && npm run test and retain command output and comparison results in task-scoped evidence.",
+    "Start exactly one server with npm run dev -- --host 127.0.0.1; exercise one representative route and stop it safely after the smoke.",
+    "Through the running server, prove the isolated shared-database/schema fixture roundtrip, unauthenticated denial, authenticated public-boundary reachability, and failed binding/transaction state-before/state-after equality.",
+    "Compare the observed result to .memory-bank/runbooks/mvp-verification.md#foundation-smoke-path and .memory-bank/foundation.md#foundation-exit-criteria; if a new P0/P1 design pressure appears, stop and hand off to /spec-design."
+  ]
+}

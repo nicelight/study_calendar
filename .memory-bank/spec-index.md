@@ -19,24 +19,26 @@ source_of_truth:
 | governance | [.memory-bank/constitution.md](constitution.md) | active | Top governing policy. | /constitution |
 | invariants | [.memory-bank/invariants.md](invariants.md) | planned | Global MUST/NEVER rules when evidence exists. | /spec-init or /spec-design |
 | glossary | [.memory-bank/glossary.md](glossary.md) | active | Product vocabulary grounded in the accepted Product Brief. | /brief, /spec-init, or /spec-design |
-| contract | [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md) | draft | Canonical accepted module/change-unit dependency graph and boundary contracts. | /spec-design or /feature-to-tasks |
+| architecture | [.memory-bank/architecture/system-architecture.md](architecture/system-architecture.md) | active | Global modular-monolith shape, composition root, runtime, deployment, and Architecture Spine. | /spec-design |
+| contract | [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md) | active | Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership. | /spec-design or /feature-to-tasks |
+| contract | [.memory-bank/contracts/access-control.md](contracts/access-control.md) | active | Server-side authentication, authorization scope, privacy, and provider-binding contract. | /spec-design or /feature-to-tasks |
+| contract | [.memory-bank/contracts/financial-ledger.md](contracts/financial-ledger.md) | active | Financial ownership, exactness, allocation, audit, projection, and replay contract. | /spec-design or /feature-to-tasks |
+| domain | [.memory-bank/domains/core-domain.md](domains/core-domain.md) | active | Global entity model, persisted source of truth, ownership, and storage/data flow. | /spec-design or /feature-to-tasks |
+| state | [.memory-bank/states/lifecycle-map.md](states/lifecycle-map.md) | active | Access, lesson, collaboration, learning, and financial lifecycle transitions. | /spec-design or /feature-to-tasks |
+| runbook | [.memory-bank/runbooks/mvp-verification.md](runbooks/mvp-verification.md) | active | Foundation smoke, pre-real-data checks, deployment smoke, and evidence routing. | /spec-design or /foundation-to-tasks |
+| foundation | [.memory-bank/foundation.md](foundation.md) | active | Foundation Dev Path decision, anchors, pressure map, and exit criteria. | /spec-design or /foundation-to-tasks |
 | testing | [.memory-bank/testing/strategy.md](testing/strategy.md) | active | Framework baseline testing policy. | explicit project-level user decision |
 
 ## Planned Specs
 | Area | Expected path | Needed by | Notes |
 |---|---|---|---|
-| user_scenarios | .memory-bank/user-scenarios.md | /prd-to-features, /spec-design | Create only when scenario evidence exists or gaps must be explicit. |
-| core_domain | .memory-bank/domains/core-domain.md | /prd-to-features, /spec-design | Create only when domain model affects decomposition or shared design. |
-| module_dependency_graph | .memory-bank/contracts/boundary-map.md | /spec-design, /feature-to-tasks | Establish accepted architecture units first, then register concrete modules, allowed dependency edges, and exact contract blocks before task handoff. |
-| lifecycle_hints | .memory-bank/states/lifecycle-map.md | /prd-to-features, /spec-design | Create only when lifecycles affect feature boundaries. |
-| system_architecture | .memory-bank/architecture/system-architecture.md | /spec-design | Candidate architecture hub; fill only when selected or needed by /spec-design. |
-| interface_contract_specs | .memory-bank/contracts/*, .memory-bank/testing/*, and .memory-bank/runbooks/* | /spec-design, /foundation-to-tasks, /feature-to-tasks | Generate/update Interface Specification and only applicable Component/API/Event/Data contracts, protocol/agent/tool I/O, boundary compatibility, evidence/redaction, safety/security, testing, runbook, or verification contracts. Data Contract defines payloads crossing a boundary. |
-| data_specs | .memory-bank/domains/* and .memory-bank/states/* | /spec-design, /feature-to-tasks | Generate/update Data Specification for internal models, DB schemas, storage/persistence/migrations, internal data formats, validation/serialization rules, lifecycle, retention, seed, or runtime data paths. |
-| foundation_substrate_specs | .memory-bank/architecture/*, .memory-bank/contracts/*, .memory-bank/domains/*, .memory-bank/states/*, .memory-bank/testing/*, .memory-bank/runbooks/* | /foundation-to-tasks | Apply Architecture, Interfaces/Contracts, and Data lenses to the walking-skeleton proof path. Generate only applicable subject-based substrate contracts/specs. Product-level detail reuses or extends those paths later. |
-| subject_feature_concerns | .memory-bank/contracts/*, .memory-bank/domains/*, .memory-bank/states/*, .memory-bank/testing/*, .memory-bank/runbooks/*, or .memory-bank/guides/* | /feature-to-tasks | Discover existing canonical specs first; create only missing subject-based concerns and link exact paths from features/tasks. |
+| user_scenarios | .memory-bank/user-scenarios.md | /prd-to-features, /spec-design | Create only if a reviewed scenario artifact becomes necessary for a future scenario-sensitive decision; PRD flows currently suffice. |
+| interface_contract_specs | .memory-bank/contracts/*, .memory-bank/testing/*, and .memory-bank/runbooks/* | /foundation-to-tasks, /feature-to-tasks | Extend only when a feature introduces a concrete subject contract, evidence/redaction concern, or non-trivial verification method. |
+| foundation_substrate_specs | existing registered architecture, contract, domain, state, testing, and runbook paths | /foundation-to-tasks | Reuse the accepted global scaffold for the walking-skeleton proof path; do not create product behavior in Foundation. |
+| subject_feature_concerns | .memory-bank/contracts/*, .memory-bank/domains/*, .memory-bank/states/*, .memory-bank/testing/*, .memory-bank/runbooks/*, or .memory-bank/guides/* | /feature-to-tasks | Discover registered canonical specs first; create only missing subject-based concerns and link exact paths from features/tasks. |
 
 ## Broken / Missing Links
-- TBD
+- None identified.
 
 ## Update Rules
 - Keep this file as index/registry only: types, canonical paths, statuses,

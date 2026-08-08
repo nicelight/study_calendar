@@ -1,22 +1,8 @@
-# Dependencies and generated output
 node_modules/
 .svelte-kit/
 build/
-dist/
-coverage/
-
-# Local environment and secrets
 .env
 .env.*
 !.env.example
-*.local
-
-# Logs
-*.log
-
-# Editor and OS metadata
-.DS_Store
-.directory
-.idea/
-.vscode/
-
+*.db
+*.db-*
