@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">Study Calendar</title>
+  <desc id="desc">Тёплая абстрактная иллюстрация эластичного календаря, в котором учебные дни шире свободных.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff8f1"/>
+      <stop offset="0.52" stop-color="#faf3ef"/>
+      <stop offset="1" stop-color="#f1edff"/>
+    </linearGradient>
+    <linearGradient id="lesson" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0ddff"/>
+      <stop offset="1" stop-color="#ddcef6"/>
+    </linearGradient>
+    <linearGradient id="lessonWarm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe9be"/>
+      <stop offset="1" stop-color="#f8d9a3"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#594667" flood-opacity="0.13"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="6" stdDeviation="9" flood-color="#594667" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="500" rx="38" fill="url(#background)"/>
+  <circle cx="1084" cy="72" r="118" fill="#e8dcff" opacity="0.62"/>
+  <circle cx="1112" cy="412" r="152" fill="#dff3e8" opacity="0.72"/>
+  <circle cx="74" cy="440" r="132" fill="#ffe8c6" opacity="0.62"/>
+
+  <g opacity="0.7" fill="none" stroke="#b58ac5" stroke-width="4" stroke-linecap="round">
+    <path d="M92 86c22-22 45-10 45 11 0-21 23-33 45-11 27 28-12 58-45 80-33-22-72-52-45-80z"/>
+    <path d="M531 399c13-13 27-6 27 7 0-13 14-20 27-7 17 17-7 35-27 49-20-14-44-32-27-49z" opacity="0.55"/>
+  </g>
+
+  <g transform="translate(92 112)">
+    <rect width="148" height="34" rx="17" fill="#eadcf7"/>
+    <circle cx="20" cy="17" r="5" fill="#9270a7"/>
+    <text x="34" y="22" fill="#6e547e" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="1.8">STUDY CALENDAR</text>
+
+    <text x="0" y="92" fill="#302735" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="42" font-weight="700">
+      Учёба — на своём месте
+    </text>
+    <text x="0" y="139" fill="#665c6b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22">
+      Уроки, задания, общение и оплата —
+    </text>
+    <text x="0" y="171" fill="#665c6b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22">
+      в одном спокойном календаре.
+    </text>
+
+    <g transform="translate(0 224)" filter="url(#softShadow)">
+      <rect width="154" height="62" rx="20" fill="#ffffff" fill-opacity="0.82"/>
+      <circle cx="31" cy="31" r="15" fill="#e5f4eb"/>
+      <path d="M24 31l5 5 10-12" fill="none" stroke="#5e8b6e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="56" y="27" fill="#302735" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="700">Всё видно</text>
+      <text x="56" y="45" fill="#766d7a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">без суеты</text>
+    </g>
+    <g transform="translate(170 224)" filter="url(#softShadow)">
+      <rect width="176" height="62" rx="20" fill="#ffffff" fill-opacity="0.82"/>
+      <circle cx="31" cy="31" r="15" fill="#f3e8fb"/>
+      <path d="M25 31h12M31 25v12" fill="none" stroke="#8965a0" stroke-width="2.7" stroke-linecap="round"/>
+      <text x="56" y="27" fill="#302735" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="700">Общий день</text>
+      <text x="56" y="45" fill="#766d7a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">и личная история</text>
+    </g>
+  </g>
+
+  <g transform="translate(632 70)" filter="url(#shadow)">
+    <rect width="494" height="360" rx="30" fill="#ffffff" fill-opacity="0.93"/>
+    <rect x="28" y="25" width="438" height="50" rx="17" fill="#faf7fb"/>
+    <circle cx="53" cy="50" r="7" fill="#d6c2e5"/>
+    <text x="72" y="57" fill="#3c3341" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">Октябрь</text>
+    <path d="M414 44l8 7-8 7M447 44l-8 7 8 7" fill="none" stroke="#8a7c90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g transform="translate(28 95)">
+      <rect width="52" height="122" rx="16" fill="#f1eee9"/>
+      <text x="26" y="27" text-anchor="middle" fill="#8c8380" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">ПН</text>
+      <text x="26" y="55" text-anchor="middle" fill="#5c5555" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">7</text>
+
+      <g transform="translate(62)">
+        <rect width="132" height="122" rx="18" fill="url(#lesson)"/>
+        <text x="18" y="27" fill="#725987" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">ВТ · 8</text>
+        <rect x="18" y="45" width="81" height="8" rx="4" fill="#876aa0" opacity="0.72"/>
+        <rect x="18" y="63" width="99" height="7" rx="3.5" fill="#a889be" opacity="0.58"/>
+        <rect x="18" y="88" width="48" height="20" rx="10" fill="#ffffff" fill-opacity="0.68"/>
+        <circle cx="29" cy="98" r="4" fill="#6d9b7d"/>
+        <text x="39" y="102" fill="#695d70" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="9">урок</text>
+      </g>
+
+      <g transform="translate(204)">
+        <rect width="46" height="122" rx="15" fill="#f1eee9"/>
+        <text x="23" y="27" text-anchor="middle" fill="#8c8380" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">СР</text>
+        <text x="23" y="55" text-anchor="middle" fill="#5c5555" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">9</text>
+      </g>
+
+      <g transform="translate(260)">
+        <rect width="150" height="122" rx="18" fill="url(#lessonWarm)"/>
+        <text x="18" y="27" fill="#8a642e" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">ЧТ · 10</text>
+        <rect x="18" y="45" width="92" height="8" rx="4" fill="#bd8744" opacity="0.74"/>
+        <rect x="18" y="63" width="116" height="7" rx="3.5" fill="#d6aa6c" opacity="0.72"/>
+        <rect x="18" y="88" width="70" height="20" rx="10" fill="#ffffff" fill-opacity="0.66"/>
+        <path d="M28 98l3 3 6-7" fill="none" stroke="#688f75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="43" y="102" fill="#695d60" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="9">ДЗ готово</text>
+      </g>
+
+      <g transform="translate(420)">
+        <rect width="46" height="122" rx="15" fill="#f1eee9"/>
+        <text x="23" y="27" text-anchor="middle" fill="#8c8380" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">ПТ</text>
+        <text x="23" y="55" text-anchor="middle" fill="#5c5555" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">11</text>
+      </g>
+    </g>
+
+    <g transform="translate(28 239)">
+      <rect width="438" height="92" rx="20" fill="#f7faf7"/>
+      <circle cx="30" cy="29" r="12" fill="#dff1e6"/>
+      <path d="M25 29l4 4 7-9" fill="none" stroke="#5f8f70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="52" y="34" fill="#3d4740" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="700">Домашнее задание отмечено</text>
+      <circle cx="30" cy="64" r="12" fill="#f0e4f7"/>
+      <path d="M25 64h10M30 59v10" fill="none" stroke="#846498" stroke-width="2" stroke-linecap="round"/>
+      <text x="52" y="69" fill="#3d4147" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">Новый комментарий к уроку</text>
+      <rect x="377" y="19" width="38" height="25" rx="12.5" fill="#ffffff"/>
+      <text x="396" y="36" text-anchor="middle" fill="#7e668c" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">β</text>
+    </g>
+  </g>
+
+  <g fill="#be9acd" opacity="0.62">
+    <circle cx="585" cy="76" r="5"/>
+    <circle cx="574" cy="91" r="3"/>
+    <circle cx="592" cy="99" r="2.5"/>
+  </g>
+</svg>
