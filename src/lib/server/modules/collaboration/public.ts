@@ -49,6 +49,31 @@ export type ReactionView = {
 	lastChangedAt: string;
 };
 
+export type MessageView = {
+	messageId: string;
+	centerId: string;
+	classId: string;
+	lessonId: string;
+	scope: DiscussionScope;
+	studentAccountId: string | null;
+	parentMessageId: string | null;
+	rootMessageId: string;
+	body: string;
+	authorAccountId: string;
+	createdAt: string;
+};
+
+export type BranchTabView = {
+	rootMessageId: string;
+	messageCount: number;
+	lastActivityAt: string;
+};
+
+export type DayDiscussionView = {
+	commonMessages: MessageView[];
+	recentBranchTabs: BranchTabView[];
+};
+
 type CommentRow = {
 	id: string;
 	center_id: string;
@@ -75,6 +100,26 @@ type ReactionRow = {
 	reactor_account_id: string;
 	created_at: string;
 	last_changed_at: string;
+};
+
+type MessageRow = {
+	id: string;
+	center_id: string;
+	class_id: string;
+	lesson_id: string;
+	scope: DiscussionScope;
+	student_account_id: string | null;
+	parent_message_id: string | null;
+	root_message_id: string;
+	body: string;
+	author_account_id: string;
+	created_at: string;
+};
+
+type BranchTabRow = {
+	root_message_id: string;
+	message_count: number;
+	last_activity_at: string;
 };
 
 type DiscussionRequest = {
@@ -212,6 +257,151 @@ export class CollaborationBoundary {
 				fieldKey
 			) as CommentRow[];
 		return rows.map((row) => this.toCommentView(row));
+	}
+
+	createMessage(request: DiscussionRequest & {
+		messageId: string;
+		body: string;
+	}): MessageView {
+		return this.database.transaction(() => {
+			const target = this.requireDiscussionScope(request);
+			const messageId = this.requireText(request.messageId, 'invalid-message-id');
+			const body = this.requireText(request.body, 'invalid-message-body');
+			const createdAt = this.now().toISOString();
+
+			this.database.sqlite
+				.prepare(
+					`INSERT INTO collaboration_messages (
+						id, center_id, class_id, lesson_id, scope, student_account_id,
+						parent_message_id, root_message_id, author_account_id, body, created_at
+					) VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?)`
+				)
+				.run(
+					messageId,
+					target.lesson.centerId,
+					target.classScope.classId,
+					target.lesson.lessonId,
+					request.scope,
+					target.studentAccountId,
+					messageId,
+					target.actor.accountId,
+					body,
+					createdAt
+				);
+
+			return this.requireMessageView(messageId);
+		});
+	}
+
+	replyToMessage(request: DiscussionRequest & {
+		parentMessageId: string;
+		messageId: string;
+		body: string;
+	}): MessageView {
+		return this.database.transaction(() => {
+			const target = this.requireDiscussionScope(request);
+			const parentMessageId = this.requireText(
+				request.parentMessageId,
+				'invalid-parent-message-id'
+			);
+			const parent = this.getMessage(parentMessageId);
+			if (!parent || !this.messageBelongsToTarget(parent, target, request.scope)) {
+				throw new Error('not-authorized');
+			}
+
+			const messageId = this.requireText(request.messageId, 'invalid-message-id');
+			const body = this.requireText(request.body, 'invalid-message-body');
+			const createdAt = this.now().toISOString();
+			this.database.sqlite
+				.prepare(
+					`INSERT INTO collaboration_messages (
+						id, center_id, class_id, lesson_id, scope, student_account_id,
+						parent_message_id, root_message_id, author_account_id, body, created_at
+					) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+				)
+				.run(
+					messageId,
+					target.lesson.centerId,
+					target.classScope.classId,
+					target.lesson.lessonId,
+					request.scope,
+					target.studentAccountId,
+					parent.id,
+					parent.root_message_id,
+					target.actor.accountId,
+					body,
+					createdAt
+				);
+
+			return this.requireMessageView(messageId);
+		});
+	}
+
+	getDayDiscussion(request: DiscussionRequest): DayDiscussionView {
+		const target = this.requireDiscussionScope(request);
+		const commonMessages = this.getScopedMessages(target, request.scope);
+		const recentBranchTabs = this.database.sqlite
+			.prepare(
+				`SELECT root_message_id,
+						COUNT(*) AS message_count,
+						MAX(created_at) AS last_activity_at
+				 FROM collaboration_messages
+				 WHERE class_id = ? AND lesson_id = ? AND scope = ?
+				   AND COALESCE(student_account_id, '') = COALESCE(?, '')
+				 GROUP BY root_message_id
+				 HAVING COUNT(*) > 1
+				 ORDER BY MAX(rowid) DESC
+				 LIMIT 10`
+			)
+			.all(
+				target.classScope.classId,
+				target.lesson.lessonId,
+				request.scope,
+				target.studentAccountId
+			) as BranchTabRow[];
+
+		return {
+			commonMessages,
+			recentBranchTabs: recentBranchTabs.map((tab) => ({
+				rootMessageId: tab.root_message_id,
+				messageCount: tab.message_count,
+				lastActivityAt: tab.last_activity_at
+			}))
+		};
+	}
+
+	getBranchMessages(request: DiscussionRequest & { rootMessageId: string }): MessageView[] {
+		const target = this.requireDiscussionScope(request);
+		const rootMessageId = this.requireText(request.rootMessageId, 'invalid-root-message-id');
+		const root = this.getMessage(rootMessageId);
+		if (
+			!root ||
+			root.parent_message_id !== null ||
+			root.root_message_id !== root.id ||
+			!this.messageBelongsToTarget(root, target, request.scope)
+		) {
+			throw new Error('not-authorized');
+		}
+
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
+						parent_message_id, root_message_id, body, author_account_id, created_at
+				 FROM collaboration_messages
+				 WHERE class_id = ? AND lesson_id = ? AND scope = ?
+				   AND COALESCE(student_account_id, '') = COALESCE(?, '')
+				   AND root_message_id = ?
+				 ORDER BY rowid`
+			)
+			.all(
+				target.classScope.classId,
+				target.lesson.lessonId,
+				request.scope,
+				target.studentAccountId,
+				rootMessageId
+			) as MessageRow[];
+
+		return rows.map((row) => this.toMessageView(row));
 	}
 
 	setReaction(request: DiscussionRequest & {
@@ -362,21 +552,62 @@ export class CollaborationBoundary {
 		scope: DiscussionScope,
 		targetId: string
 	): boolean {
-		const table = this.database.sqlite
-			.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'collaboration_messages'")
-			.get() as { name: string } | undefined;
-		if (!table) {
-			return false;
-		}
-		const row = this.database.sqlite
+		const message = this.getMessage(targetId);
+		return Boolean(message && this.messageBelongsToTarget(message, target, scope));
+	}
+
+	private getScopedMessages(
+		target: AuthorizedDiscussionScope,
+		scope: DiscussionScope
+	): MessageView[] {
+		const rows = this.database.sqlite
 			.prepare(
-				`SELECT 1
+				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
+						parent_message_id, root_message_id, body, author_account_id, created_at
 				 FROM collaboration_messages
-				 WHERE id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
-				   AND COALESCE(student_account_id, '') = COALESCE(?, '')`
+				 WHERE class_id = ? AND lesson_id = ? AND scope = ?
+				   AND COALESCE(student_account_id, '') = COALESCE(?, '')
+				 ORDER BY rowid`
 			)
-			.get(targetId, target.classScope.classId, target.lesson.lessonId, scope, target.studentAccountId);
-		return Boolean(row);
+			.all(
+				target.classScope.classId,
+				target.lesson.lessonId,
+				scope,
+				target.studentAccountId
+			) as MessageRow[];
+		return rows.map((row) => this.toMessageView(row));
+	}
+
+	private getMessage(messageId: string): MessageRow | undefined {
+		return this.database.sqlite
+			.prepare(
+				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
+						parent_message_id, root_message_id, body, author_account_id, created_at
+				 FROM collaboration_messages WHERE id = ?`
+			)
+			.get(messageId) as MessageRow | undefined;
+	}
+
+	private requireMessageView(messageId: string): MessageView {
+		const message = this.getMessage(messageId);
+		if (!message) {
+			throw new Error('message-not-found');
+		}
+		return this.toMessageView(message);
+	}
+
+	private messageBelongsToTarget(
+		message: MessageRow,
+		target: AuthorizedDiscussionScope,
+		scope: DiscussionScope
+	): boolean {
+		return (
+			message.center_id === target.lesson.centerId &&
+			message.class_id === target.classScope.classId &&
+			message.lesson_id === target.lesson.lessonId &&
+			message.scope === scope &&
+			message.student_account_id === target.studentAccountId
+		);
 	}
 
 	private requireReaction(value: Reaction): void {
@@ -473,6 +704,22 @@ export class CollaborationBoundary {
 			reactorAccountId: row.reactor_account_id,
 			createdAt: row.created_at,
 			lastChangedAt: row.last_changed_at
+		};
+	}
+
+	private toMessageView(row: MessageRow): MessageView {
+		return {
+			messageId: row.id,
+			centerId: row.center_id,
+			classId: row.class_id,
+			lessonId: row.lesson_id,
+			scope: row.scope,
+			studentAccountId: row.student_account_id,
+			parentMessageId: row.parent_message_id,
+			rootMessageId: row.root_message_id,
+			body: row.body,
+			authorAccountId: row.author_account_id,
+			createdAt: row.created_at
 		};
 	}
 

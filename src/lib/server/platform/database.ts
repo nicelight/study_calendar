@@ -264,6 +264,33 @@ export class SharedDatabase {
 				);
 			CREATE INDEX IF NOT EXISTS collaboration_comments_scope_lookup
 				ON collaboration_comments (class_id, lesson_id, scope, student_account_id, field_key);
+			CREATE TABLE IF NOT EXISTS collaboration_messages (
+				id TEXT PRIMARY KEY,
+				center_id TEXT NOT NULL,
+				class_id TEXT NOT NULL,
+				lesson_id TEXT NOT NULL,
+				scope TEXT NOT NULL CHECK (scope IN ('shared', 'personal')),
+				student_account_id TEXT REFERENCES accounts(id) ON DELETE CASCADE,
+				parent_message_id TEXT REFERENCES collaboration_messages(id) ON DELETE CASCADE,
+				root_message_id TEXT NOT NULL REFERENCES collaboration_messages(id) ON DELETE CASCADE,
+				author_account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+				body TEXT NOT NULL,
+				created_at TEXT NOT NULL,
+				CHECK (
+					(scope = 'shared' AND student_account_id IS NULL)
+					OR (scope = 'personal' AND student_account_id IS NOT NULL)
+				),
+				CHECK (
+					(parent_message_id IS NULL AND root_message_id = id)
+					OR parent_message_id IS NOT NULL
+				)
+			);
+			CREATE INDEX IF NOT EXISTS collaboration_messages_scope_activity
+				ON collaboration_messages (
+					class_id, lesson_id, scope, student_account_id, root_message_id
+				);
+			CREATE INDEX IF NOT EXISTS collaboration_messages_parent_lookup
+				ON collaboration_messages (parent_message_id);
 			CREATE TABLE IF NOT EXISTS collaboration_reactions (
 				target_type TEXT NOT NULL CHECK (target_type IN ('field', 'comment', 'message')),
 				target_id TEXT NOT NULL,

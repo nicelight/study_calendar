@@ -1,7 +1,7 @@
 {
   "id": "TASK-012-T2-FT-004-W6",
   "title": "Implement threaded discussion branches and recent tabs",
-  "status": "in_progress",
+  "status": "done",
   "wave": "W6",
   "feature": "FT-004",
   "reqs": ["REQ-006", "REQ-008", "REQ-014"],
@@ -9,7 +9,7 @@
   "touched_files": ["src/lib/server/modules/collaboration/", "tests/collaboration/"],
   "tier": "T2",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
-  "verify": ["Replies support arbitrary depth and a root becomes a branch tab after its first reply.", "At most ten recent active tabs are shown; hidden branch messages are retained and reappear after new activity."],
+  "verify": ["Replies support arbitrary depth and a root becomes a branch tab after its first reply.", "At most ten recent active tabs are shown; hidden branch messages are retained and reappear after new activity.", {"stage":"functional","attempt":"Attempt 1","verdict":"PASS","report":".protocols/TASK-012-T2-FT-004-W6/verification.md","artifact":".tasks/TASK-012-T2-FT-004-W6/TASK-012-T2-FT-004-W6-S-VERIFY-final-report-docs-01.md","evidence":["Fresh verifier-owned focused Collaboration probe passed 1 file / 2 tests, covering arbitrary-depth replies, first-reply tab activation, scoped common feed, eleven-branch ordering, ten-tab bound, hidden retention, and reactivation.","npm run check, npm run build, npm run test (11 files / 37 tests), and git diff --check all exited 0.","Executor RED/GREEN and handoff were supporting-only; no lifecycle change or stale report reuse occurred."],"lifecycle_changed":false}],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-004.md", ".protocols/FT-004/plan.md"],
   "evidence_required": [
     "FT-004-AC-003 RED: reply depth is capped, first reply does not create a branch tab, or common feed omits an available message; GREEN: arbitrary-depth replies persist, first reply creates the branch tab, and scoped common feed shows every available message; artifact: .tasks/TASK-012-T2-FT-004-W6/ and .protocols/TASK-012-T2-FT-004-W6/verification.md.",

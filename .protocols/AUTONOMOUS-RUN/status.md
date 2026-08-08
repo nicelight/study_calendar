@@ -8,7 +8,7 @@ status: active
 - STATE: RUNNING
 - current phase: Product
 - current task: `TASK-012-T2-FT-004-W6`
-- current stage: selected after W6 sync/gates/advisory; fresh Implementer `/execute` required, Reviewer prohibited until final handoff
+- current stage: TASK-012 current functional `/verify` PASS durable; feature-level FT-004 `/red-verify --feature` active; task/feature boundary closure remains gated on semantic-pass
 - last durable child verdict/handoff: current TASK-010 functional report-01 `PASS` and T3 semantic report-01 `semantic-pass`; task card lifecycle `done`
 - current execution evidence: TASK-011 W5 sync PASS; tech-debt advisory report unavailable after bounded worker completion, recorded as non-blocking
 - completed review claim: current Attempt 2 functional PASS and current T3 semantic-pass are recorded in the task card; stale reviewer process was interrupted and no new verification was launched
@@ -20,11 +20,14 @@ status: active
 - completed TASK-010 functional Reviewer claim: `019fe25e-7c91-7f72-8de6-d88dedf3facd` produced current report-01 `VERDICT: PASS`
 - stopped TASK-010 T3 semantic Reviewer claim: `019fe265-379e-73d3-a3a9-1aa4685af136`; no red protocol/report or verdict was durable, so lifecycle/retry/failure counters remain unchanged
 - completed TASK-010 T3 semantic Reviewer recovery claim: `019fe26d-808c-70f1-a958-ce7ee7e903d7` produced current report-01 `SEMANTIC_VERDICT: semantic-pass`; no findings
-- next action: launch fresh independent Implementer only `/execute TASK-012-T2-FT-004-W6`; no Reviewer before final GREEN handoff
+- next action: await fresh feature Reviewer `019fe28b-8bd5-77b0-a6c4-d3e42beaeded` report and exactly one current FT-004 semantic marker; then scheduler closes the FT-004 boundary, runs W6 `/mb-sync` and owner gates, and promotes TASK-013 sequentially
 - completed W6 sync claim: `019fe272-b354-7220-a455-e57cb27cbe59` (session `42408`) produced sync-local PASS
-- active W6 tech-debt claim: `019fe275-ea4c-7561-90fc-41f0fbf4bbc2` (session `31299`) running only `/tech-debt wave W6`
+- completed W6 tech-debt claim: `019fe275-ea4c-7561-90fc-41f0fbf4bbc2` (session `31299`) produced the W6 advisory report
 - completed W6 tech-debt claim: `019fe275-ea4c-7561-90fc-41f0fbf4bbc2` produced `PAPERCUTS/TECHDEBTS/tech-debt-wave-W6-2026-08-08.md`; advisory only
-- active TASK-012 Implementer claim: `019fe279-aedd-7ab2-8d4c-c50b0f953649` (session `49706`) running only `/execute`; protocol/RED→GREEN/final handoff pending
+- completed TASK-012 Implementer claim: `019fe279-aedd-7ab2-8d4c-c50b0f953649` (session `49706`) produced final EXE report/handoff; executor evidence is supporting-only
+- completed TASK-012 functional Reviewer claim: `019fe285-0b3b-7cb0-8eee-f52bc36f3590` (session `71717`) produced current `/verify` `PASS` in `verification.md` and VERIFY report-01; task card is `done`
+- failed pre-verdict FT-004 feature Reviewer launch: `019fe28b-8bd5-77b0-a6c4-d3e42beaeded` (session `82044`) exited on unsupported model before writing artifacts; no verdict or budget change
+- active FT-004 feature semantic Reviewer claim: `019fe28c-3a8f-7cc0-a859-381ab48b5aa6` (session `31355`) runs only `/red-verify --feature FT-004`; no task/feature lifecycle or scheduler mutation delegated
 
 ## Health gates
 - initial `node scripts/mb-lint.mjs`: PASS (`.memory-bank`, 38 files)

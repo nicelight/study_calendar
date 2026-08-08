@@ -549,3 +549,18 @@ status: active
 ## 2026-08-08 — TASK-012 Implementer claimed
 - Fresh independent Implementer `019fe279-aedd-7ab2-8d4c-c50b0f953649` (session `49706`) is running only `/execute TASK-012-T2-FT-004-W6` after durable `ready -> in_progress` selection.
 - No retry/failure budget changed; Reviewer routing remains prohibited until final execution GREEN report and handoff.
+
+## 2026-08-08 — TASK-012 protocol initialized
+- Implementer `019fe279-aedd-7ab2-8d4c-c50b0f953649` completed T2 point-of-use preflight and durably created TASK-012 `context`, `plan`, `progress`, `verification`, and `handoff`; current state is implementing with RED pending.
+- No verdict, retry/failure budget change, or Reviewer routing occurred.
+
+## 2026-08-08 — TASK-012 final execution handoff; functional review routed
+- Implementer `019fe279-aedd-7ab2-8d4c-c50b0f953649` durably completed final EXE report-code-01/handoff: claim RED→GREEN, focused 2/2, `npm run check`, `npm run build`, full suite 11 files/37 tests, and `git diff --check` PASS. T2 lifecycle remains `in_progress`; executor evidence is supporting-only.
+- Fresh independent Reviewer is now routed only for `/verify TASK-012-T2-FT-004-W6`; no per-task T3 red gate applies. Any feature-level FT-004 semantic gate remains scheduler-owned after current functional PASS and task closure.
+- Active Reviewer claim: `019fe285-0b3b-7cb0-8eee-f52bc36f3590` (session `71717`) owns only TASK-012 `/verify`; lifecycle remains `in_progress`.
+
+## 2026-08-08 — TASK-012 functional PASS; FT-004 feature semantic gate launched
+- Current TASK-012 `/verify` is durable `VERDICT: PASS` in `.protocols/TASK-012-T2-FT-004-W6/verification.md` and VERIFY report-01. Scheduler reconciled the T2 task card to `done`; executor evidence remains supporting-only.
+- Because TASK-012 closes the last T2 task of FT-004, scheduler routed a different fresh independent Reviewer `019fe28b-8bd5-77b0-a6c4-d3e42beaeded` (session `82044`) for only `/red-verify --feature FT-004`.
+- Reviewer must write exactly one current `SEMANTIC_VERDICT` in `.memory-bank/features/FT-004-day-collaboration.md` and the feature report under `.tasks/FT-004/`. No feature/task closure boundary, `/mb-sync`, promotion, or owner gates run before the current semantic report is durable.
+- The first launch `019fe28b-8bd5-77b0-a6c4-d3e42beaeded` exited before review because the requested model was unsupported; no artifact, verdict, retry, or lifecycle mutation resulted. A bounded fresh Reviewer `019fe28c-3a8f-7cc0-a859-381ab48b5aa6` (session `31355`) now owns the same feature-only semantic gate with the default available model.
