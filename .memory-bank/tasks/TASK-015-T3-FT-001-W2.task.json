@@ -1,7 +1,7 @@
 {
   "id": "TASK-015-T3-FT-001-W2",
   "title": "Repair authoritative account provisioning boundary",
-  "status": "in_progress",
+  "status": "done",
   "wave": "W2",
   "feature": "FT-001",
   "reqs": ["REQ-001", "REQ-002", "REQ-014"],
@@ -19,11 +19,31 @@
     {"name": "test", "command": "npm run test", "required": true}
   ],
   "verify": [
-    "A focused adversarial boundary probe proves that only server-resolved actor plus own-center Admin authorization can reach the provisioning write.",
-    "The valid own-center Admin path creates the requested role-bearing account and one invitation; unauthenticated, non-Admin, and cross-center attempts leave persistence unchanged.",
-    "Duplicate, expired/revoked/reused, and induced-failure paths preserve account, role, membership, invitation, and binding state before/after; account and invitation roll back together.",
-    "A read-only public-surface probe proves no public createAccount or issueInvitation write bypass remains beside provisionAccount."
-    ,"Independent /verify result: focused provisioning probe 4/4 passed; check/build/full test (2 files/8 tests)/diff-check passed; fresh evidence in .protocols/TASK-015-T3-FT-001-W2/verification.md and .tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-VERIFY-final-report-docs-01.md; VERDICT: PASS."
+    {
+      "stage": "functional",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-015-T3-FT-001-W2/verification.md",
+      "artifact": ".tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Owned claims FT-001-AC-003 and FT-001-AC-005; current retry-2 claim-linked execution RED/GREEN and required gates are recorded in .tasks/TASK-015-T3-FT-001-W2/execution-evidence.md and .protocols/TASK-015-T3-FT-001-W2/progress.md.",
+        "FT-001-AC-005: focused adversarial provisioning probe passed 5/5; unauthenticated, non-Admin, cross-center, caller-forged scope, duplicate, rollback, reuse, and expiry paths preserve state, while valid own-center Admin creates the account and invitation.",
+        "FT-001-AC-003: reused, expired, duplicate identity/invitation, and provider-failure paths preserve account, role, membership, invitation, and binding state; account and invitation roll back together.",
+        "Public-surface probe confirms no callable public createAccount, issueInvitation, or direct provisionAccount bypass remains; state snapshot is unchanged.",
+        "npm run check: exit 0; 0 errors and 0 warnings; npm run build: exit 0; npm run test: exit 0; 2 files and 9 tests passed; git diff --check: exit 0.",
+        "Current independent functional report: .tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-VERIFY-final-report-docs-02.md; VERDICT: PASS."
+      ]
+    },
+    {
+      "stage": "semantic",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-015-T3-FT-001-W2/red-verification.md",
+      "artifact": ".tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Current independent semantic report: .tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-RED-VERIFY-final-report-docs-02.md; SEMANTIC_VERDICT: semantic-pass.",
+        "Adversarial review covers the task-owned FT-001-AC-003 and FT-001-AC-005 outcomes: server-resolved actor and own-center Admin authorization precede the sole internal account-plus-invitation writer; unauthorized, alternate, duplicate, reuse, expiry, and rollback paths preserve state.",
+        "Semantic review used the current functional protocol .protocols/TASK-015-T3-FT-001-W2/verification.md plus claim-linked execution evidence in .tasks/TASK-015-T3-FT-001-W2/execution-evidence.md and .protocols/TASK-015-T3-FT-001-W2/progress.md; no admitted material finding."
+      ]
+    }
   ],
   "docs": [
     ".memory-bank/tasks/plans/IMPL-FT-001.md",

@@ -85,3 +85,16 @@ by `/spec-design` and composed here through:
 - [.memory-bank/states/lifecycle-map.md](../states/lifecycle-map.md#collaboration)
 
 Feature-level contract detail remains downstream task-design work.
+
+## Task Coverage at W5 Boundary
+
+- W5 `TASK-011-T3-FT-004-W5` is reconciled through its current functional
+  `PASS` and required T3 semantic `semantic-pass` evidence for
+  `FT-004-AC-001`, `FT-004-AC-002`, and `FT-004-AC-005`:
+  - [current functional report](../../.tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-VERIFY-final-report-docs-01.md)
+  - [current semantic report](../../.tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-RED-VERIFY-final-report-docs-01.md)
+- The combined [W5 boundary sync report](../../.tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-MB-SYNC-final-report-docs-01.md)
+  records the current TASK-009 and TASK-011 reconciliation.
+- Feature document `status: draft`, feature `lifecycle: planned`, and the
+  EP-003/REQ lifecycle values remain unchanged; no product promotion was
+  applied by `/mb-sync`.

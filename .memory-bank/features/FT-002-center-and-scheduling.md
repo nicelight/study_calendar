@@ -95,3 +95,13 @@ are owned by `/spec-design` and composed here through:
 - [.memory-bank/states/lifecycle-map.md](../states/lifecycle-map.md#scheduling-and-lesson-context)
 
 Feature-level contract detail remains downstream task-design work.
+
+## Semantic Verification
+
+- Report: [.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md](../../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md): durable feature semantic report
+- Independent adversarial review covered the completed AC-001..AC-006 scope,
+  current public boundaries, assignment and membership revocation, recurrence
+  exception isolation, stable lesson/charge identity, and supported rollback
+  behavior.
+
+SEMANTIC_VERDICT: semantic-pass

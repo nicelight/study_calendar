@@ -15,14 +15,25 @@ export type AccountProvisioning = {
 	expiresAt?: string;
 };
 
-export type ProviderBinding = {
-	invitationToken: string;
+export type ProviderIdentity = {
 	provider: Provider;
 	providerSubject: string;
 };
 
+export type ProviderBinding = ProviderIdentity & {
+	invitationToken: string;
+};
+
+export type ConfirmedProviderBinding = ProviderIdentity & {
+	confirmedSessionToken?: string;
+};
+
+export type ProviderBindingSessionConfirmation = ProviderIdentity & {
+	sessionToken?: string;
+};
+
 export interface ProviderVerifier {
-	verify(binding: ProviderBinding): boolean;
+	verify(identity: ProviderIdentity): boolean;
 }
 
 type IdentityAccessOptions = {
@@ -48,20 +59,6 @@ export class IdentityAccessBoundary {
 		options: IdentityAccessOptions = {}
 	) {
 		this.now = options.now ?? (() => new Date());
-	}
-
-	provisionAccount(provisioning: AccountProvisioning): void {
-		const expiresAt = provisioning.expiresAt ?? this.defaultInvitationExpiry();
-		this.database.transaction(() => {
-			this.database.sqlite
-				.prepare('INSERT INTO accounts (id, role) VALUES (?, ?)')
-				.run(provisioning.accountId, provisioning.role);
-			this.database.sqlite
-				.prepare(
-					"INSERT INTO invitations (token, account_id, status, expires_at) VALUES (?, ?, 'pending', ?)"
-				)
-				.run(provisioning.invitationToken, provisioning.accountId, expiresAt);
-		});
 	}
 
 	revokeInvitation(invitationToken: string): void {
@@ -120,8 +117,79 @@ export class IdentityAccessBoundary {
 		});
 	}
 
-	private defaultInvitationExpiry(): string {
-		return new Date(this.now().getTime() + 24 * 60 * 60 * 1000).toISOString();
+	reconfirmSessionForProviderBinding(
+		confirmation: ProviderBindingSessionConfirmation,
+		verifier: ProviderVerifier
+	): void {
+		const actor = this.resolveActor(confirmation.sessionToken);
+		if (!actor || !confirmation.sessionToken) {
+			throw new Error('confirmed-session-required');
+		}
+
+		if (!verifier.verify(confirmation)) {
+			throw new Error('provider-verification-failed');
+		}
+
+		const ownedIdentity = this.database.sqlite
+			.prepare(
+				`SELECT 1
+				 FROM external_identities
+				 WHERE provider = ? AND subject = ? AND account_id = ?`
+			)
+			.get(confirmation.provider, confirmation.providerSubject, actor.accountId);
+		if (!ownedIdentity) {
+			throw new Error('session-reconfirmation-failed');
+		}
+
+		this.database.sqlite
+			.prepare(
+				`INSERT INTO provider_binding_confirmations (session_token)
+				 VALUES (?)
+				 ON CONFLICT(session_token) DO NOTHING`
+			)
+			.run(confirmation.sessionToken);
+	}
+
+	bindSecondProvider(binding: ConfirmedProviderBinding, verifier: ProviderVerifier): void {
+		const actor = this.resolveConfirmedProviderBindingActor(binding.confirmedSessionToken);
+		if (!actor) {
+			throw new Error('confirmed-session-required');
+		}
+
+		if (!verifier.verify(binding)) {
+			throw new Error('provider-verification-failed');
+		}
+
+		this.database.transaction(() => {
+			this.database.sqlite
+				.prepare(
+					'INSERT INTO external_identities (provider, subject, account_id) VALUES (?, ?, ?)'
+				)
+				.run(binding.provider, binding.providerSubject, actor.accountId);
+			this.database.sqlite
+				.prepare('DELETE FROM provider_binding_confirmations WHERE session_token = ?')
+				.run(binding.confirmedSessionToken);
+		});
+	}
+
+	private resolveConfirmedProviderBindingActor(
+		sessionToken: string | undefined
+	): ActorContext | null {
+		if (!sessionToken) {
+			return null;
+		}
+
+		const row = this.database.sqlite
+			.prepare(`
+				SELECT accounts.id AS account_id, accounts.role AS role
+				FROM provider_binding_confirmations
+				JOIN sessions ON sessions.token = provider_binding_confirmations.session_token
+				JOIN accounts ON accounts.id = sessions.account_id
+				WHERE sessions.token = ? AND sessions.revoked_at IS NULL
+			`)
+			.get(sessionToken) as ActorRow | undefined;
+
+		return row ? { accountId: row.account_id, role: row.role } : null;
 	}
 
 	private isExpired(expiresAt: string): boolean {

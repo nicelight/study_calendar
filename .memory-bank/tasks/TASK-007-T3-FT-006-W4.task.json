@@ -1,7 +1,7 @@
 {
   "id": "TASK-007-T3-FT-006-W4",
   "title": "Implement historical prices and charge foundations",
-  "status": "blocked",
+	"status": "done",
   "wave": "W4",
   "feature": "FT-006",
   "reqs": ["REQ-010", "REQ-011", "REQ-012", "REQ-014", "REQ-015"],
@@ -9,7 +9,52 @@
   "touched_files": ["src/lib/server/modules/financial-ledger/", "src/lib/server/modules/center-scheduling/", "tests/financial-ledger/"],
   "tier": "T3",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
-  "verify": ["A charge stores the applied default or student-specific price and later price changes affect only future charges.", "Attendance/charge correction replay preserves exact historical facts and audit ownership."],
+  "verify": [
+    "A charge stores the applied default or student-specific price and later price changes affect only future charges.",
+    "Attendance/charge correction replay preserves exact historical facts and audit ownership.",
+    {
+      "stage": "functional",
+      "verdict": "FAIL",
+      "report": ".protocols/TASK-007-T3-FT-006-W4/verification.md",
+      "artifact": ".tasks/TASK-007-T3-FT-006-W4/TASK-007-T3-FT-006-W4-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh isolated verification passed FT-006-AC-001: exact historical default and override Charge prices remained immutable and later settings affected only future Charges.",
+        "FT-006-AC-004 failed because current replay always returns an empty allocation list and has no Payment/Allocation persistence or recomputation path; the no-payment test proves only charge/balance/audit replay, not the complete task-owned AC.",
+        "Fresh focused tests passed 2/2; npm run check, npm run build, and full npm run test (17/17) passed. Passing gates do not supply the missing AC-004 behavior.",
+        "Current independent report: .tasks/TASK-007-T3-FT-006-W4/TASK-007-T3-FT-006-W4-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "functional",
+      "attempt": "bounded retry 1 / Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-007-T3-FT-006-W4/verification.md",
+      "artifact": ".tasks/TASK-007-T3-FT-006-W4/TASK-007-T3-FT-006-W4-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh verifier-owned focused probe passed FT-006-AC-001 and FT-006-AC-004: 1 file and 2 tests passed against fresh in-memory SQLite state.",
+        "FT-006-AC-001 preserved exact historical 10.125/7.5 prices and future-only 12.34/8.75 settings with balances 22.465 and 16.25.",
+        "FT-006-AC-004 persisted oldest-first allocations 10.125 and 4.875 for Payment 15, reallocated after cancellation, restored after reactivation, reproduced identical history in a second database, recorded audit author/time/before-after state, and preserved denied-mutation counts.",
+        "Fresh npm run check, npm run build, npm run test (17/17), and git diff --check all exited 0; current report: .tasks/TASK-007-T3-FT-006-W4/TASK-007-T3-FT-006-W4-S-VERIFY-final-report-docs-02.md.",
+        "Attempt 1 report-01 remains correction basis only; lifecycle_changed is false."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "bounded retry 1 / Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-007-T3-FT-006-W4/red-verification.md",
+      "artifact": ".tasks/TASK-007-T3-FT-006-W4/TASK-007-T3-FT-006-W4-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh independent T3 semantic review passed the current Attempt 2 historical-price and allocation-replay paths with one focused file and two tests passed.",
+        "Adversarial coverage confirmed immutable exact prices, persisted oldest-first allocation, cancellation reallocation, reactivation restoration, exact balance, deterministic fresh-database replay, audit author/time/before-after facts, denied mutation preservation, transaction atomicity, and Financial Ledger write ownership.",
+        "Attempt 1 functional report-01 FAIL and all executor receipts remain historical/supporting only; current semantic artifact and report-02 each contain exactly one SEMANTIC_VERDICT: semantic-pass.",
+        "No material finding or operator question was admitted; lifecycle_changed is false."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
   "evidence_required": [
     "FT-006-AC-001 RED: a charge loses the applied default/student price or changes after a later price setting; GREEN: each charge persists the exact applicable historical price and later settings affect only future charges; artifact: .tasks/TASK-007-T3-FT-006-W4/ and .protocols/TASK-007-T3-FT-006-W4/verification.md.",

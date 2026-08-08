@@ -1,7 +1,7 @@
 {
   "id": "TASK-005-T3-FT-002-W3",
   "title": "Implement center membership and class modes",
-  "status": "blocked",
+  "status": "done",
   "wave": "W3",
   "feature": "FT-002",
   "reqs": ["REQ-003", "REQ-014"],
@@ -9,7 +9,47 @@
   "touched_files": ["src/lib/server/modules/center-scheduling/", "src/lib/server/modules/identity-access/", "tests/center-scheduling/"],
   "tier": "T3",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
-  "verify": ["Admin CRUD flow keeps centers isolated and records individual/group class mode with permitted relationships.", "The public boundary returns the member-scoped calendar authorization decision, while cross-center, non-member, and unauthorized role attempts are denied server-side."],
+  "verify": [
+    "Admin CRUD flow keeps centers isolated and records individual/group class mode with permitted relationships.",
+    "The public boundary returns the member-scoped calendar authorization decision, while cross-center, non-member, and unauthorized role attempts are denied server-side.",
+    {
+      "stage": "functional",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-005-T3-FT-002-W3/verification.md",
+      "artifact": ".tasks/TASK-005-T3-FT-002-W3/TASK-005-T3-FT-002-W3-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Corrected Attempt 2 fresh verification passed the isolated center membership/class-mode probe 2/2: own-center Admin CRUD remained center-bounded, while the public boundary returned only permitted Admin/Teacher/Student/Parent scope across individual/group fixtures and preserved denial state.",
+        "The verifier independently observed the corrected one-student invariant: a second distinct individual-class student and a two-student group-to-individual conversion are rejected before mutation, while group mode retains both students. Attempt 1 semantic-fail was correction basis only, not proof.",
+        "Fresh npm run check, npm run build, npm run test (15/15), and git diff --check all exited 0; source scans confirmed Center & Scheduling write ownership and the registered provisioning wiring path.",
+        "Current functional report is .tasks/TASK-005-T3-FT-002-W3/TASK-005-T3-FT-002-W3-S-VERIFY-final-report-docs-02.md; VERDICT: PASS."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "verdict": "semantic-fail",
+      "report": ".tasks/TASK-005-T3-FT-002-W3/TASK-005-T3-FT-002-W3-S-RED-VERIFY-final-report-docs-01.md",
+      "artifact": ".tasks/TASK-005-T3-FT-002-W3/TASK-005-T3-FT-002-W3-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh T3 semantic review reproduced a supported public-path defect: an individual class accepted and returned two students, contradicting the canonical one-student meaning.",
+        "This is Attempt 1 failure evidence only; lifecycle remains in_progress and the bounded correction is recorded in the autonomous decision log before retry 1/2.",
+        "Current semantic report is .tasks/TASK-005-T3-FT-002-W3/TASK-005-T3-FT-002-W3-S-RED-VERIFY-final-report-docs-01.md; SEMANTIC_VERDICT: semantic-fail."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-005-T3-FT-002-W3/red-verification.md",
+      "artifact": ".tasks/TASK-005-T3-FT-002-W3/TASK-005-T3-FT-002-W3-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Current Attempt 2 fresh T3 semantic review found no admitted findings: the individual second-add and multi-student group-to-individual conversion are rejected before mutation, while group mode and permitted member scopes remain correct.",
+        "Attempt 1 report-01 semantic-fail is retained only as historical correction basis; current closure uses this Attempt 2 semantic-pass and the current Attempt 2 functional PASS report-02.",
+        "Current semantic report is .tasks/TASK-005-T3-FT-002-W3/TASK-005-T3-FT-002-W3-S-RED-VERIFY-final-report-docs-02.md; SEMANTIC_VERDICT: semantic-pass."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-002.md", ".protocols/FT-002/plan.md"],
   "evidence_required": [
     "FT-002-AC-001 RED: an authorized center operation can create out-of-center membership/class data or an unauthorized role can mutate it; GREEN: admin CRUD keeps every record center-bounded and class mode is exactly individual or group; artifact: .tasks/TASK-005-T3-FT-002-W3/ and .protocols/TASK-005-T3-FT-002-W3/verification.md.",

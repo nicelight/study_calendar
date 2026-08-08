@@ -6,18 +6,32 @@ status: active
 
 ## Checkpoint
 - STATE: RUNNING
-- current task: `TASK-015-T3-FT-001-W2`
 - current phase: Product
-- current stage: verify
-- last durable child verdict/handoff: TASK-015 Implementer completed `/exe`; focused RED/GREEN, check/build/test and authorization/atomicity evidence PASS; operator paused before Reviewer verdict
-- next action: fresh `/verify TASK-015-T3-FT-001-W2`, then required T3 `/red-verify`
+- current task: `TASK-012-T2-FT-004-W6`
+- current stage: selected after W6 sync/gates/advisory; fresh Implementer `/execute` required, Reviewer prohibited until final handoff
+- last durable child verdict/handoff: current TASK-010 functional report-01 `PASS` and T3 semantic report-01 `semantic-pass`; task card lifecycle `done`
+- current execution evidence: TASK-011 W5 sync PASS; tech-debt advisory report unavailable after bounded worker completion, recorded as non-blocking
+- completed review claim: current Attempt 2 functional PASS and current T3 semantic-pass are recorded in the task card; stale reviewer process was interrupted and no new verification was launched
+- correction basis: Attempt 1 functional PASS and semantic-fail/report-01 are preserved historical correction evidence only
+- completed correction claim: fresh Implementer `019fe1f7-5896-70a1-870b-6bd007f456da` produced retry report-02 and final handoff
+- recovery disposition: TASK-010 bounded recovery claim `019fe24f-fcf0-76e0-839c-88eec7854147` completed final report/handoff; prior pre-handoff stall consumed no retry/failure budget
+- stale recovery claims stopped: `019fe21c-2d02-7c32-b53f-7bc115e56333`, `019fe221-399b-7fd0-8e4b-37037115e679`, `019fe22c-0c90-71c1-827d-259b31379dc5`, and `019fe233-8c2f-7e12-9a61-0f4904015bd2`; current handoff is complete
+- completed semantic review claim: `019fe23f-02e4-7b71-94a4-1e5506eb9d05` produced current semantic-pass; stale reviewer process stopped after durable report
+- completed TASK-010 functional Reviewer claim: `019fe25e-7c91-7f72-8de6-d88dedf3facd` produced current report-01 `VERDICT: PASS`
+- stopped TASK-010 T3 semantic Reviewer claim: `019fe265-379e-73d3-a3a9-1aa4685af136`; no red protocol/report or verdict was durable, so lifecycle/retry/failure counters remain unchanged
+- completed TASK-010 T3 semantic Reviewer recovery claim: `019fe26d-808c-70f1-a958-ce7ee7e903d7` produced current report-01 `SEMANTIC_VERDICT: semantic-pass`; no findings
+- next action: launch fresh independent Implementer only `/execute TASK-012-T2-FT-004-W6`; no Reviewer before final GREEN handoff
+- completed W6 sync claim: `019fe272-b354-7220-a455-e57cb27cbe59` (session `42408`) produced sync-local PASS
+- active W6 tech-debt claim: `019fe275-ea4c-7561-90fc-41f0fbf4bbc2` (session `31299`) running only `/tech-debt wave W6`
+- completed W6 tech-debt claim: `019fe275-ea4c-7561-90fc-41f0fbf4bbc2` produced `PAPERCUTS/TECHDEBTS/tech-debt-wave-W6-2026-08-08.md`; advisory only
+- active TASK-012 Implementer claim: `019fe279-aedd-7ab2-8d4c-c50b0f953649` (session `49706`) running only `/execute`; protocol/RED→GREEN/final handoff pending
 
 ## Health gates
 - initial `node scripts/mb-lint.mjs`: PASS (`.memory-bank`, 38 files)
 - initial plain `/mb-doctor` (`node scripts/mb-doctor.mjs`): PASS; 0 errors, 1 warning, 3 info
 - post-decomposition `node scripts/mb-lint.mjs`: PASS (49 files)
 - post-decomposition plain `/mb-doctor`: PASS; 0 errors, 1 warning, 3 info
-- warning: post-cleanup/task-plan lint and strict doctor are pending before execution handoff
+- latest W5 owner gates: mb-lint PASS (64 files); strict doctor PASS (0 errors, 1 warning TASK-014 blocked, 2 info)
 
 ## Review gates
 - feature-plan: `APPROVE`; completed repair cycles: 2; latest approval is current
@@ -27,18 +41,31 @@ status: active
 - max_retries_per_task: 2
 - max_consecutive_failures: 3
 - max_open_blockers: 3
-- retries used: 2 (TASK-003)
-- consecutive failures: 1
+- retries used: 2 (TASK-003) + 1 (TASK-005 semantic-fail) + 1 (TASK-007 functional-fail) + 1 (TASK-008 semantic-fail) + 1 (TASK-009 semantic-fail)
+- consecutive failures: 0 after current TASK-009 correction closure
 - open blockers: 11 blocked product dependents
-- quality gate: mb-lint PASS; wave sync/strict doctor/tech-debt not run because current red evidence superseded the attempted closure and terminal failure disposition is required first
+- quality gate: strict doctor PASS before TASK-005 selection; post-TASK-005 closure gates remain due
 
 ## Queue snapshot
 - authoritative task index: `.memory-bank/tasks/index.json` (2 FT-000 tasks)
 - `TASK-001-T3-FT-000-W0`: done; `/verify PASS` + `/red-verify semantic-pass`
 - `TASK-002-T3-FT-000-W1`: done; `/verify PASS` + `/red-verify semantic-pass`; final Foundation gate
-- product queue: 12 product tasks TASK-003..TASK-014; review approval current at Planning Revision 1
+- product queue: 12 product tasks TASK-003..TASK-014 plus reconciled follow-up TASK-015; review approval current at Planning Revision 1
 - TASK-003-T3-FT-001-W2: failed; Attempt 3 `/verify PASS` + later `/red-verify semantic-fail`; retry budget 2/2 consumed
-- TASK-004..TASK-014: blocked by failed/transitive dependency TASK-003
+- TASK-004-T3-FT-001-W3: done; current functional `PASS` and T3 `semantic-pass` recorded in the task card
+- TASK-005-T3-FT-002-W3: done; current Attempt 2 functional `PASS` and T3 `semantic-pass`; report-01 semantic-fail remains historical correction basis only
+- TASK-007-T3-FT-006-W4: done; current functional report-02 PASS + current T3 semantic report-02 semantic-pass; report-01 FAIL historical correction basis only
+- TASK-006-T2-FT-002-W4: done; current independent functional report-02 PASS; T2 feature-level semantic gate remains due
+- FT-002 feature-level semantic gate: `semantic-pass`; report `.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md`
+- TASK-008-T3-FT-006-W5: done; current Attempt 2 functional report-02 PASS + T3 semantic report-02 semantic-pass; Attempt 1 semantic-fail/report-01 historical correction basis only
+- TASK-009-T3-FT-005-W5: done; current Attempt 2 functional report-02 PASS + T3 semantic report-02 semantic-pass; Attempt 1 semantic-fail/report-01 correction basis only
+- TASK-010-T3-FT-005-W6: ready; direct dependencies TASK-006 and TASK-007 are done
+- TASK-011-T3-FT-004-W5: done; current functional PASS + T3 semantic-pass; direct dependencies TASK-005/TASK-004 done
+- first execution claim stopped: `019fe215-5dc5-7181-ae34-ce316d7e26b8`; all later TASK-011 recovery children stopped before final handoff; active handoff claim `019fe233-8c2f-7e12-9a61-0f4904015bd2`
+- TASK-013-T2-FT-003-W7: ready; direct dependencies TASK-006 and TASK-004 are done
+- TASK-012-T2-FT-004-W6: ready; TASK-011 is done with current functional PASS + T3 semantic-pass
+- TASK-014-T3-FT-003-W8: blocked; waits for TASK-008/009/010/012/013
+- TASK-008-T3-FT-006-W5 and TASK-009-T3-FT-005-W5: W5 closure evidence current; W5 `/mb-sync` and owner gates PASS
 
 ## Resolved operator decision
 - question: What target architecture should govern the greenfield SvelteKit MVP, including the accepted module/boundary model and its source-of-truth direction?
@@ -66,7 +93,7 @@ status: active
 - owner/resume route: fresh `/review-tasks-plan FT-001`, then strict readiness gates and queue rebuild
 - dependent disposition: TASK-004..TASK-014 blocked; no promotion or further task execution
 - evidence: `.memory-bank/tasks/index.json`, `.memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json`, `.memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json`, `.memory-bank/foundation.md`
-- exact next command: `/verify TASK-015-T3-FT-001-W2`, then `/red-verify TASK-015-T3-FT-001-W2`
+- exact next command: `node scripts/mb-doctor.mjs --strict`, then `/autopilot`
 - Foundation gate: `TASK-002-T3-FT-000-W1`
 - strict readiness: PASS (0 errors, 0 warnings)
 - execution evidence: `.tasks/TASK-001-T3-FT-000-W0/execution-evidence.md`; `npm run check`, `npm run build`, `npm run test` PASS

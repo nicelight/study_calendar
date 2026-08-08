@@ -1,7 +1,7 @@
 {
   "id": "TASK-004-T3-FT-001-W3",
   "title": "Implement confirmed external identity binding and failure atomicity",
-  "status": "blocked",
+	"status": "done",
   "wave": "W3",
   "feature": "FT-001",
   "reqs": ["REQ-001", "REQ-002"],
@@ -9,7 +9,33 @@
   "touched_files": ["src/lib/server/modules/identity-access/", "src/lib/server/adapters/", "tests/identity-access/"],
   "tier": "T3",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
-  "verify": ["Telegram and Google binding resolve to the invited account; a confirmed session is required for the second provider.", "Provider outage or callback failure returns an explicit error with no partial identity state."],
+  "verify": [
+    "Telegram and Google binding resolve to the invited account; a confirmed session is required for the second provider.",
+    "Provider outage or callback failure returns an explicit error with no partial identity state.",
+    {
+      "stage": "functional",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-004-T3-FT-001-W3/verification.md",
+      "artifact": ".tasks/TASK-004-T3-FT-001-W3/TASK-004-T3-FT-001-W3-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh independent task-scoped verification passed the focused provider-binding probe 4/4; both invitation providers resolve to the exact account with role/membership retention and cross-center denial, confirmed-session reconfirmation gates second-provider binding, and provider/callback failures preserve state.",
+        "Fresh independent npm run check, npm run build, npm run test (13/13), and git diff --check all exited 0.",
+        "Current functional report is .tasks/TASK-004-T3-FT-001-W3/TASK-004-T3-FT-001-W3-S-VERIFY-final-report-docs-01.md; VERDICT: PASS."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-004-T3-FT-001-W3/red-verification.md",
+      "artifact": ".tasks/TASK-004-T3-FT-001-W3/TASK-004-T3-FT-001-W3-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh T3 semantic review found no admitted findings across invitation/session account resolution, Identity & Access write ownership, confirmation consumption, uniqueness, transaction atomicity, and forbidden bypass surface.",
+        "Current semantic report is .tasks/TASK-004-T3-FT-001-W3/TASK-004-T3-FT-001-W3-S-RED-VERIFY-final-report-docs-01.md; SEMANTIC_VERDICT: semantic-pass."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-001.md", ".protocols/FT-001/plan.md"],
   "evidence_required": [
     "FT-001-AC-001 RED: a valid invitation flow does not bind the pre-created role-bearing account or rejects client role selection; GREEN: Telegram and Google each bind exactly the invitation account and retain role/membership; artifact: .tasks/TASK-004-T3-FT-001-W3/ and .protocols/TASK-004-T3-FT-001-W3/verification.md.",

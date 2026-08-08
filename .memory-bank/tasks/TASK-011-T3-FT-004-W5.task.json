@@ -1,7 +1,7 @@
 {
   "id": "TASK-011-T3-FT-004-W5",
   "title": "Implement scoped comments and reactions",
-  "status": "blocked",
+  "status": "done",
   "wave": "W5",
   "feature": "FT-004",
   "reqs": ["REQ-006", "REQ-007", "REQ-014"],
@@ -9,7 +9,7 @@
   "touched_files": ["src/lib/server/modules/collaboration/", "tests/collaboration/"],
   "tier": "T3",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
-  "verify": ["Authorized accounts can create at most one editable field comment with author/time attribution.", "Each supported object accepts one of five reactions and exposes permitted reactors without cross-context leakage."],
+  "verify": ["Authorized accounts can create at most one editable field comment with author/time attribution.", "Each supported object accepts one of five reactions and exposes permitted reactors without cross-context leakage.", {"stage":"functional","attempt":"Attempt 1","verdict":"PASS","report":".protocols/TASK-011-T3-FT-004-W5/verification.md","artifact":".tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-VERIFY-final-report-docs-01.md","evidence":["Fresh verifier-owned Collaboration probe passed 1 file / 2 tests: comments, attribution, one-owner edit, five reactions, reactor projection, shared/personal separation, cross-student mutation denial, and cross-center read/create denial.","npm run check, npm run build, npm run test (9 files / 33 tests), and git diff --check all exited 0.","Current source follows the registered Collaboration -> Identity & Access and Collaboration -> Center & Scheduling boundaries; executor receipts remain supporting-only and lifecycle_changed is false."]},{"stage":"semantic","attempt":"Attempt 1","verdict":"semantic-pass","report":".protocols/TASK-011-T3-FT-004-W5/red-verification.md","artifact":".tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-RED-VERIFY-final-report-docs-01.md","evidence":["Fresh adversarial public-boundary probe passed ownership/no-neighbor-writers, per-account field uniqueness, all five reactions and replacement, server-resolved shared/personal/class/student scope, cross-center isolation, denied mutation/read with state preservation, revocation, and no W6 message-store/API expansion.","No material semantic finding or operator question was admitted; lifecycle_changed is false."]}],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-004.md", ".protocols/FT-004/plan.md"],
   "evidence_required": [
     "FT-004-AC-001 RED: an account can create multiple editable field comments or attribution/time is missing; GREEN: one account has at most one editable comment per field and permitted viewers see author/last-change time; artifact: .tasks/TASK-011-T3-FT-004-W5/ and .protocols/TASK-011-T3-FT-004-W5/verification.md.",

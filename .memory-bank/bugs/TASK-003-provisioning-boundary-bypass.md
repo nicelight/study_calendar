@@ -30,3 +30,15 @@ boundary and does not establish a new product or architecture decision.
 retry budget 2/2 is exhausted and no fourth implementation attempt is
 permitted. Resume route: `/feature-to-tasks FT-001` (bounded correction or
 follow-up task), then fresh planning review and readiness gates.
+
+## Follow-up reconciliation
+
+The accepted boundary correction was completed by
+`TASK-015-T3-FT-001-W2`, without changing this historical failed record or
+introducing a new architecture decision. Current functional and semantic
+evidence is recorded in:
+
+- `.tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-VERIFY-final-report-docs-02.md`
+- `.tasks/TASK-015-T3-FT-001-W2/TASK-015-T3-FT-001-W2-S-RED-VERIFY-final-report-docs-02.md`
+- `.protocols/TASK-015-T3-FT-001-W2/verification.md`
+- `.protocols/TASK-015-T3-FT-001-W2/red-verification.md`

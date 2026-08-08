@@ -83,3 +83,33 @@ contracts are owned by `/spec-design` and composed here through:
 - [.memory-bank/runbooks/mvp-verification.md](../runbooks/mvp-verification.md#required-pre-real-data-checks)
 
 Feature-level contract detail remains downstream task-design work.
+
+## Task Coverage at W5 Boundary
+
+- W5 `TASK-009-T3-FT-005-W5` is reconciled through the current Attempt 2
+  functional `PASS` and required T3 semantic `semantic-pass` evidence for
+  `FT-005-AC-001` and `FT-005-AC-002`:
+  - [current functional report](../../.tasks/TASK-009-T3-FT-005-W5/TASK-009-T3-FT-005-W5-S-VERIFY-final-report-docs-02.md)
+  - [current semantic report](../../.tasks/TASK-009-T3-FT-005-W5/TASK-009-T3-FT-005-W5-S-RED-VERIFY-final-report-docs-02.md)
+- Attempt 1 semantic-fail/report-01 remains preserved only as historical
+  correction basis and is not current closure evidence.
+- Feature document `status: draft`, feature `lifecycle: planned`, and the
+  EP-004/REQ lifecycle values remain unchanged; no product promotion was
+  applied by `/mb-sync`.
+- The combined [W5 boundary sync report](../../.tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-MB-SYNC-final-report-docs-01.md)
+  records the final reconciliation after TASK-011 while the current TASK-009
+  functional and semantic report links above remain the closure evidence.
+
+## Task Coverage at W6 Boundary
+
+- W6 `TASK-010-T3-FT-005-W6` is reconciled through its current functional
+  `PASS` and required T3 semantic `semantic-pass` evidence for
+  `FT-005-AC-003` and `FT-005-AC-004`:
+  - [current functional report](../../.tasks/TASK-010-T3-FT-005-W6/TASK-010-T3-FT-005-W6-S-VERIFY-final-report-docs-01.md)
+  - [current semantic report](../../.tasks/TASK-010-T3-FT-005-W6/TASK-010-T3-FT-005-W6-S-RED-VERIFY-final-report-docs-01.md)
+- The [W6 boundary sync report](../../.tasks/TASK-010-T3-FT-005-W6/TASK-010-T3-FT-005-W6-S-MB-SYNC-final-report-docs-01.md)
+  records the durable reconciliation; current TASK-009 `done` state remains
+  preserved from the W5 boundary.
+- Feature document `status: draft`, feature `lifecycle: planned`, and the
+  EP-004/REQ lifecycle values remain unchanged; no product promotion was
+  applied by `/mb-sync`.

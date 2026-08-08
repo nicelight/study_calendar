@@ -63,6 +63,30 @@ describe('authoritative account provisioning boundary', () => {
 		expect(state()).toEqual(before);
 	});
 
+	it('does not expose a direct Identity & Access provisioning bypass', () => {
+		const before = state();
+		const directProvision = (root.identityAccess as unknown as {
+			provisionAccount?: (provisioning: {
+				accountId: string;
+				role: 'admin' | 'teacher' | 'student' | 'parent';
+				invitationToken: string;
+			}) => void;
+		}).provisionAccount;
+
+		if (typeof directProvision === 'function') {
+			expect(() =>
+				directProvision.call(root.identityAccess, {
+					accountId: 'direct-bypass',
+					role: 'admin',
+					invitationToken: 'direct-bypass-invite'
+				})
+			).toThrow();
+		}
+
+		expect(directProvision).toBeUndefined();
+		expect(state()).toEqual(before);
+	});
+
 	it('allows own-center Admin and commits account plus invitation together', () => {
 		const before = state();
 

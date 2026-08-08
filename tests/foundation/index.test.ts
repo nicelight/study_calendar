@@ -32,10 +32,12 @@ describe('Foundation walking skeleton', () => {
 	});
 
 	it('resolves a server actor and reaches only the accepted public seams', () => {
-		root.database.sqlite.prepare("INSERT INTO accounts (id, role) VALUES (?, 'teacher')").run('account-1');
+		root.database.sqlite.exec(`
+			INSERT INTO accounts (id, role) VALUES ('account-1', 'teacher');
+			INSERT INTO centers (id, name) VALUES ('center-1', 'Foundation Center');
+			INSERT INTO center_memberships (center_id, account_id) VALUES ('center-1', 'account-1');
+		`);
 		root.identityAccess.createSession({ token: 'session-1', accountId: 'account-1' });
-		root.centerScheduling.createCenter({ id: 'center-1', name: 'Foundation Center' });
-		root.centerScheduling.grantMembership({ centerId: 'center-1', accountId: 'account-1' });
 
 		const actor = root.identityAccess.resolveActor('session-1');
 

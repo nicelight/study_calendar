@@ -1,7 +1,7 @@
 {
   "id": "TASK-006-T2-FT-002-W4",
   "title": "Implement recurring schedules and stable lesson exceptions",
-  "status": "blocked",
+  "status": "done",
   "wave": "W4",
   "feature": "FT-002",
   "reqs": ["REQ-004", "REQ-014"],
@@ -9,7 +9,7 @@
   "touched_files": ["src/lib/server/modules/center-scheduling/", "tests/center-scheduling/"],
   "tier": "T2",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
-  "verify": ["Recurring schedule creates planned lessons and add/transfer/cancel affects only the selected repetition.", "The scheduling boundary preserves lesson identity and scheduling-owned context on transfer, exposes assignment-based access decisions, and retains authored attribution; Financial Ledger integration confirms no duplicate chargeable lesson."],
+  "verify": ["Recurring schedule creates planned lessons and add/transfer/cancel affects only the selected repetition.", "The scheduling boundary preserves lesson identity and scheduling-owned context on transfer, exposes assignment-based access decisions, and retains authored attribution; Financial Ledger integration confirms no duplicate chargeable lesson.", "Independent /verify Attempt 1: PASS; fresh focused AC-003..AC-006 probe and required check/build/full-test/diff gates passed. Evidence: .protocols/TASK-006-T2-FT-002-W4/verification.md and .tasks/TASK-006-T2-FT-002-W4/TASK-006-T2-FT-002-W4-S-VERIFY-final-report-docs-02.md."],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-002.md", ".protocols/FT-002/plan.md"],
   "evidence_required": [
     "FT-002-AC-003 RED: recurring schedule does not create planned repetitions or an exception changes unrelated repetitions; GREEN: planned lessons are created and add/transfer/cancel changes only the selected lesson; artifact: .tasks/TASK-006-T2-FT-002-W4/ and .protocols/TASK-006-T2-FT-002-W4/verification.md.",

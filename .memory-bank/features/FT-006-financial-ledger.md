@@ -118,3 +118,20 @@ audit, projection, authorization, and verification contracts are owned by
 - [.memory-bank/runbooks/mvp-verification.md](../runbooks/mvp-verification.md#required-pre-real-data-checks)
 
 Feature-level contract detail remains downstream task-design work.
+
+## Task Coverage at W5 Boundary
+
+- W4 `TASK-007-T3-FT-006-W4` is reconciled through its current functional
+  `PASS` and T3 `semantic-pass` evidence for `FT-006-AC-001` and
+  `FT-006-AC-004`.
+- W5 `TASK-008-T3-FT-006-W5` is reconciled through the current Attempt 2
+  functional report-02 `PASS` and T3 semantic report-02 `semantic-pass` for
+  `FT-006-AC-002`, `FT-006-AC-003`, `FT-006-AC-005`, `FT-006-AC-006`, and
+  `FT-006-AC-007`:
+  - [current functional report](../../.tasks/TASK-008-T3-FT-006-W5/TASK-008-T3-FT-006-W5-S-VERIFY-final-report-docs-02.md)
+  - [current semantic report](../../.tasks/TASK-008-T3-FT-006-W5/TASK-008-T3-FT-006-W5-S-RED-VERIFY-final-report-docs-02.md)
+- Attempt 1 semantic-fail/report-01 remains preserved only as historical
+  correction basis and is not current closure evidence.
+- Feature document `status: draft`, feature `lifecycle: planned`, and the
+  EP-005/REQ lifecycle values remain unchanged; no product promotion was
+  applied by `/mb-sync`.
