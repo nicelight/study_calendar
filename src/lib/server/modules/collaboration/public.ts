@@ -201,7 +201,7 @@ export class CollaborationBoundary {
 				throw error;
 			}
 
-			return this.requireCommentView(commentId);
+			return this.requireCommentView(commentId, target.lesson.centerId);
 		});
 	}
 
@@ -222,17 +222,24 @@ export class CollaborationBoundary {
 				scope: comment.scope,
 				studentAccountId: comment.student_account_id ?? undefined
 			});
-			if (comment.author_account_id !== target.actor.accountId) {
+			if (
+				comment.center_id !== target.lesson.centerId ||
+				comment.author_account_id !== target.actor.accountId
+			) {
 				throw new Error('not-authorized');
 			}
 
 			const body = this.requireText(request.body, 'invalid-comment-body');
 			const lastChangedAt = this.now().toISOString();
 			this.database.sqlite
-				.prepare('UPDATE collaboration_comments SET body = ?, last_changed_at = ? WHERE id = ?')
-				.run(body, lastChangedAt, comment.id);
+				.prepare(
+					`UPDATE collaboration_comments
+					 SET body = ?, last_changed_at = ?
+					 WHERE id = ? AND center_id = ?`
+				)
+				.run(body, lastChangedAt, comment.id, target.lesson.centerId);
 
-			return this.requireCommentView(comment.id);
+			return this.requireCommentView(comment.id, target.lesson.centerId);
 		});
 	}
 
@@ -244,12 +251,13 @@ export class CollaborationBoundary {
 				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
 						field_key, body, author_account_id, created_at, last_changed_at
 				 FROM collaboration_comments
-				 WHERE class_id = ? AND lesson_id = ? AND scope = ?
+				 WHERE center_id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
 				   AND COALESCE(student_account_id, '') = COALESCE(?, '')
 				   AND field_key = ?
 				 ORDER BY created_at, id`
 			)
 			.all(
+				target.lesson.centerId,
 				target.classScope.classId,
 				target.lesson.lessonId,
 				request.scope,
@@ -346,7 +354,7 @@ export class CollaborationBoundary {
 						COUNT(*) AS message_count,
 						MAX(created_at) AS last_activity_at
 				 FROM collaboration_messages
-				 WHERE class_id = ? AND lesson_id = ? AND scope = ?
+				 WHERE center_id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
 				   AND COALESCE(student_account_id, '') = COALESCE(?, '')
 				 GROUP BY root_message_id
 				 HAVING COUNT(*) > 1
@@ -354,6 +362,7 @@ export class CollaborationBoundary {
 				 LIMIT 10`
 			)
 			.all(
+				target.lesson.centerId,
 				target.classScope.classId,
 				target.lesson.lessonId,
 				request.scope,
@@ -388,12 +397,13 @@ export class CollaborationBoundary {
 				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
 						parent_message_id, root_message_id, body, author_account_id, created_at
 				 FROM collaboration_messages
-				 WHERE class_id = ? AND lesson_id = ? AND scope = ?
+				 WHERE center_id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
 				   AND COALESCE(student_account_id, '') = COALESCE(?, '')
 				   AND root_message_id = ?
 				 ORDER BY rowid`
 			)
 			.all(
+				target.lesson.centerId,
 				target.classScope.classId,
 				target.lesson.lessonId,
 				request.scope,
@@ -441,6 +451,7 @@ export class CollaborationBoundary {
 			return this.requireReactionView(
 				request.targetType,
 				targetId,
+				target.lesson.centerId,
 				target.classScope.classId,
 				target.lesson.lessonId,
 				request.scope,
@@ -462,13 +473,15 @@ export class CollaborationBoundary {
 				`SELECT target_type, target_id, center_id, class_id, lesson_id, scope,
 						student_account_id, reaction, reactor_account_id, created_at, last_changed_at
 				 FROM collaboration_reactions
-				 WHERE target_type = ? AND target_id = ? AND class_id = ? AND lesson_id = ?
+				 WHERE target_type = ? AND target_id = ? AND center_id = ?
+				   AND class_id = ? AND lesson_id = ?
 				   AND scope = ? AND COALESCE(student_account_id, '') = COALESCE(?, '')
 				 ORDER BY reaction, reactor_account_id`
 			)
 			.all(
 				request.targetType,
 				targetId,
+				target.lesson.centerId,
 				target.classScope.classId,
 				target.lesson.lessonId,
 				request.scope,
@@ -528,6 +541,7 @@ export class CollaborationBoundary {
 				const comment = this.getComment(targetId);
 				if (
 					!comment ||
+					comment.center_id !== target.lesson.centerId ||
 					comment.class_id !== target.classScope.classId ||
 					comment.lesson_id !== target.lesson.lessonId ||
 					comment.scope !== request.scope ||
@@ -565,11 +579,12 @@ export class CollaborationBoundary {
 				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
 						parent_message_id, root_message_id, body, author_account_id, created_at
 				 FROM collaboration_messages
-				 WHERE class_id = ? AND lesson_id = ? AND scope = ?
+				 WHERE center_id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
 				   AND COALESCE(student_account_id, '') = COALESCE(?, '')
 				 ORDER BY rowid`
 			)
 			.all(
+				target.lesson.centerId,
 				target.classScope.classId,
 				target.lesson.lessonId,
 				scope,
@@ -634,9 +649,9 @@ export class CollaborationBoundary {
 			.get(commentId) as CommentRow | undefined;
 	}
 
-	private requireCommentView(commentId: string): FieldCommentView {
+	private requireCommentView(commentId: string, centerId: string): FieldCommentView {
 		const comment = this.getComment(commentId);
-		if (!comment) {
+		if (!comment || comment.center_id !== centerId) {
 			throw new Error('comment-not-found');
 		}
 		return this.toCommentView(comment);
@@ -645,6 +660,7 @@ export class CollaborationBoundary {
 	private requireReactionView(
 		targetType: ReactionTargetType,
 		targetId: string,
+		centerId: string,
 		classId: string,
 		lessonId: string,
 		scope: DiscussionScope,
@@ -656,13 +672,15 @@ export class CollaborationBoundary {
 				`SELECT target_type, target_id, center_id, class_id, lesson_id, scope,
 						student_account_id, reaction, reactor_account_id, created_at, last_changed_at
 				 FROM collaboration_reactions
-				 WHERE target_type = ? AND target_id = ? AND class_id = ? AND lesson_id = ?
+				 WHERE target_type = ? AND target_id = ? AND center_id = ?
+				   AND class_id = ? AND lesson_id = ?
 				   AND scope = ? AND COALESCE(student_account_id, '') = COALESCE(?, '')
 				   AND reactor_account_id = ?`
 			)
 			.get(
 				targetType,
 				targetId,
+				centerId,
 				classId,
 				lessonId,
 				scope,

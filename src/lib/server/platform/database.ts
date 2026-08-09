@@ -254,8 +254,10 @@ export class SharedDatabase {
 					OR (scope = 'personal' AND student_account_id IS NOT NULL)
 				)
 			);
-			CREATE UNIQUE INDEX IF NOT EXISTS collaboration_comments_owner_field
+			DROP INDEX IF EXISTS collaboration_comments_owner_field;
+			CREATE UNIQUE INDEX collaboration_comments_owner_field
 				ON collaboration_comments (
+					center_id,
 					author_account_id,
 					lesson_id,
 					scope,
@@ -308,8 +310,10 @@ export class SharedDatabase {
 					OR (scope = 'personal' AND student_account_id IS NOT NULL)
 				)
 			);
-			CREATE UNIQUE INDEX IF NOT EXISTS collaboration_reactions_one_per_actor
+			DROP INDEX IF EXISTS collaboration_reactions_one_per_actor;
+			CREATE UNIQUE INDEX collaboration_reactions_one_per_actor
 				ON collaboration_reactions (
+					center_id,
 					target_type,
 					target_id,
 					lesson_id,

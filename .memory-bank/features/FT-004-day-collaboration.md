@@ -98,3 +98,15 @@ Feature-level contract detail remains downstream task-design work.
 - Feature document `status: draft`, feature `lifecycle: planned`, and the
   EP-003/REQ lifecycle values remain unchanged; no product promotion was
   applied by `/mb-sync`.
+
+## Semantic Verification
+
+- Current feature-level adversarial report:
+  [FT-004 red verification](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md).
+- A supported class delete/recreate path can expose a prior center's retained
+  comments, reactions, threaded messages, and branch tab to another center.
+  The lifecycle owner must route the defect through existing BUG/follow-up
+  handling and rerun the affected functional and feature semantic gates after
+  repair; this verification changed no lifecycle or scheduler state.
+
+SEMANTIC_VERDICT: semantic-fail

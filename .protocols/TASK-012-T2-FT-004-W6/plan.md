@@ -10,6 +10,17 @@ Expose Collaboration-owned message/reply commands and scoped discussion
 projections that preserve arbitrary nesting and all messages while limiting the
 recent branch-tab projection to the ten most recently active roots.
 
+## Bounded correction retry 1/2
+
+- Retain the Attempt 1 functional `PASS` and FT-004 feature
+  `semantic-fail` as historical correction basis.
+- Add one focused supported-path probe for class delete/recreate identity reuse
+  across centers, including prior-row read isolation and mutation preservation.
+- Apply persisted `center_id` to every affected Collaboration read, target
+  check, mutation, uniqueness boundary, and branch/tab projection.
+- Preserve prior-center rows, arbitrary reply depth, tab retention/reactivation,
+  shared/personal semantics, actor ownership, and accepted provider edges.
+
 ## Non-goals
 
 - Do not change TASK-011 comment, reaction, or authorization ownership.
@@ -104,3 +115,6 @@ recent branch-tab projection to the ten most recently active roots.
 - Minimal production behavior and focused tests satisfy AC-003/AC-004 and direct specs.
 - Focused GREEN, required check/build/test gates, actual files, and hard-scope evidence are durable.
 - Final Implementer report/handoff routes only to fresh independent `/verify`; task remains `in_progress`.
+- Attempt 2 obtains fresh claim-equivalent GREEN for the semantic-fail path and
+  all assigned focused/native gates without changing the historical Attempt 1
+  reports or feature semantic marker.
