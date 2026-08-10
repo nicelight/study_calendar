@@ -1,0 +1,27 @@
+TASK: TASK-017-T3-FT-004-W6
+MODE: verifier-owned functional verification
+STATE: isolated disposable in-memory SQLite; no network, credentials, or production data
+
+COMMAND: node_modules/.bin/vitest run --config .tasks/TASK-017-T3-FT-004-W6/verifier-vitest.config.ts --reporter=verbose
+RUN: 1
+EXIT_CODE: 0
+RESULT: 1 file passed, 1 test passed
+OBSERVED: center identity reuse retained old rows while replacement projections were empty; old reads/targets/mutations denied without existence leakage; current arbitrary-depth replies, first-reply activation, shared/personal separation, message reactions, ten-tab ordering, hidden retention, and reactivation passed.
+
+COMMAND: node_modules/.bin/vitest run --config .tasks/TASK-017-T3-FT-004-W6/verifier-vitest.config.ts --reporter=verbose
+RUN: 2 safe rerun
+EXIT_CODE: 0
+RESULT: 1 file passed, 1 test passed
+OBSERVED: same disposable scenario passed again; afterEach closed the in-memory database.
+
+COMMAND: npm run check
+EXIT_CODE: 0
+RESULT: svelte-check found 0 errors and 0 warnings
+
+COMMAND: npm run build
+EXIT_CODE: 0
+RESULT: client and SSR builds completed successfully; adapter-auto environment notice was non-fatal.
+
+COMMAND: npm run test
+EXIT_CODE: 0
+RESULT: 12 test files passed, 39 tests passed

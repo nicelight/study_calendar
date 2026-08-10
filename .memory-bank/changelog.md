@@ -4,6 +4,68 @@ status: active
 ---
 # Changelog
 
+## [2026-08-10] Wave 7 — FT-003 full boundary sync
+- Reconciled: authoritative `TASK-013-T2-FT-003-W7` is `done` with current
+  functional `PASS` evidence and FT-003 feature-level `semantic-pass` evidence
+  for `FT-003-AC-001` and `FT-003-AC-002`; task, feature, plan, and evidence
+  navigation now agree.
+- Updated: FT-003 task coverage and `IMPL-FT-003` link the current W7
+  functional/semantic evidence and this boundary report; the root Memory Bank
+  router now links the changed FT-003 implementation plan.
+- Confirmed: task index, W7 task evidence, RTM ownership/lifecycle, canonical
+  spec routes, Planning Revision 1, accepted architecture, and routers are
+  consistent with the authoritative records.
+- Preserved: `TASK-014-T3-FT-003-W8` remains `blocked` with its accepted
+  dependencies; `TASK-012-T2-FT-004-W6` remains historical `T2` / `W6` /
+  `in_progress`; `TASK-016`/`TASK-017` remain completed W6 T3 replacements and
+  their W6 sync history is unchanged.
+- Deferred: no dependent unblock, task/feature/epic/REQ lifecycle promotion,
+  closure, dependency redesign, or architecture decision was made by this
+  sync.
+- Handoff: return to the explicit Architect/operator owner for applicable
+  post-sync lint/doctor gates; this sync did not run `mb-lint`, `/mb-doctor`,
+  `/verify`, `/red-verify`, code, or tests.
+
+## [2026-08-10] Wave 6 — FT-004 full boundary sync
+- Reconciled: authoritative `TASK-016-T3-FT-004-W6` and
+  `TASK-017-T3-FT-004-W6` are `done`, each with current functional `PASS` and
+  required T3 `semantic-pass` evidence; their task index, cards, and evidence
+  paths agree.
+- Updated: FT-004 navigation now links both current functional/semantic
+  evidence sets and the combined W6 boundary report; FT-004 remains
+  `status: draft`, `lifecycle: planned`.
+- Confirmed: `TASK-014` already depends on both replacement tasks; the RTM,
+  canonical spec/architecture links, task plans, and Memory Bank routers remain
+  consistent with the accepted Planning Revision 1 split.
+- Preserved: `TASK-012-T2-FT-004-W6` remains exactly historical `T2` / `W6` /
+  `in_progress` with its Attempt 1/2 evidence; the feature
+  `SEMANTIC_VERDICT: semantic-fail`, affected REQ lifecycles, and accepted
+  modular-monolith/one-server/one-database architecture remain unchanged.
+- Deferred: no feature-level `semantic-pass`, feature/epic/REQ promotion,
+  dependent unblock, closure, or promotion decision was made by this sync.
+- Handoff: return to the explicit Architect/operator owner for applicable
+  post-sync lint/doctor gates; this sync did not run `mb-lint`, `/mb-doctor`,
+  `/verify`, `/red-verify`, code, or tests.
+
+## [2026-08-10] Wave 6 — TASK-016 FT-004 task-scoped sync
+- Reconciled: authoritative `TASK-016-T3-FT-004-W6` is `done` with current
+  functional `PASS` and required T3 semantic `semantic-pass` evidence for
+  `FT-004-AC-001`, `FT-004-AC-002`, and `FT-004-AC-005`.
+- Updated: FT-004 task coverage now links the current TASK-016 functional,
+  semantic, and task-scoped sync reports.
+- Confirmed: TASK-016 evidence links, task registry, downstream TASK-014
+  dependency, RTM ownership, canonical spec routes, and `.memory-bank` router
+  surfaces agree; no mechanical task-index/router repair was needed.
+- Preserved: TASK-017 remains `planned`; TASK-012 remains historical
+  `in_progress`; FT-004/EP-003 and affected REQ lifecycle values, feature
+  semantic verdict, accepted architecture, and Planning Revision 1 remain
+  unchanged. No promotion or dependent transition was applied.
+- Deferred: normal full W6 boundary sync and feature semantic reconciliation
+  remain open until TASK-017 is closed by its owner.
+- Handoff: explicit Architect/operator owner retains the next action; this
+  manual sync did not run `mb-lint`, `/mb-doctor`, `/verify`,
+  `/red-verify`, code, or tests.
+
 ## [2026-08-08] Wave 6 — TASK-010 FT-005 boundary sync
 - Reconciled: indexed `TASK-010-T3-FT-005-W6` is `done` with current functional
   `PASS` and required T3 semantic `semantic-pass` evidence for

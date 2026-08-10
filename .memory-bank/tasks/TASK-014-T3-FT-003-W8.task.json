@@ -1,11 +1,11 @@
 {
   "id": "TASK-014-T3-FT-003-W8",
   "title": "Implement authorized shared and personal day context",
-  "status": "blocked",
+  "status": "in_progress",
   "wave": "W8",
   "feature": "FT-003",
   "reqs": ["REQ-005", "REQ-006", "REQ-014", "REQ-016"],
-  "depends_on": ["TASK-008-T3-FT-006-W5", "TASK-009-T3-FT-005-W5", "TASK-010-T3-FT-005-W6", "TASK-012-T2-FT-004-W6", "TASK-013-T2-FT-003-W7"],
+  "depends_on": ["TASK-008-T3-FT-006-W5", "TASK-009-T3-FT-005-W5", "TASK-010-T3-FT-005-W6", "TASK-016-T3-FT-004-W6", "TASK-017-T3-FT-004-W6", "TASK-013-T2-FT-003-W7"],
   "touched_files": ["src/lib/server/modules/lesson-context/", "src/routes/", "tests/lesson-context/"],
   "tier": "T3",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],

@@ -1,7 +1,7 @@
 {
   "id": "TASK-013-T2-FT-003-W7",
   "title": "Implement elastic calendar geometry and exact navigation",
-  "status": "ready",
+  "status": "done",
   "wave": "W7",
   "feature": "FT-003",
   "reqs": ["REQ-005", "REQ-016"],
@@ -9,7 +9,7 @@
   "touched_files": ["src/routes/", "src/lib/", "tests/calendar/"],
   "tier": "T2",
   "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
-  "verify": ["Lesson days occupy more weekly geometry than non-lesson days, weeks may vary independently, and date picker reaches the selected date.", "Lesson state remains perceivable with a non-color cue."],
+  "verify": ["Lesson days occupy more weekly geometry than non-lesson days, weeks may vary independently, and date picker reaches the selected date.", "Lesson state remains perceivable with a non-color cue.", {"stage":"functional","attempt":"Attempt 1","verdict":"PASS","report":".protocols/TASK-013-T2-FT-003-W7/verification.md","artifact":".tasks/TASK-013-T2-FT-003-W7/TASK-013-T2-FT-003-W7-S-VERIFY-final-report-docs-01.md","evidence":["Fresh verifier-owned focused test passed 2/2; SSR/DOM/CDP smoke confirmed exact date URL persistence, 21 reachable dates, three independent weekly geometries, non-color cues, and no hydration errors.","npm run check, npm run build, and npm run test passed (41/41); executor evidence remains supporting-only."]}],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-003.md", ".protocols/FT-003/plan.md"],
   "evidence_required": [
     "FT-003-AC-001 RED: lesson/non-lesson geometry is equal, weeks are coupled, or date picker misses the selected date; GREEN: lesson days occupy more space independently per week and date picker reaches the exact selected date; artifact: .tasks/TASK-013-T2-FT-003-W7/ and .protocols/TASK-013-T2-FT-003-W7/verification.md.",

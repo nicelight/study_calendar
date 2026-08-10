@@ -36,6 +36,7 @@ status: active
 - [.memory-bank/behavior-specs/](behavior-specs/): Optional JSON behavior examples linked from feature docs and task `source_artifacts`.
 - [.memory-bank/tasks/index.json](tasks/index.json): Authoritative JSON task record index.
 - [.memory-bank/tasks/plans/IMPL-FT-001.md](tasks/plans/IMPL-FT-001.md): FT-001 ordered implementation plan and task ownership.
+- [.memory-bank/tasks/plans/IMPL-FT-003.md](tasks/plans/IMPL-FT-003.md): FT-003 ordered implementation plan and W7/W8 task ownership.
 - [.memory-bank/bugs/TASK-003-provisioning-boundary-bypass.md](bugs/TASK-003-provisioning-boundary-bypass.md): Retained TASK-003 semantic-failure record and follow-up route.
 - [.memory-bank/tasks/plans/IMPL-FT-000.md](tasks/plans/IMPL-FT-000.md): Foundation implementation plan.
 - [.memory-bank/schemas/task.schema.json](schemas/task.schema.json): JSON schema for task records.

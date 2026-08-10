@@ -21,9 +21,13 @@ Collaboration owns comments, reactions, messages, replies, and branch visibility
 | Wave | Task | Outcome | Dependency |
 |---|---|---|---|
 | W5 | TASK-011-T3-FT-004-W5 | comments, reactions, and scope | TASK-005-T3-FT-002-W3 |
-| W6 | TASK-012-T2-FT-004-W6 | threaded branches and tabs | TASK-011-T3-FT-004-W5 |
+| W6 | TASK-016-T3-FT-004-W6 | T3 center-lifecycle isolation for comments and reactions | TASK-011-T3-FT-004-W5 |
+| W6 | TASK-017-T3-FT-004-W6 | T3 center-lifecycle isolation for threaded messages, branches, and tabs | TASK-011-T3-FT-004-W5 |
 
-## Controlled re-tier handoff
+`TASK-012-T2-FT-004-W6` remains a preserved `in_progress` historical task and
+is not an executable replacement or dependency for downstream work.
+
+## Controlled re-tier rebuild
 
 - Queue action: `rebuild_required`.
 - Original indexed task/tier: `TASK-012-T2-FT-004-W6`, `T2`.
@@ -39,22 +43,30 @@ Collaboration owns comments, reactions, messages, replies, and branch visibility
   `src/lib/server/modules/collaboration/public.ts`, Collaboration schema/index
   ownership in `src/lib/server/platform/database.ts`, and the focused
   center-lifecycle isolation proof under `tests/collaboration/`.
-- The current `TASK-012` identity, `in_progress` lifecycle, tier, dependencies,
-  and Attempt 1/2 evidence remain unchanged. No replacement task, task-index
-  entry, or downstream dependency change is hidden in this reconciliation.
+- The current `TASK-012` identity, `in_progress` lifecycle, T2 tier,
+  dependencies, and Attempt 1/2 evidence remain unchanged. It is retained as
+  historical evidence and is not used as a fresh T3 proof or dependency.
 
-The rebuild must transparently reconstruct fresh T3 ownership for the
-independently completable comment/reaction isolation and threaded-discussion
-isolation outcomes. It must also reconcile the downstream
-`TASK-014-T3-FT-003-W8` dependency before review. Concrete replacement IDs and
-lifecycle disposition belong to that controlled rebuild, not to a bounded
-repair of `TASK-012`.
+The rebuild transparently creates fresh T3 ownership for the independently
+completable comment/reaction isolation and threaded-discussion isolation
+outcomes as `TASK-016-T3-FT-004-W6` and `TASK-017-T3-FT-004-W6`. Both depend on
+the completed `TASK-011-T3-FT-004-W5`; neither inherits proof from `TASK-012`.
+The downstream `TASK-014-T3-FT-003-W8` dependency is reconciled to both fresh
+T3 tasks. The authoritative replacement cards are now `done` with their own
+functional `PASS` and T3 `semantic-pass` evidence.
 
 ## Gates and verification
 
-Run `npm run check`, `npm run build`, and `npm run test`; verify AC-001/002/005 on TASK-011 and AC-003/004 on TASK-012. Use the cards’ claim-linked RED/GREEN paths for owner, visibility, reaction, depth, ordering, retention, and privacy.
+Run `npm run check`, `npm run build`, and `npm run test` for each fresh T3
+replacement; verify AC-001/002/005 on TASK-016 and AC-003/004 plus the
+REQ-014 harm path on TASK-017. Use the cards’ independent claim-linked RED/GREEN
+paths for owner, visibility, reaction, depth, ordering, retention, and privacy.
 
 The existing gates and Attempt 2 GREEN are supporting historical evidence only
 for the re-tier route. Fresh replacement T3 execution requires independent
 functional verification and per-task adversarial semantic verification before
 any closure or feature-level semantic rerun.
+Those fresh replacement obligations are now evidenced on TASK-016 and
+TASK-017. TASK-014 retains its authoritative `blocked` status and dependency
+on both replacement cards; this sync applies no dependent unblock, closure,
+promotion, or feature-level semantic verdict.

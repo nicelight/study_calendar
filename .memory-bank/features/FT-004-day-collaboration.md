@@ -99,6 +99,51 @@ Feature-level contract detail remains downstream task-design work.
   EP-003/REQ lifecycle values remain unchanged; no product promotion was
   applied by `/mb-sync`.
 
+## Task Coverage at W6 Rebuild Boundary
+
+- The historical [TASK-012-T2-FT-004-W6 card](../tasks/TASK-012-T2-FT-004-W6.task.json)
+  remains exactly `T2`, `W6`, and `in_progress`, with its original identity,
+  dependencies, and Attempt 1/2 evidence preserved. Its functional GREEN and
+  this feature's semantic-fail are historical rebuild evidence only, not fresh
+  T3 proof or a dependency for the replacement cards.
+- [TASK-016-T3-FT-004-W6](../tasks/TASK-016-T3-FT-004-W6.task.json) owns
+  `FT-004-AC-001`, `FT-004-AC-002`, and `FT-004-AC-005` for T3
+  center-lifecycle isolation of comments and reactions.
+- [TASK-017-T3-FT-004-W6](../tasks/TASK-017-T3-FT-004-W6.task.json) owns
+  `FT-004-AC-003`, `FT-004-AC-004`, and the `REQ-014` harm path for T3
+  center-lifecycle isolation of threaded discussions, branches, and tabs.
+- At the planning boundary the W6 split was indexed as two fresh T3
+  replacements without changing feature status or
+  `SEMANTIC_VERDICT: semantic-fail`. The split/review is `APPROVE` at
+  `Planning Revision: 1`; the accepted modular-monolith, one-server,
+  one-shared-database architecture remains unchanged.
+
+## Task Coverage at W6 Boundary
+
+- Authoritative [TASK-016-T3-FT-004-W6](../tasks/TASK-016-T3-FT-004-W6.task.json)
+  is now `done` with current functional `PASS` and required T3 semantic
+  `semantic-pass` evidence for `FT-004-AC-001`, `FT-004-AC-002`, and
+  `FT-004-AC-005`:
+  - [current functional report](../../.tasks/TASK-016-T3-FT-004-W6/TASK-016-T3-FT-004-W6-S-VERIFY-final-report-docs-01.md)
+  - [current semantic report](../../.tasks/TASK-016-T3-FT-004-W6/TASK-016-T3-FT-004-W6-S-RED-VERIFY-final-report-docs-01.md)
+  - [task-scoped sync report](../../.tasks/TASK-016-T3-FT-004-W6/TASK-016-T3-FT-004-W6-S-MB-SYNC-final-report-docs-01.md)
+- [TASK-017-T3-FT-004-W6](../tasks/TASK-017-T3-FT-004-W6.task.json) remains
+  authoritative `done` with current functional `PASS` and required T3
+  semantic `semantic-pass` evidence for `FT-004-AC-003`, `FT-004-AC-004`, and
+  the `REQ-014` threaded-discussion harm path:
+  - [current functional report](../../.tasks/TASK-017-T3-FT-004-W6/TASK-017-T3-FT-004-W6-S-VERIFY-final-report-docs-01.md)
+  - [current semantic report](../../.tasks/TASK-017-T3-FT-004-W6/TASK-017-T3-FT-004-W6-S-RED-VERIFY-final-report-docs-01.md)
+- The full [W6 boundary sync report](../../.tasks/TASK-017-T3-FT-004-W6/TASK-017-T3-FT-004-W6-S-MB-SYNC-final-report-docs-01.md)
+  records the combined TASK-016/TASK-017 reconciliation.
+- TASK-012 remains historical `T2` / `W6` / `in_progress` with its original
+  identity, dependencies, and Attempt 1/2 evidence; its historical functional
+  GREEN and the feature `semantic-fail` are not replaced by a feature-level
+  semantic-pass here.
+- FT-004 document `status: draft`, feature `lifecycle: planned`, and the
+  existing `SEMANTIC_VERDICT: semantic-fail` remain unchanged. No feature,
+  epic, REQ, dependent-task, closure, promotion, or architecture decision was
+  applied by this sync.
+
 ## Semantic Verification
 
 - Current feature-level adversarial report:

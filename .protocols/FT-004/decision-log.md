@@ -25,3 +25,35 @@ identity/claim ownership and the `TASK-014-T3-FT-003-W8` dependency, then route
 fresh `/review-tasks-plan FT-004`, the applicable doctor gate, and replacement
 execution. Feature semantic review, closure, sync, and promotion remain blocked
 until that route completes.
+
+## 2026-08-09 — Transparent T3 rebuild/split completed
+
+The operator-authorized repair completes the previously recorded
+`rebuild_required` route. The Attempt 2 finding remains the tier trigger:
+supported center identity reuse changed protected cross-center reads, target
+checks, ownership-sensitive mutations, and uniqueness boundaries, so the
+existing T2 identity cannot be reused as the execution handoff under the tier
+policy.
+
+- `TASK-012-T2-FT-004-W6` remains exactly preserved as the historical
+  `T2`/`W6`/`in_progress` attempt with its original dependencies, identity,
+  task-owned claims, and Attempt 1/2 evidence. Its functional GREEN and the
+  feature-level `semantic-fail` are rebuild inputs only, not fresh T3 proof or
+  a replacement dependency.
+- `TASK-016-T3-FT-004-W6` is the planned T3/W6 replacement for
+  `FT-004-AC-001`, `FT-004-AC-002`, and `FT-004-AC-005`: center-lifecycle
+  isolation for comments and reactions.
+- `TASK-017-T3-FT-004-W6` is the planned T3/W6 replacement for
+  `FT-004-AC-003`, `FT-004-AC-004`, and the `REQ-014` access-control harm path:
+  center-lifecycle isolation for threaded discussions, branches, and tabs.
+- The split is intentional: the two outcomes have independent implementation
+  and claim-linked proof completion. Shared Collaboration ownership, database
+  surface, and test root are not merge evidence. Neither replacement inherits
+  TASK-012 evidence; both depend on completed `TASK-011-T3-FT-004-W5`.
+
+The existing index, downstream `TASK-014-T3-FT-003-W8` dependency, and
+`IMPL-FT-004` plan now consistently reference both replacement cards. No new
+task ID, product/canonical-spec/graph decision, or Planning Revision was
+introduced. Fresh `/review-tasks-plan FT-004` remains the next route; execution,
+verification, closure, sync, promotion, and feature semantic rerun remain
+outside this planning repair.

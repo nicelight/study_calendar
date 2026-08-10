@@ -106,6 +106,19 @@ export class SharedDatabase {
 			);
 			CREATE INDEX IF NOT EXISTS lessons_class_lookup
 				ON lessons (class_id, lesson_date, id);
+			CREATE TABLE IF NOT EXISTS lesson_context_material (
+				lesson_id TEXT PRIMARY KEY REFERENCES lessons(id) ON DELETE CASCADE,
+				center_id TEXT NOT NULL,
+				class_id TEXT NOT NULL,
+				topic TEXT NOT NULL,
+				practical_work TEXT NOT NULL,
+				homework TEXT NOT NULL,
+				created_at TEXT NOT NULL,
+				updated_at TEXT NOT NULL,
+				FOREIGN KEY (class_id, center_id) REFERENCES classes(id, center_id) ON DELETE CASCADE
+			);
+			CREATE INDEX IF NOT EXISTS lesson_context_material_class_lookup
+				ON lesson_context_material (class_id, lesson_id);
 			CREATE TABLE IF NOT EXISTS learning_homework (
 				id TEXT PRIMARY KEY,
 				center_id TEXT NOT NULL,

@@ -4,71 +4,99 @@ status: active
 ---
 # FT-004 Task Planning Plan
 
-## Outcome and scope
+## Outcome and bounded scope
 
-Deliver account-owned field comments, five reactions, arbitrary-depth discussion branches, bounded recent tabs, and shared/personal visibility.
+Deliver account-owned field comments, five reactions, arbitrary-depth
+discussion branches, bounded recent tabs, retained hidden messages, and
+shared/personal visibility inside the server-resolved center/class/student
+scope. The current planning repair covers only the controlled T3 rebuild after
+the TASK-012 Attempt 2 tier finding; it does not execute implementation or
+verification and does not change product lifecycle state.
 
-## Canonical inputs and ownership
+Non-goals are event-bus infrastructure, a second Collaboration writer,
+deletion of retained rows, a reply-depth cap, direct neighbor-slice writes, or
+any change to the accepted modular-monolith graph and shared-database target.
+
+## Readiness, canonical inputs, and ownership
 
 - Feature: [.memory-bank/features/FT-004-day-collaboration.md](../../.memory-bank/features/FT-004-day-collaboration.md)
-- Owner: Collaboration at `src/lib/server/modules/collaboration/`.
-- Public boundary: [.memory-bank/contracts/boundary-map.md#day-discussion-query-boundary](../../.memory-bank/contracts/boundary-map.md#day-discussion-query-boundary)
-- Access/state contracts: [.memory-bank/contracts/access-control.md](../../.memory-bank/contracts/access-control.md), [.memory-bank/states/lifecycle-map.md#collaboration](../../.memory-bank/states/lifecycle-map.md#collaboration)
+- Global readiness: [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md), `Global Backbone Status: complete`, `Planning Revision: 1`.
+- Registry: [.memory-bank/spec-index.md](../../.memory-bank/spec-index.md); no new canonical concern is required.
+- Foundation prerequisite: `TASK-002-T3-FT-000-W1` is the completed final gate, reached transitively through the existing FT-004 dependency chain.
+- Primary owner: Collaboration at `src/lib/server/modules/collaboration/`.
+- Expected affected persistence surface: `src/lib/server/platform/database.ts`.
+- Public provider contract: [Day Discussion Query Boundary](../../.memory-bank/contracts/boundary-map.md#day-discussion-query-boundary).
+- Consumed boundaries: [Actor Context Boundary](../../.memory-bank/contracts/boundary-map.md#actor-context-boundary) and [Calendar and Membership Query Boundary](../../.memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary).
+- Direct behavior/spec basis: [Access Control — Authority and scope](../../.memory-bank/contracts/access-control.md#authority-and-scope), [Access Control — Data minimization and failure behavior](../../.memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior), [Core Domain — Domain relationships](../../.memory-bank/domains/core-domain.md#domain-relationships), [Core Domain — Persistence and transaction rules](../../.memory-bank/domains/core-domain.md#persistence-and-transaction-rules), and [Lifecycle — Collaboration](../../.memory-bank/states/lifecycle-map.md#collaboration).
 
-## Boundary and waves
+The accepted graph remains `Collaboration -> Identity & Access` through Actor
+Context and `Collaboration -> Center & Scheduling` through Calendar and
+Membership Query. Collaboration remains the sole writer for comments,
+reactions, messages, replies, and branch/tab projection; Lesson Context remains
+a scoped read consumer. No architecture/spec identity or Planning Revision is
+changed.
 
-1. `TASK-011-T3-FT-004-W5` owns comments, reactions, attribution, and scope authorization (AC-001, AC-002, AC-005).
-2. `TASK-012-T2-FT-004-W6` owns arbitrary-depth replies, recent-tab projection, and retention (AC-003, AC-004), after W5.
+## Controlled re-tier rebuild and preserved history
 
-## TASK-012 Attempt 2 re-tier reconciliation
+Queue action: `rebuild_required`. Attempt 2 changed protected cross-center
+reads, target checks, ownership-sensitive mutations, and uniqueness boundaries
+after supported class identity reuse. The tier policy therefore requires fresh
+T3 ownership for the security-sensitive correction.
 
-- Queue action: `rebuild_required`.
-- Original tier: `T2`; required tier: `T3`.
-- Trigger: the correction constrains protected cross-center reads, target
-  checks, mutations, and uniqueness after supported class delete/recreate
-  identity reuse. Tier policy classifies this as direct
-  auth/permissions/security-sensitive behavior.
-- Normative proof affected: `REQ-014` and `FT-004-AC-005` own the forbidden
-  cross-center outcome. Preservation proof spans `FT-004-AC-001/002` for
-  comments/reactions and `FT-004-AC-003/004` for messages, branches, common
-  feed, retention, and recent tabs.
-- Provider/consumer boundary: Collaboration remains the owner and continues to
-  use Actor Context plus Calendar and Membership Query boundaries. The public
-  Day Discussion Query Boundary and its Lesson Context consumer remain
-  compatible; no graph edge or global architecture change is required.
-- Actual Attempt 2 surface: `src/lib/server/modules/collaboration/public.ts`,
-  `src/lib/server/platform/database.ts`, and
-  `tests/collaboration/center-lifecycle-isolation.test.ts`.
+`TASK-012-T2-FT-004-W6` remains exactly `T2`, `W6`, `in_progress`, with its
+dependencies, identity, task-owned AC-003/AC-004 basis, and all Attempt 1/2
+evidence preserved. Its functional GREEN and the feature-level
+`semantic-fail` are supporting rebuild inputs only; neither is fresh T3 proof
+and neither is used as a replacement dependency.
 
-### Boundary outline for rebuild
+The rebuild has two independently completable and verifiable sibling outcomes:
+comment/reaction center-lifecycle isolation and threaded-discussion
+center-lifecycle isolation. Shared ownership, database, or test root is not
+merge evidence, so no merge is justified. Canonical execution remains
+sequential.
 
-1. Comment/reaction center-lifecycle isolation can reach useful T3
-   implementation-and-proof completion independently: no prior-center
-   projection, target mutation, or uniqueness collision, with retained rows
-   unchanged and current-center operations usable.
-2. Message/branch/tab center-lifecycle isolation can reach useful T3
-   implementation-and-proof completion independently: no prior-center message,
-   branch, tab, attribution, reply, or reaction access, while arbitrary depth,
-   retention, ordering, and reactivation remain intact.
-3. No merge is justified. A shared Collaboration owner, `center_id` mechanism,
-   database, scenario, or tier does not make the two implementation-and-proof
-   completions inseparable.
+## Exact claim ownership and task handoff
 
-Final candidates are therefore transparent fresh T3 follow-up/replacement
-boundaries, not an in-place TASK-012 repair. This run assigns no replacement
-IDs and changes no task card/index/dependency because `TASK-012` is still
-`in_progress`, its ID embeds `T2`, historical claim/evidence ownership must be
-preserved, and `TASK-014-T3-FT-003-W8` still depends on that exact identity.
-The scheduler/lifecycle owner must authorize and record the controlled identity,
-claim, lifecycle, and downstream dependency reconstruction before the fresh
-T3 cards can be reviewed and executed.
+| Task | Fresh task-owned claims | REQs | Dependency | Advisory scope | Functional and semantic paths |
+|---|---|---|---|---|---|
+| `TASK-016-T3-FT-004-W6` | `FT-004-AC-001`, `FT-004-AC-002`, `FT-004-AC-005`: attributable one-per-account field comments; five reactions/reactor visibility; shared/personal and cross-center comment/reaction privacy | `REQ-006`, `REQ-007`, `REQ-014` | `TASK-011-T3-FT-004-W5` (`done`); Foundation is transitive | `src/lib/server/modules/collaboration/`, `src/lib/server/platform/database.ts`, `tests/collaboration/` | Fresh `/verify`: `.protocols/TASK-016-T3-FT-004-W6/verification.md`, artifacts under `.tasks/TASK-016-T3-FT-004-W6/`. Fresh `/red-verify`: `.protocols/TASK-016-T3-FT-004-W6/red-verification.md`, artifacts under `.tasks/TASK-016-T3-FT-004-W6/`. |
+| `TASK-017-T3-FT-004-W6` | `FT-004-AC-003`, `FT-004-AC-004`, plus the T3 harm claim `REQ-014` / access-control authority: arbitrary-depth/common-feed behavior; first-reply branch activation; ten-tab ordering, retention, reactivation; threaded cross-center denial without existence leakage | `REQ-006`, `REQ-008`, `REQ-014` | `TASK-011-T3-FT-004-W5` (`done`); Foundation is transitive | `src/lib/server/modules/collaboration/`, `src/lib/server/platform/database.ts`, `tests/collaboration/` | Fresh `/verify`: `.protocols/TASK-017-T3-FT-004-W6/verification.md`, artifacts under `.tasks/TASK-017-T3-FT-004-W6/`. Fresh `/red-verify`: `.protocols/TASK-017-T3-FT-004-W6/red-verification.md`, artifacts under `.tasks/TASK-017-T3-FT-004-W6/`. |
 
-## Verification
+Each row owns only its exact AC/REQ outcome and current implementation delta;
+dependency proof, historical TASK-012 proof, and TASK-011 evidence are not
+inherited. At the planning boundary the two replacement cards were indexed
+once as `planned`; at the current W6 boundary both authoritative cards are
+`done` with independent functional `PASS` and T3 `semantic-pass` evidence.
+Their IDs, T3 tier, W6 wave, direct canonical links, forbidden scope, stop
+conditions, RED/GREEN evidence contracts, and advisory change surface remain
+unchanged.
 
-Run native gates with claim-linked paths: AC-001 comment ownership/attribution, AC-002 five reactions/reactor visibility, AC-003 arbitrary-depth/common feed, AC-004 ten-tab retention/reactivation, and AC-005 shared/personal privacy. Each card records RED/GREEN and artifact evidence per owned AC; hidden branches are retained, not deleted.
+## Gates, acceptance, and downstream routing
 
-Current Attempt 2 GREEN and the retained feature `semantic-fail` are supporting
-rebuild inputs only. Do not route feature `/red-verify`, closure, `/mb-sync`,
-promotion, or execution under the T2 identity. After transparent T3
-reconstruction, route `/review-tasks-plan FT-004`, the applicable doctor gate,
-and fresh `/exe` for each replacement ID.
+Each replacement card carries the native gates `npm run check`, `npm run
+build`, and `npm run test`, plus isolated disposable-state, safe-rerun,
+state-before/state-after, and cleanup proof for its claim-linked T3 paths. The
+functional path must prove the row's exact claims; the semantic path must
+independently challenge the row's security-sensitive harm surface. No evidence
+is created by this planning repair.
+
+`TASK-014-T3-FT-003-W8` depends on both replacement cards and retains its
+authoritative `blocked` status. The planning-time routing was the approved
+`/review-tasks-plan FT-004` at `Planning Revision: 1`, followed by the
+applicable readiness gate and sequential execution/verification of the two
+replacement IDs. This plan does not apply dependent unblock, closure,
+promotion, or a feature-level semantic verdict.
+
+## Governing constraints
+
+- KISS: retain the accepted Collaboration ownership and graph; introduce only
+  the minimum fresh T3 task boundaries required by the evidenced tier change.
+- Privacy and access: every protected read, target check, and mutation combines
+  the authenticated actor with server-resolved center/class/student scope.
+- Persistence: retained prior-center rows remain unchanged; hidden branches are
+  retained and tabs remain a projection.
+- Evidence before done: each T3 task requires independent claim-linked
+  functional verification and `SEMANTIC_VERDICT: semantic-pass`; lifecycle
+  ownership remains outside this planning repair.
+- No hard `runtime_context.write_boundary` is added; `touched_files` remain
+  advisory, while each card's `forbidden_scope` and stop conditions remain hard.
