@@ -65,6 +65,10 @@ the work.
 **Core rule:** A sufficient solution is a reason to stop expanding, not an
 invitation to add optional improvements.
 
+Simplicity is measured by total mechanism and coupling cost, not unit count.
+Do not combine independently completable and verifiable outcomes merely to
+reduce their number.
+
 Within the discretion left to you, select the simplest solution sufficient for
 the requested outcome and required contracts. Treat every added mechanism,
 abstraction, safeguard, edge-case handling, future-proofing measure, or process
@@ -210,6 +214,9 @@ Maintenance commands:
 `/mb-doctor`, `/mb-garden`, `/map-codebase`, `/discuss`, `/add-tests`.
 
 
+
+
+
 ## SvelteKit / Svelte 5
 
 * MUST use runes mode and current non-legacy Svelte 5 APIs in new Svelte components/reactive modules; preserve existing legacy mode unless migration is task-required.
@@ -224,3 +231,4 @@ Maintenance commands:
 * SHOULD use `<a>`/`<form>` declaratively, `$app/navigation` for imperative internal navigation/history, and `$app/state` in runes code; use `window.location` for external URLs and `$app/stores` only for legacy compatibility.
 
 
+s

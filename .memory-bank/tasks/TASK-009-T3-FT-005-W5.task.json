@@ -1,0 +1,55 @@
+{
+  "id": "TASK-009-T3-FT-005-W5",
+  "title": "Implement homework completion and private grading",
+  "status": "done",
+  "wave": "W5",
+  "feature": "FT-005",
+  "reqs": ["REQ-009", "REQ-014"],
+  "depends_on": ["TASK-005-T3-FT-002-W3"],
+  "touched_files": ["src/lib/server/modules/learning-progress/", "tests/learning-progress/"],
+  "tier": "T3",
+  "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
+  "verify": ["Student completion is visible in the permitted class context.", "Only accepted grades α, β, γ, F are stored and visibility follows student/family, assigned teacher, and admin scope.", {
+    "stage": "functional",
+    "attempt": "Attempt 2",
+    "verdict": "PASS",
+    "report": ".protocols/TASK-009-T3-FT-005-W5/verification.md",
+    "artifact": ".tasks/TASK-009-T3-FT-005-W5/TASK-009-T3-FT-005-W5-S-VERIFY-final-report-docs-02.md",
+    "evidence": ["Fresh verifier-owned AC probe passed 2/2, covering class-visible grade-free completion, accepted α/β/γ/F, invalid-grade non-mutation, and the positive/negative privacy matrix.", "Fresh disposable public-boundary probes passed for teacher/Admin out-of-class target write/read denial and same-center unassigned-teacher denial; denied writes created no grade row.", "npm run check, npm run build, npm run test (8 files / 30 tests), and git diff --check all exited 0.", "Attempt 1 functional and semantic results were excluded from the current verdict; lifecycle_changed is false."],
+    "lifecycle_changed": false
+  }, {
+    "stage": "semantic",
+    "attempt": "Attempt 1",
+    "verdict": "semantic-fail",
+    "report": ".protocols/TASK-009-T3-FT-005-W5/red-verification.md",
+    "artifact": ".tasks/TASK-009-T3-FT-005-W5/TASK-009-T3-FT-005-W5-S-RED-VERIFY-final-report-docs-01.md",
+    "evidence": ["HIGH: recordGrade/getGrade permit an assigned teacher or own-center Admin to target a student outside the requested class; the grade table has no class relation. Fresh supported public-boundary probe reproduced both write/read paths."],
+    "lifecycle_changed": false,
+    "correction_basis": true
+  }, {
+    "stage": "semantic",
+    "attempt": "Attempt 2",
+    "verdict": "semantic-pass",
+    "report": ".protocols/TASK-009-T3-FT-005-W5/red-verification.md",
+    "artifact": ".tasks/TASK-009-T3-FT-005-W5/TASK-009-T3-FT-005-W5-S-RED-VERIFY-final-report-docs-02.md",
+    "evidence": ["Fresh independent T3 Reviewer probes passed 2/2 plus the correction-specific public-boundary probe; the repaired teacher/Admin cross-class grade target write/read bypass is denied.", "No material semantic finding or operator question was admitted; Attempt 1 semantic-fail/report-01 remains historical correction basis only."],
+    "lifecycle_changed": false
+  }],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-005.md", ".protocols/FT-005/plan.md"],
+  "evidence_required": [
+    "FT-005-AC-001 RED: assigned homework completion is not recorded or is visible outside permitted class context; GREEN: student completion persists and is visible to the permitted class context; artifact: .tasks/TASK-009-T3-FT-005-W5/ and .protocols/TASK-009-T3-FT-005-W5/verification.md.",
+    "FT-005-AC-002 RED: an invalid grade is stored or a prohibited student/parent reads another student's grade; GREEN: only α/β/γ/F are accepted and positive viewers succeed while negative viewers are denied; artifact: .tasks/TASK-009-T3-FT-005-W5/ and .protocols/TASK-009-T3-FT-005-W5/verification.md."
+  ],
+  "purpose": "Establish the Learning Progress read/write boundary for homework and grades.",
+  "success_outcome": "Students can complete assigned homework, teachers can record only the accepted grade scale, and prohibited students/parents cannot read another student's grade.",
+  "anti_goals": ["Do not expose grades through class-wide completion views.", "Do not add late or partial attendance states here."],
+  "source_artifacts": [".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-001", ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-002", ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary", ".memory-bank/contracts/access-control.md"],
+  "normative_inputs": [".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary", ".memory-bank/contracts/access-control.md", ".memory-bank/domains/core-domain.md#ownership-map", ".memory-bank/states/lifecycle-map.md#learning-and-finance"],
+  "constraints": ["Learning Progress exclusively writes homework and grade state.", "Server-side student/class scope is mandatory."],
+  "invariants": ["Homework completion is class-visible only within permitted context.", "Grade privacy is never client-controlled."],
+  "verification_targets": [
+    "FT-005-AC-001: role-based homework completion flow with permitted class visibility and out-of-context negative check.",
+    "FT-005-AC-002: accepted α/β/γ/F scale validation, positive student/family/teacher/admin matrix, and cross-student/parent denial."
+  ],
+  "runtime_context": {"forbidden_scope": [".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json", ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"], "stop_conditions": ["Stop if grade visibility requires changing the accepted access-control contract."]}
+}

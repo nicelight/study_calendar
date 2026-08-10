@@ -1,0 +1,30 @@
+{
+  "id": "TASK-010-T3-FT-005-W6",
+  "title": "Implement attendance and charge reconciliation",
+  "status": "done",
+  "wave": "W6",
+  "feature": "FT-005",
+  "reqs": ["REQ-010", "REQ-014", "REQ-015"],
+  "depends_on": ["TASK-006-T2-FT-002-W4", "TASK-007-T3-FT-006-W4"],
+  "touched_files": ["src/lib/server/modules/learning-progress/", "src/lib/server/modules/financial-ledger/", "tests/learning-progress/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
+  "verify": ["Absent in individual and group lessons creates no charge; present is charge-eligible at the historical price.", "Authorized absent-to-present correction atomically creates/recalculates charge and balance, records audit, and isolates unrelated students.", {"stage":"functional","attempt":"Attempt 1","verdict":"PASS","report":".protocols/TASK-010-T3-FT-005-W6/verification.md","artifact":".tasks/TASK-010-T3-FT-005-W6/TASK-010-T3-FT-005-W6-S-VERIFY-final-report-docs-01.md","evidence":["Fresh verifier-owned focused attendance probe passed 1 file / 2 tests, covering AC-003 individual/group historical-price eligibility and AC-004 atomic correction, deterministic balance, audit, isolation, and authorization checks.","npm run check, npm run build, npm run test (10 files / 35 tests), and git diff --check all exited 0.","Executor RED/GREEN and handoff were supporting-only; no execute receipt was reused and lifecycle_changed is false."],"lifecycle_changed":false},{"stage":"semantic","attempt":"Attempt 1","verdict":"semantic-pass","report":".protocols/TASK-010-T3-FT-005-W6/red-verification.md","artifact":".tasks/TASK-010-T3-FT-005-W6/TASK-010-T3-FT-005-W6-S-RED-VERIFY-final-report-docs-01.md","evidence":["Fresh adversarial Reviewer-owned public-boundary and source probes passed: supported attendance orchestration remains authorized, absent stays uncharged, historical correction is atomic, deterministic, auditable, and isolated.","Direct Financial Ledger misuse was inspected and excluded as unsupported coding misuse; production call-surface inspection found only Learning Progress invoking reconciliation.","No material semantic finding or operator question was admitted; lifecycle_changed is false."],"lifecycle_changed":false}],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-005.md", ".protocols/FT-005/plan.md"],
+  "evidence_required": [
+    "FT-005-AC-003 RED: absent creates a charge, present uses a non-historical price, or one class mode behaves differently; GREEN: absent creates no charge and present is charge-eligible at the historical price in individual and group lessons; artifact: .tasks/TASK-010-T3-FT-005-W6/ and .protocols/TASK-010-T3-FT-005-W6/verification.md.",
+    "FT-005-AC-004 RED: absent-to-present correction is non-atomic, non-deterministic, unaudited, or changes an unrelated student; GREEN: historical charge, balance, author/time/change audit, and unrelated-student isolation all hold after correction; artifact: .tasks/TASK-010-T3-FT-005-W6/ and .protocols/TASK-010-T3-FT-005-W6/verification.md."
+  ],
+  "purpose": "Connect Learning Progress attendance ownership to the accepted Financial Ledger reconciliation boundary.",
+  "success_outcome": "Attendance transitions are authorized and auditable; absent-to-present reconciliation is atomic, uses historical pricing, deterministically recalculates balance, and changes no unrelated student.",
+  "anti_goals": ["Learning Progress must not write charge, allocation, balance, or audit rows directly.", "Do not add a third attendance state."],
+  "source_artifacts": [".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-003", ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-004", ".memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary", ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants"],
+  "normative_inputs": [".memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary", ".memory-bank/contracts/financial-ledger.md", ".memory-bank/states/lifecycle-map.md#learning-and-finance", ".memory-bank/runbooks/mvp-verification.md#required-pre-real-data-checks"],
+  "constraints": ["Learning Progress owns attendance; Financial Ledger owns financial state.", "Use an explicit transaction and safe isolated fixtures."],
+  "invariants": ["Absent creates no charge.", "A failed correction leaves attendance and financial state unchanged."],
+  "verification_targets": [
+    "FT-005-AC-003: individual/group absent and present flows with charge-eligibility and historical-price assertions.",
+    "FT-005-AC-004: authorized absent-to-present replay with atomic failure probe, historical charge, deterministic balance, audit author/time/change, and unrelated-student isolation."
+  ],
+  "runtime_context": {"forbidden_scope": [".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json", ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"], "stop_conditions": ["Stop if reconciliation needs a new cross-slice edge or ownership decision."]}
+}

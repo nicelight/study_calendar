@@ -1,0 +1,97 @@
+{
+  "id": "TASK-003-T3-FT-001-W2",
+  "title": "Implement role-bearing account and invitation provisioning",
+  "status": "failed",
+  "wave": "W2",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-002", "REQ-014"],
+  "depends_on": ["TASK-002-T3-FT-000-W1"],
+  "touched_files": ["src/lib/server/modules/identity-access/", "src/routes/", "tests/identity-access/"],
+  "tier": "T3",
+  "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
+  "verify": [
+    "Invitation integration proves the pre-created role-bearing account and membership context are retained for a valid invitation.",
+    "Expired, revoked, reused, duplicate, role-choice, and cross-center attempts are denied atomically.",
+    {
+      "stage": "functional",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-003-T3-FT-001-W2/verification.md",
+      "evidence": [
+        "Fresh task-scoped Identity & Access probe passed: 1 file and 6 tests.",
+        "Fresh npm run check, npm run build, npm run test, and git diff --check all exited 0.",
+        "Fresh read-only boundary probe confirmed no role/center selector in ProviderBinding, invitation-account resolution, and zero direct persistence writes in routes/hooks/composition."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "independent-review",
+      "attempt": "bounded retry 1 / Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-003-T3-FT-001-W2/verification.md",
+      "artifact": ".tasks/TASK-003-T3-FT-001-W2/TASK-003-T3-FT-001-W2-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh task-scoped probe passed: 1 file and 7 tests, covering the authorization matrix, valid retention, atomic rollback, expiry, revocation, reuse, duplicate identity, and state-before/state-after assertions.",
+        "Fresh npm run check, npm run build, npm run test, and git diff --check all exited 0.",
+        "Fresh read-only boundary/ownership probe passed for server actor/session, own-center Admin scope, public orchestration, invitation-account binding, and absence of route/hook/composition persistence bypass."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "independent-review",
+      "attempt": "bounded retry 2 / Attempt 3",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-003-T3-FT-001-W2/verification.md",
+      "artifact": ".tasks/TASK-003-T3-FT-001-W2/TASK-003-T3-FT-001-W2-S-VERIFY-final-report-docs-03.md",
+      "evidence": [
+        "Fresh focused direct-boundary probe passed: forged caller-supplied cross-center scope was rejected with unchanged persistence state.",
+        "Fresh full task probe passed 8/8; capability runtime probe and boundary/ownership probe passed 11/11.",
+        "Fresh npm run check, npm run build, npm run test (12/12), git diff --check, and task-source whitespace check all exited 0."
+      ],
+      "reused_execute_evidence": "none",
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "bounded retry 2 / Attempt 3",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-003-T3-FT-001-W2/red-verification.md",
+      "artifact": ".tasks/TASK-003-T3-FT-001-W2/TASK-003-T3-FT-001-W2-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh focused cross-center probe rejected a valid center-2 Admin claiming center-1 with forbidden and left persistence unchanged; 8 tests passed.",
+        "Fresh semantic inspection confirmed the private one-time server-issued capability, own-center Admin check before issuance, atomic account/invitation transaction, and no adapter persistence bypass.",
+        "Historical retry-1 semantic-fail was explicitly excluded from the current verdict."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "red-verification",
+      "attempt": "bounded retry 2 / Attempt 3",
+      "verdict": "semantic-fail",
+      "report": ".protocols/TASK-003-T3-FT-001-W2/red-verification.md",
+      "artifact": ".tasks/TASK-003-T3-FT-001-W2/TASK-003-T3-FT-001-W2-S-RED-VERIFY-final-report-docs-03.md",
+      "evidence": [
+        "Fresh verifier-owned semantic probe used the typed CompositionRoot Identity & Access public surface to create an Admin account and invitation without session, center scope, membership validation, or provisioning authorization.",
+        "Current Attempt 3 source inspection confirmed createAccount and issueInvitation remain alternate unprotected public write commands beside the capability-protected provisionAccount command.",
+        "Retry 1 / Attempt 2 evidence and the earlier Attempt 3 semantic-pass conclusion were explicitly excluded; current functional PASS was supporting context only."
+      ],
+      "supersedes": ".tasks/TASK-003-T3-FT-001-W2/TASK-003-T3-FT-001-W2-S-RED-VERIFY-final-report-docs-02.md",
+      "recommended_owner_action": "Treat the concurrent done state as untrusted, record the third unsuccessful attempt, apply retry-exhausted failed disposition, create the required BUG or reviewed FT-001 follow-up, and block direct dependents; no fourth same-task attempt.",
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-001.md", ".protocols/FT-001/plan.md"],
+  "evidence_required": [
+    "FT-001-AC-003 RED: expired, revoked, reused, or duplicate identity binding changes persisted state; GREEN: each rejection leaves account, role, membership, and binding state equal before/after; artifact: .tasks/TASK-003-T3-FT-001-W2/ and .protocols/TASK-003-T3-FT-001-W2/verification.md."
+  ],
+  "purpose": "Establish the Identity & Access provisioning boundary required by all center operations.",
+  "success_outcome": "A valid one-time invitation binds exactly its pre-created role-bearing account, while invalid or reused invitations leave account, role, membership, and binding state unchanged.",
+  "anti_goals": ["Do not accept client role selection.", "Do not let Center & Scheduling or routes write identity-owned state directly."],
+  "source_artifacts": [".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-003", ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary", ".memory-bank/contracts/access-control.md"],
+  "normative_inputs": [".memory-bank/spec-backbone.md", ".memory-bank/constitution.md", ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary", ".memory-bank/contracts/access-control.md"],
+  "constraints": ["Server-side role and center authorization is decisive.", "Provider/account failures are atomic."],
+  "invariants": ["Identity & Access exclusively writes account, role, invitation, external identity, and session state.", "No partial binding remains after rejection."],
+  "verification_targets": [
+    "FT-001-AC-003: expired, revoked, reused, and duplicate-identity rejection with state-before/state-after persistence comparison."
+  ],
+  "runtime_context": {"forbidden_scope": [".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json", ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"], "stop_conditions": ["Stop and route to /spec-design if the accepted Account Provisioning Boundary must change."]}
+}

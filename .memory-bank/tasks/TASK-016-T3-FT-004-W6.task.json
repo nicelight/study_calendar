@@ -1,0 +1,144 @@
+{
+  "id": "TASK-016-T3-FT-004-W6",
+  "title": "Rebuild T3 center-lifecycle isolation for comments and reactions",
+  "status": "done",
+  "wave": "W6",
+  "feature": "FT-004",
+  "reqs": [
+    "REQ-006",
+    "REQ-007",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-011-T3-FT-004-W5"
+  ],
+  "touched_files": [
+    "src/lib/server/modules/collaboration/",
+    "src/lib/server/platform/database.ts",
+    "tests/collaboration/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Retained prior-center comments and field reactions are neither projected nor mutable after supported class identity reuse, while distinct current-center objects remain usable.",
+    "Account/field comment ownership and actor/target reaction uniqueness remain center-scoped without losing attribution or retained prior-center rows.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-016-T3-FT-004-W6/verification.md",
+      "artifact": ".tasks/TASK-016-T3-FT-004-W6/TASK-016-T3-FT-004-W6-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned center-reuse probe passed 2/2; comments/reactions checks passed 3/3 with retained-row preservation, denial of prior-center reads/mutations, current-center usability, and safe cleanup.",
+        "npm run check and npm run build passed; executor full-suite result remains supporting-only."
+      ]
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-016-T3-FT-004-W6/red-verification.md",
+      "artifact": ".tasks/TASK-016-T3-FT-004-W6/TASK-016-T3-FT-004-W6-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent hostile review found no material cross-center privacy, ownership, persistence, boundary, or scope drift in the TASK-016 outcome."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-004.md",
+    ".protocols/FT-004/plan.md"
+  ],
+  "evidence_required": [
+    "FT-004-AC-001 RED: supported center identity reuse projects or permits mutation of a retained prior-center field comment, or current-center ownership/attribution fails; GREEN: prior-center comments are denied or absent from the replacement-center projection, current-center comments remain one-per-account-per-field with author/last-change attribution, and retained rows are unchanged; artifact: .tasks/TASK-016-T3-FT-004-W6/ and .protocols/TASK-016-T3-FT-004-W6/verification.md.",
+    "FT-004-AC-002 RED: supported center identity reuse projects, mutates, or collides with a retained prior-center field reaction, or reactor visibility is incorrect; GREEN: five standard reactions remain usable only in the current center, prior-center reactions and reactors are not exposed or mutable, and center-scoped uniqueness holds; artifact: .tasks/TASK-016-T3-FT-004-W6/ and .protocols/TASK-016-T3-FT-004-W6/verification.md.",
+    "FT-004-AC-005 RED: shared/personal comment or reaction data crosses the current server-resolved center/class/student scope; GREEN: protected reads and mutations use actor plus server-resolved scope, deny cross-center access without existence leakage, and preserve old rows; artifact: .tasks/TASK-016-T3-FT-004-W6/ and .protocols/TASK-016-T3-FT-004-W6/verification.md."
+  ],
+  "purpose": "Re-establish the protected Collaboration boundary for account-owned comments and reactions after supported center identity reuse exposed retained prior-center data.",
+  "success_outcome": "Comments and field reactions remain attributable, center-scoped, and usable in the replacement center; retained prior-center objects cannot be read, targeted, mutated, or collided with through the replacement lifecycle.",
+  "anti_goals": [
+    "Do not edit, re-tier, close, or reuse TASK-012-T2-FT-004-W6 as this task.",
+    "Do not inherit TASK-011 evidence as current T3 proof or change TASK-011 lifecycle.",
+    "Do not delete retained Collaboration rows or introduce a second Collaboration writer.",
+    "Do not change the accepted modular-monolith graph, shared database decision, or public boundary."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-001",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-002",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-005",
+    ".memory-bank/architecture/system-architecture.md#accepted-target",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#collaboration"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md#accepted-target",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#collaboration",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Collaboration exclusively writes comments and reactions; actor and class/student scope are resolved through the accepted public boundaries.",
+    "Every protected read, target check, and mutation combines the authenticated actor with server-resolved center/class/student scope.",
+    "The one shared database retains prior Collaboration rows; center-scoped uniqueness is enforced without deleting historical data.",
+    "Verification uses isolated disposable state, safe rerun, and cleanup with no network, credentials, or production data."
+  ],
+  "invariants": [
+    "Cross-center reads and mutations are denied without revealing unrelated object existence.",
+    "An account has at most one editable comment per field within the current center scope, with author and last-change attribution.",
+    "A standard reaction is unique to its actor and target within the current center scope, and permitted viewers see its reactors.",
+    "Prior-center comments and reactions remain retained and behaviorally unchanged after a replacement-center lifecycle."
+  ],
+  "verification_targets": [
+    "FT-004-AC-001: public-boundary ownership/attribution and center identity-reuse matrix for comment read, create, edit, and one-per-account-per-field behavior.",
+    "FT-004-AC-002: five-reaction public-boundary matrix for field/comment/message target compatibility, reactor projection, center isolation, and actor/target uniqueness.",
+    "FT-004-AC-005: shared/personal and cross-center negative authorization matrix with read, target, mutation, retained-row, and no-existence-leak assertions.",
+    ".memory-bank/contracts/access-control.md#authority-and-scope: protected reads and commands use actor plus server-resolved center/class/student scope.",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary: Collaboration remains the sole writer and Lesson Context consumes only the named scoped public boundary.",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules: isolated persistence comparison proves retained rows and center-scoped uniqueness without partial writes.",
+    ".memory-bank/states/lifecycle-map.md#collaboration: comment ownership/attribution and scope-sensitive Collaboration transitions remain valid.",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership: task-scoped RED/GREEN, state-before/state-after, safe rerun, and cleanup evidence."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json",
+      ".memory-bank/tasks/TASK-012-T2-FT-004-W6.task.json"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if satisfying the accepted boundary requires changing the modular-monolith graph, public contract, or shared database decision.",
+      "Stop if comment/reaction ownership must move outside Collaboration or if retained prior-center data would be deleted."
+    ]
+  }
+}

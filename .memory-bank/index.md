@@ -17,10 +17,28 @@ status: active
 - [.memory-bank/roles/reviewer.md](roles/reviewer.md): Reviewer role contract.
 - [.memory-bank/product.md](product.md): Продукт (C4 L1).
 - [.memory-bank/requirements.md](requirements.md): Требования + RTM.
+- [.memory-bank/changelog.md](changelog.md): Durable Memory Bank change log.
 - [.memory-bank/epics/](epics/): Эпики (C4 L2).
 - [.memory-bank/features/](features/): Фичи (C4 L3).
+- [.memory-bank/epics/EP-001-access-and-center-operations.md](epics/EP-001-access-and-center-operations.md): Access, membership, and scheduling.
+- [.memory-bank/epics/EP-002-calendar-and-day-context.md](epics/EP-002-calendar-and-day-context.md): Elastic calendar and lesson context.
+- [.memory-bank/epics/EP-003-day-collaboration.md](epics/EP-003-day-collaboration.md): Comments, reactions, and threaded chat.
+- [.memory-bank/epics/EP-004-learning-progress.md](epics/EP-004-learning-progress.md): Homework, grades, and attendance.
+- [.memory-bank/epics/EP-005-financial-ledger.md](epics/EP-005-financial-ledger.md): Monetary ledger and balance.
+- [.memory-bank/foundation.md](foundation.md): Foundation Dev Path decision, pressure map, and FT-000 handoff.
+- [.memory-bank/features/FT-000-foundation.md](features/FT-000-foundation.md): Reserved Foundation pseudo-feature.
+- [.memory-bank/features/FT-001-authentication-and-binding.md](features/FT-001-authentication-and-binding.md): Provider binding and account access.
+- [.memory-bank/features/FT-002-center-and-scheduling.md](features/FT-002-center-and-scheduling.md): Center membership and lesson schedule.
+- [.memory-bank/features/FT-003-calendar-and-lesson-context.md](features/FT-003-calendar-and-lesson-context.md): Elastic calendar and day forms.
+- [.memory-bank/features/FT-004-day-collaboration.md](features/FT-004-day-collaboration.md): Field comments, reactions, and chat.
+- [.memory-bank/features/FT-005-learning-progress.md](features/FT-005-learning-progress.md): Homework, grades, and attendance.
+- [.memory-bank/features/FT-006-financial-ledger.md](features/FT-006-financial-ledger.md): Charges, payments, allocation, and markers.
 - [.memory-bank/behavior-specs/](behavior-specs/): Optional JSON behavior examples linked from feature docs and task `source_artifacts`.
 - [.memory-bank/tasks/index.json](tasks/index.json): Authoritative JSON task record index.
+- [.memory-bank/tasks/plans/IMPL-FT-001.md](tasks/plans/IMPL-FT-001.md): FT-001 ordered implementation plan and task ownership.
+- [.memory-bank/tasks/plans/IMPL-FT-003.md](tasks/plans/IMPL-FT-003.md): FT-003 ordered implementation plan and W7/W8 task ownership.
+- [.memory-bank/bugs/TASK-003-provisioning-boundary-bypass.md](bugs/TASK-003-provisioning-boundary-bypass.md): Retained TASK-003 semantic-failure record and follow-up route.
+- [.memory-bank/tasks/plans/IMPL-FT-000.md](tasks/plans/IMPL-FT-000.md): Foundation implementation plan.
 - [.memory-bank/schemas/task.schema.json](schemas/task.schema.json): JSON schema for task records.
 - [.memory-bank/workflows/index.md](workflows/index.md): Workflow router and tier/execution/sync policies.
 
@@ -36,6 +54,7 @@ status: active
 - [.memory-bank/domains/](domains/): Subject-based domain models, storage, schemas, migrations, and persistence rules.
 - [.memory-bank/contracts/](contracts/): Контракты и boundary specs (prefer when present).
 - [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md): Canonical accepted module/change-unit dependency graph and boundary contracts.
+- [.memory-bank/contracts/access-control.md](contracts/access-control.md): Server-side authorization, privacy, and provider-binding contract.
 - [.memory-bank/states/](states/): Lifecycle/state rules (prefer when present).
 - [.memory-bank/runbooks/](runbooks/): Runbooks и operational procedures.
 - [.memory-bank/testing/index.md](testing/index.md): Router for testing documentation.

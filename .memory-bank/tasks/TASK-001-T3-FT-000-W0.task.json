@@ -1,0 +1,145 @@
+{
+  "id": "TASK-001-T3-FT-000-W0",
+  "title": "Bootstrap executable Foundation substrate and focused probes",
+  "status": "done",
+  "wave": "W0",
+  "feature": "FT-000",
+  "reqs": [
+    "REQ-000"
+  ],
+  "depends_on": [],
+  "touched_files": [
+    "package.json",
+    "svelte.config.js",
+    "vite.config.ts",
+    "tsconfig.json",
+    "src/app.html",
+    "src/app.d.ts",
+    "src/hooks.server.ts",
+    "src/routes/",
+    "src/lib/server/composition-root.ts",
+    "src/lib/server/platform/",
+    "src/lib/server/modules/identity-access/",
+    "src/lib/server/modules/center-scheduling/",
+    "tests/foundation/",
+    ".protocols/TASK-001-T3-FT-000-W0/",
+    ".tasks/TASK-001-T3-FT-000-W0/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "project-check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "project-build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "foundation-focused-tests",
+      "command": "npm run test",
+      "required": true
+    }
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-001-T3-FT-000-W0/verification.md",
+      "evidence": [
+        "npm run check: exit 0; 0 errors and 0 warnings",
+        "npm run build: exit 0",
+        "npm run test: exit 0; 1 file and 4 tests passed",
+        "targeted composition and atomicity reruns: 1/1 and 2/2 passed",
+        "boundary-scope probe: two allowed roots, one composition root, no adapter direct writes, no forbidden product roots"
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/foundation.md",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/tasks/plans/IMPL-FT-000.md",
+    ".protocols/FT-000/plan.md",
+    ".protocols/FT-000/decision-log.md"
+  ],
+  "evidence_required": [
+    "REQ-000 project-native baseline: RED = execution records the pre-bootstrap absence of a runnable package/scripts; GREEN = the created skeleton passes npm run check, npm run build, and npm run test; artifact = .protocols/TASK-001-T3-FT-000-W0/progress.md and verification.md.",
+    "system-architecture.md#composition-and-request-data-flow: RED = the composition/request path cannot wire one server to the accepted public seams; GREEN = a focused isolated harness observes one composition root with Identity & Access and Center & Scheduling boundary calls and no cross-slice table write; artifact = .protocols/TASK-001-T3-FT-000-W0/verification.md.",
+    "core-domain.md#persistence-and-transaction-rules: RED = an isolated fixture cannot round-trip or a failed binding/transaction changes persisted state; GREEN = state-before and state-after are identical after the failed probe, with safe rerun and cleanup; artifact = .tasks/TASK-001-T3-FT-000-W0/ and .protocols/TASK-001-T3-FT-000-W0/verification.md."
+  ],
+  "purpose": "Establish the minimum executable SvelteKit/shared-database substrate and focused Foundation probes required before any product feature task can run.",
+  "success_outcome": "A project-native SvelteKit skeleton passes check/build/test, exposes one composition root and one configured shared-database path, and the focused harness can reach only the accepted Identity & Access and Center & Scheduling public seams while proving isolated roundtrip and no-partial failure behavior.",
+  "anti_goals": [
+    "Do not implement product calendar, collaboration, learning-progress, or financial behavior.",
+    "Do not create empty future capability slices, layer-centric modules, an event bus, a second server, or a shared cross-slice repository.",
+    "Do not select a new architecture or widen the accepted storage/provider contracts.",
+    "Do not create product task records or close the final Foundation gate."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".agents/skills/",
+      ".claude/",
+      "AGENTS.md",
+      "SVELTE_RULES.md",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/collaboration/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      ".memory-bank/features/FT-001-authentication-and-binding.md",
+      ".memory-bank/features/FT-002-center-and-scheduling.md",
+      ".memory-bank/features/FT-003-calendar-and-lesson-context.md",
+      ".memory-bank/features/FT-004-day-collaboration.md",
+      ".memory-bank/features/FT-005-learning-progress.md",
+      ".memory-bank/features/FT-006-financial-ledger.md"
+    ],
+    "stop_conditions": [
+      "A probe requires product behavior or a capability slice beyond Identity & Access and Center & Scheduling.",
+      "A concrete database/provider choice changes an accepted architecture, boundary, ownership, or security contract.",
+      "The walking skeleton requires a second server, event bus, cache, shared cross-slice repository, or another speculative platform layer."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/foundation.md#minimal-work-path",
+    ".memory-bank/requirements.md#req-000--executable-foundation-baseline",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/tasks/plans/IMPL-FT-000.md",
+    ".protocols/FT-000/plan.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/architecture/system-architecture.md#accepted-target",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/runbooks/mvp-verification.md",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Use one SvelteKit server and one shared database path with a single composition root.",
+    "Keep browser/HTTP adapters thin; public boundary calls retain server-side actor/scope checks and slice write ownership.",
+    "Use isolated/disposable fixture state with safe rerun and cleanup.",
+    "Keep database engine/migration library and exact provider SDK configuration at execution-level choice unless a material design branch appears."
+  ],
+  "invariants": [
+    "The shared database is the persisted source of truth, but each mutable business state has one capability write owner.",
+    "Protected operations resolve actor and scope on the server; client-supplied role or scope is not trusted.",
+    "Failed binding or transaction probes leave no partial state.",
+    "No request or user state is stored in server module scope."
+  ],
+  "verification_targets": [
+    "Run npm run check, npm run build, and npm run test after bootstrap; the focused test target covers only Foundation substrate probes.",
+    "Use a disposable isolated fixture to prove schema/adapter roundtrip and state-before/state-after equality after a failed binding/transaction; rerun the probe after cleanup.",
+    "Review .memory-bank/architecture/system-architecture.md#composition-and-request-data-flow and .memory-bank/contracts/boundary-map.md#modules against the created composition root and the two allowed slice roots; report any boundary or ownership drift as a stop condition.",
+    "Use test doubles for provider failure/reuse/duplicate paths; do not require real Telegram/Google credentials or implement product provider flows in Foundation."
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "TASK-012-T2-FT-004-W6",
+  "title": "Implement threaded discussion branches and recent tabs",
+  "status": "in_progress",
+  "wave": "W6",
+  "feature": "FT-004",
+  "reqs": ["REQ-006", "REQ-008", "REQ-014"],
+  "depends_on": ["TASK-011-T3-FT-004-W5"],
+  "touched_files": ["src/lib/server/modules/collaboration/", "tests/collaboration/"],
+  "tier": "T2",
+  "gates": [{"name":"check","command":"npm run check","required":true},{"name":"build","command":"npm run build","required":true},{"name":"test","command":"npm run test","required":true}],
+  "verify": [
+    "Replies support arbitrary depth and a root becomes a branch tab after its first reply.",
+    "At most ten recent active tabs are shown; hidden branch messages are retained and reappear after new activity.",
+    {"stage":"functional","attempt":"Attempt 1","verdict":"PASS","report":".protocols/TASK-012-T2-FT-004-W6/verification.md","artifact":".tasks/TASK-012-T2-FT-004-W6/TASK-012-T2-FT-004-W6-S-VERIFY-final-report-docs-01.md","evidence":["Fresh verifier-owned focused Collaboration probe passed 1 file / 2 tests, covering arbitrary-depth replies, first-reply tab activation, scoped common feed, eleven-branch ordering, ten-tab bound, hidden retention, and reactivation.","npm run check, npm run build, npm run test (11 files / 37 tests), and git diff --check all exited 0.","Executor RED/GREEN and handoff were supporting-only; no lifecycle change or stale report reuse occurred."],"lifecycle_changed":false},
+    {"stage":"feature-semantic","attempt":"Attempt 1 / feature gate","verdict":"semantic-fail","report":".memory-bank/features/FT-004-day-collaboration.md","artifact":".tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md","evidence":["Fresh feature-level public-boundary probe proved supported class delete/recreate across centers exposes retained prior-center comments, reactions, root/reply messages, branch tab, and attributable identities to the new center.","Root cause is task-local Collaboration scope/lifecycle handling: persisted rows survive class deletion and current read/edit paths do not constrain stored center_id; the exact finding is durable in the current FT-004 feature semantic report.","This is the correction basis for bounded retry 1/2; no operator-owned ambiguity, dependency gap, or task-plan rebuild is required."],"lifecycle_changed":false},
+    {"stage":"functional","attempt":"Attempt 2","verdict":"NEEDS-CLARIFICATION","report":".protocols/TASK-012-T2-FT-004-W6/verification.md","artifact":".tasks/TASK-012-T2-FT-004-W6/TASK-012-T2-FT-004-W6-S-VERIFY-final-report-docs-02.md","evidence":["Fresh verifier-owned current-source probe passed 1 file / 2 tests, covering supported class delete/recreate identity reuse, prior-center shared/personal isolation and retention, ownership, 18-level replies, eleven-to-ten recent tabs, hidden retention, and reactivation.","Focused Collaboration 3 files / 7 tests, exact prior failed vector 1/1, npm run check, npm run build, full npm run test (12 files / 39 tests), and git diff --check all exited 0.","Functional behavior is GREEN, but Attempt 2 changes cross-center protected reads/mutations and therefore triggers T3 auth/permissions/security-sensitive classification while the indexed task remains T2; lifecycle is unchanged and controlled re-tiering is required."],"lifecycle_changed":false}
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-004.md", ".protocols/FT-004/plan.md"],
+  "evidence_required": [
+    "FT-004-AC-003 RED: reply depth is capped, first reply does not create a branch tab, or common feed omits an available message; GREEN: arbitrary-depth replies persist, first reply creates the branch tab, and scoped common feed shows every available message; artifact: .tasks/TASK-012-T2-FT-004-W6/ and .protocols/TASK-012-T2-FT-004-W6/verification.md.",
+    "FT-004-AC-004 RED: more than ten active tabs are shown, hidden branch messages are deleted, or reactivation does not restore the branch; GREEN: ten most recent tabs are shown, hidden messages remain retained, and new activity restores the branch; artifact: .tasks/TASK-012-T2-FT-004-W6/ and .protocols/TASK-012-T2-FT-004-W6/verification.md."
+  ],
+  "purpose": "Complete durable Collaboration discussion navigation without deleting or flattening message branches.",
+  "success_outcome": "Arbitrarily nested replies remain available, common-day projection is scoped, and recent branch tabs are bounded to ten without message loss.",
+  "anti_goals": ["Do not cap reply depth.", "Do not delete or permanently hide inactive branches."],
+  "source_artifacts": [".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-003", ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-004", ".memory-bank/architecture/system-architecture.md#accepted-target", ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary", ".memory-bank/contracts/access-control.md", ".memory-bank/domains/core-domain.md#domain-relationships", ".memory-bank/states/lifecycle-map.md#collaboration"],
+  "normative_inputs": [".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary", ".memory-bank/states/lifecycle-map.md#collaboration", ".memory-bank/domains/core-domain.md#domain-relationships"],
+  "constraints": ["Branch tab visibility is a projection over retained Collaboration data.", "Current user scope remains decisive for common-day projection."],
+  "invariants": ["Reply depth is unbounded.", "Only ten most recently active branch tabs are visible at once."],
+  "verification_targets": [
+    "FT-004-AC-003: nested reply depth, first-reply branch-tab transition, and scoped common-feed completeness.",
+    "FT-004-AC-004: eleven-plus branch ordering, ten-tab bound, hidden-message retention, and reactivation scenario."
+  ],
+  "runtime_context": {"forbidden_scope": [".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json", ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"], "stop_conditions": ["Stop if branch retention would require a new product decision."]}
+}
