@@ -1,0 +1,8 @@
+Command: npx vitest run tests/learning-progress/lesson-scoped-grade.test.ts
+CWD: /home/serg/Projects/study_calendar
+Exit code: 1
+Observed claim-specific RED: the Learning Progress public object has no
+getGradeForLesson function. The focused public-boundary assertion failed with
+expected "function", received "undefined".
+
+This is a contract-specific absence probe, not a setup/import/syntax failure.

@@ -65,6 +65,19 @@ describe('FT-003 authorized shared and personal day context', () => {
 			amount: '20',
 			effectiveFrom: '2026-01-01'
 		});
+		const homework = root.learningProgress.createHomework({
+			sessionToken: 'session-teacher-own',
+			classId: 'class-own',
+			homeworkId: 'homework-own',
+			title: 'Newton worksheet'
+		});
+		root.learningProgress.recordGrade({
+			sessionToken: 'session-teacher-own',
+			classId: 'class-own',
+			homeworkId: homework.homeworkId,
+			studentAccountId: 'student-one',
+			grade: 'β'
+		});
 		root.learningProgress.recordAttendance({
 			sessionToken: 'session-teacher-own',
 			classId: 'class-own',
@@ -147,7 +160,14 @@ describe('FT-003 authorized shared and personal day context', () => {
 		expect(personal.material).toEqual(shared.material);
 		expect(personal.personal).toMatchObject({
 		studentAccountId: 'student-one',
-		progress: { attendance: { studentAccountId: 'student-one', attendance: 'present' } },
+		progress: {
+			attendance: { studentAccountId: 'student-one', attendance: 'present' },
+			grade: {
+				homeworkId: 'homework-own',
+				studentAccountId: 'student-one',
+				grade: 'β'
+			}
+		},
 		discussion: {
 			commonMessages: [expect.objectContaining({
 				messageId: 'personal-message-one',

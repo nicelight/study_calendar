@@ -16,8 +16,8 @@ specific product assertions.
 
 ## Foundation smoke path
 
-The Foundation queue must establish these project-native scripts and then use
-them as the durable minimal path:
+The completed Foundation queue established these project-native scripts as the
+durable minimal path:
 
 ```text
 npm run check
@@ -26,9 +26,9 @@ npm run test
 npm run dev -- --host 127.0.0.1
 ```
 
-The current repository cannot run these commands yet because no application
-package/runtime or test harness exists; that absence is the evidence for
-`Foundation Required: true`, not a failure of this runbook.
+Foundation evidence records the initial absence of the package/runtime and
+harness that justified `Foundation Required: true`; the current repository now
+has that baseline and this runbook remains the verification route.
 
 The first smoke must prove, in one server process:
 

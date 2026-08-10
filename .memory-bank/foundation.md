@@ -1,7 +1,7 @@
 ---
 description: Foundation Dev Path evidence and feature pressure map.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 source_of_truth:
   - .memory-bank/foundation.md
 ---
@@ -19,11 +19,11 @@ source_of_truth:
 The accepted target is a strict shared-boundary modular monolith: six
 capability slices, one SvelteKit server, one shared persisted database, server-
 side authorization, cross-slice transactions, provider binding, and a
-deterministic financial ledger. The repository currently has no application
-package/runtime, executable entrypoint, database schema/migration baseline,
-provider compatibility probe, or test harness. Feature work cannot safely begin
-without a walking skeleton that proves the runtime, storage, contract, and
-verification path. Therefore a separate Foundation Dev Path is required.
+deterministic financial ledger. The Foundation gate has now established the
+SvelteKit package/runtime, executable entrypoint, shared-database adapter, and
+project-native test harness. The separate Foundation Dev Path remains the
+accepted initial-baseline decision and its gate task is complete; this current
+baseline evidence does not alter the target or product feature ownership.
 
 Foundation is product-enabling infrastructure only. It must not implement
 calendar, collaboration, education, or financial product behavior beyond the
@@ -31,8 +31,8 @@ minimal probes needed to prove the accepted boundaries.
 
 ## Minimal Work Path
 
-- Build command: `npm run check && npm run build` after the Foundation project
-  bootstrap establishes the project-native scripts.
+- Build command: `npm run check && npm run build` using the established
+  project-native scripts.
 - Start command: `npm run dev -- --host 127.0.0.1` for the local smoke path; the
   deployment smoke uses one built SvelteKit server process.
 - Primary entrypoint: SvelteKit application entry through `src/hooks.server.ts`
@@ -41,11 +41,10 @@ minimal probes needed to prove the accepted boundaries.
 - Smoke path: one server starts, one database adapter connects, an isolated
   schema/fixture roundtrip succeeds, protected access denies without an actor,
   and a failed binding/transaction leaves no partial state.
-- Test command: `npm run test` after Foundation establishes the smallest
-  project-native harness required by the risk-based testing policy.
-- Evidence: current-state inspection found no `package.json`, product source,
-  database schema/migration, or tests; target pressure and exit probes are
-  recorded in [.memory-bank/runbooks/mvp-verification.md](runbooks/mvp-verification.md).
+- Test command: `npm run test` using the established project-native harness.
+- Evidence: the completed Foundation gate established the package, source,
+  database schema, entrypoint, and tests; the target pressure and exit probes
+  remain recorded in [.memory-bank/runbooks/mvp-verification.md](runbooks/mvp-verification.md).
 
 ## Feature Pressure Map
 
@@ -62,7 +61,7 @@ minimal probes needed to prove the accepted boundaries.
 
 | Decision | Why deferred | Trigger to revisit |
 |---|---|---|
-| Database engine and migration library | No runtime baseline exists; the accepted requirement is one shared transactional database, not a vendor. | Foundation storage probe before persistence implementation. |
+| Database engine and migration library | The Foundation gate now proves the current shared SQLite adapter baseline; the accepted architecture still does not require a vendor-specific global decision. | Revisit when the persistence/migration contract is formalized by its owning planning path. |
 | Telegram/Google SDK configuration | Integrations are accepted but credentials and runtime adapter seams do not exist. | Foundation provider compatibility probe. |
 
 ## Foundation Exit Criteria
@@ -82,5 +81,5 @@ The minimum indexed Foundation queue is:
   dependent on `TASK-001-T3-FT-000-W0`.
 
 Planning and the Foundation execution gate are complete. Product task records
-remain intentionally absent until the owning product task-planning workflow
-creates them.
+now exist under the owning feature-planning workflow; their statuses and
+revision approvals are separate from the completed Foundation gate.

@@ -1,0 +1,170 @@
+{
+  "id": "TASK-018-T3-FT-005-W8",
+  "title": "Expose the authorized lesson-scoped personal grade query",
+  "status": "done",
+  "wave": "W8",
+  "feature": "FT-005",
+  "reqs": [
+    "REQ-009",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-009-T3-FT-005-W5",
+    "TASK-006-T2-FT-002-W4"
+  ],
+  "touched_files": [
+    "src/lib/server/modules/learning-progress/",
+    "tests/learning-progress/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Provider contract: Learning Progress exposes one authorized lesson-scoped personal grade query, such as getGradeForLesson({ sessionToken, classId, lessonId, studentAccountId }) -> GradeView | null; the adapter supplies the stable lesson identity and selected student while the provider resolves actor/context and homework selection internally.",
+    "Wrong-student, wrong-class, cross-center, and unauthenticated queries fail without revealing private target existence or mutating persistence; Lesson Context remains a read-only consumer and supplies no homework identity or direct Learning Progress persistence read.",
+    "Deterministic selection contract: after authorization resolves one non-cancelled lesson and its server-side (centerId, classId), the provider-owned query considers existing learning_homework rows for that resolved class only; cardinality exactly one selects that homework for the existing grade lookup, zero candidates returns null/no grade, and multiple candidates fail closed with the explicit provider outcome ambiguous-homework-selection and no grade. The provider must not choose by ordering, recency, title, or position.",
+    "T3 proof path: execute the public boundary against isolated disposable state, snapshot state before/after every read case, rerun the same cases safely, and retain RED/GREEN observations, gate results, cleanup, and final verifier evidence under .tasks/TASK-018-T3-FT-005-W8/ and .protocols/TASK-018-T3-FT-005-W8/.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-018-T3-FT-005-W8/verification.md",
+      "evidence": [
+        "Fresh verifier-owned focused public-boundary run passed 1 file / 5 tests, covering FT-005-AC-002 privacy, provider ownership, exactly-one/zero/multiple cardinality, authorization denial, non-mutation, and safe rerun.",
+        "npm run check, npm run build, npm run test (15 files / 50 tests), and git diff --check exited 0; executor RED/GREEN remained supporting-only."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-018-T3-FT-005-W8/red-verification.md",
+      "artifact": ".tasks/TASK-018-T3-FT-005-W8/TASK-018-T3-FT-005-W8-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial public-boundary review passed cancelled-lesson rejection, provider-owned selection despite extra caller input, multiple-candidate fail-closed behavior, unchanged read state, and cleanup.",
+        "No material semantic finding or operator question was admitted."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-005.md",
+    ".protocols/FT-005/plan.md"
+  ],
+  "evidence_required": [
+    "FT-005-AC-002 RED: the lesson-scoped provider query cannot return the accepted personal grade projection, accepts a caller-owned homework mapping, or exposes a grade outside the student/family, assigned teacher, and admin scope; GREEN: the public lessonId query returns only the permitted selected student's grade and preserves the accepted α/β/γ/F privacy contract; artifact: .tasks/TASK-018-T3-FT-005-W8/ and .protocols/TASK-018-T3-FT-005-W8/verification.md.",
+    ".memory-bank/architecture/system-architecture.md#AD-007 RED: the provider requires a consumer-supplied homework identity or cannot authorize a lesson-scoped grade projection; GREEN: Learning Progress accepts lessonId plus server-resolved actor/context, performs lesson-to-homework selection internally, returns only the selected student's authorized grade projection, and keeps the consumer free of homework mapping; artifact: .tasks/TASK-018-T3-FT-005-W8/ and .protocols/TASK-018-T3-FT-005-W8/verification.md.",
+    "Deterministic cardinality RED: the provider selects an arbitrary homework, returns a grade for zero candidates, or returns a grade when multiple candidates exist; GREEN: exactly one existing class-scoped candidate yields its existing grade or null when that grade row is absent, zero candidates yields null/no grade, and multiple candidates yield ambiguous-homework-selection with no grade, independent of ordering/recency/title/position; artifact: .tasks/TASK-018-T3-FT-005-W8/ and .protocols/TASK-018-T3-FT-005-W8/verification.md.",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior RED: an unauthorized lesson query returns private grade data or reveals the target through a different scope; GREEN: unauthenticated, wrong-student, wrong-class, and cross-center queries fail without existence leakage and without persistence mutation; artifact: .tasks/TASK-018-T3-FT-005-W8/ and .protocols/TASK-018-T3-FT-005-W8/verification.md."
+  ],
+  "purpose": "Reconcile the Revision 2 Learning Progress provider boundary needed by the personal-day consumer: expose one authorized lesson-scoped grade query while keeping lesson-to-homework selection, grade privacy, and Learning Progress read ownership inside the provider.",
+  "success_outcome": "The authorized Learning Progress public query resolves a non-cancelled lesson and server-side (centerId, classId), selects from existing learning_homework rows in that class, returns one selected student's permitted GradeView for exactly one candidate (or null when that selected homework has no grade), returns null/no grade for zero candidates, returns ambiguous-homework-selection with no grade for multiple candidates, and never leaks private data or mutates persistence.",
+  "anti_goals": [
+    "Do not move lesson-to-homework selection into Lesson Context.",
+    "Do not expose a consumer-owned lessonId-to-homeworkId relation or direct Learning Progress table read.",
+    "Do not add a persisted lesson-to-homework relation or table, or select an arbitrary homework when candidate cardinality is not exactly one.",
+    "Do not change the accepted modular-monolith graph, one shared database, or one SvelteKit server."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-002",
+    ".memory-bank/spec-backbone.md#resolved-operator-decision",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/architecture/system-architecture.md#AD-007",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/domains/core-domain.md#read-and-write-data-flow",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance",
+    ".memory-bank/testing/strategy.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-backbone.md#resolved-operator-decision",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/architecture/system-architecture.md#AD-007",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/domains/core-domain.md#read-and-write-data-flow",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Learning Progress remains the sole owner of homework, grade, and lesson-to-homework selection/relation semantics.",
+    "The public provider contract is lesson-scoped: it receives the stable lesson identity plus server-resolved actor/context and selected-student scope; caller-supplied homework identity is not accepted.",
+    "The provider returns a read-only personal GradeView projection and does not add a consumer-owned persistence relation, new table, or direct consumer persistence read.",
+    "The selection uses the existing learning_homework model only after authorization resolves a non-cancelled lesson and its server-side (centerId, classId); candidates are limited to that resolved class.",
+    "Selection cardinality is deterministic and fail-closed: exactly one candidate is selected; no candidates produce null/no grade; multiple candidates produce the explicit provider outcome ambiguous-homework-selection with no grade and no arbitrary tie-break."
+  ],
+  "invariants": [
+    "The stable lesson identity is the provider query input; homework selection remains internal to Learning Progress.",
+    "Only the selected student's permitted grade is returned, preserving the exact FT-005-AC-002 α/β/γ/F and privacy outcome.",
+    "Denied queries do not reveal private target existence or mutate persistence.",
+    "Exactly one candidate may yield one selected homework grade; zero candidates yield null/no grade; multiple candidates yield ambiguous-homework-selection and no grade.",
+    "Candidate selection is independent of ordering, recency, title, and position; no consumer-owned lessonId-to-homeworkId mapping is introduced."
+  ],
+  "verification_targets": [
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-002: preserve the exact accepted α/β/γ/F grade and privacy outcome; RED/GREEN must cover authorized student/family/assigned-teacher/admin viewers and prohibited student/parent viewers, while TASK-009 remains owner of original grade facts.",
+    ".memory-bank/architecture/system-architecture.md#AD-007: public-boundary probe sends lessonId plus server-resolved actor/context, proves provider-owned homework selection and selected-student grade projection, and proves no consumer mapping.",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary: provider ownership, exact public interaction with Lesson Context, fail-closed behavior, and no direct persistence bypass.",
+    ".memory-bank/domains/core-domain.md#domain-relationships: reuse the existing Learning Progress homework/grade model; exercise exactly-one, zero, and multiple candidate cardinalities without a persisted relation/table.",
+    ".memory-bank/contracts/access-control.md#authority-and-scope: positive teacher/student/parent/admin matrix plus unauthenticated, wrong-student, wrong-class, and cross-center denial without existence leakage.",
+    ".memory-bank/domains/core-domain.md#read-and-write-data-flow: isolated state-before/state-after comparison proves the read-only query does not mutate Learning Progress or create a competing relation.",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership: execute the claim-linked RED/GREEN path in disposable isolated state, prove safe rerun and cleanup, and retain artifacts in the task-owned protocol/evidence paths."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/modules/learning-progress/",
+      "tests/learning-progress/"
+    ],
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json",
+      "src/lib/server/modules/lesson-context/",
+      ".memory-bank/tasks/TASK-014-T3-FT-003-W8.task.json",
+      ".protocols/TASK-014-T3-FT-003-W8/",
+      ".tasks/TASK-014-T3-FT-003-W8/"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the accepted Learning Progress provider ownership, public boundary, dependency direction, shared database, or one-server architecture must change.",
+      "Stop if satisfying the query requires a consumer-owned lesson-to-homework relation, direct Learning Progress persistence access, a new table, or a change to TASK-014.",
+      "Stop if the existing learning_homework model cannot prove exactly-one -> grade, zero -> null/no grade, and multiple -> ambiguous-homework-selection/no grade without an operator-owned contract decision."
+    ]
+  }
+}

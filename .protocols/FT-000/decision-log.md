@@ -24,8 +24,9 @@ status: active
 - Deferred choices: database engine/migration library and exact Telegram/Google
   SDK configuration remain execution-level decisions under the accepted
   contracts.
-- Lifecycle: planning only; the final gate remains open and is named by the
-  Foundation anchors for the next workflow handoff.
+- At the time of this entry, lifecycle was planning-only; the final gate was
+  left open for the next workflow handoff. Subsequent execution and semantic
+  evidence remain authoritative in the task-linked protocol and evidence paths.
 
 ## Unresolved decisions
 

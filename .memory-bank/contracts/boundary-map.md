@@ -1,7 +1,7 @@
 ---
 description: Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 source_of_truth:
   - .memory-bank/contracts/boundary-map.md
 ---
@@ -132,21 +132,38 @@ remain implementation details.
 ### Personal Progress Query Boundary
 
 - **Provider:** Learning Progress.
-- **Public surface:** return authorized homework completion, grade, and
-  attendance facts for a selected student/lesson; accept owner-side completion,
-  grade, and attendance commands.
+- **Public surface:** return authorized homework completion, attendance, and
+  personal grade facts for a selected student/lesson; expose a lesson-scoped
+  grade query such as
+  `getGradeForLesson({ sessionToken, classId, lessonId, studentAccountId }) -> GradeView | null`.
+  The query receives the stable lesson identity plus server-resolved actor and
+  scope context; the consumer does not supply a homework identity. Owner-side
+  completion, grade, and attendance commands remain on this boundary.
 - **State/data authority:** Learning Progress exclusively writes homework,
-  grade, and attendance state. It owns the attendance transition workflow.
-- **Allowed interaction:** Lesson Context composes read-only personal views;
+  grade, and attendance state. It also owns the lesson-to-homework
+  selection/relation semantics used by the lesson-scoped grade projection and
+  owns the attendance transition workflow. This decision does not create an
+  alternative consumer-owned or separately persisted `lessonId -> homeworkId`
+  relation.
+- **Allowed interaction:** Lesson Context composes read-only personal views and
+  calls the lesson-scoped query with `lessonId` and the selected student/server-
+  resolved actor context. Lesson Context never resolves the homework identity.
   Learning Progress may call Financial Ledger for charge reconciliation after
   an attendance change.
 - **Failure/compatibility:** grades and personal progress are never returned
-  outside the permitted family/teacher/admin context; attendance correction is
-  auditable and isolated to the affected student.
-- **Forbidden bypasses:** no calendar/UI route writes progress, and no consumer
-  changes attendance or grades through a financial or collaboration boundary.
-- **Verification:** role-based grade privacy and both individual/group
-  attendance plus absent-to-present correction scenarios.
+  outside the permitted family/teacher/admin context; an unauthorized or
+  wrong-scope lesson query fails without revealing private target existence;
+  attendance correction is auditable and isolated to the affected student.
+  The existing single-homework `getGrade(homeworkId)` implementation is
+  current-state evidence, not the accepted Lesson Context provider contract.
+- **Forbidden bypasses:** no calendar/UI route writes progress, no consumer
+  changes attendance or grades through a financial or collaboration boundary,
+  no consumer invents `homeworkId`, and no consumer reads Learning Progress
+  tables to reconstruct the selection.
+- **Verification:** role-based grade privacy and lesson-scoped query checks
+  prove selected-student isolation, provider-owned selection, no direct
+  database mapping, and both individual/group attendance plus absent-to-present
+  correction scenarios.
 
 ### Day Discussion Query Boundary
 
@@ -228,7 +245,7 @@ The following accepted workflows make the owner and legal interaction explicit:
 | Use case | Orchestration owner | Allowed calls | Write owners |
 |---|---|---|---|
 | Create a center participant and class membership | Center & Scheduling | Identity & Access account provisioning; own membership commands | Identity & Access for account/invitation; Center & Scheduling for center/member/class state |
-| Open an authorized personal day | Lesson Context | Identity & Access actor; Center & Scheduling lesson/scope; Learning Progress, Collaboration, and Financial Ledger scoped queries | No neighbor writes; each provider only reads its owned projection |
+| Open an authorized personal day | Lesson Context | Identity & Access actor; Center & Scheduling lesson/scope; Learning Progress lesson-scoped grade/progress query, Collaboration, and Financial Ledger scoped queries | Lesson Context passes `lessonId` and selected actor/student context; no homework mapping, neighbor writes, or direct table reads |
 | Correct `absent` to `present` | Learning Progress | Identity & Access actor; Center & Scheduling lesson/scope; Financial Ledger attendance reconciliation | Learning Progress for attendance; Financial Ledger for charge/allocation/balance/audit |
 | Record, edit, or cancel a payment | Financial Ledger | Identity & Access actor; Center & Scheduling financial scope/lesson facts | Financial Ledger only |
 | Add a comment/reply/reaction | Collaboration | Identity & Access actor; Center & Scheduling scope facts | Collaboration only |

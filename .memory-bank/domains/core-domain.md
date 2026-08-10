@@ -1,7 +1,7 @@
 ---
 description: Global domain model, persistence ownership, and cross-slice data-flow rules.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 source_of_truth:
   - .memory-bank/domains/core-domain.md
 ---
@@ -22,7 +22,7 @@ mutable invariant and transition has one capability owner as listed below.
 | Center & Scheduling | Center, Class, Student Membership, Parent Link, Teacher Assignment, Schedule, Lesson identity/date/status | Provider binding, grades/attendance, discussion, charges/payments |
 | Lesson Context | Shared lesson material and authorized calendar/personal-day composition | Personal grade/attendance records, discussion objects, financial facts |
 | Collaboration | Field Comment, Reaction, Message, Reply relationship, branch activity/visibility | Lesson ownership, grade/attendance, payment or balance state |
-| Learning Progress | Homework completion, Grade, Attendance and its transition workflow | Charge/allocation/balance rows; it calls Financial Ledger |
+| Learning Progress | Homework completion, Grade, Attendance, lesson-scoped homework selection/relation semantics, and its transition workflow | Charge/allocation/balance rows; it calls Financial Ledger |
 | Financial Ledger | Pricing settings, Lesson Charge, Payment, Payment Allocation, Balance, Payment Marker, Financial Audit Record | Center/class membership, lesson identity/date, grade/attendance state |
 
 The Lesson Context composition is a read composition owner, not a new source of
@@ -36,6 +36,10 @@ second Payment.
   schedule, and Lessons.
 - A Lesson has stable identity, planned/actual date and status, shared material,
   and zero or more student-specific progress contexts.
+- Learning Progress owns how lesson-scoped homework is selected for a grade
+  projection. A personal lesson view consumes that provider-owned selection
+  through `lessonId`; it does not own or persist a competing
+  `lessonId -> homeworkId` mapping.
 - A Personal Lesson Context is addressed by one Lesson and one Student; it
   composes Learning Progress, Collaboration scope, and Financial Ledger
   projections without owning those records.
@@ -52,6 +56,8 @@ second Payment.
 1. The request adapter resolves an actor through Identity & Access.
 2. The capability owner resolves target scope and current facts through its own
    state and accepted provider boundaries.
+   For a personal grade, Learning Progress resolves the lesson-scoped homework
+   selection internally and returns the authorized projection to Lesson Context.
 3. The owner executes a command or scoped query. A command writes only its
    owned entities and calls a neighbor's public command for a neighbor-owned
    consequence.
@@ -78,8 +84,8 @@ second Payment.
 
 ## Current-state evidence
 
-No production code, package manifest, database schema/migration, or executable
-test baseline exists in the repository. This domain model is therefore an
-accepted target contract, not a claim about implemented runtime behavior. The
-missing executable baseline is recorded in
-[.memory-bank/foundation.md](../foundation.md).
+The Foundation gate and current executable baseline are recorded in
+[.memory-bank/foundation.md](../foundation.md). Current product evidence still
+contains a single-homework `getGrade(homeworkId)` provider method and no
+consumer-side lesson mapping; this is implementation drift to reconcile under
+the accepted provider-owned lesson-scoped contract, not a competing target.

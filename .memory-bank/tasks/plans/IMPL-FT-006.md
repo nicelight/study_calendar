@@ -26,3 +26,11 @@ Financial Ledger owns `src/lib/server/modules/financial-ledger/`; it consumes ac
 ## Gates and verification
 
 Run `npm run check`, `npm run build`, and `npm run test`; verify AC-001/004 on TASK-007 and AC-002/003/005/006/007 on TASK-008. TASK-007 owns attendance/charge correction replay; TASK-008 owns Admin payment edit/cancel behavior and its role/center authorization. Each claim has a concrete RED/GREEN path for deterministic replay, exact amounts, authority, projection non-mutation, and safe retry using isolated disposable fixtures.
+
+## Planning Revision 2 reconciliation
+
+The global backbone remains `complete` at Planning Revision 2. The accepted
+Financial Ledger boundaries do not change under the Learning Progress query
+decision; TASK-007 and TASK-008 retain their identities, tiers, waves,
+dependencies, statuses, historical evidence, and retry history. No FT-006 task
+record was changed.

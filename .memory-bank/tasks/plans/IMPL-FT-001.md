@@ -31,3 +31,10 @@ Scheduling remains the membership owner.
 ## Gates and verification
 
 Use `npm run check`, `npm run build`, and `npm run test`; verify AC-003/005 on TASK-015 and AC-001/002/004 on TASK-004. The complete provider-binding flow has one owner after provisioning; each new task has a claim-linked RED/GREEN contract and state-before/state-after artifact path.
+
+## Planning Revision 2 reconciliation
+
+The global backbone remains `complete` at Planning Revision 2. Revision 2 does
+not change FT-001's accepted boundaries or task outcomes; TASK-003, TASK-004,
+and TASK-015 retain their identities, tiers, waves, dependencies, statuses,
+historical evidence, and retry history. No FT-001 task record was changed.

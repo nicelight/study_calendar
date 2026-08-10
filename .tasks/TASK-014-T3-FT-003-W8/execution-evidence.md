@@ -160,3 +160,126 @@ required.
 - Hard-scope result: no non-empty write boundary; forbidden Foundation task
   records untouched; no provider, ownership, dependency, route, or lifecycle
   change.
+
+## Attempt 3 — bounded correction retry 1/2
+
+- attempt: `Attempt 3`
+- execution-evidence status: `green-supporting-only`
+- correction basis: fresh independent functional FAIL at
+  `FT-003-AC-004 / REQ-006`, where the personal response omitted the selected
+  student's grade despite the provider fact being available.
+- readiness basis: `TASK-018-T3-FT-005-W8` is authoritative `done`; all seven
+  `TASK-014` dependencies are `done`; FT-003 Planning Revision 2 review is
+  `APPROVE`; `node scripts/mb-lint.mjs` and `node scripts/mb-doctor.mjs
+  --strict` passed during preflight.
+
+### Claim-linked RED / GREEN
+
+- accepted claim locators: `FT-003-AC-003`, `FT-003-AC-004`,
+  `FT-003-AC-005`, `FT-003-AC-006`; the correction-driving assertion is
+  `FT-003-AC-004 / REQ-006` and `AD-007`.
+- RED command: `npx vitest run tests/lesson-context/authorized-day-context.test.ts tests/lesson-context/grade-projection-route.test.ts --reporter=verbose`.
+- RED result: exit `1`; the new AC-004 assertion reached the existing personal
+  response and failed because `progress` contained attendance but no `grade`.
+  The privacy/non-mutation route regression passed `1/1` in the same run, so
+  the failure was claim-specific and not setup-related.
+- correction: `LessonContextBoundary` now extends its named Learning Progress
+  read port with `getGradeForLesson`, passes only `{ sessionToken, classId,
+  lessonId, studentAccountId }`, and returns the provider-owned
+  `progress.grade: GradeView | null`. No consumer `homeworkId` is accepted,
+  resolved, persisted, or queried.
+- GREEN command: same focused Vitest command after the correction.
+- GREEN result: exit `0`; `2 files / 5 tests` passed. Coverage includes grade
+  projection, generic API `403` for guessed student context, and unchanged
+  state before/after denied access.
+- probe changes: `tests/lesson-context/authorized-day-context.test.ts` adds
+  one provider-created homework/grade fixture and response assertion;
+  `tests/lesson-context/grade-projection-route.test.ts` adds a disposable
+  route-level privacy/non-mutation regression. No provider test or provider
+  contract was changed.
+- T3 isolation/cleanup: fresh `:memory:` CompositionRoot per test,
+  `afterEach` database close, no credentials/network/production data/external
+  side effect.
+
+### Attempt 3 actual change surface and boundary proof
+
+- production: `src/lib/server/modules/lesson-context/public.ts`.
+- tests: `tests/lesson-context/authorized-day-context.test.ts` and
+  `tests/lesson-context/grade-projection-route.test.ts`.
+- task-owned protocol/evidence: `.protocols/TASK-014-T3-FT-003-W8/{context,progress,handoff}.md` and this file; final report is in the same `.tasks` directory.
+- hard write boundary: task has no non-empty `runtime_context.write_boundary`;
+  semantic scope and forbidden Foundation records were respected.
+- accepted owner path: Lesson Context remains the read-composition owner and
+  consumes Learning Progress's named public query. Lesson Context still uses
+  its own material-table read only; no Learning Progress table bypass,
+  `homeworkId` mapping, provider contract change, graph edge, dependency,
+  architecture, or route change was introduced.
+- TASK-018: no source, test, protocol, evidence, task card, status, or
+  lifecycle file was touched by Attempt 3.
+
+### Attempt 3 gates
+
+- `npm run check` — exit `0`.
+- `npm run build` — exit `0`; adapter-auto production-environment message is
+  informational only.
+- `npm run test` — exit `0`; `16 files / 51 tests` passed.
+- `git diff --check` — exit `0` for the tracked task source/test surface.
+- `node scripts/mb-lint.mjs` — PASS (`64 files`).
+- `node scripts/mb-doctor.mjs --strict` — PASS (`0 errors, 0 warnings,
+  2 info`).
+- production-only boundary scan — PASS: no `homeworkId`,
+  `learning_homework`, or `learning_grades` access in the Lesson Context
+  production surface.
+- no reusable execute receipt offered: broad pre-existing dirty/untracked
+  worktree state prevents a compliant bounded-input reuse claim. These are
+  executor supporting evidence; fresh `/verify` remains required.
+
+### Attempt 3 handoff
+
+- task lifecycle: `TASK-014` remains `in_progress`; no manual lifecycle change.
+- no `/verify`, `/red-verify`, `/mb-sync`, dependent promotion, or closure was
+  run.
+- next verification targets: fresh `/verify TASK-014-T3-FT-003-W8`, then
+  `/red-verify TASK-014-T3-FT-003-W8` after functional PASS.
+
+## Attempt 4 — bounded correction retry 2/2
+
+- correction basis: current red-verify evidence in
+  `.tasks/TASK-014-T3-FT-003-W8/TASK-014-T3-FT-003-W8-S-RED-VERIFY-final-report-docs-01.md`
+  reports a semantic fail for `FT-003-AC-004 / REQ-006`: the authorized
+  `context.personal.progress.grade` was present in the server payload but was
+  absent from rendered personal HTML.
+- RED retained, not rerun: the report records
+  `npx vitest run --config .tasks/TASK-014-T3-FT-003-W8/vitest.red-verify-current.config.ts --reporter=verbose`
+  with exit `1`; the operator explicitly prohibited running `/red-verify` in
+  this execution.
+- production correction: `src/routes/lesson-context/+page.svelte` adds a
+  conditional personal grade row, displaying the provider grade when present
+  and `Оценка: пока не выставлена` when the grade projection is `null`.
+- claim-equivalent GREEN: `npm run test --
+  tests/lesson-context/personal-page-rendering.test.ts` — exit `0`; 1 file / 2
+  tests passed for present and empty grade states.
+- actual Attempt 4 files:
+  `src/routes/lesson-context/+page.svelte` and
+  `tests/lesson-context/personal-page-rendering.test.ts`.
+- boundary result: no provider contract, auth, route/load, Lesson Context data
+  loading, homework mapping, persistence, or TASK-018 file was changed; no
+  forbidden Foundation task record was touched. No non-empty write boundary
+  was configured.
+
+### Attempt 4 gates
+
+- `npm run check` — exit `0`; 0 Svelte errors and 0 warnings.
+- `npm run build` — exit `0`; client and SSR bundles built; adapter-auto note
+  informational only.
+- `npm run test` — exit `0`; 17 files / 53 tests passed.
+- `git diff --check -- src/routes/lesson-context/+page.svelte` — exit `0`.
+- no reusable execute receipt: broad pre-existing dirty/untracked worktree
+  state prevents bounded-input reuse; evidence is executor supporting-only.
+
+### Attempt 4 handoff
+
+- lifecycle remains `in_progress`; no `/verify`, `/red-verify`, `/mb-sync`,
+  closure, commit, push, or dependent task action was run.
+- next owner/action: fresh `/verify TASK-014-T3-FT-003-W8`, then required
+  `/red-verify TASK-014-T3-FT-003-W8` after functional PASS.

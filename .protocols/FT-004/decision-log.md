@@ -57,3 +57,27 @@ task ID, product/canonical-spec/graph decision, or Planning Revision was
 introduced. Fresh `/review-tasks-plan FT-004` remains the next route; execution,
 verification, closure, sync, promotion, and feature semantic rerun remain
 outside this planning repair.
+
+## 2026-08-10 — Planning Revision 2 reconciliation
+
+The accepted Learning Progress provider decision does not change the
+Collaboration graph or T3 rebuild split. At this planning boundary TASK-011,
+TASK-012, TASK-016, and TASK-017 remain untouched; identity, lifecycle,
+dependencies, evidence, and retry history are preserved. The downstream
+TASK-014 dependency update is owned by the FT-003 reconciliation. The later
+explicit TASK-012 lifecycle disposition is recorded in the next entry.
+
+## 2026-08-10 — TASK-012 historical superseded disposition
+
+The explicit lifecycle owner records `TASK-012-T2-FT-004-W6` as terminal
+`failed` with disposition `superseded` by `TASK-016-T3-FT-004-W6` and
+`TASK-017-T3-FT-004-W6`. This is the smallest allowed schema status: the
+original T2 Attempt 2 behavior is functionally GREEN but its protected
+cross-center correction is T3 and its independent report is
+`NEEDS-CLARIFICATION`, so TASK-012 cannot close as `done`.
+
+The current feature-level result is `semantic-pass` for FT-004-AC-001..AC-005
+through the two fresh T3 replacement task paths. The old feature
+`semantic-fail`, TASK-012 Attempt 1/2 evidence, and retry `1/2` history remain
+preserved and are not reused as current T3 proof. No implementation, test
+execution, architecture, dependency, or Planning Revision changed.

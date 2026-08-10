@@ -18,6 +18,7 @@ import type {
 } from '$lib/server/modules/identity-access/public';
 import type {
 	AttendanceView,
+	GradeView,
 	LearningProgressBoundary
 } from '$lib/server/modules/learning-progress/public';
 import type { SharedDatabase } from '$lib/server/platform/database';
@@ -41,6 +42,7 @@ export type PersonalDayProjection = {
 	studentAccountId: string;
 	progress: {
 		attendance: AttendanceView;
+		grade: GradeView | null;
 	};
 	discussion: DayDiscussionView;
 	financial: {
@@ -75,7 +77,10 @@ type LessonContextCalendarPort = Pick<
 	CenterSchedulingBoundary,
 	'getAuthorizedClassScope' | 'getLessons'
 >;
-type LessonContextProgressPort = Pick<LearningProgressBoundary, 'getAttendance'>;
+type LessonContextProgressPort = Pick<
+	LearningProgressBoundary,
+	'getAttendance' | 'getGradeForLesson'
+>;
 type LessonContextDiscussionPort = Pick<
 	CollaborationBoundary,
 	'getDayDiscussion'
@@ -210,6 +215,12 @@ export class LessonContextBoundary {
 			studentAccountId: request.studentAccountId,
 			progress: {
 				attendance: this.learningProgress.getAttendance({
+					sessionToken: request.sessionToken,
+					classId: scope.classId,
+					lessonId: lesson.lessonId,
+					studentAccountId: request.studentAccountId
+				}),
+				grade: this.learningProgress.getGradeForLesson({
 					sessionToken: request.sessionToken,
 					classId: scope.classId,
 					lessonId: lesson.lessonId,

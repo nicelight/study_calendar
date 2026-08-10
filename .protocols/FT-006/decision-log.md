@@ -13,3 +13,10 @@ The AC-004 ownership is narrowed to attendance/charge correction replay; its
 behavior is owned by AC-005 and TASK-008 with role/center authorization,
 deterministic recomputation, and audit proof. No new boundary or task identity
 is required.
+
+## 2026-08-10 — Planning Revision 2 reconciliation
+
+The accepted Learning Progress provider decision does not affect Financial
+Ledger ownership, contracts, or task outcomes. TASK-007 and TASK-008 remain
+untouched with identity, lifecycle, dependencies, evidence, and retry history
+preserved.

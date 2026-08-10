@@ -1,7 +1,7 @@
 ---
 description: Server-side authentication, authorization scope, and privacy contract.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 source_of_truth:
   - .memory-bank/contracts/access-control.md
 ---
@@ -67,6 +67,11 @@ every role.
 - Shared day responses contain shared lesson material only. Personal responses
   contain the selected student's permitted grade, discussion, attendance, and
   financial projection only.
+- The personal grade read is authorized through Learning Progress's
+  lesson-scoped query using the server-resolved actor, class/center scope,
+  lesson identity, and selected student. The caller does not supply or resolve
+  a homework identity; a guessed student or cross-context lesson query is
+  denied before private grade data is returned.
 - A denied request returns an authorization failure without leaking whether an
   unrelated student's private target exists.
 - Protected authorization is repeated in each public command/query at the

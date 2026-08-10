@@ -26,3 +26,11 @@ Include admin membership operations, individual/group class representation, sche
 ## Gates and verification
 
 Run `npm run check`, `npm run build`, and `npm run test`; verify AC-001/002 on TASK-005 and AC-003/004/005/006 on TASK-006. The cards define RED/GREEN probes for center authorization, both modes, unaffected repetitions, transfer identity, assignment authorization, attribution, and Financial Ledger charge uniqueness. Lesson Context, Collaboration, and Learning Progress projections remain downstream consumer-owned outcomes; adding dependencies on those consumers would create cycles.
+
+## Planning Revision 2 reconciliation
+
+The global backbone remains `complete` at Planning Revision 2. The accepted
+Center & Scheduling boundary and its downstream consumer topology are
+unchanged; TASK-005 and TASK-006 retain their identities, tiers, waves,
+dependencies, statuses, historical evidence, and retry history. No FT-002 task
+record was changed.

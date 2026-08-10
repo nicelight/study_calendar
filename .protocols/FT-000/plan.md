@@ -1,6 +1,7 @@
 ---
 description: Durable plan for the FT-000 Foundation planning handoff.
 status: active
+last_updated: 2026-08-10
 ---
 # FT-000 Foundation Plan
 
@@ -14,7 +15,7 @@ walking skeleton before product feature tasking.
 
 - [.memory-bank/foundation.md](../../.memory-bank/foundation.md): required Foundation decision, pressure map, minimal path, and exit criteria.
 - [.memory-bank/requirements.md](../../.memory-bank/requirements.md#req-000--executable-foundation-baseline): REQ-000 and RTM entry.
-- [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md): complete strict architecture scaffold, Planning Revision 1.
+- [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md): complete strict architecture scaffold, Planning Revision 2.
 - [.memory-bank/architecture/system-architecture.md](../../.memory-bank/architecture/system-architecture.md#accepted-target): one-server modular monolith and composition root.
 - [.memory-bank/contracts/boundary-map.md](../../.memory-bank/contracts/boundary-map.md#modules): accepted capability slices and write owners.
 - [.memory-bank/contracts/access-control.md](../../.memory-bank/contracts/access-control.md): server-side actor and scope authorization.
@@ -45,11 +46,12 @@ new global spec or used to widen the Foundation target.
 | Task | Tier | Wave | Status | Responsibility | Dependency |
 |---|---|---|---|---|---|
 | `TASK-001-T3-FT-000-W0` | T3 | W0 | done | Bootstrap substrate, composition/boundary seams, and focused harness. | none |
-| `TASK-002-T3-FT-000-W1` | T3 | W1 | planned | Final integrated check/build/test/start/smoke gate. | `TASK-001-T3-FT-000-W0` |
+| `TASK-002-T3-FT-000-W1` | T3 | W1 | done | Final integrated check/build/test/start/smoke gate. | `TASK-001-T3-FT-000-W0` |
 
-There is exactly one final Foundation gate: `TASK-002-T3-FT-000-W1`. No
-product task records are created; the W0 completion is reflected from its
-authoritative task record, while the final gate remains open.
+There is exactly one final Foundation gate: `TASK-002-T3-FT-000-W1`. Both
+Foundation records match their authoritative task records, and the final gate
+has functional and semantic evidence. No product task lifecycle is changed by
+this Foundation plan.
 
 ## Scope controls
 
@@ -60,10 +62,13 @@ authoritative task record, while the final gate remains open.
 - Keep provider and database vendor choices at the execution-level seam unless
   implementation evidence exposes a new material architecture branch; then
   stop and route that branch to `/spec-design`.
+- The Planning Revision 2 Lesson Context -> Learning Progress provider decision
+  is downstream product-planning scope; it does not change the FT-000 proof
+  claims or add a Foundation task.
 - Use only isolated/disposable probe state with safe rerun and cleanup.
 
 ## Handoff
 
-This planning boundary hands the queue to `/mb-doctor --strict`. Execution is
-owned by the subsequent Foundation phase; this workflow does not invoke
-`/exe`, `/verify`, `/red-verify`, `/autopilot`, or product tasking.
+This planning boundary hands the reconciled queue to `/mb-doctor --strict`.
+This revalidation invokes no task execution or lifecycle mutation; product task
+planning remains a separate downstream workflow.

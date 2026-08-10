@@ -28,6 +28,21 @@ status: active
 - Affected scope: global architecture style, runtime/deployment shape, source of truth, module boundaries, contracts, storage/data flow, and Foundation Dev Path.
 - Owning workflow: `/spec-design --all`; canonical sequence still requires the pending fresh-context `/review-feat-plan` gate immediately before design.
 
+## 2026-08-10 — Operator KISS decision applied for TASK-014 / FT-003
+
+- Accepted decision: Learning Progress owns lesson-to-homework
+  selection/relation semantics and provides an authorized lesson-scoped grade
+  query using `lessonId` plus server-resolved actor/context.
+- Preserved constraints: modular monolith, one shared database, one SvelteKit
+  server on one server; Lesson Context remains a read-composition consumer and
+  does not invent `homeworkId`, read provider tables, or introduce an
+  alternative persisted relation.
+- `/spec-design --all` applied the decision to the existing canonical specs and
+  advanced Global Backbone Planning Revision `1 -> 2` exactly once.
+- Existing task statuses/lifecycles, evidence, retry budgets, and the outer run
+  checkpoint remain unchanged. Product task-plan reconciliation is required
+  before any TASK-014 retry.
+
 ## 2026-08-08 — Feature-plan review rejected
 - Verdict: `REJECT`; completed repair cycles: 0 (initial review is not a repair cycle).
 - Evidence: `.tasks/TASK-MB-REVIEW-FEAT-PLAN/REQUEST.md` and `.tasks/TASK-MB-REVIEW-FEAT-PLAN/TASK-MB-REVIEW-FEAT-PLAN-S-FEAT-final-report-docs-01.md`.

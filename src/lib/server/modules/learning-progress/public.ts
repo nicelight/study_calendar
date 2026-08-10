@@ -343,6 +343,39 @@ export class LearningProgressBoundary {
 		return row ? this.toGradeView(row) : null;
 	}
 
+	getGradeForLesson(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+		studentAccountId: string;
+	}): GradeView | null {
+		const { scope } = this.requireClassScope(request.sessionToken, request.classId);
+		this.requireClassStudent(scope, request.studentAccountId);
+		const lesson = this.requireLesson(request.sessionToken, scope, request.lessonId);
+
+		const candidates = this.database.sqlite
+			.prepare(
+				`SELECT id, center_id, class_id, title, created_by_account_id, created_at
+				 FROM learning_homework
+				 WHERE center_id = ? AND class_id = ?`
+			)
+			.all(lesson.centerId, lesson.classId) as HomeworkRow[];
+
+		if (candidates.length > 1) {
+			throw new Error('ambiguous-homework-selection');
+		}
+		if (candidates.length === 0) {
+			return null;
+		}
+
+		return this.getGrade({
+			sessionToken: request.sessionToken,
+			classId: lesson.classId,
+			homeworkId: candidates[0].id,
+			studentAccountId: request.studentAccountId
+		});
+	}
+
 	private requireClassScope(
 		sessionToken: string | undefined,
 		classId: string

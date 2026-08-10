@@ -26,3 +26,10 @@ Consumers query the named public boundary; they do not write scheduling state. L
 ## Verification
 
 Use project-native gates plus claim-linked paths: AC-001/002 center and class authorization; AC-003 recurrence isolation; AC-004 transfer identity and charge uniqueness; AC-005 historical access; AC-006 immediate removal denial. Each owned AC has a concrete RED/GREEN observation and artifact path in its indexed card.
+
+## Revision 2 reconciliation
+
+Global Backbone `complete`, Planning Revision `2`; FT-002 reuses the accepted
+Center & Scheduling boundary with no task-level impact. TASK-005 and TASK-006
+remain untouched with their identity, status, evidence, dependencies, and
+retry history preserved.

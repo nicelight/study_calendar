@@ -28,3 +28,11 @@ lifecycle. Updated blocked `TASK-004` to depend on the repaired follow-up.
 Because that dependency changed on an existing task, the queue action is
 `rebuild_required` under the feature-to-tasks reconciliation contract. Planning
 Revision remains `1`.
+
+## 2026-08-10 — Planning Revision 2 reconciliation
+
+The accepted Learning Progress lesson-scoped grade decision does not affect
+FT-001's Identity & Access boundary or task outcomes. TASK-003, TASK-004, and
+TASK-015 remain untouched; their identity, lifecycle, dependencies, evidence,
+and retry history are preserved. Current plan readiness is Revision 2 and fresh
+task-plan review remains required.

@@ -4,6 +4,78 @@ status: active
 ---
 # Changelog
 
+## [2026-08-10] Wave 6 — FT-004 feature-level boundary sync after lifecycle reconciliation
+- Reconciled: current FT-004 `semantic-pass` claims are routed only through
+  `TASK-016-T3-FT-004-W6` and `TASK-017-T3-FT-004-W6`, covering AC-001..AC-005
+  with their current functional `PASS` and T3 semantic evidence.
+- Updated: FT-004 feature navigation, `IMPL-FT-004`, and the feature-level sync
+  report now describe the current claim ownership and evidence routes.
+- Preserved: historical `TASK-012` `failed`/`superseded` disposition, T2/W6
+  identity, dependencies, retry history, Attempt 1/2 evidence, old feature
+  `semantic-fail`, and Attempt 2 `NEEDS-CLARIFICATION` remain unchanged.
+- Unchanged: FT-004 remains `status: draft` / `lifecycle: planned`; no code,
+  task identity, retry budget, architecture, Planning Revision, promotion,
+  closure, or dependent transition changed.
+- Validation: sync-local re-read passed; caller-owned `node scripts/mb-lint.mjs`
+  passed (64 files) and `node scripts/mb-doctor.mjs --strict` passed (0 errors,
+  0 warnings, 2 info).
+
+## [2026-08-10] Wave 6 — FT-004 historical lifecycle reconciliation
+- Reconciled: TASK-012 is now indexed `failed` with an explicit historical
+  `superseded` disposition to TASK-016/TASK-017; no unsupported `superseded`
+  schema status was introduced.
+- Updated: FT-004 current evidence now records feature-level
+  `SEMANTIC_VERDICT: semantic-pass` for AC-001..AC-005 and links the fresh
+  report plus the current T3 replacement evidence.
+- Preserved: TASK-012 identity, T2/W6 tier and wave, dependencies, Attempt 1/2
+  evidence, retry history, old feature `semantic-fail`, and Attempt 2
+  `NEEDS-CLARIFICATION`; the old report remains untouched.
+- Unchanged: FT-004 document lifecycle remains `draft`/`planned`; no code,
+  tests, architecture, dependency, or Planning Revision changed.
+- Validation: task JSON/evidence links, task index/dependency references,
+  feature/plan/decision-log routing, and historical report preservation were
+  re-read locally; no `/verify`, `/red-verify`, `mb-lint`, or doctor was run.
+
+## [2026-08-10] Wave 8 — FT-003 feature-level semantic boundary sync
+- Reconciled: indexed `TASK-013-T2-FT-003-W7`, `TASK-014-T3-FT-003-W8`, and
+  provider prerequisite `TASK-018-T3-FT-005-W8` are `done` with current
+  claim-linked functional/semantic evidence; FT-003 feature evidence is
+  `semantic-pass`.
+- Updated: FT-003 feature navigation and `IMPL-FT-003` now route the current
+  TASK-014 functional/semantic evidence, the TASK-018 provider evidence, and
+  this feature-level sync report.
+- Preserved: AC-001/002 ownership remains with TASK-013, AC-003..006 with
+  TASK-014, and the lesson-scoped provider claim with TASK-018. No claim was
+  broadened beyond its authoritative evidence.
+- Preserved: task cards, task identities, current dependency set, retry
+  budgets, accepted architecture, FT-003/EP-002 state, and REQ lifecycle
+  values remain unchanged; no closure, promotion, or dependent transition was
+  applied by `/mb-sync`.
+- Validation: sync-local links/index/RTM/spec/lifecycle checks passed;
+  explicit Architect/operator post-sync `node scripts/mb-lint.mjs` passed
+  (64 files) and `node scripts/mb-doctor.mjs --strict` passed (0 errors,
+  0 warnings, 2 info).
+
+## [2026-08-10] Wave 8 — TASK-018 FT-005 boundary sync
+- Reconciled: authoritative `TASK-018-T3-FT-005-W8` is `done` with current
+  functional `PASS` and required T3 `semantic-pass` evidence for the
+  provider-owned lesson-scoped grade query; its card now carries those
+  existing evidence markers.
+- Updated: FT-005 task coverage and `IMPL-FT-005` link the current functional
+  protocol, semantic report, and this W8 boundary report.
+- Confirmed: task index entry, exact dependencies, REQ-009/REQ-014 RTM
+  ownership, Planning Revision 2 canonical routes, and root/feature routers
+  agree with the authoritative task and evidence sources.
+- Preserved: TASK-014 remains `in_progress` with its accepted dependency on
+  TASK-018; no TASK-014 lifecycle, source, protocol, or evidence surface was
+  changed.
+- Preserved: FT-005/EP-004 document status and lifecycle and affected REQ
+  lifecycle values remain `draft`/`planned`; no feature-level semantic
+  verdict, promotion, or dependent transition was applied.
+- Validation: sync-local checks plus the explicit Architect/operator-owned
+  post-sync `mb-lint` (64 files) and `mb-doctor --strict` (0 errors, 0 warnings)
+  passed.
+
 ## [2026-08-10] Wave 7 — FT-003 full boundary sync
 - Reconciled: authoritative `TASK-013-T2-FT-003-W7` is `done` with current
   functional `PASS` evidence and FT-003 feature-level `semantic-pass` evidence

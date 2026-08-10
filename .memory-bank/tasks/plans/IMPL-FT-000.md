@@ -1,7 +1,7 @@
 ---
 description: Foundation implementation plan for the FT-000 walking skeleton.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 source_of_truth:
   - .memory-bank/tasks/plans/IMPL-FT-000.md
 ---
@@ -68,7 +68,8 @@ Owned by `TASK-002-T3-FT-000-W1` after W0 is done:
 - Project-native isolated foundation tests and task-scoped evidence.
 
 Exact filenames for the database adapter, migration source, provider test
-double, and test runner remain executor choices inside the accepted roots.
+double, and test runner were left as executor choices inside the accepted
+roots.
 
 ## Explicit exclusions
 

@@ -84,6 +84,16 @@ contracts are owned by `/spec-design` and composed here through:
 
 Feature-level contract detail remains downstream task-design work.
 
+## Applied Global Design Decision
+
+At Planning Revision 2, Learning Progress is the provider owner for
+lesson-to-homework selection/relation semantics and the authorized
+lesson-scoped personal grade query. The FT-005 grade facts and privacy outcome
+remain owned by `TASK-009-T3-FT-005-W5`; the provider-compatible query outcome is
+planned separately in `TASK-018-T3-FT-005-W8` so historical TASK-009 evidence is
+not broadened retroactively. Lesson Context consumes the named query and does
+not persist or resolve a competing `lessonId -> homeworkId` mapping.
+
 ## Task Coverage at W5 Boundary
 
 - W5 `TASK-009-T3-FT-005-W5` is reconciled through the current Attempt 2
@@ -113,3 +123,22 @@ Feature-level contract detail remains downstream task-design work.
 - Feature document `status: draft`, feature `lifecycle: planned`, and the
   EP-004/REQ lifecycle values remain unchanged; no product promotion was
   applied by `/mb-sync`.
+
+## Task Coverage at W8 Boundary
+
+- The authoritative [TASK-018-T3-FT-005-W8 card](../tasks/TASK-018-T3-FT-005-W8.task.json)
+  is `done` with current functional `PASS` and required T3 semantic
+  `semantic-pass` evidence for the provider-owned lesson-scoped grade query:
+  - [functional verification protocol](../../.protocols/TASK-018-T3-FT-005-W8/verification.md)
+  - [semantic verification report](../../.tasks/TASK-018-T3-FT-005-W8/TASK-018-T3-FT-005-W8-S-RED-VERIFY-final-report-docs-01.md)
+  - [W8 boundary sync report](../../.tasks/TASK-018-T3-FT-005-W8/TASK-018-T3-FT-005-W8-S-MB-SYNC-final-report-docs-01.md)
+- The current evidence proves provider-owned lesson resolution and homework
+  selection, exact-one/zero/multiple fail-closed cardinality, the accepted
+  selected-student grade/privacy path, and read-only state preservation.
+  TASK-009 remains the owner of the original homework/grade facts; its evidence
+  is not broadened retroactively.
+- Executor RED/GREEN and native gate receipts remain supporting evidence; the
+  current functional and semantic verifier records above are the closure path.
+- Feature document `status: draft`, feature `lifecycle: planned`, EP-004
+  lifecycle, and REQ-009/REQ-014 RTM lifecycle values remain unchanged. No
+  feature-level semantic verdict or product promotion was inferred.

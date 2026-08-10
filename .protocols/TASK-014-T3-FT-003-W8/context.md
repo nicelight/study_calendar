@@ -35,6 +35,24 @@ or cross-student access server-side.
   the provider public boundary. Both are outside this retry's accepted scope;
   no production correction was started.
 
+## Execution Attempt — Attempt 3
+
+- attempt: Attempt 3
+- started: 2026-08-10 14:48 +0500
+- retry: bounded correction retry 1/2 after `TASK-018-T3-FT-005-W8` reached
+  authoritative `done` with functional PASS and semantic-pass evidence.
+- correction basis: the prior independent functional FAIL at
+  `FT-003-AC-004 / REQ-006`, now repairable through the accepted
+  `LearningProgressBoundary.getGradeForLesson` contract.
+- readiness: all seven indexed dependencies are `done`; FT-003 Planning
+  Revision 2 task-plan review is `APPROVE`; `mb-lint` and strict `mb-doctor`
+  pass.
+- bounded correction: Lesson Context will consume only
+  `getGradeForLesson({ sessionToken, classId, lessonId, studentAccountId })`
+  and add the returned provider-owned grade projection to the personal
+  response. No `homeworkId` is passed or resolved by Lesson Context, and
+  TASK-018 remains untouched.
+
 ## Inputs (what drives this task)
 
 - Task record: `.memory-bank/tasks/TASK-014-T3-FT-003-W8.task.json`
@@ -98,16 +116,36 @@ or cross-student access server-side.
   are preserved and no target Lesson Context source existed.
 - Task status was `ready`; it is now `in_progress` before the first probe.
 
-## Open questions / blockers
+## Attempt 3 result
 
-- `BLOCKED`: the accepted provider contract has no legal way for Lesson Context
-  to obtain the selected student's grade projection for a lesson. The next
-  owner must decide whether the contract is lesson-linked or exposes an
-  authorized aggregate; do not implement a DB bypass or guessed identifier.
+- The prior provider-contract blocker is resolved by the authoritative
+  `TASK-018` `done` outcome and Revision 2 KISS contract. Lesson Context now
+  consumes `getGradeForLesson` through its public port and projects the
+  provider-owned selected grade into the personal response.
+- No new product, provider-contract, ownership, architecture, dependency,
+  privacy, or verification decision was introduced.
 
 ## Next session
 
-- Resolve the recorded `/spec-design` blocker, then reconcile FT-003 task
-  planning and re-run the exact task only after the accepted provider boundary
-  is durable. No `/verify`, `/red-verify`, `/mb-sync`, or lifecycle closure was
-  run by this retry.
+- Attempt 3 produced a GREEN implementation handoff. Fresh `/verify` followed
+  by `/red-verify` remains due for T3 closure; no `/verify`, `/red-verify`,
+  `/mb-sync`, or lifecycle closure was run by this execution.
+
+## Execution Attempt — Attempt 4
+
+- attempt: Attempt 4
+- started: 2026-08-10 15:11 +0500
+- retry: bounded correction retry 2/2 after the current `/red-verify` semantic
+  failure at `FT-003-AC-004 / REQ-006`.
+- correction basis: `.tasks/TASK-014-T3-FT-003-W8/TASK-014-T3-FT-003-W8-S-RED-VERIFY-final-report-docs-01.md`.
+- accepted correction: render the already authorized
+  `context.personal.progress.grade` in `src/routes/lesson-context/+page.svelte`,
+  with a safe empty state when the provider projection is `null`.
+- hard scope: no non-empty `write_boundary` is configured; the only production
+  source target is the existing Lesson Context page presentation. Tests stay
+  under `tests/lesson-context/`.
+- forbidden scope: Foundation task records named in the task card are not
+  touched; TASK-018 and all provider, route/load, mapping, and contract files
+  remain out of scope.
+- lifecycle: task remains `in_progress`; no lifecycle mutation is authorized
+  by this retry.

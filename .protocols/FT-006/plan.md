@@ -25,3 +25,10 @@ Financial Ledger exclusively writes financial records; Lesson Context only consu
 ## Verification
 
 Run native gates with claim-linked paths: AC-001 historical price, AC-002 oldest-debt replay, AC-003 exact partial/excess states, AC-004 correction/audit replay, AC-005 authority, AC-006 non-financial marker projection, and AC-007 retry safety. Each card records separate RED/GREEN observations and artifacts for its owned ACs.
+
+## Revision 2 reconciliation
+
+Global Backbone `complete`, Planning Revision `2`; FT-006 reuses the accepted
+Financial Ledger contracts and has no task-level impact. TASK-007 and TASK-008
+remain untouched with identity, status, evidence, dependencies, and retry
+history preserved.

@@ -54,6 +54,11 @@
 				<div class="section-label">Личный контекст</div>
 				<h2 id="personal-title">Ученик {context.personal.studentAccountId}</h2>
 				<p>Посещаемость: {context.personal.progress.attendance.attendance}</p>
+				{#if context.personal.progress.grade}
+					<p>Оценка: {context.personal.progress.grade.grade}</p>
+				{:else}
+					<p>Оценка: пока не выставлена</p>
+				{/if}
 				<p>Личная дискуссия: {context.personal.discussion.commonMessages.length} сообщений</p>
 				<p>Баланс: {context.personal.financial.balance.balance}</p>
 			</section>

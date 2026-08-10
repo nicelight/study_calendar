@@ -1,7 +1,7 @@
 ---
 description: Global system architecture, runtime shape, composition root, and Architecture Spine.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 source_of_truth:
   - .memory-bank/architecture/system-architecture.md
 ---
@@ -34,10 +34,10 @@ student, and financial boundaries explicit.
   Constitution constraints.
 - The MVP has no accepted asynchronous event bus, external service boundary,
   agent/tool runtime, or multi-server deployment requirement.
-- The repository is currently a greenfield documentation baseline: no product
-  runtime, package manifest, database schema/migration baseline, or test
-  harness is present. This is Foundation pressure, not permission to change
-  the accepted target.
+- The repository began as a greenfield documentation baseline; the completed
+  Foundation gate now provides the product runtime, package manifest, shared
+  database schema/adapter, and test harness. Current product implementation is
+  as-is evidence and remains subordinate to the accepted target contracts.
 
 ## Architecture Spine
 
@@ -133,6 +133,25 @@ subject specifications.
 - Source: accepted operator target, [.memory-bank/domains/core-domain.md](../domains/core-domain.md),
   and [.memory-bank/runbooks/mvp-verification.md](../runbooks/mvp-verification.md).
 
+#### AD-007 — Lesson-scoped grade projection remains Learning Progress-owned
+- Binds: personal day composition, lesson-to-homework selection, and grade
+  privacy across Lesson Context and Learning Progress.
+- Prevents: invented `homeworkId` values, Lesson Context direct database
+  mapping, duplicated grade-selection rules, and a consumer-owned persisted
+  relation.
+- Rule: Learning Progress owns lesson-to-homework selection/relation semantics
+  and exposes an authorized lesson-scoped personal progress query such as
+  `getGradeForLesson({ lessonId, actor/context })`. Lesson Context passes the
+  stable lesson identity and server-resolved context and consumes the result;
+  it never resolves or persists the homework identity itself.
+- Verification: the personal-day integration path proves the query receives
+  `lessonId` plus actor/context, returns only the selected student's permitted
+  grade, and denies wrong-student or wrong-scope access without a database
+  bypass.
+- Source: explicit operator decision applied by `/spec-design --all` on
+  2026-08-10 and
+  [.memory-bank/contracts/boundary-map.md#personal-progress-query-boundary](../contracts/boundary-map.md#personal-progress-query-boundary).
+
 ## Main Architecture Units
 
 ### 1. SvelteKit application shell
@@ -175,8 +194,11 @@ owning module's commands.
 3. The capability that owns the requested outcome checks the actor's server-side
    role and context, then executes its command/query.
 4. A cross-slice use case calls named public boundaries from its orchestration
-   owner. A single transaction may cover the participating owners, but no
-   participant bypasses another owner's command boundary.
+  owner. A single transaction may cover the participating owners, but no
+  participant bypasses another owner's command boundary.
+   For a personal day, Lesson Context passes `lessonId` and the selected
+   student/server-resolved actor context to Learning Progress's lesson-scoped
+   query; it does not construct a `homeworkId` or persist a mapping.
 5. The owning modules persist to the shared database or read through their
    public queries. Projections are read models; they never become a second
    source of truth.
@@ -204,6 +226,9 @@ owning module's commands.
   [.memory-bank/contracts/boundary-map.md](../contracts/boundary-map.md).
 - Shared authorization semantics are in
   [.memory-bank/contracts/access-control.md](../contracts/access-control.md).
+- The lesson-scoped grade projection is owned by Learning Progress through the
+  [Personal Progress Query Boundary](../contracts/boundary-map.md#personal-progress-query-boundary);
+  Lesson Context is only its authorized composition consumer.
 - Financial command, state, projection, and replay rules are in
   [.memory-bank/contracts/financial-ledger.md](../contracts/financial-ledger.md).
 - Detailed domain ownership and lifecycles are in
@@ -223,11 +248,13 @@ owning module's commands.
 
 ## Current-State Evidence and Foundation Pressure
 
-The repository contains Memory Bank and workflow scripts but no application
-package/runtime, database schema or migration baseline, executable entry path,
-or test harness. The accepted target therefore requires a separate Foundation
-Dev Path before feature tasking can safely begin. The decision and exit probes
-are canonical in [.memory-bank/foundation.md](../foundation.md).
+The Foundation gate has established the SvelteKit package/runtime, executable
+entry path, shared-database adapter, and project-native test harness now present
+under `src/` and `tests/`. The target still retains the separate Foundation Dev
+Path decision and completed gate anchor; current product code is as-is evidence
+only and does not override the accepted lesson-scoped provider contract. The
+Foundation decision and exit probes are canonical in
+[.memory-bank/foundation.md](../foundation.md).
 
 ## Deferred Decisions
 

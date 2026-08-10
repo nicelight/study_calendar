@@ -135,23 +135,27 @@ Feature-level contract detail remains downstream task-design work.
   - [current semantic report](../../.tasks/TASK-017-T3-FT-004-W6/TASK-017-T3-FT-004-W6-S-RED-VERIFY-final-report-docs-01.md)
 - The full [W6 boundary sync report](../../.tasks/TASK-017-T3-FT-004-W6/TASK-017-T3-FT-004-W6-S-MB-SYNC-final-report-docs-01.md)
   records the combined TASK-016/TASK-017 reconciliation.
-- TASK-012 remains historical `T2` / `W6` / `in_progress` with its original
-  identity, dependencies, and Attempt 1/2 evidence; its historical functional
-  GREEN and the feature `semantic-fail` are not replaced by a feature-level
-  semantic-pass here.
-- FT-004 document `status: draft`, feature `lifecycle: planned`, and the
-  existing `SEMANTIC_VERDICT: semantic-fail` remain unchanged. No feature,
-  epic, REQ, dependent-task, closure, promotion, or architecture decision was
-  applied by this sync.
+- TASK-012 is now a historical terminal `failed` task with an explicit
+  `superseded` disposition. Its original `T2` / `W6` identity, dependencies,
+  task-owned claims, Attempt 1/2 evidence, retry history, and under-tiered
+  `NEEDS-CLARIFICATION` record remain preserved; it is not current T3 proof.
+- The fresh feature-level semantic result is recorded in the current report
+  below as `semantic-pass`: TASK-016 and TASK-017 provide the independent T3
+  evidence covering FT-004-AC-001..AC-005.
+- FT-004 document `status: draft` and feature `lifecycle: planned` remain
+  unchanged. No architecture, Planning Revision, REQ/epic promotion, or
+  dependent transition was applied by this reconciliation.
 
 ## Semantic Verification
 
+- Historical feature-level adversarial report (preserved, not erased):
+  [FT-004 semantic-fail report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md).
 - Current feature-level adversarial report:
-  [FT-004 red verification](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md).
-- A supported class delete/recreate path can expose a prior center's retained
-  comments, reactions, threaded messages, and branch tab to another center.
-  The lifecycle owner must route the defect through existing BUG/follow-up
-  handling and rerun the affected functional and feature semantic gates after
-  repair; this verification changed no lifecycle or scheduler state.
+  [FT-004 semantic-pass report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-02.md).
+- Current feature-level durable reconciliation:
+  [FT-004 feature sync report](../../.tasks/FT-004/FT-004-S-MB-SYNC-final-report-docs-01.md).
+- The current result covers all five acceptance criteria through the fresh
+  feature review and the current T3 task evidence. The prior supported
+  class-delete/recreate disclosure remains historical correction evidence only.
 
-SEMANTIC_VERDICT: semantic-fail
+SEMANTIC_VERDICT: semantic-pass

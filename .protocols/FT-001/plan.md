@@ -27,3 +27,10 @@ The product tasks use the existing Identity & Access owner and do not write memb
 ## Verification
 
 Run the project-native check/build/test gates and the claim-linked paths: AC-001 valid invitation binding plus role-choice denial; AC-002 reconfirmed second-provider binding; AC-003/AC-005 provisioning authorization, alternate-command absence, expired/revoked/reused/duplicate rejection, and account+invitation rollback; AC-004 outage/callback atomic failure. Each new task records concrete RED and equivalent GREEN with state-before/state-after evidence for its owned claims.
+
+## Revision 2 reconciliation
+
+Global Backbone `complete`, Planning Revision `2`; FT-001 canonical concerns
+remain satisfied by the existing task set. No FT-001 task record, lifecycle,
+evidence, dependency, or retry history changed. Fresh review remains required
+for the current global revision.

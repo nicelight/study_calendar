@@ -1,9 +1,10 @@
-# /review-tasks-plan FT-004
+# /review-tasks-plan --all
 
 - ROLE: Reviewer
-- Scope: FT-004; TASK-011, preserved TASK-012, replacements TASK-016/TASK-017, and downstream TASK-014 with its dependency records
-- Mode: fresh independent semantic planning review after the controlled T3 rebuild/split
-- Reviewed Planning Revision: 1
-- Required architecture subreview: completed by a fresh local Reviewer pass using `/architecture-review`; no separate artifact created
+- Scope: FT-001..FT-006 product queue; FT-000 reviewed only as the Foundation gate constraint; special focus FT-005/TASK-018 and downstream TASK-014
+- Mode: fresh independent read-only semantic planning review after TASK-018 correction
+- Reviewed Planning Revision: 2
+- Required architecture subreview: completed by bounded local Reviewer passes using `/architecture-review`; no separate artifact created
 - Prohibited operations honored: no edits to specs, plans, task cards, index, feature lifecycle, statuses, execution, verification, doctor, autopilot, or sync
-- Historical handling: TASK-012 remains preserved as T2/W6/in_progress evidence only; its Attempt 2 GREEN and FT-004 semantic-fail marker were not used as replacement closure proof
+- Historical handling: existing done/in_progress/failed records, including TASK-009/TASK-010 evidence and TASK-014 retry history, remain preserved; no historical evidence was backfilled or promoted
+- Validation: canonical schema `.memory-bank/schemas/task.schema.json`; project-native `node scripts/mb-lint.mjs` passed; index/DAG/Revision 2 checks passed

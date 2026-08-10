@@ -1,0 +1,22 @@
+Attempt: 1
+Input source basis:
+- repository HEAD: a8898e94f321566fccd8dd67f734ea12ea14245f
+- public.ts SHA-256: 22da8cb86a52f19b7f690c6a1f92cbeea41db1cad3b4f1c3ea2dd7ab7cf678b8
+- lesson-scoped-grade.test.ts SHA-256: 769cd796319605f1013b556818d5cfbdef227647839ad4d89e32225cc56aeba5
+- no relevant source/test edits occurred between the final focused run and
+  these gates; `svelte-kit sync`/Vite generated only ignored build output.
+
+Command: npm run check
+Exit code: 0
+Observable result: svelte-check found 0 errors and 0 warnings.
+
+Command: npm run build
+Exit code: 0
+Observable result: Vite SSR and client builds completed successfully; the
+adapter-auto environment notice is informational and did not fail the build.
+
+Command: npm run test
+Exit code: 0
+Observable result at 2026-08-10 14:25:59 +0500:
+Test Files  15 passed (15)
+Tests       50 passed (50)

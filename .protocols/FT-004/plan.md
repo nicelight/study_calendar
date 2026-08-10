@@ -20,7 +20,7 @@ any change to the accepted modular-monolith graph and shared-database target.
 ## Readiness, canonical inputs, and ownership
 
 - Feature: [.memory-bank/features/FT-004-day-collaboration.md](../../.memory-bank/features/FT-004-day-collaboration.md)
-- Global readiness: [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md), `Global Backbone Status: complete`, `Planning Revision: 1`.
+- Global readiness: [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md), `Global Backbone Status: complete`, `Planning Revision: 2`.
 - Registry: [.memory-bank/spec-index.md](../../.memory-bank/spec-index.md); no new canonical concern is required.
 - Foundation prerequisite: `TASK-002-T3-FT-000-W1` is the completed final gate, reached transitively through the existing FT-004 dependency chain.
 - Primary owner: Collaboration at `src/lib/server/modules/collaboration/`.
@@ -43,11 +43,12 @@ reads, target checks, ownership-sensitive mutations, and uniqueness boundaries
 after supported class identity reuse. The tier policy therefore requires fresh
 T3 ownership for the security-sensitive correction.
 
-`TASK-012-T2-FT-004-W6` remains exactly `T2`, `W6`, `in_progress`, with its
-dependencies, identity, task-owned AC-003/AC-004 basis, and all Attempt 1/2
-evidence preserved. Its functional GREEN and the feature-level
-`semantic-fail` are supporting rebuild inputs only; neither is fresh T3 proof
-and neither is used as a replacement dependency.
+At the rebuild boundary, `TASK-012-T2-FT-004-W6` remained exactly `T2`, `W6`,
+`in_progress`, with its dependencies, identity, task-owned AC-003/AC-004
+basis, and all Attempt 1/2 evidence preserved. Its functional GREEN and the
+feature-level `semantic-fail` were supporting rebuild inputs only; neither was
+fresh T3 proof nor a replacement dependency. The current lifecycle decision is
+recorded separately as historical `failed`/`superseded`.
 
 The rebuild has two independently completable and verifiable sibling outcomes:
 comment/reaction center-lifecycle isolation and threaded-discussion
@@ -81,8 +82,9 @@ independently challenge the row's security-sensitive harm surface. No evidence
 is created by this planning repair.
 
 `TASK-014-T3-FT-003-W8` depends on both replacement cards and retains its
-authoritative `blocked` status. The planning-time routing was the approved
-`/review-tasks-plan FT-004` at `Planning Revision: 1`, followed by the
+authoritative `in_progress` status. The planning-time routing was the approved
+`/review-tasks-plan FT-004` at `Planning Revision: 1`; the current fresh review
+must use `Planning Revision: 2`, followed by the
 applicable readiness gate and sequential execution/verification of the two
 replacement IDs. This plan does not apply dependent unblock, closure,
 promotion, or a feature-level semantic verdict.
@@ -100,3 +102,23 @@ promotion, or a feature-level semantic verdict.
   ownership remains outside this planning repair.
 - No hard `runtime_context.write_boundary` is added; `touched_files` remain
   advisory, while each card's `forbidden_scope` and stop conditions remain hard.
+
+## Revision 2 reconciliation
+
+The accepted Learning Progress provider decision did not alter Collaboration
+ownership or the controlled T3 split. At that Planning Revision 2 planning
+boundary, TASK-011, TASK-012, TASK-016, and TASK-017 were preserved with their
+identity, lifecycle, evidence, dependencies, and retry history; the downstream
+TASK-014 dependency reconciliation is recorded in FT-003. The later explicit
+TASK-012 historical `failed`/`superseded` disposition is recorded below.
+
+## Current lifecycle reconciliation
+
+The fresh FT-004 feature result is `semantic-pass`, backed by the current T3
+functional and semantic evidence on TASK-016 and TASK-017 for AC-001..AC-005.
+TASK-012 is explicitly terminal `failed`/`superseded` by those two replacement
+tasks because its corrected T2 handoff is under-tiered and
+`NEEDS-CLARIFICATION`; its identity, tier, dependencies, Attempt 1/2 evidence,
+and retry history remain preserved. FT-004 document status/lifecycle remains
+`draft`/`planned`; no promotion, architecture change, or Planning Revision
+change is part of this reconciliation.

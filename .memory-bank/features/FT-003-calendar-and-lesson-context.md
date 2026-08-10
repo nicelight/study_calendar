@@ -6,7 +6,7 @@ id: FT-003
 lifecycle: planned
 epic: EP-002
 requirements: [REQ-005, REQ-006, REQ-014, REQ-016]
-spec_design_status: blocked
+spec_design_status: complete
 spec_design_links:
   - .memory-bank/architecture/system-architecture.md#composition-and-request-data-flow
   - .memory-bank/contracts/boundary-map.md#personal-progress-query-boundary
@@ -94,13 +94,22 @@ through:
 
 Feature-level contract detail remains downstream task-design work.
 
-## Global Design Blocker
+## Applied Global Design Decision
 
-The global backbone is blocked on the operator-owned Learning Progress grade
-projection decision recorded in
-[spec-backbone HALT_BLOCKING_QUESTIONS](../spec-backbone.md#halt_blocking_questions).
-`FT-003-AC-004` remains applicable; no task status, historical evidence, retry
-budget, or feature lifecycle was changed by this gate.
+The operator accepted the KISS provider-owned projection on 2026-08-10:
+Learning Progress owns lesson-to-homework selection/relation semantics and
+exposes an authorized lesson-scoped grade query using `lessonId` plus
+server-resolved actor/context. Lesson Context consumes that query and does not
+invent `homeworkId`, read Learning Progress tables, or introduce a separate
+persisted mapping. The canonical contract is the
+[Personal Progress Query Boundary](../contracts/boundary-map.md#personal-progress-query-boundary).
+
+Global design coverage is complete at Planning Revision 2. The task surface is
+now reconciled to the accepted provider contract: Learning Progress owns the
+lesson-scoped grade query, while Lesson Context remains its read-composition
+consumer. Existing task identity, status, historical evidence, retry budget,
+and feature lifecycle are preserved; the provider follow-up is indexed as
+`TASK-018-T3-FT-005-W8` and `TASK-014-T3-FT-003-W8` now depends on it.
 
 ## Task Coverage at W7 Boundary
 
@@ -110,21 +119,47 @@ budget, or feature lifecycle was changed by this gate.
   - [functional verification report](../../.tasks/TASK-013-T2-FT-003-W7/TASK-013-T2-FT-003-W7-S-VERIFY-final-report-docs-01.md)
   - [feature semantic report](../../.tasks/FT-003/FT-003-S-RED-VERIFY-final-report-docs-01.md)
   - [W7 boundary sync report](../../.tasks/TASK-013-T2-FT-003-W7/TASK-013-T2-FT-003-W7-S-MB-SYNC-final-report-docs-01.md)
-- [TASK-014-T3-FT-003-W8](../tasks/TASK-014-T3-FT-003-W8.task.json) remains
-  authoritatively `blocked` and retains ownership of `FT-003-AC-003..AC-006`;
-  this boundary sync applies no unblock or promotion.
+- [TASK-014-T3-FT-003-W8](../tasks/TASK-014-T3-FT-003-W8.task.json) retains
+  ownership of `FT-003-AC-003..AC-006`; its existing task-record status,
+  lifecycle, and historical evidence are preserved. Its reconciled Revision 2
+  handoff consumes the provider-owned lesson-scoped grade query and does not
+  resolve `homeworkId` in Lesson Context.
+  - [functional verification report](../../.tasks/TASK-014-T3-FT-003-W8/TASK-014-T3-FT-003-W8-S-VERIFY-final-report-docs-02.md)
+  - [semantic verification report](../../.tasks/TASK-014-T3-FT-003-W8/TASK-014-T3-FT-003-W8-S-RED-VERIFY-final-report-docs-01.md)
+  - [claim-scoped execution evidence](../../.tasks/TASK-014-T3-FT-003-W8/execution-evidence.md)
+- [TASK-018-T3-FT-005-W8](../tasks/TASK-018-T3-FT-005-W8.task.json) is the
+  completed provider prerequisite used by FT-003-AC-004/AC-006. Its durable
+  claim is limited to Learning Progress ownership of the lesson-scoped query,
+  provider-owned selection, privacy, fail-closed cardinality, and read-only
+  behavior:
+  - [functional verification protocol](../../.protocols/TASK-018-T3-FT-005-W8/verification.md)
+  - [semantic verification report](../../.tasks/TASK-018-T3-FT-005-W8/TASK-018-T3-FT-005-W8-S-RED-VERIFY-final-report-docs-01.md)
+  - [provider sync report](../../.tasks/TASK-018-T3-FT-005-W8/TASK-018-T3-FT-005-W8-S-MB-SYNC-final-report-docs-01.md)
 - FT-003 document `status: draft`, feature `lifecycle: planned`, and the
   existing RTM lifecycle values remain unchanged.
 
 ## Semantic Verification
 
-- Current W7 feature-level adversarial review:
+- Current standalone adversarial review:
   [FT-003 red verification](../../.tasks/FT-003/FT-003-S-RED-VERIFY-final-report-docs-01.md).
-- The current `TASK-013-T2-FT-003-W7` implementation passes semantic review for
-  AC-001/AC-002: exact URL date navigation, independent elastic week geometry,
-  reachable non-lesson days, color-independent state cues, SSR/hydration, and
-  presentation-only ownership were evidenced with no material finding.
-- AC-003..AC-006 remain owned by `TASK-014-T3-FT-003-W8`; this marker does not
-  replace their task-scoped functional or privacy evidence.
+- Fresh evidence passes AC-001..AC-006 for calendar geometry/date navigation,
+  shared/personal material reuse, selected-student grade projection/rendering,
+  navigation identity, generic API/SSR denial, privacy, and non-mutation. No
+  material product-semantic finding was admitted.
+- TASK-013, TASK-014, and provider dependency TASK-018 have current indexed
+  claim-linked functional/semantic evidence; `node scripts/mb-doctor.mjs
+  --strict` passes with 0 errors and 0 warnings.
+- Coverage includes provider-owned lesson-scoped grade selection, visible grade
+  rendering, privacy/403 behavior, navigation identity, SSR/API adapters, and
+  read-path non-mutation. No semantic replan is required.
 
 SEMANTIC_VERDICT: semantic-pass
+
+## Feature-Level Durable Sync
+
+- [FT-003 W8 feature boundary sync report](../../.tasks/FT-003/FT-003-S-MB-SYNC-final-report-docs-01.md)
+  records the reconciliation of the current indexed task outcomes and the
+  feature-level semantic report.
+- The sync carries only claim-linked durable evidence into feature navigation;
+  it does not create a new product decision or change task, architecture,
+  dependency, retry-budget, or lifecycle state.

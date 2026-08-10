@@ -14,14 +14,27 @@ Deliver elastic weekly calendar navigation and authorized shared/personal lesson
 - Primary owner: Lesson Context at `src/lib/server/modules/lesson-context/`.
 - Consumer boundaries: Calendar and Membership Query, Personal Progress Query, Day Discussion Query, and Financial Projection Query in [boundary-map](../../.memory-bank/contracts/boundary-map.md).
 - Composition spine: [.memory-bank/architecture/system-architecture.md#composition-and-request-data-flow](../../.memory-bank/architecture/system-architecture.md#composition-and-request-data-flow)
+- Planning authority: [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md), Global Backbone `complete`, Planning Revision `2`.
 
 ## Boundary and waves
 
 1. `TASK-013-T2-FT-003-W7` owns calendar geometry, date selection, and perceivable lesson state (AC-001, AC-002), after scheduling.
-2. `TASK-014-T3-FT-003-W8` owns shared/personal composition, context-preserving navigation, and server-side privacy (AC-003..AC-006), after all provider slices.
+2. `TASK-018-T3-FT-005-W8` is the Learning Progress provider prerequisite for
+   the authorized lesson-scoped personal grade query.
+3. `TASK-014-T3-FT-003-W8` owns shared/personal composition, context-preserving
+   navigation, and server-side privacy (AC-003..AC-006), after all provider
+   slices including TASK-018. It passes `lessonId` and server-resolved
+   actor/context and never resolves `homeworkId`.
 
 Cross-slice business orchestration remains in Lesson Context; provider data remains owned by its source slice.
 
 ## Verification
 
-Run native gates with claim-linked paths: AC-001 geometry/date navigation, AC-002 color-independent cue, AC-003 shared material, AC-004 personal composition, AC-005 context preservation, and AC-006 guessed-student denial. The T2/T3 cards carry separate RED/GREEN observations and artifacts for every claim.
+Run native gates with claim-linked paths: AC-001 geometry/date navigation, AC-002 color-independent cue, the AD-007 provider query on TASK-018, AC-003 shared material, AC-004 personal composition, AC-005 context preservation, and AC-006 guessed-student denial. The T2/T3 cards carry separate RED/GREEN observations and artifacts for every owned claim.
+
+## Revision 2 reconciliation
+
+TASK-013 remains untouched. TASK-014 keeps its identity, tier, wave, status,
+historical evidence, and retry budget; only its provider prerequisite and
+lesson-scoped query handoff were reconciled. No dependent unblock, retry,
+closure, promotion, or verification was performed.

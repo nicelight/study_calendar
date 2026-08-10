@@ -6,67 +6,80 @@ status: active
 
 ## Summary
 
-- Attempt 2 bounded correction retry is stopped at preflight after the fresh
-  independent `/verify` Attempt 1 failure at `FT-003-AC-004 / REQ-006`.
-- Attempt 1 RED/GREEN and the independent failure report remain preserved as
-  historical/supporting-only correction basis.
-- `LearningProgressBoundary.getGrade` is already public, but it is keyed by a
-  required `homeworkId`; the accepted Lesson Context boundary has no legal
-  lesson-to-homework mapping or aggregate grade query to consume.
-- No production, provider, route, test-behavior, task-status, or lifecycle
-  change was made during Attempt 2. Fresh GREEN and gates are therefore absent.
-- Exact blocker: `/spec-design` must decide the missing provider projection
-  contract; then `/feature-to-tasks FT-003` must reconcile task planning before
-  this task can be retried.
+- Attempt 3 completed the bounded correction after the authoritative closure of
+  `TASK-018-T3-FT-005-W8`. Personal Lesson Context now includes
+  `progress.grade` from Learning Progress's `getGradeForLesson` public query.
+- The consumer passes `sessionToken`, `classId`, `lessonId`, and selected
+  `studentAccountId`; it does not pass or resolve `homeworkId` and does not
+  access Learning Progress persistence.
+- Attempt 3 RED/GREEN and native gates are recorded in `progress.md` and
+  `execution-evidence.md`; the previous Attempt 1 failure and Attempt 2
+  contract stop remain historical correction evidence.
+- `TASK-014` lifecycle remains `in_progress`; this handoff does not close it.
+- TASK-018, its provider contract, source, protocol, evidence, and lifecycle
+  were not modified.
 
 ## Where to look
 
 - key files:
   - `src/lib/server/modules/lesson-context/public.ts`
-  - `src/lib/server/platform/database.ts`
-  - `src/lib/server/composition-root.ts`
-  - `src/routes/lesson-context/`
-  - `src/routes/api/lesson-context/`
   - `tests/lesson-context/authorized-day-context.test.ts`
+  - `tests/lesson-context/grade-projection-route.test.ts`
   - `.tasks/TASK-014-T3-FT-003-W8/`
   - `.protocols/TASK-014-T3-FT-003-W8/{context,plan,progress,verification}.md`
-- advisory `touched_files` deviation: database schema and composition-root
-  wiring are necessary same-outcome integration files; the full inventory and
-  rationale are in `execution-evidence.md`.
+- advisory `touched_files` deviation: the new route regression test is inside
+  the task's declared `tests/lesson-context/` surface; no other source area
+  was added in Attempt 3.
 - hard write-boundary compliance: no non-empty boundary was set; forbidden
   scope remains untouched.
 
 ## How to run / verify
 
-- No Attempt 2 gate is runnable until the `/spec-design` and FT-003 planning
-  blocker is resolved. The commands below are the required gates for the next
-  legal retry, not evidence of this stopped attempt.
+- Attempt 3 gates completed successfully:
 - gates:
   - `npm run check`
   - `npm run build`
   - `npm run test`
 - claim-linked RED/GREEN evidence: `.tasks/TASK-014-T3-FT-003-W8/execution-evidence.md`
   and `progress.md`.
-- local smoke observations: SSR shell HTTP `200`; guessed SSR/API access
-  returned generic HTTP `403`; exact invocation receipt was not preserved.
-- current-attempt reuse candidate locators: none offered.
-- superseded/supporting-only receipt locators: Attempt 1 receipt and its
-  claim-linked GREEN in `.tasks/TASK-014-T3-FT-003-W8/execution-evidence.md`
-  are supporting-only; the independent verifier failure remains the current
-  correction basis; no reuse candidate is offered.
+- current-attempt reuse candidate locators: none offered; broad pre-existing
+  worktree state prevents a compliant bounded-input reuse claim.
+- historical Attempt 1 receipt/GREEN and independent failure remain
+  supporting-only; Attempt 3 evidence is executor evidence only.
 
 ## Known issues
 
-- Execution blocker is recorded in
-  `.tasks/TASK-014-T3-FT-003-W8/execution-evidence.md#attempt-2--boundary-preflight`:
-  the existing single-homework `getGrade` contract cannot supply a
-  lesson-scoped personal grade without a new/changed provider boundary or a
-  forbidden persistence bypass.
+- No unresolved implementation blocker remains inside the accepted KISS
+  contract. Fresh independent functional and semantic verification remain due.
 
 ## Follow-ups
 
-- Next owner: `/spec-design`, then `/feature-to-tasks FT-003` and the required
-  planning/readiness review route; only after that should the exact task be
-  retried.
+- Next owner: fresh `/verify TASK-014-T3-FT-003-W8`, then required
+  `/red-verify TASK-014-T3-FT-003-W8` after functional PASS.
 - `/verify`, `/red-verify`, `/mb-sync`, lifecycle closure, and another task are
   explicitly out of scope for this execution.
+
+## Current handoff — Attempt 4 / bounded correction retry 2/2
+
+- `FT-003-AC-004 / REQ-006` UI correction is complete: the personal form now
+  visibly renders the authorized `progress.grade.grade`, with
+  `Оценка: пока не выставлена` as the safe `null` state.
+- current production file: `src/routes/lesson-context/+page.svelte`.
+- current regression: `tests/lesson-context/personal-page-rendering.test.ts`
+  covers both present and absent grade rendering through SSR.
+- retained RED: current red-verify report remains the correction-driving
+  semantic evidence; it was not rerun because the operator prohibited
+  `/red-verify` in this execution.
+- current GREEN/gates: focused rendering `2/2`, `npm run check`, `npm run build`,
+  and full `npm run test` (`17 files / 53 tests`) passed.
+- scope proof: provider contract, auth, routing, Lesson Context load/data
+  loading, homework mapping, TASK-018, and forbidden Foundation task records
+  were untouched. No lifecycle change was made; task remains `in_progress`.
+- no execute reuse receipt is offered due to broad pre-existing dirty/untracked
+  worktree state.
+
+### Next owner
+
+- Run fresh `/verify TASK-014-T3-FT-003-W8`; after functional PASS run the
+  required `/red-verify TASK-014-T3-FT-003-W8`. This execution did not run
+  either command, did not sync lifecycle, and did not commit or push.
