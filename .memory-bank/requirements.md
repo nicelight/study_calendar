@@ -93,19 +93,88 @@ status: draft
 | REQ | Epic | Feature | Test | Lifecycle |
 |---|---|---|---|---|
 | REQ-000 | Foundation | FT-000 | test:foundation-baseline;test:foundation-smoke | planned |
-| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..005 | planned |
-| REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..005 | planned |
-| REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002 | planned |
-| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004 | planned |
-| REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004 | planned |
-| REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-004-AC-001;FT-004-AC-005 | planned |
-| REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | planned |
-| REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | planned |
-| REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | planned |
-| REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-004 | planned |
-| REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | planned |
-| REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | planned |
-| REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006 | planned |
-| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006 | test:FT-001-AC-001;FT-001-AC-005;FT-002-AC-001;FT-002-AC-005..006;FT-003-AC-006;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005 | planned |
-| REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | planned |
-| REQ-016 | EP-002, EP-005 | FT-003, FT-006 | test:FT-003-AC-001;FT-006-AC-002..006 | planned |
+| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..008 | verified |
+| REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
+| REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002 | verified |
+| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004 | verified |
+| REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004 | verified |
+| REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-004-AC-001;FT-004-AC-005 | verified |
+| REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | verified |
+| REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | verified |
+| REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | verified |
+| REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-004 | verified |
+| REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
+| REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
+| REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006 | verified |
+| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006 | test:FT-001-AC-001;FT-001-AC-005..008;FT-002-AC-001;FT-002-AC-005..006;FT-003-AC-006;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005 | verified |
+| REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
+| REQ-016 | EP-002, EP-005 | FT-003, FT-006 | test:FT-003-AC-001;FT-006-AC-002..006 | verified |
+
+## W10 task evidence route
+
+`TASK-022-T3-FT-001-W10` provides current supporting evidence for the
+REQ-001/REQ-002/REQ-014 portions of browser-bound callback transport under
+FT-001-AC-006 and FT-001-AC-007. The authoritative task card is `done` with
+independent `VERDICT: PASS` and per-task `SEMANTIC_VERDICT: semantic-pass`;
+the RTM lifecycle for REQ-001 and REQ-002 is `verified`; shared REQ-014
+remains `planned`.
+
+- [TASK-022 card](tasks/TASK-022-T3-FT-001-W10.task.json)
+- [functional evidence](../.tasks/TASK-022-T3-FT-001-W10/TASK-022-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md)
+- [semantic evidence](../.tasks/TASK-022-T3-FT-001-W10/TASK-022-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md)
+- [sync evidence](../.tasks/TASK-022-T3-FT-001-W10/TASK-022-T3-FT-001-W10-S-MB-SYNC-final-report-docs-01.md)
+
+`TASK-023-T3-FT-001-W10` provides current supporting evidence for the
+REQ-001/REQ-002/REQ-014 portions of bounded auth-state retention and failed
+provider-start cleanup under FT-001-AC-004 and FT-001-AC-007. The authoritative
+task card is `done` with independent `PASS` and per-task
+`semantic-pass`; the RTM lifecycle for REQ-001 and REQ-002 is `verified`, while
+shared REQ-014 remains `planned`.
+
+- [TASK-023 card](tasks/TASK-023-T3-FT-001-W10.task.json)
+- [functional evidence](../.tasks/TASK-023-T3-FT-001-W10/TASK-023-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md)
+- [semantic evidence](../.tasks/TASK-023-T3-FT-001-W10/TASK-023-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md)
+- [sync evidence](../.tasks/TASK-023-T3-FT-001-W10/TASK-023-T3-FT-001-W10-S-MB-SYNC-final-report-docs-01.md)
+
+`TASK-024-T3-FT-001-W10` provides current supporting evidence for the
+REQ-001/REQ-002/REQ-014 composition/platform wiring portions of browser/API
+provider access under FT-001-AC-006 and FT-001-AC-007. The authoritative task
+card is `done` with independent `PASS` and per-task `semantic-pass`; the RTM
+lifecycle for REQ-001 and REQ-002 is `verified`, while shared REQ-014 remains
+`planned`.
+
+- [TASK-024 card](tasks/TASK-024-T3-FT-001-W10.task.json)
+- [functional evidence](../.tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md)
+- [semantic evidence](../.tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md)
+- [sync evidence](../.tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-MB-SYNC-final-report-docs-01.md)
+
+## FT-001 feature-level evidence route — 2026-08-11
+
+The fresh feature-level `/red-verify --feature FT-001` returned
+`SEMANTIC_VERDICT: semantic-pass` over AC-001..AC-008. Primary ownership remains
+TASK-004 (AC-001/002/004), TASK-015 (AC-003/005), TASK-020 (AC-006/007), and
+TASK-021 (AC-008). W10 tasks are supporting only: TASK-022 for AC-006/007
+browser binding, TASK-023 for AC-004/007 retention/failure, and TASK-024 for
+AC-006/007 composition/platform wiring.
+
+- [feature semantic report](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
+- [feature MB-SYNC report](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md)
+
+The RTM lifecycle for REQ-001 and REQ-002 is `verified`; shared REQ-014 remains
+`planned` because it is mapped to other features outside this decision.
+Historical failed TASK-003 evidence remains preserved and is not reused as
+current proof.
+
+## FT-001 lifecycle reconciliation — 2026-08-11
+
+The explicit top-level operator decision reconciles the authoritative FT-001
+feature document to `status: active` and `lifecycle: verified` after the
+terminal queue and already-passed functional, semantic, review, strict-doctor,
+and W10 technical-debt gates. REQ-001 and REQ-002 now route to RTM
+`Lifecycle: verified`; shared REQ-014 remains `planned` until its other feature
+mappings are verified. No acceptance criteria, canonical spec, task status,
+dependency, tier, or historical failure record changed.
+
+- [FT-001 feature document](features/FT-001-authentication-and-binding.md)
+- [feature semantic evidence](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
+- [feature reconciliation evidence](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md)

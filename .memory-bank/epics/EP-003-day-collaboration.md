@@ -1,9 +1,9 @@
 ---
 description: Epic for comments, reactions, and threaded day communication.
-status: draft
+status: active
 type: epic
 id: EP-003
-lifecycle: planned
+lifecycle: verified
 ---
 # EP-003 — Day Collaboration
 

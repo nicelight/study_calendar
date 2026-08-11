@@ -1,9 +1,9 @@
 ---
 description: Product feature for homework status, grading, and attendance.
-status: draft
+status: active
 type: feature
 id: FT-005
-lifecycle: planned
+lifecycle: verified
 epic: EP-004
 requirements: [REQ-009, REQ-010, REQ-014, REQ-015]
 spec_design_status: complete

@@ -1,0 +1,6 @@
+Command: npm run test -- tests/routes/auth-transport.test.ts
+Working directory: /home/serg/Projects/study_calendar
+Result: exit 1
+Observation: Vitest failed before running tests because
+../../src/routes/auth/transport.server did not exist. This is the honest
+pre-implementation RED for the missing browser transport claim.

@@ -1,0 +1,26 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 2
+CLAIMS: FT-001-AC-006 / FT-001-AC-007 browser-bound callback state and bounded retention
+COMMAND: ./node_modules/.bin/vitest run tests/adapters/provider-boundary.test.ts tests/routes/auth-transport.test.ts -t 'prunes expired state|discards state when provider start fails so a retry can issue a fresh capability'
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  worktree: broad pre-existing dirty/untracked W9/W10 product and task artifacts;
+    current Attempt 2 changes are limited to the TASK-022 protocol/evidence,
+    src/lib/server/platform/auth-state.ts, src/routes/auth/transport.server.ts,
+    tests/adapters/provider-boundary.test.ts, and tests/routes/auth-transport.test.ts.
+  runtime: Node v22.22.1; npm 9.2.0; disposable Vitest fixtures only.
+
+OBSERVATION:
+2 test files passed; 2 selected correction tests passed and 13 tests were
+skipped by the filter. Expired state is pruned before replacement issuance,
+and provider-start failure discards the issued state so a retry can issue the
+same deterministic state without invalid-auth-state. No credentials, network,
+production database, or forbidden W9 artifact was used.
+
+VITEST_OUTPUT:
+RUN v4.1.10 /home/serg/Projects/study_calendar
+Test Files 2 passed (2)
+Tests 2 passed | 13 skipped (15)
+Start at 10:22:57; Duration 612ms

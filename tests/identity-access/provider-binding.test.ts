@@ -96,8 +96,11 @@ describe('external identity binding', () => {
 					.get(accountId)
 			).toEqual({ center_id: 'center-own' });
 
-			root.identityAccess.createSession({ token: `session-${provider}`, accountId });
-			const actor = root.identityAccess.resolveActor(`session-${provider}`);
+			const sessionToken = root.identityAccess.authenticateVerifiedIdentity({
+				provider,
+				subject: providerSubject
+			});
+			const actor = root.identityAccess.resolveActor(sessionToken);
 			expect(root.centerScheduling.getAuthorizedCenterScope(actor, 'center-own')).toMatchObject({
 				accountId,
 				role
@@ -120,7 +123,10 @@ describe('external identity binding', () => {
 			},
 			verifiedProvider
 		);
-		root.identityAccess.createSession({ token: 'confirmed-session', accountId: 'student-both' });
+		const confirmedSession = root.identityAccess.authenticateVerifiedIdentity({
+			provider: 'telegram',
+			subject: 'telegram-student-both'
+		});
 
 		const beforeUnauthenticated = state();
 		expect(() =>
@@ -135,7 +141,7 @@ describe('external identity binding', () => {
 		expect(() =>
 			root.identityAccess.bindSecondProvider(
 				{
-					confirmedSessionToken: 'confirmed-session',
+					confirmedSessionToken: confirmedSession,
 					provider: 'google',
 					providerSubject: 'google-student-both'
 				},
@@ -147,7 +153,7 @@ describe('external identity binding', () => {
 		expect(() =>
 			root.identityAccess.reconfirmSessionForProviderBinding(
 				{
-					sessionToken: 'confirmed-session',
+					sessionToken: confirmedSession,
 					provider: 'telegram',
 					providerSubject: 'not-the-session-owner'
 				},
@@ -156,7 +162,7 @@ describe('external identity binding', () => {
 		).toThrow('session-reconfirmation-failed');
 		root.identityAccess.reconfirmSessionForProviderBinding(
 			{
-				sessionToken: 'confirmed-session',
+					sessionToken: confirmedSession,
 				provider: 'telegram',
 				providerSubject: 'telegram-student-both'
 			},
@@ -165,7 +171,7 @@ describe('external identity binding', () => {
 
 		root.identityAccess.bindSecondProvider(
 			{
-				confirmedSessionToken: 'confirmed-session',
+					confirmedSessionToken: confirmedSession,
 				provider: 'google',
 				providerSubject: 'google-student-both'
 			},

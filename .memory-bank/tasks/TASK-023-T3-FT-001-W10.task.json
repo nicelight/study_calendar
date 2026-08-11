@@ -1,0 +1,162 @@
+{
+  "id": "TASK-023-T3-FT-001-W10",
+  "title": "Bound authentication-state retention and failed-start cleanup",
+  "status": "done",
+  "wave": "W10",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-022-T3-FT-001-W10"
+  ],
+  "touched_files": [
+    "src/lib/server/platform/auth-state.ts",
+    "src/routes/auth/transport.server.ts",
+    "tests/routes/auth-transport.test.ts",
+    "tests/adapters/provider-boundary.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    }
+  ],
+  "verify": [
+    "RED: With a fake clock, issue expired and abandoned authentication states and observe that the current Map retains expired entries; induce provider begin/configuration failure after issue and observe that the just-issued state remains retained.",
+    "GREEN: State issue and consume remove expired records as part of their bounded operation, and a provider begin failure discards the just-issued state without deleting valid sibling states; no background cleanup, capacity policy, durable store, or unrelated state lifecycle is introduced.",
+    "VERIFY: Independently run fake-clock retention, valid-sibling preservation, expired-consume, and failed-provider-start probes with deterministic state factories; compare observable reuse/consumption behavior and state snapshots before/after, then run the full project gates and safe cleanup.",
+    {
+      "stage": "functional",
+      "attempt": "Fresh standalone /verify",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-023-T3-FT-001-W10/verification.md",
+      "artifact": ".tasks/TASK-023-T3-FT-001-W10/TASK-023-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Verifier-owned fake-clock and transport probe passed 1 file / 4 tests and covered full issue/consume expiry cleanup, failed-start discard, valid sibling preservation, safe 502, and unchanged account/identity/invitation/session state.",
+        "Fresh verifier-owned focused suite passed 2 files / 17 tests; check, build, and full test passed with 21 files / 81 tests.",
+        "Source scan found no background worker or persistence path and confirmed route delegation through public transport/Identity & Access/provider boundaries; executor receipts remained supporting-only and pre-implementation GREEN was accepted.",
+        "The verification record was produced before lifecycle closure; no code, W9/TASK-022 artifact, or mb-sync action changed during verification."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Standalone /red-verify",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-023-T3-FT-001-W10/red-verification.md",
+      "artifact": ".tasks/TASK-023-T3-FT-001-W10/TASK-023-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent hostile review found no material break across retention cleanup, failed-start scope, sibling preservation, product-state isolation, no-worker/no-persistence anti-goals, and architecture boundary.",
+        "Semantic evidence uses the fresh verifier-owned disposable probe, source/boundary inspection, and green native gates; no executor receipt was used as independent proof.",
+        "The semantic review was produced before lifecycle closure; no lifecycle, code, W9/TASK-022 artifact, or mb-sync action changed during review."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md"
+  ],
+  "evidence_required": [
+    "FT-001-AC-004 / REQ-002 / .memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules RED: provider-start failure or expired auth state leaves a retained live capability or permits partial callback state; GREEN: failed start returns the safe provider error, expired records are removed during the bounded operation, and account/identity/invitation/session state is unchanged; decisive comparison: state-before/state-after equality and no usable failed-attempt capability; artifact: .tasks/TASK-023-T3-FT-001-W10/ and .protocols/TASK-023-T3-FT-001-W10/.",
+    "FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention RED: an expired or abandoned invitation authentication state remains retained, or failed provider start leaves a live invitation capability; GREEN: issue/consume cleanup and failed-start discard preserve valid sibling state while invitation/account/identity/session state remains unchanged; decisive comparison: expired/failed state is unusable and the invitation snapshot is equal before and after rejection; artifact: .tasks/TASK-023-T3-FT-001-W10/ and .protocols/TASK-023-T3-FT-001-W10/."
+  ],
+  "purpose": "Make the existing process-local authentication-state TTL a real bounded retention rule and close the failed provider-start leak.",
+  "success_outcome": "Expired authentication-state records are removed during issue/consume and a failed provider start removes only its newly issued record, while valid sibling flows remain usable and no new persistence or cleanup service exists.",
+  "anti_goals": [
+    "Do not add a background cleanup worker, second persistence store, cache, global capacity policy, or process-restart recovery mechanism.",
+    "Do not broaden cleanup into invitation, session, account, or provider identity lifecycle changes.",
+    "Do not change the browser-binding contract from TASK-022, provider protocols, accepted architecture, or any W9 task/history artifact."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/platform/",
+      "src/routes/auth/",
+      "tests/routes/",
+      "tests/adapters/"
+    ],
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-019-T3-FT-001-W9.task.json",
+      ".memory-bank/tasks/TASK-020-T3-FT-001-W9.task.json",
+      ".memory-bank/tasks/TASK-021-T3-FT-001-W9.task.json",
+      ".protocols/TASK-019-T3-FT-001-W9/",
+      ".protocols/TASK-020-T3-FT-001-W9/",
+      ".protocols/TASK-021-T3-FT-001-W9/",
+      ".tasks/TASK-019-T3-FT-001-W9/",
+      ".tasks/TASK-020-T3-FT-001-W9/",
+      ".tasks/TASK-021-T3-FT-001-W9/"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if bounded cleanup requires changing the accepted one-server modular-monolith + SQLite architecture, adding durable auth-state persistence, or introducing a background worker/event mechanism.",
+      "Stop if cleanup requires a new product retention/capacity decision, changes invitation/session/provider lifecycle semantics, or changes the provider verification contract.",
+      "Stop if any W9 task card, protocol, execution evidence, semantic evidence, lifecycle, or retry history would need modification."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-004",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-007",
+    ".memory-bank/requirements.md#req-001--account-binding-and-provider-access",
+    ".memory-bank/requirements.md#req-002--provider-failure-safety",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    "PAPERCUTS/TECHDEBTS/tech-debt-wave-W9-2026-08-11.md",
+    ".memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention",
+    ".memory-bank/contracts/authentication-transport.md#verification-target",
+    ".memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/domains/core-domain.md#persisted-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/contracts/provider-adapters.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/testing/strategy.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md#main-constraints",
+    ".memory-bank/architecture/system-architecture.md#deployment",
+    ".memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention",
+    ".memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Retain the accepted five-minute state TTL and process-local Map; cleanup is bounded to issue/consume and failed provider begin.",
+    "Failed provider begin must discard only the state created for that attempt and must preserve any other unexpired state capability.",
+    "Use deterministic fake-clock and disposable transport fixtures with safe rerun/cleanup; no live credentials, production database, or network dependency."
+  ],
+  "invariants": [
+    "No expired auth-state record remains retained after the bounded issue/consume operation completes.",
+    "A provider-start failure leaves no newly issued auth-state record while valid unrelated states remain usable.",
+    "Cleanup does not mutate account, identity, invitation, or session state."
+  ],
+  "verification_targets": [
+    "Existing FT-001 provider-failure/invitation regression / REQ-001 / REQ-002 / REQ-014: fake-clock and injected-provider transport probes observe expiry cleanup, failed-start discard, valid sibling preservation, safe provider error, and unchanged product state.",
+    "FT-001-AC-004 / REQ-002 / .memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules: with deterministic fake-clock and provider doubles, compare expired-state and failed-start RED/GREEN behavior; verify safe provider failure, no provider/product completion, and unchanged account/identity/invitation/session state.",
+    "FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention: verify expired/abandoned invitation capability cleanup, failed-start discard, valid sibling preservation, safe rerun, and unchanged invitation/session snapshot.",
+    ".memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention: verify cleanup on issue/consume, failed-start discard, process-local scope, and absence of second persistence/background cleanup.",
+    ".memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules: verify missing configuration/provider failure remains explicit and does not write product persistence.",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership: store the fake-clock/probe results and independent functional/semantic verdicts under the task-local paths."
+  ]
+}

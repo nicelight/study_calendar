@@ -1,0 +1,24 @@
+
+ RUN  v4.1.10 /home/serg/Projects/study_calendar
+
+ ❯ tests/routes/admin-provisioning.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/routes/admin-provisioning.test.ts [ tests/routes/admin-provisioning.test.ts ]
+Error: Cannot find module '../../src/routes/admin/provisioning.server' imported from /home/serg/Projects/study_calendar/tests/routes/admin-provisioning.test.ts
+ ❯ tests/routes/admin-provisioning.test.ts:2:1
+      1| import { describe, expect, it } from 'vitest';
+      2| import { createAdminProvisioningTransport } from '../../src/routes/adm…
+       | ^
+      3|
+      4| describe('protected Admin participant transport', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  03:17:51
+   Duration  385ms (transform 35ms, setup 0ms, import 0ms, tests 0ms, environment 1ms)
+

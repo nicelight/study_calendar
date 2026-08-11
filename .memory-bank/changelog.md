@@ -4,6 +4,199 @@ status: active
 ---
 # Changelog
 
+## [2026-08-11] Product outer lifecycle reconciliation
+
+- Applied the already-recorded outer owner decision: FT-002..FT-006 and
+  EP-001..EP-005 are `active` / `verified`; RTM REQ-003..REQ-016, including
+  shared REQ-014, is `verified`.
+- Preserved all task records and history, including historical
+  `TASK-012-T2-FT-004-W6=failed`; this is not final human product acceptance.
+
+## [2026-08-11] Wave 10 — FT-001 lifecycle verification reconciliation
+
+- Applied: explicit top-level operator decision to set FT-001 document
+  `status: active` and feature `lifecycle: verified` after the terminal queue,
+  current task/feature semantic gates, Planning Revision 2 approval, strict
+  doctor PASS, and W10 technical-debt PASS with no material findings.
+- Reconciled: RTM `REQ-001` and `REQ-002` to `verified`; shared `REQ-014`
+  remains `planned` because its other feature mappings are outside this
+  decision.
+- Preserved: TASK-003 historical `failed` status and evidence, TASK-019..024
+  statuses/dependencies/tiers, all task retry and verification history, FT-001
+  AC/spec content, and all other features/epics. No task was re-executed.
+- Evidence: [FT-001 feature semantic report](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md),
+  [FT-001 feature sync report](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md),
+  and [W10 tech-debt report](../PAPERCUTS/TECHDEBTS/tech-debt-wave-W10-2026-08-11.md).
+
+## [2026-08-11] Wave 10 — FT-001 feature-level MB-SYNC after semantic pass
+
+- Reconciled: fresh feature-level `semantic-pass` over FT-001 AC-001..AC-008
+  into the feature doc, `IMPL-FT-001`, the RTM evidence route, and FT-001
+  protocol indexes.
+- Recorded supporting ownership only: TASK-022 → AC-006/007 browser binding,
+  TASK-023 → AC-004/007 bounded retention/failure, and TASK-024 → AC-006/007
+  composition/platform wiring. Primary AC ownership remains TASK-004,
+  TASK-015, TASK-020, and TASK-021.
+- Preserved historical failed TASK-003, all task statuses and evidence history,
+  FT-001 `status: draft` / `lifecycle: planned`, REQ lifecycles, and promotion;
+  no code or canonical spec decision changed. The pure `spec-index` and task
+  index were validated without semantic edits.
+- Evidence: [feature semantic report](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
+  and [feature MB-SYNC report](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md).
+
+## [2026-08-11] Wave 10 — TASK-024 composition wiring sync
+
+- Reconciled: authoritative `TASK-024-T3-FT-001-W10` is `done` with current
+  independent functional `PASS` and required per-task T3 `semantic-pass`
+  evidence into the task card, FT-001, the REQ RTM evidence route,
+  `IMPL-FT-001`, and the FT-001 protocol indexes.
+- Recorded only the proven composition-boundary result: platform/config and
+  the single composition root own provider registry wiring; auth transport is
+  dependency-only; configured Telegram/Google starts, safe missing-config
+  failure, and client secret non-exposure remain intact. TASK-020 remains the
+  primary AC-006/AC-007 proof owner.
+- Preserved TASK-022/023 and all W9 task/protocol/evidence history and
+  ownership; FT-001/REQ lifecycle, dependency, promotion, architecture, and
+  Planning Revision remain unchanged.
+- Validation: sync-local task/feature/RTM/index/protocol/evidence links and
+  lifecycle/status boundaries were re-read; full lint, `/mb-doctor`, code, and
+  project tests were not run by `/mb-sync`.
+
+## [2026-08-11] Wave 10 — TASK-023 bounded auth-state retention sync
+
+- Reconciled: authoritative `TASK-023-T3-FT-001-W10` is `done` with current
+  independent functional `PASS` and required per-task T3 `semantic-pass`
+  evidence into the task card, FT-001, the REQ RTM evidence route,
+  `IMPL-FT-001`, and the FT-001 protocol indexes.
+- Recorded only the proven bounded result: issue/consume expiry pruning,
+  failed-start discard of only the newly issued state, valid-sibling
+  preservation, safe provider failure, and unchanged product state. Honest
+  pre-implementation GREEN remains supporting evidence; no new worker, store,
+  capacity policy, or lifecycle was introduced.
+- Preserved TASK-022 and all W9 task/protocol/evidence history and ownership;
+  TASK-024 remains `planned`, FT-001/REQ lifecycle remains unchanged, and no
+  dependency, promotion, architecture, or feature-owner transition was made.
+- Validation: sync-local task/feature/RTM/index/protocol/evidence links and
+  lifecycle/status boundaries were re-read; full lint, `/mb-doctor`, code, and
+  project tests were not run by `/mb-sync`.
+
+## [2026-08-11] Wave 10 — TASK-022 browser-context binding sync
+
+- Reconciled: authoritative `TASK-022-T3-FT-001-W10` is `done` with current
+  independent functional `PASS` and required per-task T3 `semantic-pass`
+  evidence into the task card, FT-001, the REQ RTM evidence route,
+  `IMPL-FT-001`, and the FT-001 protocol indexes.
+- Recorded only the proven browser-binding hardening for FT-001-AC-006/007:
+  matching opaque browser cookie, fail-closed invalid/cross-browser/replayed
+  callback behavior before provider/Identity & Access completion, exact valid
+  Telegram/Google behavior, and one-use cleanup. TASK-020 remains the primary
+  AC-006/AC-007 owner.
+- Preserved Attempt 1/2/3 history, the verifier retry basis, all task-local
+  evidence, and every W9 task/protocol/evidence record. Expiry-pruning and
+  failed-start observations remain supporting-only; no TASK-023 ownership,
+  status, dependency, promotion, or lifecycle transition was applied.
+- Validation: sync-local task/feature/RTM/index/protocol/evidence links and
+  lifecycle/status boundaries were re-read; full lint, `/mb-doctor`, code, and
+  project tests were not run by `/mb-sync`.
+
+## [2026-08-11] Wave 9 — FT-001 feature-level semantic coverage sync
+- Reconciled: fresh FT-001 `semantic-pass` evidence for AC-001..AC-008 into
+  the FT-001 feature, `IMPL-FT-001`, and the existing FT-001 protocol indexes.
+- Recorded only proven primary coverage: TASK-004 → AC-001/002/004,
+  TASK-015 → AC-003/005, TASK-020 → AC-006/007, and TASK-021 → AC-008.
+  TASK-019 is recorded only for its proven provider/session/invitation
+  integration primitives.
+- Preserved: failed TASK-003 evidence and all task-local histories,
+  identities, statuses, retry budgets, dependencies, architecture, feature/
+  requirement lifecycle, and promotion fields. No task card or code changed.
+- Validation: feature/plan/protocol/changelog links, AC routing, indexed task
+  statuses, semantic verdicts, and lifecycle/preservation boundaries were
+  re-read by sync-local validation; full lint/doctor and project tests were
+  not run by `/mb-sync`.
+
+## [2026-08-11] Wave 9 — TASK-021 protected Admin UI/provisioning sync
+- Reconciled: authoritative `TASK-021-T3-FT-001-W9` is `done` with current
+  functional `PASS` and required T3 `semantic-pass` evidence into FT-001,
+  `IMPL-FT-001`, and the FT-001 protocol indexes; current evidence markers
+  were added to the task card without changing its status or identity.
+- Recorded only proven FT-001-AC-008 claims: protected own-center Admin
+  SSR/form/JSON API provisioning; server-side denial before mutation for
+  unauthenticated, non-Admin, and wrong-center requests; ignored client scope;
+  existing `createParticipant` ownership; server-generated invitation values;
+  TASK-020 handoff; and atomic account+membership+invitation state.
+- Preserved executor Attempt 1 honest RED/focused failure, Attempt 2 bounded
+  fixture/rollback correction, Attempt 3 route/type/framework-gate correction,
+  and retry budget `2/2` used; TASK-019/020, all task-local receipts, feature
+  product lifecycle, requirement lifecycle, and accepted architecture remain
+  unchanged. No feature promotion or dependent transition was applied.
+- Validation: sync-local links, verdicts, task-index/statuses, RTM routes,
+  FT-001/IMPL/protocol routes, lifecycle values, and this changelog entry were
+  re-read; full lint/doctor, code, and tests were not run by `/mb-sync`.
+
+## [2026-08-11] Wave 9 — TASK-020 browser/API transport sync
+- Reconciled: authoritative `TASK-020-T3-FT-001-W9` is `done` with current
+  functional `PASS` and required T3 `semantic-pass` evidence into FT-001,
+  `IMPL-FT-001`, and the FT-001 protocol indexes.
+- Recorded only proven browser/API claims: Telegram/Google login and exact
+  actor resolution, `foundation_session` cookie conditions, logout/revocation
+  denial, server-bound invitation callback state, one-use exact-account
+  acceptance, and safe rejection/rollback without invitation consumption or
+  partial state.
+- Preserved Attempt 1's missing-transport RED and failed focused gate, the
+  Attempt 2 invitation-state continuity correction, and retry budget `1/2`
+  used with `1` retry remaining. TASK-019 remains `done`; TASK-021 remains
+  `planned`; no code or dependent task was changed.
+- Unchanged: FT-001 remains `status: draft` / `lifecycle: planned`; no
+  requirement lifecycle, architecture, Planning Revision, or promotion
+  transition was applied.
+- Validation: sync-local links, verdicts, task index/statuses, FT-001/IMPL/
+  protocol routes, and this changelog entry were re-read; full lint/doctor
+  were not run by `/mb-sync`.
+
+## [2026-08-11] Wave 9 — TASK-020 invitation-state continuity correction
+- Corrected the task-owned browser/API transport path so
+  `AuthenticationStateStore.issue()` preserves the server-bound invitation
+  context through provider callback consumption; valid acceptance now reaches
+  `acceptInvitation`, while wrong-account, forged, replayed, and rollback
+  cases retain safe non-consuming errors.
+- Recorded the Attempt 2 focused and required-gate evidence in
+  `.protocols/TASK-020-T3-FT-001-W9/` and
+  `.tasks/TASK-020-T3-FT-001-W9/execution-evidence.md`.
+- Preserved TASK-019/TASK-021 cards and history, Admin UI scope, provider
+  secrets, lifecycle/status, and the accepted transport/session contracts.
+- Validation: focused route tests (`1 file / 5 tests`), `npm run check`,
+  `npm run build`, full `npm run test` (`20 files / 69 tests`), and
+  `git diff --check` passed; `/verify` and `/red-verify` remain pending.
+
+## [2026-08-11] Wave 9 — TASK-019 provider/session boundary sync
+- Reconciled: authoritative `TASK-019-T3-FT-001-W9` is `done` with current
+  functional `PASS` and required T3 `semantic-pass` evidence markers, plus
+  the already-proven claims, into FT-001, `IMPL-FT-001`, and the FT-001
+  protocol indexes.
+- Recorded only proven claims: server-only verified Telegram/Google provider
+  normalization and failure safety; server-owned opaque session issuance,
+  revocation, and exact HTTPS/local-HTTP cookie options; and atomic exact-account
+  invitation acceptance with one-use/rejection/rollback behavior.
+- Preserved: Attempt 1 functional `FAIL`, Attempt 2 correction basis, and the
+  `1/2` retry budget (`1` retry remaining), plus TASK-019 identity/status.
+  TASK-020 and TASK-021 remain `planned`; no dependent promotion, architecture,
+  code, or lifecycle transition was applied.
+- Validation: sync-local links, evidence, task index/status, FT-001/IMPL/protocol
+  routes, and changelog consistency were re-read; full lint/doctor were not run.
+## [2026-08-11] Wave 9 — FT-001 browser/API task reconciliation
+- Added: subject-based `authentication-transport` and `provider-adapters`
+  contracts for the minimum SvelteKit login/session, invitation acceptance,
+  logout, provider verification, and protected Admin participant path.
+- Reconciled: FT-001 AC-006..AC-008 and new planned W9 cards
+  `TASK-019`..`TASK-021`; Planning Revision remains `2` and the accepted
+  modular-monolith/one-server/one-database architecture is unchanged.
+- Preserved: TASK-003 failed historical evidence, TASK-004 and TASK-015
+  identities/statuses/evidence, all Foundation tasks, dependencies, and retry
+  history; no implementation or lifecycle closure was performed.
+- Validation: `node scripts/mb-lint.mjs` passed (66 files); JSON/index parse and
+  new task summaries passed. Fresh-context `/review-tasks-plan FT-001` remains
+  the next gate.
+
 ## [2026-08-10] Wave 6 — FT-004 feature-level boundary sync after lifecycle reconciliation
 - Reconciled: current FT-004 `semantic-pass` claims are routed only through
   `TASK-016-T3-FT-004-W6` and `TASK-017-T3-FT-004-W6`, covering AC-001..AC-005

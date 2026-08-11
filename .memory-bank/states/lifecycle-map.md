@@ -1,7 +1,7 @@
 ---
 description: Global lifecycle and transition ownership for access, lessons, collaboration, learning, and finance.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-11
 source_of_truth:
   - .memory-bank/states/lifecycle-map.md
 ---
@@ -17,6 +17,7 @@ neighbor cannot mutate the state directly.
 |---|---|---|---|
 | Invitation | `issued -> consumed`, `issued -> expired`, `issued -> revoked` | Identity & Access | Only one successful provider binding consumes an invitation; all failure paths are atomic. |
 | External identity | `unbound -> bound` | Identity & Access | One provider identity maps to one internal account; duplicate binding is rejected. |
+| Session | `issued -> revoked` | Identity & Access | Sessions are issued only after verified identity resolution/binding and are rechecked server-side on every protected request. |
 | Teacher/class assignment | `active -> removed` | Center & Scheduling | Authorization changes immediately; authored records retain attribution. |
 | Membership/link | `active -> removed` | Center & Scheduling | Each server-side read/change rechecks current center/class/student scope. |
 

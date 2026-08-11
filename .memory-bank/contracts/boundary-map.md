@@ -1,7 +1,7 @@
 ---
 description: Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership.
 status: active
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 source_of_truth:
   - .memory-bank/contracts/boundary-map.md
 ---
@@ -66,9 +66,9 @@ remain implementation details.
 - **Provider:** Identity & Access.
 - **Public surface:** expose one authoritative provisioning command,
   `provisionAccount`, for the account-plus-invitation write; also expose the
-  named invitation lifecycle, provider-binding, second-provider, and actor
-  context operations. `createAccount` and `issueInvitation` are not alternate
-  public write commands.
+  named invitation lifecycle, provider-binding, second-provider, session
+  authentication/revocation, and actor context operations. `createAccount` and
+  `issueInvitation` are not alternate public write commands.
 - **State/data authority:** Identity & Access exclusively writes account,
   role, invitation, external-identity, and session state.
 - **Allowed interaction:** Center & Scheduling resolves the server-side actor
@@ -108,6 +108,25 @@ remain implementation details.
   is trusted as authorization; no module caches request/user state globally.
 - **Verification:** negative unauthenticated, revoked-session, and role/context
   mismatch scenarios at each protected public boundary.
+
+### Provider Verification Boundary
+
+- **Provider:** server-only outbound adapters wired through Identity & Access.
+- **Public surface:** normalize a verified Telegram Login or Google OAuth
+  callback to `{ provider, subject }`; begin the provider redirect using a
+  server-issued state value.
+- **State/data authority:** provider systems verify their own response; the
+  application keeps account, invitation, identity, and session facts in the
+  shared database owned by Identity & Access.
+- **Allowed interaction:** SvelteKit transport adapts the request and calls the
+  adapter; Identity & Access consumes only the normalized verified identity.
+- **Failure/compatibility:** invalid state/signature, outage, timeout, or
+  missing configuration returns an explicit error and performs no product
+  write. A local test double is allowed only in isolated tests.
+- **Forbidden bypasses:** no route, component, or adapter writes Identity &
+  Access tables, selects a role/center/account, or exposes provider secrets.
+- **Verification:** both provider kinds pass normalized success and failure
+  probes, with state-before/state-after equality on every failed callback.
 
 ### Calendar and Membership Query Boundary
 

@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import type { SharedDatabase } from '$lib/server/platform/database';
 
 export type Role = 'admin' | 'teacher' | 'student' | 'parent';
@@ -18,6 +19,16 @@ export type AccountProvisioning = {
 export type ProviderIdentity = {
 	provider: Provider;
 	providerSubject: string;
+};
+
+export type VerifiedProviderIdentity = {
+	provider: Provider;
+	subject: string;
+};
+
+export type InvitationAcceptance = {
+	invitationToken: string;
+	identity: VerifiedProviderIdentity;
 };
 
 export type ProviderBinding = ProviderIdentity & {
@@ -51,6 +62,10 @@ type ActorRow = {
 	role: Role;
 };
 
+type ExternalIdentityRow = {
+	account_id: string;
+};
+
 export class IdentityAccessBoundary {
 	private readonly now: () => Date;
 
@@ -69,10 +84,90 @@ export class IdentityAccessBoundary {
 		});
 	}
 
-	createSession(session: { token: string; accountId: string }): void {
-		this.database.sqlite
-			.prepare('INSERT INTO sessions (token, account_id, revoked_at) VALUES (?, ?, NULL)')
-			.run(session.token, session.accountId);
+	isInvitationUsable(invitationToken: string): boolean {
+		if (typeof invitationToken !== 'string' || invitationToken.length === 0) {
+			return false;
+		}
+
+		const invitation = this.database.sqlite
+			.prepare('SELECT status, expires_at FROM invitations WHERE token = ?')
+			.get(invitationToken) as Pick<InvitationRow, 'status' | 'expires_at'> | undefined;
+
+		return Boolean(
+			invitation && invitation.status === 'pending' && !this.isExpired(invitation.expires_at)
+		);
+	}
+
+	authenticateVerifiedIdentity(identity: VerifiedProviderIdentity): string {
+		this.assertVerifiedIdentity(identity);
+
+		return this.database.transaction(() => {
+			const row = this.database.sqlite
+				.prepare(
+					`SELECT account_id
+					 FROM external_identities
+					 WHERE provider = ? AND subject = ?`
+				)
+				.get(identity.provider, identity.subject) as ExternalIdentityRow | undefined;
+
+			if (!row) {
+				throw new Error('unknown-provider-identity');
+			}
+
+			return this.issueSession(row.account_id);
+		});
+	}
+
+	acceptInvitation(request: InvitationAcceptance): string {
+		if (typeof request?.invitationToken !== 'string' || request.invitationToken.length === 0) {
+			throw new Error('invalid-invitation');
+		}
+		this.assertVerifiedIdentity(request.identity);
+
+		return this.database.transaction(() => {
+			const invitation = this.database.sqlite
+				.prepare('SELECT account_id, status, expires_at FROM invitations WHERE token = ?')
+				.get(request.invitationToken) as InvitationRow | undefined;
+
+			if (!invitation || invitation.status !== 'pending' || this.isExpired(invitation.expires_at)) {
+				throw new Error('invalid-invitation');
+			}
+
+			const existingIdentity = this.database.sqlite
+				.prepare(
+					`SELECT account_id
+					 FROM external_identities
+					 WHERE provider = ? AND subject = ?`
+				)
+				.get(request.identity.provider, request.identity.subject) as ExternalIdentityRow | undefined;
+			if (existingIdentity) {
+				throw new Error('duplicate-provider-identity');
+			}
+
+			this.database.sqlite
+				.prepare('INSERT INTO external_identities (provider, subject, account_id) VALUES (?, ?, ?)')
+				.run(request.identity.provider, request.identity.subject, invitation.account_id);
+			const consumed = this.database.sqlite
+				.prepare("UPDATE invitations SET status = 'consumed' WHERE token = ? AND status = 'pending'")
+				.run(request.invitationToken);
+			if (consumed.changes !== 1) {
+				throw new Error('invalid-invitation');
+			}
+
+			return this.issueSession(invitation.account_id);
+		});
+	}
+
+	revokeSession(sessionToken: string): void {
+		if (!sessionToken) {
+			return;
+		}
+
+		this.database.transaction(() => {
+			this.database.sqlite
+				.prepare('UPDATE sessions SET revoked_at = ? WHERE token = ? AND revoked_at IS NULL')
+				.run(this.now().toISOString(), sessionToken);
+		});
 	}
 
 	resolveActor(sessionToken: string | undefined): ActorContext | null {
@@ -195,5 +290,24 @@ export class IdentityAccessBoundary {
 	private isExpired(expiresAt: string): boolean {
 		const expiryTime = Date.parse(expiresAt);
 		return !Number.isFinite(expiryTime) || expiryTime <= this.now().getTime();
+	}
+
+	private assertVerifiedIdentity(identity: VerifiedProviderIdentity): void {
+		if (
+			!identity ||
+			(identity.provider !== 'telegram' && identity.provider !== 'google') ||
+			typeof identity.subject !== 'string' ||
+			identity.subject.length === 0
+		) {
+			throw new Error('invalid-provider-identity');
+		}
+	}
+
+	private issueSession(accountId: string): string {
+		const token = randomBytes(32).toString('base64url');
+		this.database.sqlite
+			.prepare('INSERT INTO sessions (token, account_id, revoked_at) VALUES (?, ?, NULL)')
+			.run(token, accountId);
+		return token;
 	}
 }

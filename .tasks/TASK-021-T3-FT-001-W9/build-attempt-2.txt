@@ -1,0 +1,10 @@
+Command: npm run build
+Result: exit 1
+
+SvelteKit postbuild rejects the existing named `createAdminActions` export from
+`src/routes/admin/[centerId]/participants/+page.server.ts`; route page-server
+modules may export only the framework route exports (such as `load` and
+`actions`).
+
+No production route export or authorization code was changed in this bounded
+correction.

@@ -1,0 +1,33 @@
+TASK: TASK-022-T3-FT-001-W10
+SESSION: fresh independent /verify after Attempt 3 correction
+SAFE_STATE: disposable Vitest fixtures only; no credentials, network, or production database
+
+CHECK
+COMMAND: timeout 120s npm run check
+EXIT_CODE: 0
+OBSERVATION: svelte-check found 0 errors and 0 warnings.
+
+BUILD
+COMMAND: timeout 120s npm run build
+EXIT_CODE: 0
+OBSERVATION: client and server bundles built; adapter-auto environment notice was non-fatal.
+
+FOCUSED
+COMMAND: timeout 120s npm run test -- tests/routes/admin-provisioning.test.ts tests/routes/auth-transport.test.ts tests/adapters/provider-boundary.test.ts
+EXIT_CODE: 0
+OBSERVATION: Test Files 3 passed (3); Tests 20 passed (20).
+
+FULL
+COMMAND: timeout 120s npm run test
+EXIT_CODE: 0
+OBSERVATION: Test Files 21 passed (21); Tests 79 passed (79).
+
+VERIFIER-OWNED PROBE
+COMMAND: timeout 120s ./node_modules/.bin/vitest run --config .tasks/TASK-022-T3-FT-001-W10/verifier-vitest.config.ts
+EXIT_CODE: 0
+OBSERVATION: Test Files 1 passed (1); Tests 5 passed (5). The probe used disposable :memory: databases, separate cookie jars, injected provider doubles, and cleanup hooks. It observed browser-binding rejection before provider verification, unchanged product snapshots on rejection, valid Telegram/Google login and invitation completion, one-use replay rejection, cookie attributes/cleanup, expired-state pruning, and failed-start state discard.
+
+SCOPE / ARCHITECTURE
+COMMAND: git diff --check plus current-source and boundary inspection
+EXIT_CODE: 0
+OBSERVATION: no whitespace errors; auth transport delegates to Provider Adapter and Identity & Access public boundaries, keeps state process-local/opaque, and contains no direct persistence write or caller-trusted role/center/account authorization input. W9 paths were not modified by this verification.

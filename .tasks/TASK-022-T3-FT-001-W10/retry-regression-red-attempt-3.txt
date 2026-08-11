@@ -1,0 +1,29 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 3
+RECEIPT_STATUS: supporting-only (retry correction evidence)
+CLAIM: existing Admin invitation browser scenario preserves its accepted duplicate/replay error behavior under browser-bound callback state
+RETRY_BASIS: independent verifier failure `.tasks/TASK-022-T3-FT-001-W10/npm-test-verifier.txt`; original Attempt 1 RED and Attempt 2 correction RED/GREEN remain preserved
+COMMAND: timeout 60s npm run test -- tests/routes/admin-provisioning.test.ts -t 'reaches the existing one-time invitation browser path and keeps duplicate/replay errors safe'
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 1
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  relevant pre-existing task baseline: browser-bound production implementation and
+  previous task-local evidence; first Attempt 3 patch had only propagated the
+  start cookie through `acceptInvitation`
+  relevant source hashes before command:
+    tests/routes/admin-provisioning.test.ts=1684e548dd351fa83743c25d9f3e1a7663edda8d5096b5bd9400b8c9ad629b39
+    src/lib/server/platform/auth-state.ts=746b5b725819368c584845dcb9dd160d216c93952abc5b7fbfc1c1b707f97d76
+    src/routes/auth/transport.server.ts=fb4b1b5baf15d77443eea07938c98363bd4c09c48e5c2e2d0ca31058e1331ede
+  worktree: broad pre-existing tracked modifications and untracked W9/W10 task/product artifacts
+  safe state: disposable in-memory fixtures; no credentials, network, or production database
+OBSERVATION:
+  The valid acceptance subpath passed, then the same existing scenario reached
+  its duplicate callback with a second empty cookie jar and received HTTP 400
+  Invalid authentication state instead of the expected HTTP 410 invitation
+  error at the later duplicate assertion. This was a stale test fixture path,
+  not a production binding failure.
+CORRECTION:
+  Reuse the duplicate start-flow cookie jar for its callback; no production file
+  or contract was changed.
+COMPLETED_AT: 2026-08-11 10:45:14 +0500

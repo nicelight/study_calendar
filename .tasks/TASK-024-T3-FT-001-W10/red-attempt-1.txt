@@ -1,0 +1,27 @@
+TASK-024-T3-FT-001-W10 — Attempt 1 initial claim-linked RED
+
+Command:
+npm run test -- tests/routes/auth-transport.test.ts
+
+cwd: /home/serg/Projects/study_calendar
+exit_code: 1
+
+Observed result:
+- Existing transport regression tests passed: 9.
+- New task-owned source-boundary probes failed: 2.
+- `src/routes/auth/transport.server.ts` still contains the three provider
+  environment reads and imports/uses `createProviderAdapters` and
+  `ProviderAdapterRegistry` for its lazy production singleton.
+- `src/lib/server/composition-root.ts` does not contain provider registry
+  construction or a provider dependency in its returned root.
+
+Claim mapping:
+- `FT-001-AC-006` / `REQ-001` / `REQ-002` / `REQ-014` and the authentication
+  transport browser/API ownership rule: RED is the observed route-owned
+  configuration/composition seam.
+- `FT-001-AC-007` / `REQ-001` / `REQ-002` / `REQ-014` and the provider adapter
+  failure/ownership rule: RED is the observed absence of platform/composition
+  provider ownership while route code constructs the registry.
+
+This is an honest pre-implementation boundary failure, not setup, syntax, or
+an artificial break. No production behavior was changed before this probe.

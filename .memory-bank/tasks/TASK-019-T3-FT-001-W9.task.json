@@ -1,0 +1,142 @@
+{
+  "id": "TASK-019-T3-FT-001-W9",
+  "title": "Establish provider adapters and server-side session lifecycle",
+  "status": "done",
+  "wave": "W9",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-002", "REQ-014"],
+  "depends_on": ["TASK-004-T3-FT-001-W3"],
+  "touched_files": [
+    "src/lib/server/modules/identity-access/",
+    "src/lib/server/adapters/",
+    "src/lib/server/platform/",
+    "tests/identity-access/",
+    "tests/adapters/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "FT-001-AC-001 / FT-001-AC-004 / REQ-001 / REQ-002 / REQ-014: Telegram and Google adapters normalize only server-verified provider and subject values, expose no product persistence write, and reject invalid provider operations without mutation.",
+    "FT-001-AC-006 / REQ-001 / REQ-014: Identity & Access authenticates a verified bound identity, atomically accepts an invitation with the exact account, issues a server session, and revokes a session without trusting caller role or center values.",
+    "FT-001-AC-003 / FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014: provider failure, invalid state/signature, duplicate identity, invitation rejection, and session-write failure preserve the relevant state-before/state-after snapshot.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "FAIL",
+      "report": ".protocols/TASK-019-T3-FT-001-W9/verification.md",
+      "artifact": ".tasks/TASK-019-T3-FT-001-W9/TASK-019-T3-FT-001-W9-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh focused probe passed 2 files / 10 tests and the required check/build/full-test/diff gates passed, but the exported caller-controlled createSession path resolves an actor without verified identity.",
+        "Current source inspection found Google token exchange redirect_uri origin/path mismatch for the accepted callback contract.",
+        "No lifecycle or scheduler state changed; required red verification was not run because functional verification failed."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "functional",
+      "attempt": "Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-019-T3-FT-001-W9/verification.md",
+      "artifact": ".tasks/TASK-019-T3-FT-001-W9/TASK-019-T3-FT-001-W9-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent focused provider/session/invitation probe passed 2 files / 11 tests; provider normalization, server-owned opaque sessions, revocation, invitation binding/rejection/rollback, and exact cookie options passed.",
+        "Independent npm run check, npm run build, npm run test (19 files / 64 tests), and git diff --check all passed; the current report records VERDICT: PASS.",
+        "Attempt 1 functional FAIL remains the correction basis; Attempt 2 corrected the caller-controlled session path and Google callback redirect URI without changing task scope or lifecycle."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-019-T3-FT-001-W9/red-verification.md",
+      "artifact": ".tasks/TASK-019-T3-FT-001-W9/TASK-019-T3-FT-001-W9-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent T3 adversarial review found no admitted findings across provider verification, session issuance/revocation, invitation binding/replay, cookie options, callback path, secret non-leakage, and persistence ownership.",
+        "The current semantic artifact records SEMANTIC_VERDICT: semantic-pass; lifecycle, dependency, task identity/status, and retry budget remain unchanged."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md"
+  ],
+  "evidence_required": [
+    "Claim locators (TASK-019-owned provider-verification portion): FT-001-AC-001, FT-001-AC-004; REQ-001 = .memory-bank/requirements.md#req-001--account-binding-and-provider-access; REQ-002 = .memory-bank/requirements.md#req-002--provider-failure-safety; REQ-014 = .memory-bank/requirements.md#req-014--role-and-context-privacy; canonical obligations = .memory-bank/contracts/provider-adapters.md#verified-identity-contract, .memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules, and .memory-bank/contracts/boundary-map.md#provider-verification-boundary. RED: a Telegram or Google callback is accepted without server verification, accepts caller-supplied account/role/center/membership/invitation data, exposes a provider secret, or writes product state; GREEN: both provider kinds return only a server-verified {provider, subject}, reject invalid signature/state/outage/missing-configuration cases, expose no secret, and leave persistence unchanged; artifact: .tasks/TASK-019-T3-FT-001-W9/ and .protocols/TASK-019-T3-FT-001-W9/verification.md.",
+    "Claim locators (TASK-019-owned server-session portion): FT-001-AC-006; REQ-001 = .memory-bank/requirements.md#req-001--account-binding-and-provider-access; REQ-014 = .memory-bank/requirements.md#req-014--role-and-context-privacy; canonical obligations = .memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation, .memory-bank/contracts/access-control.md#binding-and-session-rules, and .memory-bank/contracts/boundary-map.md#actor-context-boundary. RED: a session is issued from an unverified or caller-selected identity/context, a revoked session resolves an actor, or a session-write failure leaves partial state; GREEN: Identity & Access issues an opaque server-owned session only after verified identity resolution or atomic invitation binding, rechecks revocation, rejects caller role/center/account values, and preserves state on induced write failure; artifact: .tasks/TASK-019-T3-FT-001-W9/ and .protocols/TASK-019-T3-FT-001-W9/verification.md.",
+    "Claim locators (TASK-019-owned invitation-acceptance portion): FT-001-AC-003, FT-001-AC-007; REQ-001 = .memory-bank/requirements.md#req-001--account-binding-and-provider-access; REQ-002 = .memory-bank/requirements.md#req-002--provider-failure-safety; REQ-014 = .memory-bank/requirements.md#req-014--role-and-context-privacy; canonical obligations = .memory-bank/contracts/authentication-transport.md#invitation-acceptance-path, .memory-bank/contracts/access-control.md#binding-and-session-rules, and .memory-bank/states/lifecycle-map.md#access-and-membership. RED: an expired, revoked, reused, duplicate, invalid, or provider-failed invitation accepts, binds a different account, or leaves partial invitation/identity/session state; GREEN: the verified Identity & Access operation consumes the exact pre-created invitation account and issues its first session atomically, while every rejection/failure preserves the account, role, membership, invitation, identity, and session snapshot; artifact: .tasks/TASK-019-T3-FT-001-W9/ and .protocols/TASK-019-T3-FT-001-W9/verification.md."
+  ],
+  "purpose": "Provide the narrow server-side provider and session primitives required by the real login and invitation HTTP path.",
+  "success_outcome": "Both accepted providers cross one normalized, server-only adapter boundary; Identity & Access resolves verified identities, accepts invitations, issues/revokes sessions, and leaves no partial state on failure.",
+  "anti_goals": [
+    "Do not add browser routes, UI authorization, or a dev-login bypass.",
+    "Do not expose provider secrets or write Identity & Access state from an adapter.",
+    "Do not change the accepted modular-monolith, one-server, or shared-database architecture."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json",
+      ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json",
+      ".memory-bank/tasks/TASK-004-T3-FT-001-W3.task.json",
+      ".memory-bank/tasks/TASK-015-T3-FT-001-W2.task.json"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if provider support requires a new service, store, event bus, or change to the accepted module ownership graph.",
+      "Stop if a provider response cannot be verified server-side without trusting caller-supplied account, role, center, membership, or invitation data."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#sdd-design-gate",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-001",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-003",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-004",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-006",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-007",
+    ".memory-bank/requirements.md#req-001--account-binding-and-provider-access",
+    ".memory-bank/requirements.md#req-002--provider-failure-safety",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract",
+    ".memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/domains/core-domain.md#ownership-map",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md#accepted-target",
+    ".memory-bank/contracts/provider-adapters.md",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Provider adapters are server-only and return only normalized verified identity.",
+    "Identity & Access exclusively writes external identities, invitations, and sessions.",
+    "Tests use isolated disposable state and injected provider doubles; no credentials or production database are required for the claim proof."
+  ],
+  "invariants": [
+    "One provider identity maps to at most one internal account.",
+    "A session is issued only after verified identity resolution or atomic invitation binding.",
+    "Invalid provider operations and failed session/binding transactions leave state unchanged."
+  ],
+  "verification_targets": [
+    "FT-001-AC-001 / FT-001-AC-004 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/provider-adapters.md#verified-identity-contract: isolated Telegram and Google adapter probes prove normalized server-verified {provider, subject} output, no client-trusted account context, and no direct persistence write.",
+    "FT-001-AC-004 / REQ-002 / .memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules: invalid signature/state, outage, timeout, and missing configuration return explicit failures with state-before/state-after equality.",
+    "FT-001-AC-006 / REQ-001 / REQ-014 / .memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation: Identity & Access issues opaque sessions only after verified identity resolution or atomic invitation binding, revocation is enforced server-side, and caller role/center/account values are not trusted.",
+    "FT-001-AC-003 / FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#invitation-acceptance-path: invitation acceptance binds the exact pre-created account and issues its first session atomically; rejected or failed operations preserve the relevant state snapshot.",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules: invitation acceptance and session issuance preserve atomic state on induced failure."
+  ]
+}

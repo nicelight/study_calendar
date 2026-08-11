@@ -1,9 +1,9 @@
 ---
 description: Product feature for field comments, reactions, and threaded day chat.
-status: draft
+status: active
 type: feature
 id: FT-004
-lifecycle: planned
+lifecycle: verified
 epic: EP-003
 requirements: [REQ-006, REQ-007, REQ-008, REQ-014]
 spec_design_status: complete

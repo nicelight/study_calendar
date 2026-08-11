@@ -1,0 +1,9 @@
+Command: npm run test -- tests/routes/auth-transport.test.ts
+Working directory: /home/serg/Projects/study_calendar
+Result: exit 1; 3 failed, 1 passed.
+Exact blocker: AuthenticationStateStore.issue() creates the stored state with
+provider and callbackUrl but does not copy the optional invitationToken.
+consume() therefore returns no invitationToken, so invitation callbacks call
+authenticateVerifiedIdentity() instead of acceptInvitation(). Observed safe
+401 for valid/rollback invite callbacks and 303 redirect for the wrong-account
+case. No verification workflow was invoked.

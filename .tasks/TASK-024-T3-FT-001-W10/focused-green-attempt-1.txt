@@ -1,0 +1,23 @@
+TASK-024-T3-FT-001-W10 — Attempt 1 claim-equivalent focused GREEN
+
+Command:
+npm run test -- tests/routes/auth-transport.test.ts tests/adapters/provider-boundary.test.ts
+
+cwd: /home/serg/Projects/study_calendar
+exit_code: 0
+
+Observed result:
+- Test files: 2 passed.
+- Tests: 20 passed.
+- Source boundary probes pass: route has no provider env reads or adapter/
+  registry construction; composition root owns registry construction.
+- Disposable configured composition proves Telegram and Google begin paths and
+  neither start URL contains the provider secret.
+- Disposable missing-config composition maps both provider start failures to
+  the existing safe 502 `Authentication provider unavailable` response, with
+  no fixture secret in the serialized failure.
+- Existing Telegram/Google transport, invitation, browser-binding, session,
+  and provider-boundary regressions remain green in the focused set.
+
+This is supporting executor evidence for the task claims; independent `/verify`
+must rerun verifier-owned runtime/source probes and required native gates.

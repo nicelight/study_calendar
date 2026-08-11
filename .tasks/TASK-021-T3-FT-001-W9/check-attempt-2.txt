@@ -1,0 +1,12 @@
+Command: npm run check
+Result: exit 1
+
+Existing protected Admin route gate failures remain:
+- +page.server.ts imports `PageServerLoad`, which is not exported by the
+  installed `@sveltejs/kit` types; the resulting load event parameters are
+  implicit `any`.
+- The existing admin route test helper/query surfaces also report unknown
+  SQLite result types at the pre-existing assertions.
+
+No authorization or persistence behavior was changed to address these
+out-of-scope gate failures.

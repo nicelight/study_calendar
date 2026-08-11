@@ -1,0 +1,5 @@
+Command: npm run test
+Result: exit 0
+
+Test Files  21 passed (21)
+Tests       74 passed (74)

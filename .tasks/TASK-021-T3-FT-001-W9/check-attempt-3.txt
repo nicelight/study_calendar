@@ -1,0 +1,5 @@
+Command: npm run check
+Result: exit 0
+Output: svelte-check found 0 errors and 0 warnings.
+Claim: project-native SvelteKit type/check gate for the bounded Admin route.
+Attempt: 3.

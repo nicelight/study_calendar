@@ -1,0 +1,131 @@
+{
+  "id": "TASK-020-T3-FT-001-W9",
+  "title": "Expose browser login and invitation acceptance transport",
+  "status": "done",
+  "wave": "W9",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-002", "REQ-014"],
+  "depends_on": ["TASK-019-T3-FT-001-W9"],
+  "touched_files": [
+    "src/routes/login/",
+    "src/routes/auth/",
+    "src/routes/invite/",
+    "src/hooks.server.ts",
+    "src/app.d.ts",
+    "tests/routes/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "A bound Telegram or Google identity can complete the browser/API login path and receives the existing foundation_session cookie as HttpOnly, Path=/, SameSite=Lax; Secure is set for HTTPS and relaxed/omitted for local HTTP development, the user reaches the permitted context, and access is rejected after logout or revocation.",
+    "An issued invitation remains bound to server-issued authentication state through start and callback; either provider can complete a valid callback for the exact bound account/session, while tampered or forged/mismatched callback state is rejected without consuming the still-valid invitation, and expired, revoked, reused, duplicate, and failed callbacks return safe errors without partial state.",
+    "Routes, hooks, form actions, and SSR loads contain no direct database write, client-trusted role/center authorization, or provider secret exposure.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "FAIL",
+      "report": ".protocols/TASK-020-T3-FT-001-W9/verification.md",
+      "artifact": ".tasks/TASK-020-T3-FT-001-W9/TASK-020-T3-FT-001-W9-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "The honest initial focused RED could not import the absent browser transport module; the later Attempt 1 focused gate failed 3/4 tests because issue() dropped invitationToken, so valid and rollback callbacks lost invitation context and wrong-account handling took the incorrect redirect path.",
+        "This failure remains correction history only; no lifecycle or scheduler state changed and no executor receipt was promoted to independent proof."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "functional",
+      "attempt": "Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-020-T3-FT-001-W9/verification.md",
+      "artifact": ".tasks/TASK-020-T3-FT-001-W9/TASK-020-T3-FT-001-W9-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent disposable browser/API probe passed 3 tests for Telegram/Google login, exact HTTPS/local-HTTP foundation_session cookie options, actor resolution, logout/revocation, invitation acceptance/replay/rejection, and rollback; live SSR/HTTP smoke and required check/build/full-test/diff gates also passed.",
+        "Attempt 2 corrected only server-owned invitation-state continuity; the current report records VERDICT: PASS without changing task scope or lifecycle."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-020-T3-FT-001-W9/red-verification.md",
+      "artifact": ".tasks/TASK-020-T3-FT-001-W9/TASK-020-T3-FT-001-W9-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent T3 adversarial review found no material ownership, state/replay, cookie, SSR, privacy, secret-leakage, or direct-persistence finding across the browser/API transport.",
+        "The current semantic artifact records SEMANTIC_VERDICT: semantic-pass; task identity/status, dependency, lifecycle, and retry budget remain unchanged."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md"
+  ],
+  "evidence_required": [
+    "Claim locators: FT-001-AC-006; REQ-001 = .memory-bank/requirements.md#req-001--account-binding-and-provider-access; REQ-002 = .memory-bank/requirements.md#req-002--provider-failure-safety; REQ-014 = .memory-bank/requirements.md#req-014--role-and-context-privacy; canonical obligation = .memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation. RED: an HTTPS response omits or changes any decisive session-cookie condition, or a local HTTP response incorrectly requires Secure: the existing foundation_session is HttpOnly, Path=/, SameSite=Lax, and Secure is required only under HTTPS while local HTTP permits the non-Secure cookie; GREEN: both provider paths pass the exact protocol comparison, protected access resolves the exact actor, and logout/revocation denies subsequent access; artifact: .tasks/TASK-020-T3-FT-001-W9/ and .protocols/TASK-020-T3-FT-001-W9/verification.md.",
+    "Claim locators: FT-001-AC-007; REQ-001 = .memory-bank/requirements.md#req-001--account-binding-and-provider-access; REQ-002 = .memory-bank/requirements.md#req-002--provider-failure-safety; REQ-014 = .memory-bank/requirements.md#req-014--role-and-context-privacy; canonical obligations = .memory-bank/contracts/authentication-transport.md#browser-api-path and .memory-bank/contracts/authentication-transport.md#invitation-acceptance-path. RED: the browser can replace or forge the invitation capability/callback state, a mismatched state is accepted, or a rejection consumes the valid invitation; GREEN: the invitation remains server-bound through server-issued authentication state from invite page/start to callback, tampered/forged/mismatched state is rejected before consumption and the still-valid invitation snapshot is unchanged, while a valid callback binds the exact pre-created account, consumes once, issues the session, and preserves state on every other rejected/failed callback; artifact: .tasks/TASK-020-T3-FT-001-W9/ and .protocols/TASK-020-T3-FT-001-W9/verification.md."
+  ],
+  "purpose": "Turn the existing provider/session boundaries into the minimum real SvelteKit login, logout, and invitation browser/API flow.",
+  "success_outcome": "A user can login with either accepted provider or accept a valid invitation through SvelteKit, receive a secure server session, reach the permitted context, and receive safe denial/error behavior for invalid or revoked state.",
+  "anti_goals": [
+    "Do not implement provider verification or persistence in routes; consume TASK-019 public boundaries.",
+    "Do not trust query/form role, center, account, or invitation ownership for authorization.",
+    "Do not add a password, role-selection, or unauthenticated development login path."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json",
+      ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json",
+      ".memory-bank/tasks/TASK-004-T3-FT-001-W3.task.json",
+      ".memory-bank/tasks/TASK-015-T3-FT-001-W2.task.json"
+    ],
+    "stop_conditions": [
+      "Stop if the HTTP flow needs a new module, direct table access, a second database/store, or a change to the provider/session contract."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-006",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-007",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/authentication-transport.md#invitation-acceptance-path",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/contracts/provider-adapters.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Routes/hooks/UI are thin adapters and all protected operations recheck server-side actor/session state.",
+    "The existing foundation_session cookie remains the single session cookie for this local MVP.",
+    "HTTP/SSR tests use disposable fixtures and injected adapters; live provider credentials are not embedded in tests."
+  ],
+  "invariants": [
+    "Invalid, absent, or revoked sessions cannot reach protected operations.",
+    "Invitation callback never accepts a client-selected role, center, or account.",
+    "Invitation capability remains bound to server-issued authentication state; tampered or forged callback state is rejected without consuming a still-valid invitation.",
+    "A failed callback or rejected invitation leaves account, membership, invitation, identity, and session state unchanged."
+  ],
+  "verification_targets": [
+    "FT-001-AC-006 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation: running SvelteKit HTTP/SSR login for Telegram and Google compares the foundation_session cookie exactly as HttpOnly, Path=/, SameSite=Lax, with Secure required for HTTPS and relaxed/omitted for local HTTP; prove protected actor resolution, logout, revoked-session denial, and safe unauthorized responses.",
+    "FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#browser-api-path / .memory-bank/contracts/authentication-transport.md#invitation-acceptance-path: running SvelteKit invite page/start/callback flow for both providers proves server-bound state continuity, rejects tampered/forged/mismatched state without consuming a valid invitation, then proves exact account/role/membership retention, one-use consumption, duplicate/reuse/expiry/outage denial, and state-before/state-after equality.",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path: source/runtime probe confirms thin route adaptation and the documented path reaches the accepted public boundaries.",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation: cookie attributes, per-request actor resolution, logout, and revoked-session behavior are observable through HTTP."
+  ]
+}

@@ -1,0 +1,14 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 1
+CLAIMS: FT-001-AC-006 / FT-001-AC-007 browser-bound callback state
+COMMAND: ./node_modules/.bin/vitest run tests/routes/auth-transport.test.ts tests/adapters/provider-boundary.test.ts
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+COMPLETED_AT: 2026-08-11 10:14:57 +0500
+
+OBSERVATION:
+2 test files passed; 13 tests passed. The disposable route/provider matrix
+passed same-browser Telegram/Google completion, missing-cookie login and
+invitation rejection before provider verification, mismatched and expired
+binding rejection, one-use replay rejection, cookie cleanup, protocol-aware
+cookie attributes, and unchanged invitation/session snapshots.

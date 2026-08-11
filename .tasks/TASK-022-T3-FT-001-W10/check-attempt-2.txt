@@ -1,0 +1,19 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 2
+CLAIM: touched browser-auth platform/route/test surface remains type-valid
+COMMAND: npm run check
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  worktree: broad pre-existing dirty/untracked W9/W10 product and task artifacts;
+    Attempt 2 task surface includes auth-state, auth transport, route/provider
+    tests, and TASK-022 protocol/evidence.
+  runtime: Node v22.22.1; npm 9.2.0.
+
+OUTPUT:
+> check
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+Loading svelte-check in workspace: /home/serg/Projects/study_calendar
+Getting Svelte diagnostics...
+svelte-check found 0 errors and 0 warnings

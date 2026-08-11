@@ -1,0 +1,13 @@
+Runtime: SvelteKit dev server at http://127.0.0.1:4319 with a disposable
+SQLite file and a server-issued fixture Admin session; the database was
+removed after the smoke.
+
+- Browser SSR without session, Accept: text/html: 303 /login.
+- JSON POST without session: 401 {"error":"unauthorized"}.
+- Browser SSR with own-center Admin session: 200, text/html, x-sveltekit-page:
+  true, rendered "Protected Admin" and the participant form.
+- Browser form POST with own-center Admin session and client center/account/
+  admin fields: 200 SSR response containing status=pending and a one-time
+  invitation URL.
+- JSON POST with the same server session and client scope fields: 200 JSON
+  containing only invitationUrl, status=pending, and expiresAt.

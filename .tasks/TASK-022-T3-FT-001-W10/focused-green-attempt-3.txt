@@ -1,0 +1,22 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 3
+RECEIPT_STATUS: supporting-only (not offered for independent reuse)
+CLAIM: FT-001-AC-006 / FT-001-AC-007 browser-bound callback and invitation regression paths remain green after retaining each start-flow binding cookie
+COMMAND: timeout 60s npm run test -- tests/routes/admin-provisioning.test.ts tests/routes/auth-transport.test.ts tests/adapters/provider-boundary.test.ts
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  relevant source hashes:
+    tests/routes/admin-provisioning.test.ts=a07552930f9e1ec9cb05050c2a06cb6803052e7b40aa7ef601a705872651baa7
+    tests/routes/auth-transport.test.ts=0d559aa08576d5d34e13829f753768421ee0fe786d2de3a0a74a0e6f60dbc023
+    tests/adapters/provider-boundary.test.ts=314cdff388a7d2a1387374712579f8216f3f52137dfc628add3daa11814a1a0d
+    src/lib/server/platform/auth-state.ts=746b5b725819368c584845dcb9dd160d216c93952abc5b7fbfc1c1b707f97d76
+    src/routes/auth/transport.server.ts=fb4b1b5baf15d77443eea07938c98363bd4c09c48e5c2e2d0ca31058e1331ede
+  worktree: broad pre-existing tracked modifications and untracked W9/W10 task/product artifacts; current Attempt 3 code correction is limited to tests/routes/admin-provisioning.test.ts
+  runtime: Node v22.22.1; npm 9.2.0; disposable in-memory SQLite and injected provider doubles
+OBSERVATION:
+  Test Files 3 passed (3); Tests 20 passed (20). The Admin invitation scenario,
+  auth transport matrix, and provider-boundary matrix pass without changing
+  production binding behavior.
+COMPLETED_AT: 2026-08-11 10:46:15 +0500

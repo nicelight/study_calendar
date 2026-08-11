@@ -1,0 +1,12 @@
+TASK-024-T3-FT-001-W10 — Attempt 1 native full test
+
+Command: npm run test
+cwd: /home/serg/Projects/study_calendar
+repository revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+input state basis: same task-owned source/test hashes and scoped status snapshot
+recorded immediately before the command; broad pre-existing worktree changes
+remain outside this task.
+exit_code: 0
+completed_at: 2026-08-11 12:20 +0500
+
+Evidence: 21 test files passed; 84 tests passed.

@@ -1,0 +1,5 @@
+Command: git diff --check
+Result: exit 0
+Output: no whitespace errors reported.
+Claim: repository diff hygiene for the current worktree changes.
+Attempt: 3.

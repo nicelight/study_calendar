@@ -1,0 +1,168 @@
+{
+  "id": "TASK-024-T3-FT-001-W10",
+  "title": "Move provider configuration wiring to the composition root",
+  "status": "done",
+  "wave": "W10",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-023-T3-FT-001-W10"
+  ],
+  "touched_files": [
+    "src/lib/server/platform/config.ts",
+    "src/lib/server/composition-root.ts",
+    "src/routes/auth/transport.server.ts",
+    "tests/adapters/provider-boundary.test.ts",
+    "tests/routes/auth-transport.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    }
+  ],
+  "verify": [
+    "RED: The current route transport reads TELEGRAM_BOT_TOKEN, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET, constructs the ProviderAdapterRegistry, and owns the lazy production singleton; the route is therefore both HTTP adapter and provider composition seam.",
+    "GREEN: Platform/composition wiring reads the existing provider configuration and constructs/supplies the registry, while createAuthenticationTransport remains injectable and route transport contains no provider secret/config reads or adapter construction; missing configuration still maps to the existing safe provider error.",
+    "VERIFY: Independently inspect the route/composition dependency boundary and run disposable runtime probes for injected provider doubles, missing configuration, both provider start paths, and client-output secret absence; then run the full project gates.",
+    "Independent verification 2026-08-11: source/runtime probes and native gates passed; see .protocols/TASK-024-T3-FT-001-W10/verification.md and .tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md. VERDICT: PASS.",
+    {
+      "stage": "functional",
+      "attempt": "Independent verification 2026-08-11",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-024-T3-FT-001-W10/verification.md",
+      "artifact": ".tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent source/runtime probes confirmed composition-owned provider configuration and registry wiring, dependency-only auth transport, safe missing-configuration failure, no client-visible secret, and unchanged Telegram/Google session/invitation behavior; check, build, full test, and scoped diff gates passed.",
+        "The functional artifact records VERDICT: PASS; no lifecycle, dependency, W9 history, or mb-sync state changed during verification."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Standalone /red-verify 2026-08-11",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-024-T3-FT-001-W10/red-verification.md",
+      "artifact": ".tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent adversarial review found no material semantic finding or operator-owned question across composition ownership, dependency-only route transport, safe failure, secret non-exposure, provider behavior, and the W9 hard boundary.",
+        "The semantic artifact records SEMANTIC_VERDICT: semantic-pass; task identity, status, dependency, ownership, and lifecycle remain unchanged."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md"
+  ],
+  "evidence_required": [
+    "FT-001-AC-006 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#browser-api-path RED: route-owned provider configuration or adapter construction changes login/session behavior or exposes route-owned secret state; GREEN: composition-root/platform wiring supplies the injected provider registry and both provider paths retain the accepted server session behavior; decisive comparison: runtime provider-start/session result and client-output scan contain no secret; artifact: .tasks/TASK-024-T3-FT-001-W10/ and .protocols/TASK-024-T3-FT-001-W10/.",
+    "FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules RED: provider configuration remains coupled to the route or missing configuration leaks a capability/secret into invitation acceptance; GREEN: platform/composition owns server-only configuration, injected adapters preserve safe missing-config failure, and invitation callback behavior remains unchanged; decisive comparison: source/runtime boundary probe, safe error response, and no client-visible secret or product-state mutation; artifact: .tasks/TASK-024-T3-FT-001-W10/ and .protocols/TASK-024-T3-FT-001-W10/."
+  ],
+  "purpose": "Restore the accepted composition-root/platform ownership of provider configuration without changing the provider contract or route behavior.",
+  "success_outcome": "The production provider registry and its secret configuration are wired by platform/composition ownership, authentication transport receives an injected registry, and all existing provider success/failure behavior remains safe and testable.",
+  "anti_goals": [
+    "Do not select a new provider SDK, change Telegram/Google protocols, rename the existing configuration contract without authority, or add another composition root.",
+    "Do not expose secrets in page data, form results, API responses, client bundles, or route errors; do not add a dev-login or role-selection bypass.",
+    "Do not change Identity & Access ownership, membership provisioning, auth-state semantics, accepted modular-monolith + SQLite architecture, or any W9 task/history artifact."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/platform/config.ts",
+      "src/lib/server/composition-root.ts",
+      "src/routes/auth/",
+      "tests/adapters/",
+      "tests/routes/"
+    ],
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-019-T3-FT-001-W9.task.json",
+      ".memory-bank/tasks/TASK-020-T3-FT-001-W9.task.json",
+      ".memory-bank/tasks/TASK-021-T3-FT-001-W9.task.json",
+      ".protocols/TASK-019-T3-FT-001-W9/",
+      ".protocols/TASK-020-T3-FT-001-W9/",
+      ".protocols/TASK-021-T3-FT-001-W9/",
+      ".tasks/TASK-019-T3-FT-001-W9/",
+      ".tasks/TASK-020-T3-FT-001-W9/",
+      ".tasks/TASK-021-T3-FT-001-W9/"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if provider wiring requires changing the accepted modular-monolith + SQLite architecture, adding a second composition root/service/store/event bus, or changing module ownership/topology.",
+      "Stop if the patch requires a new provider, SDK/product behavior, credential naming decision, client-visible configuration, or a change to the provider verification contract not settled by existing specs.",
+      "Stop if any W9 task card, protocol, execution evidence, semantic evidence, lifecycle, or retry history would need modification."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-006",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-007",
+    ".memory-bank/requirements.md#req-001--account-binding-and-provider-access",
+    ".memory-bank/requirements.md#req-002--provider-failure-safety",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    "PAPERCUTS/TECHDEBTS/tech-debt-wave-W9-2026-08-11.md",
+    ".memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path",
+    ".memory-bank/contracts/authentication-transport.md#verification-target",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/architecture/system-architecture.md#main-architecture-units",
+    ".memory-bank/architecture/system-architecture.md#deployment",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/provider-adapters.md",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/testing/strategy.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md#main-architecture-units",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/architecture/system-architecture.md#deployment",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract",
+    ".memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Preserve the existing Telegram/Google configuration values and safe missing-configuration behavior while moving ownership to platform/composition wiring.",
+    "Keep createAuthenticationTransport injectable for isolated tests; production construction may obtain its registry only from the accepted composition root/platform seam.",
+    "Use disposable injected-adapter/runtime probes and source/client-output scans; never use live credentials or expose secrets in evidence artifacts."
+  ],
+  "invariants": [
+    "SvelteKit auth routes adapt requests and call injected public boundaries; they do not own provider configuration or adapter construction.",
+    "Provider secrets remain server-only and enter through the single composition root/platform configuration seam.",
+    "Provider identity normalization, safe errors, session/invitation behavior, and no-direct-persistence rules remain unchanged."
+  ],
+  "verification_targets": [
+    "Existing FT-001 login/invitation regression / REQ-001 / REQ-002 / REQ-014: disposable runtime probes prove both provider starts, injected adapters, missing configuration safe error, and unchanged login/invitation transport behavior.",
+    "FT-001-AC-006 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#browser-api-path: compare route-owned configuration/adapter construction with composition-root injection; verify both provider login/session paths retain exact actor/session behavior and no secret reaches client output.",
+    "FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules: verify server-only configuration, safe missing-provider failure, injected adapter continuity, and unchanged invitation callback state before/after the composition-wiring correction.",
+    ".memory-bank/architecture/system-architecture.md#main-architecture-units and #deployment: source probe proves composition root/platform owns settings, provider adapters, and wiring while route transport remains an HTTP adapter.",
+    ".memory-bank/contracts/provider-adapters.md#failure-and-ownership-rules: source/runtime probe proves server-only secrets, no client-visible exposure, explicit missing-config failure, and no product persistence from adapters.",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary: verify only normalized provider identity crosses the boundary and no route/provider wiring bypasses ownership.",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership: store source scan, runtime output, and independent functional/semantic verdicts under the task-local paths."
+  ]
+}

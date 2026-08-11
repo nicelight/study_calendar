@@ -1,0 +1,20 @@
+TASK: TASK-022-T3-FT-001-W10
+OWNER: independent /verify
+COMMAND: timeout 90s npm run test
+CWD: /home/serg/Projects/study_calendar
+RESULT: exit 1
+
+OBSERVATION:
+20 test files passed; 1 test file failed; 78 tests passed and 1 failed.
+The deterministic failure is:
+tests/routes/admin-provisioning.test.ts > protected Admin participant transport
+> reaches the existing one-time invitation browser path and keeps duplicate/replay errors safe
+at line 207, where the fixture expects `{ status: 303, location: '/' }` but
+the callback returns HTTP 400 Invalid authentication state. The fixture's start
+cookie is not passed to its callback cookie jar.
+
+This is a required project test gate failure. The independent task-local probe
+passes the same valid invitation flow when the binding cookie is retained, so
+this artifact does not claim a production-path failure.
+
+SAFE_STATE: disposable test fixtures only; no credentials, network, or production DB.

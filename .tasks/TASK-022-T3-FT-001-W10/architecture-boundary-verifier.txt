@@ -1,0 +1,20 @@
+TASK: TASK-022-T3-FT-001-W10
+OWNER: independent /verify
+
+ARCHITECTURE:
+- `src/routes/auth/transport.server.ts` delegates provider start/verification
+  through `ProviderAdapterRegistry` and identity/session/invitation completion
+  through the Identity & Access public boundary.
+- `src/routes/auth/` and `src/lib/server/platform/auth-state.ts` contain no
+  direct SQLite/database writes or caller-trusted role/center/account inputs.
+- Authentication state remains process-local and opaque; no durable second
+  store, worker, provider-protocol change, or new business boundary appeared.
+
+HARD_BOUNDARY:
+- Task production/test surface checked: `src/lib/server/platform/`,
+  `src/routes/auth/`, `tests/routes/`, `tests/adapters/`.
+- Actual task files reported by the handoff are within that boundary.
+- W9 task cards/protocols/evidence paths have no diff output in the current
+  worktree; their untracked presence is preserved input state, not modified by
+  this verification.
+- Verifier probe/config and reports are task-local workflow artifacts.

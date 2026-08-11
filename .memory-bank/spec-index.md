@@ -1,7 +1,7 @@
 ---
 description: Pure SDD spec registry and planned-spec index.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-11
 source_of_truth:
   - .memory-bank/spec-index.md
 ---
@@ -22,7 +22,9 @@ source_of_truth:
 | architecture | [.memory-bank/architecture/system-architecture.md](architecture/system-architecture.md) | active | Global modular-monolith shape, composition root, runtime, deployment, and Architecture Spine. | /spec-design |
 | contract | [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md) | active | Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/access-control.md](contracts/access-control.md) | active | Server-side authentication, authorization scope, privacy, and provider-binding contract. | /spec-design or /feature-to-tasks |
+| contract | [.memory-bank/contracts/authentication-transport.md](contracts/authentication-transport.md) | active | Minimal SvelteKit browser/HTTP path for login, sessions, invitations, logout, and protected Admin provisioning. | /feature-to-tasks |
 | contract | [.memory-bank/contracts/financial-ledger.md](contracts/financial-ledger.md) | active | Financial ownership, exactness, allocation, audit, projection, and replay contract. | /spec-design or /feature-to-tasks |
+| contract | [.memory-bank/contracts/provider-adapters.md](contracts/provider-adapters.md) | active | Server-only normalized verification boundary for Telegram Login and Google OAuth adapters. | /feature-to-tasks |
 | domain | [.memory-bank/domains/core-domain.md](domains/core-domain.md) | active | Global entity model, persisted source of truth, ownership, and storage/data flow. | /spec-design or /feature-to-tasks |
 | state | [.memory-bank/states/lifecycle-map.md](states/lifecycle-map.md) | active | Access, lesson, collaboration, learning, and financial lifecycle transitions. | /spec-design or /feature-to-tasks |
 | runbook | [.memory-bank/runbooks/mvp-verification.md](runbooks/mvp-verification.md) | active | Foundation smoke, pre-real-data checks, deployment smoke, and evidence routing. | /spec-design or /foundation-to-tasks |

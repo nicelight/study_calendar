@@ -1,0 +1,5 @@
+Command: npm run test
+Result: exit 0
+Output: 21 test files passed; 74 tests passed.
+Claim: project-native full regression gate after the bounded Admin correction.
+Attempt: 3.

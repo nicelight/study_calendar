@@ -1,0 +1,31 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 2
+RECEIPT_STATUS: supporting-only (not offered for independent reuse)
+CLAIM: touched browser-auth platform/routes compile and integrate into the SvelteKit production build
+COMMAND: timeout 60s npm run build
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  worktree: broad pre-existing tracked modifications and untracked W9/W10
+    product/task artifacts; current task surface is auth-state, auth transport,
+    route/provider tests, and TASK-022 protocol/evidence only.
+  forbidden_scope: W9 task cards/protocols/evidence were present as pre-existing
+    untracked artifacts and were not modified by this check.
+  runtime: Node v22.22.1; npm 9.2.0; Vite 8.2.1; no credentials, network, or
+    production database.
+  generated_input: SvelteKit generated/build output under .svelte-kit only.
+
+OBSERVATION:
+  Vite transformed 186 SSR modules and 169 client modules; client and server
+  bundles completed successfully. The adapter-auto environment notice is a
+  non-fatal existing deployment notice. No build error occurred.
+
+OUTPUT_SUMMARY:
+  vite v8.2.1 building ssr environment for production...
+  ✓ built in 237ms
+  ✓ built in 2.91s
+  ✔ done
+
+COMPLETED_AT: 2026-08-11 10:28:16 +0500
+CHECKSUM: recorded in current Attempt 2 protocol receipt

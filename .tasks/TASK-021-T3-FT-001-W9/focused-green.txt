@@ -1,0 +1,49 @@
+
+ RUN  v4.1.10 /home/serg/Projects/study_calendar
+
+ ❯ tests/routes/admin-provisioning.test.ts (5 tests | 2 failed) 155ms
+     × reaches the existing one-time invitation browser path and keeps duplicate/replay errors safe 9ms
+     × shows safe expiry/revocation errors and rolls back account, invitation, and membership together 20ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/routes/admin-provisioning.test.ts > protected Admin participant transport > reaches the existing one-time invitation browser path and keeps duplicate/replay errors safe
+TypeError: Invalid URL
+ ❯ acceptInvitation tests/routes/admin-provisioning.test.ts:165:21
+    163|   )
+    164|  );
+    165|  const stateValue = new URL(start.location).searchParams.get('state')!;
+       |                     ^
+    166|  const sessionCookies = cookieJar();
+    167|  const callbackUrl = `https://calendar.test/auth/google/callback?state…
+ ❯ tests/routes/admin-provisioning.test.ts:329:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/routes/admin-provisioning.test.ts > protected Admin participant transport > shows safe expiry/revocation errors and rolls back account, invitation, and membership together
+AssertionError: expected { count: 2 } to deeply equal { count: +0 }
+
+- Expected
++ Received
+
+  {
+-   "count": 0,
++   "count": 2,
+  }
+
+ ❯ tests/routes/admin-provisioning.test.ts:438:5
+    436|   expect(state(root)).toEqual(before);
+    437|   expect(root.database.sqlite.prepare("SELECT COUNT(*) AS count FROM a…
+    438|    .toEqual({ count: 0 });
+       |     ^
+    439|  });
+    440|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  03:23:08
+   Duration  995ms (transform 391ms, setup 0ms, import 482ms, tests 155ms, environment 1ms)
+

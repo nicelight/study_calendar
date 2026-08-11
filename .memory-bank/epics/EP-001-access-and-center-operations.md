@@ -1,9 +1,9 @@
 ---
 description: Epic for controlled access, center membership, and scheduling operations.
-status: draft
+status: active
 type: epic
 id: EP-001
-lifecycle: planned
+lifecycle: verified
 ---
 # EP-001 — Access and Center Operations
 

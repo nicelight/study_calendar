@@ -1,9 +1,9 @@
 ---
 description: Epic for elastic calendar navigation and shared/personal lesson context.
-status: draft
+status: active
 type: epic
 id: EP-002
-lifecycle: planned
+lifecycle: verified
 ---
 # EP-002 — Calendar and Day Context
 

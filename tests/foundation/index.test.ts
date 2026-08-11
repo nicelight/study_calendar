@@ -37,9 +37,15 @@ describe('Foundation walking skeleton', () => {
 			INSERT INTO centers (id, name) VALUES ('center-1', 'Foundation Center');
 			INSERT INTO center_memberships (center_id, account_id) VALUES ('center-1', 'account-1');
 		`);
-		root.identityAccess.createSession({ token: 'session-1', accountId: 'account-1' });
+		root.database.sqlite
+			.prepare('INSERT INTO external_identities (provider, subject, account_id) VALUES (?, ?, ?)')
+			.run('google', 'foundation-subject', 'account-1');
+		const sessionToken = root.identityAccess.authenticateVerifiedIdentity({
+			provider: 'google',
+			subject: 'foundation-subject'
+		});
 
-		const actor = root.identityAccess.resolveActor('session-1');
+		const actor = root.identityAccess.resolveActor(sessionToken);
 
 		expect(actor).toEqual({ accountId: 'account-1', role: 'teacher' });
 		expect(root.centerScheduling.getAuthorizedCenterScope(actor, 'center-1')).toEqual({

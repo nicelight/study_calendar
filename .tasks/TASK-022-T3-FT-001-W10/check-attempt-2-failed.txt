@@ -1,0 +1,13 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 2
+CLAIM: touched browser-auth platform/route/test surface remains type-valid
+COMMAND: npm run check
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 1
+
+OBSERVATION:
+The first Attempt 2 check reached svelte-check and found one type error in
+the newly added provider-start failure probe: Vitest inferred the literal
+provider field as string instead of the domain Provider union. This was a
+probe typing issue, not a production implementation failure. The failing
+line was tests/routes/auth-transport.test.ts:163.

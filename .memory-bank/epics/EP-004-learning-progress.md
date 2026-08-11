@@ -1,9 +1,9 @@
 ---
 description: Epic for homework completion, grading, and attendance.
-status: draft
+status: active
 type: epic
 id: EP-004
-lifecycle: planned
+lifecycle: verified
 ---
 # EP-004 — Learning Progress
 

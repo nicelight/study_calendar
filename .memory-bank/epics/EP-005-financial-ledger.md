@@ -1,9 +1,9 @@
 ---
 description: Epic for monetary charges, payments, allocation, audit, and balance projection.
-status: draft
+status: active
 type: epic
 id: EP-005
-lifecycle: planned
+lifecycle: verified
 ---
 # EP-005 — Financial Ledger
 

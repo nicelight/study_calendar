@@ -1,9 +1,9 @@
 ---
 description: Product feature for pricing, payments, allocation, balances, audit, and payment markers.
-status: draft
+status: active
 type: feature
 id: FT-006
-lifecycle: planned
+lifecycle: verified
 epic: EP-005
 requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015, REQ-016]
 spec_design_status: complete

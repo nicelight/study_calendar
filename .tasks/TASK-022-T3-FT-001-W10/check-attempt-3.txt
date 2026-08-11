@@ -1,0 +1,15 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 3
+RECEIPT_STATUS: supporting-only (not offered for independent reuse)
+CLAIM: touched browser-auth platform/route/test surface remains type-valid
+COMMAND: timeout 90s npm run check
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  relevant current task source hashes are recorded in focused-green-attempt-3.txt
+  worktree: broad pre-existing tracked modifications and untracked W9/W10 task/product artifacts
+  runtime: Node v22.22.1; npm 9.2.0
+OBSERVATION:
+  svelte-check found 0 errors and 0 warnings.
+COMPLETED_AT: 2026-08-11 10:46 +0500

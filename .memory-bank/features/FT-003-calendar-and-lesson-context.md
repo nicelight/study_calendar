@@ -1,9 +1,9 @@
 ---
 description: Product feature for elastic calendar navigation and shared/personal lesson views.
-status: draft
+status: active
 type: feature
 id: FT-003
-lifecycle: planned
+lifecycle: verified
 epic: EP-002
 requirements: [REQ-005, REQ-006, REQ-014, REQ-016]
 spec_design_status: complete

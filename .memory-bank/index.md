@@ -55,6 +55,8 @@ status: active
 - [.memory-bank/contracts/](contracts/): Контракты и boundary specs (prefer when present).
 - [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md): Canonical accepted module/change-unit dependency graph and boundary contracts.
 - [.memory-bank/contracts/access-control.md](contracts/access-control.md): Server-side authorization, privacy, and provider-binding contract.
+- [.memory-bank/contracts/authentication-transport.md](contracts/authentication-transport.md): Минимальный browser/HTTP flow для login, sessions, invitations и Admin provisioning.
+- [.memory-bank/contracts/provider-adapters.md](contracts/provider-adapters.md): Server-only boundary нормализации Telegram/Google provider identity.
 - [.memory-bank/states/](states/): Lifecycle/state rules (prefer when present).
 - [.memory-bank/runbooks/](runbooks/): Runbooks и operational procedures.
 - [.memory-bank/testing/index.md](testing/index.md): Router for testing documentation.

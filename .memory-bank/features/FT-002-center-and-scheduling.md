@@ -1,9 +1,9 @@
 ---
 description: Product feature for center membership, classes, and lesson scheduling.
-status: draft
+status: active
 type: feature
 id: FT-002
-lifecycle: planned
+lifecycle: verified
 epic: EP-001
 requirements: [REQ-003, REQ-004, REQ-014]
 spec_design_status: complete

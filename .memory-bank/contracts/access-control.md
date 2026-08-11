@@ -1,7 +1,7 @@
 ---
 description: Server-side authentication, authorization scope, and privacy contract.
 status: active
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 source_of_truth:
   - .memory-bank/contracts/access-control.md
 ---
@@ -59,6 +59,10 @@ every role.
   provider outage, callback failure, or invalid invitation leaves account,
   role, membership, and binding state unchanged.
 - A second provider is added only from a re-confirmed authenticated profile.
+- A session is issued only by Identity & Access after a verified bound identity
+  or an atomic invitation binding; session revocation is checked on every
+  protected request and logout revokes the server-side session before the
+  browser cookie is cleared.
 - Removing a class assignment or membership takes effect at the next server-side
   authorization check; authored records retain attribution.
 

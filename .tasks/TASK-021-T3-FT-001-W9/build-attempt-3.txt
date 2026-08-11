@@ -1,0 +1,8 @@
+Command: npm run build
+Result: exit 0
+Output: SSR and client environments built successfully; route export validation
+completed without errors.
+Note: adapter-auto emitted its existing informational production-environment
+notice; the build completed successfully.
+Claim: project-native production build gate for the bounded Admin route.
+Attempt: 3.

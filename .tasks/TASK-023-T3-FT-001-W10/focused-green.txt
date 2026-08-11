@@ -1,0 +1,23 @@
+TASK: TASK-023-T3-FT-001-W10
+ATTEMPT: Attempt 1
+CLAIMS: FT-001-AC-004 / FT-001-AC-007; bounded authentication-state retention and failed provider-start discard
+PROBE_STATUS: claim-equivalent GREEN
+COMMAND: timeout 120s npm run test -- tests/routes/auth-transport.test.ts tests/adapters/provider-boundary.test.ts
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  auth_state_sha256: 746b5b725819368c584845dcb9dd160d216c93952abc5b7fbfc1c1b707f97d76
+  transport_sha256: fb4b1b5baf15d77443eea07938c98363bd4c09c48e5c2e2d0ca31058e1331ede
+  provider_test_sha256: d318cd34d5a1142a03e9b63c6cd90c55b99e5e910a84407679c1a51fbcb09c27
+  transport_test_sha256: 290317e27ae270ee975976268faba6c3856ba35e591ec1b021076230c13dcaa7
+  worktree: broad pre-existing tracked/untracked W9/W10 changes; TASK-023 production files unchanged; only two allowed test files gained same-claim assertions; no forbidden scope touched
+RUNTIME_BASIS: Node v22.22.1; npm 9.2.0; Vitest 4.1.10; disposable deterministic state/provider and in-memory SQLite fixtures
+OBSERVATION:
+  Test Files 2 passed; Tests 17 passed. The new regression cases prove expired
+  records can be replaced during issue without removing a live sibling, an
+  expired consume rejection leaves a live sibling consumable, failed provider
+  begin returns the safe 502 and leaves its just-issued state unusable, the
+  valid sibling callback still succeeds, and product state is unchanged at
+  failed-start rejection.
+COMPLETED_AT: 2026-08-11 11:30:00 +0500

@@ -1,0 +1,115 @@
+{
+  "id": "TASK-021-T3-FT-001-W9",
+  "title": "Build protected Admin participant and invitation UI",
+  "status": "done",
+  "wave": "W9",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-002", "REQ-014"],
+  "depends_on": ["TASK-020-T3-FT-001-W9", "TASK-005-T3-FT-002-W3"],
+  "touched_files": [
+    "src/routes/admin/",
+    "tests/routes/",
+    "tests/center-scheduling/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "An own-center Admin can open the protected participant page, submit a permitted teacher/student/parent role, and receive an invitation URL/status produced by the existing Center & Scheduling participant boundary.",
+    "Unauthenticated, non-Admin, and cross-center page/action requests are rejected server-side before account, membership, or invitation state changes; UI visibility is not used as proof.",
+    "The returned invitation reaches the TASK-020 browser acceptance path and account/membership/invitation state is committed or unchanged as one outcome.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-021-T3-FT-001-W9/verification.md",
+      "artifact": ".tasks/TASK-021-T3-FT-001-W9/TASK-021-T3-FT-001-W9-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned Admin probe, live disposable SSR/form/API smoke, and the required check/build/full-test/diff gates passed; the current functional report records VERDICT: PASS.",
+        "FT-001-AC-008 passed for own-center Admin success, unauthenticated/non-Admin/wrong-center denial before mutation, server-generated identifiers, TASK-020 invitation handoff, and account+membership+invitation atomicity."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-021-T3-FT-001-W9/red-verification.md",
+      "artifact": ".tasks/TASK-021-T3-FT-001-W9/TASK-021-T3-FT-001-W9-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent T3 adversarial review passed stale/mismatched actor authority, non-Admin, wrong-center, alternate-write, direct-persistence, secret-leakage, dev-bypass, and route-export checks.",
+        "The current semantic artifact records SEMANTIC_VERDICT: semantic-pass; task identity/status, dependency, lifecycle, and retry budget remain unchanged."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md"
+  ],
+  "evidence_required": [
+    "FT-001-AC-008 RED: the Admin page/action is reachable without an Admin own-center session, trusts a submitted center/role, writes directly, or leaves partial account/membership/invitation state; GREEN: own-center Admin success calls the existing authorized participant boundary, all negative requests are rejected before mutation, and the state snapshot is atomic; artifact: .tasks/TASK-021-T3-FT-001-W9/ and .protocols/TASK-021-T3-FT-001-W9/verification.md.",
+    "FT-001-AC-008 integration RED: a successful form does not return a usable one-time invitation or the returned link cannot enter the accepted provider flow; GREEN: the Admin receives a safe invitation URL/status and the link completes through TASK-020's documented invite path without role/center selection; artifact: .tasks/TASK-021-T3-FT-001-W9/ and .protocols/TASK-021-T3-FT-001-W9/verification.md."
+  ],
+  "purpose": "Expose the smallest real protected Admin UI/API action for center-created participant accounts and one-time invitations.",
+  "success_outcome": "The server-protected Admin page creates a center-bounded participant through the existing owner boundary, returns a usable one-time invitation, and denies every unauthorized or cross-center attempt without mutation.",
+  "anti_goals": [
+    "Do not write Identity & Access or membership tables from routes, actions, or components.",
+    "Do not duplicate the TASK-015 authorization/atomicity command or expose createAccount/issueInvitation bypasses.",
+    "Do not make UI hiding the only authorization check or add unrelated center/scheduling screens."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json",
+      ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json",
+      ".memory-bank/tasks/TASK-004-T3-FT-001-W3.task.json",
+      ".memory-bank/tasks/TASK-015-T3-FT-001-W2.task.json"
+    ],
+    "stop_conditions": [
+      "Stop if the Admin flow requires direct database access, a new ownership edge, or changing the accepted Center & Scheduling/Identity & Access boundaries."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-008",
+    ".memory-bank/contracts/authentication-transport.md#protected-admin-provisioning-path",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/domains/core-domain.md#ownership-map"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md#main-architecture-units",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Center & Scheduling remains the membership owner and the existing createParticipant public path is the only provisioning call from the Admin transport.",
+    "The target center is server-resolved and own-center Admin authorization is repeated in the form action.",
+    "The page/form test uses isolated disposable persistence and records state-before/state-after plus safe cleanup."
+  ],
+  "invariants": [
+    "Only an authenticated own-center Admin can perform the participant provisioning action.",
+    "A participant account, its center membership, and its invitation are committed together or not at all.",
+    "The invitation link is one-time, expiring, and enters only the accepted provider-binding path."
+  ],
+  "verification_targets": [
+    "FT-001-AC-008: running SvelteKit page/form or HTTP action smoke for own-center Admin success, non-Admin/unauthenticated/cross-center denial, server-generated identifiers, and state-before/state-after comparison.",
+    ".memory-bank/contracts/authentication-transport.md#protected-admin-provisioning-path: source/runtime probe confirms route-level guard plus action-level recheck, no UI-only authorization, and no direct persistence.",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary: boundary probe confirms the Admin action calls the existing authorized provisioning path and exposes no alternate write.",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules: successful and failed participant provisioning preserve account/membership/invitation atomicity."
+  ]
+}

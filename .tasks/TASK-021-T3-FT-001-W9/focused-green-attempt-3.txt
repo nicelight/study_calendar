@@ -1,0 +1,6 @@
+Command: ./node_modules/.bin/vitest run tests/routes/admin-provisioning.test.ts
+Result: exit 0
+Output: 1 test file passed; 5 tests passed.
+Claim: FT-001-AC-008 protected Admin authorization, atomic invitation handoff,
+rollback observation, safe rerun, and no direct route persistence.
+Attempt: 3; fresh claim-equivalent GREEN after route type/export correction.

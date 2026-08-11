@@ -1,0 +1,21 @@
+TASK: TASK-023-T3-FT-001-W10
+ATTEMPT: Attempt 1
+CLAIMS: FT-001-AC-004 / FT-001-AC-007; bounded authentication-state retention and failed provider-start discard
+PROBE_STATUS: pre-implementation GREEN
+RED_STATUS: no honest claim-specific RED observed; the unchanged current baseline already satisfies the focused behavior, and an artificial rollback is disallowed
+COMMAND: ./node_modules/.bin/vitest run tests/adapters/provider-boundary.test.ts tests/routes/auth-transport.test.ts -t 'expired state|prunes expired state|discards state when provider start fails'
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 0
+INPUT_STATE_BASIS:
+  repository_revision: 92af3d79bdf9bd7d6f2b6160041b861f12decddf
+  auth_state_sha256: 746b5b725819368c584845dcb9dd160d216c93952abc5b7fbfc1c1b707f97d76
+  transport_sha256: fb4b1b5baf15d77443eea07938c98363bd4c09c48e5c2e2d0ca31058e1331ede
+  provider_test_sha256: 314cdff388a7d2a1387374712579f8216f3f52137dfc628add3daa11814a1a0d
+  transport_test_sha256: 0d559aa08576d5d34e13829f753768421ee0fe786d2de3a0a74a0e6f60dbc023
+  worktree: broad pre-existing tracked/untracked W9/W10 changes; relevant production/test files were untracked baseline files; no forbidden scope touched
+RUNTIME_BASIS: Node v22.22.1; npm 9.2.0; Vitest 4.1.10; deterministic fixtures only
+OBSERVATION:
+  Test Files 2 passed; Tests 3 passed and 12 skipped. The existing code pruned
+  expired state during issue/consume paths and discarded a state after provider
+  begin failure. This is execution supporting evidence, not independent proof.
+COMPLETED_AT: 2026-08-11 11:28:15 +0500

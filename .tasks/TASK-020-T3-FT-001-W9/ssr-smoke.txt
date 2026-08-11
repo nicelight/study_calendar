@@ -1,0 +1,9 @@
+Runtime: SvelteKit Vite dev server, http://127.0.0.1:4317, disposable DATABASE_URL=/tmp/study-calendar-task-020-review.db, no provider credentials.
+Probe: curl HTTP/SSR requests; server stopped after probe and disposable DB was removed by an exact fs.rmSync path.
+
+GET /login -> 200 HTML; SSR contains both /auth/telegram/start and /auth/google/start links.
+GET /invite/missing -> 410 HTML; body contains only "Invitation is invalid or expired".
+GET /api/foundation?centerId=missing -> 401 {"error":"unauthorized"}; hooks resolve no actor without a session.
+GET /auth/google/callback?state=forged-state -> 400 {"message":"Invalid authentication state"}.
+POST /auth/logout without a session -> 303 /login; Set-Cookie clears foundation_session with Path=/, HttpOnly, SameSite=Lax and no Secure on local HTTP.
+GET /auth/google/start without provider configuration -> 502 {"message":"Authentication provider unavailable"}; no provider secret is returned.

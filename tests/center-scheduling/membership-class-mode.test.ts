@@ -3,9 +3,11 @@ import { createCompositionRoot, type CompositionRoot } from '../../src/lib/serve
 
 describe('center membership and class modes', () => {
 	let root: CompositionRoot;
+	let participantSessions: Map<string, string>;
 
 	beforeEach(() => {
 		root = createCompositionRoot({ databaseFilename: ':memory:' });
+		participantSessions = new Map();
 		root.database.sqlite.exec(`
 			INSERT INTO centers (id, name) VALUES
 				('center-own', 'Own Center'),
@@ -39,10 +41,22 @@ describe('center membership and class modes', () => {
 			role: input.role,
 			invitationToken: `invite-${input.accountId}`
 		});
-		root.identityAccess.createSession({
-			token: `session-${input.accountId}`,
-			accountId: input.accountId
-		});
+		const providerSubject = `fixture-${input.accountId}`;
+		root.database.sqlite
+			.prepare('INSERT INTO external_identities (provider, subject, account_id) VALUES (?, ?, ?)')
+			.run('google', providerSubject, input.accountId);
+		participantSessions.set(
+			input.accountId,
+			root.identityAccess.authenticateVerifiedIdentity({ provider: 'google', subject: providerSubject })
+		);
+	}
+
+	function sessionFor(accountId: string): string {
+		const sessionToken = participantSessions.get(accountId);
+		if (!sessionToken) {
+			throw new Error(`missing-fixture-session:${accountId}`);
+		}
+		return sessionToken;
 	}
 
 	it('FT-002-AC-001 lets only an own-center Admin manage bounded participants, links, and exact class modes', () => {
@@ -132,7 +146,7 @@ describe('center membership and class modes', () => {
 
 		expect(() =>
 			root.centerScheduling.createParticipant({
-				sessionToken: 'session-teacher-own',
+				sessionToken: sessionFor('teacher-own'),
 				centerId: 'center-own',
 				accountId: 'student-by-teacher',
 				role: 'student',
@@ -150,7 +164,7 @@ describe('center membership and class modes', () => {
 		).toThrow('not-authorized');
 		expect(() =>
 			root.centerScheduling.createClass({
-				sessionToken: 'session-teacher-own',
+				sessionToken: sessionFor('teacher-own'),
 				centerId: 'center-own',
 				classId: 'class-by-teacher',
 				name: 'Denied',
@@ -330,7 +344,7 @@ describe('center membership and class modes', () => {
 			studentAccountIds: ['student-one']
 		});
 		expect(
-			root.centerScheduling.getAuthorizedClassScope('session-teacher-own', 'class-individual')
+			root.centerScheduling.getAuthorizedClassScope(sessionFor('teacher-own'), 'class-individual')
 		).toMatchObject({
 			mode: 'individual',
 			accountId: 'teacher-own',
@@ -338,14 +352,14 @@ describe('center membership and class modes', () => {
 			studentAccountIds: ['student-one']
 		});
 		expect(
-			root.centerScheduling.getAuthorizedClassScope('session-student-one', 'class-group')
+			root.centerScheduling.getAuthorizedClassScope(sessionFor('student-one'), 'class-group')
 		).toMatchObject({
 			accountId: 'student-one',
 			role: 'student',
 			studentAccountIds: ['student-one']
 		});
 		expect(
-			root.centerScheduling.getAuthorizedClassScope('session-parent-one', 'class-group')
+			root.centerScheduling.getAuthorizedClassScope(sessionFor('parent-one'), 'class-group')
 		).toMatchObject({
 			accountId: 'parent-one',
 			role: 'parent',
@@ -353,10 +367,10 @@ describe('center membership and class modes', () => {
 		});
 
 		expect(
-			root.centerScheduling.getAuthorizedClassScope('session-student-two', 'class-individual')
+			root.centerScheduling.getAuthorizedClassScope(sessionFor('student-two'), 'class-individual')
 		).toBeNull();
 		expect(
-			root.centerScheduling.getAuthorizedClassScope('session-teacher-unassigned', 'class-group')
+			root.centerScheduling.getAuthorizedClassScope(sessionFor('teacher-unassigned'), 'class-group')
 		).toBeNull();
 		expect(
 			root.centerScheduling.getAuthorizedClassScope('session-admin-other', 'class-group')

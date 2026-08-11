@@ -1,0 +1,17 @@
+Command: ./node_modules/.bin/vitest run --config .tasks/TASK-021-T3-FT-001-W9/verifier.vite.config.ts
+Result: exit 0; 1 file / 4 tests passed.
+
+Coverage:
+- SSR/page load, form action, and JSON POST deny unauthenticated, non-Admin,
+  and wrong-center requests with unchanged state and generic responses.
+- Own-center Admin success ignores submitted center/account/admin fields,
+  supports teacher/student/parent, and verifies server-generated account IDs,
+  invitation URLs, role, membership, and expiry.
+- Returned invitation enters TASK-020 transport; exact account/role/membership
+  is retained, invitation is consumed once, and replay/duplicate identity,
+  revoked, and expired paths return safe denial without extra state.
+- Induced membership failure leaves account, invitation, membership, identity,
+  and session counts unchanged.
+
+State: disposable in-memory SQLite per test; provider doubles only; explicit
+database close in afterEach; no credentials, production DB, or network.

@@ -1,0 +1,20 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 1
+CLAIMS: FT-001-AC-006 / FT-001-AC-007 browser-bound callback state
+COMMAND: ./node_modules/.bin/vitest run tests/routes/auth-transport.test.ts -t 'RED: rejects a callback from another or cookie-less browser before provider and state completion'
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 1
+
+OBSERVATION:
+The claim-specific probe failed before implementation because a callback with
+the portable state and no start cookie returned Redirect status 303 instead of
+the required status 400. This is the current vulnerability: the callback can
+complete in a different/cookie-less browser. The provider-call and invitation
+snapshot assertions were not reached after the first expected-status failure.
+
+VITEST_OUTPUT:
+RUN v4.1.10 /home/serg/Projects/study_calendar
+tests/routes/auth-transport.test.ts (6 tests | 1 failed | 5 skipped)
+Failed test: browser authentication transport > RED: rejects a callback from another or cookie-less browser before provider and state completion
+AssertionError: expected Redirect{ status: 303, location: '/' } to match object { status: 400 }
+Start at 10:09:25; Duration 656ms

@@ -1,0 +1,27 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 2
+CLAIMS: FT-001-AC-006 / FT-001-AC-007 browser-bound callback state and bounded retention
+COMMAND: ./node_modules/.bin/vitest run tests/adapters/provider-boundary.test.ts tests/routes/auth-transport.test.ts -t 'prunes expired state|discards state when provider start fails so a retry can issue a fresh capability'
+CWD: /home/serg/Projects/study_calendar
+EXIT_CODE: 1
+
+OBSERVATION:
+The current dirty-worktree browser-binding implementation failed the two
+contract correction probes: an expired state blocked re-issuance with the
+same state value, and a provider-start failure left its state in the store so
+the immediate retry also raised invalid-auth-state. These are claim-relevant
+failures for the linked authentication-transport bounded-retention contract,
+not setup, syntax, or artificial failures.
+
+VITEST_OUTPUT:
+RUN v4.1.10 /home/serg/Projects/study_calendar
+
+tests/adapters/provider-boundary.test.ts (7 tests | 1 failed | 6 skipped)
+  failed: prunes expired state before issuing a replacement capability
+  Error: invalid-auth-state at AuthenticationStateStore.issue (auth-state.ts:70)
+
+tests/routes/auth-transport.test.ts (8 tests | 1 failed | 7 skipped)
+  failed: discards state when provider start fails so a retry can issue a fresh capability
+  expected redirect status 303, received Error: invalid-auth-state
+
+Test Files 2 failed; Tests 2 failed | 13 skipped

@@ -601,3 +601,92 @@ status: active
 - It confirmed original `TASK-012-T2-FT-004-W6` remains `T2`/`in_progress`, required tier is `T3`, and the corrected protected boundary spans two independently completable ownership surfaces: TASK-011 comments/reactions and TASK-012 threaded discussions.
 - No replacement task IDs, task-index changes, lifecycle changes, dependency rewrites, execution, verification, feature red, sync, gates, or promotion were performed.
 - Autopilot enters `HALT_BLOCKING_QUESTIONS`: a transparent full rebuild/split changes identity and claim ownership and therefore requires explicit owner authorization under the planning contract. Resume route is `/feature-to-tasks FT-004` with full rebuild authorization, followed by `/review-tasks-plan FT-004`, doctor, and fresh T3 execution.
+
+## 2026-08-11 — Explicit FT-001 lifecycle verification decision
+
+The top-level operator explicitly authorized final lifecycle reconciliation for
+FT-001 after the product queue reached terminal state. Durable gates already
+present are: TASK-019..024 current functional `PASS` plus per-task T3
+`semantic-pass`, feature-level FT-001 `semantic-pass`, latest FT-001 task-plan
+`APPROVE` at Planning Revision 2, strict doctor `PASS`, and W10 technical-debt
+review with no material findings.
+
+Applied only the feature lifecycle decision: FT-001 document `status: active`
+and entity `lifecycle: verified`; RTM REQ-001/REQ-002 are `verified`, while
+shared REQ-014 remains `planned`. No task status, dependency, tier, AC/spec,
+retry history, historical TASK-003 failure, or unrelated feature/epic was
+changed. No task was re-executed. The exact terminal run status is reconciled
+in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
+
+## 2026-08-11 — Queue-recovery audit for outer closure
+
+- Scope: current `/autonomous` invocation, with FT-002..FT-006 tasking already
+  terminal. The authoritative `.memory-bank/tasks/index.json` and every indexed
+  `.task.json` record were reconciled; Planning Revision is `2`, and Foundation
+  final gate `TASK-002-T3-FT-000-W1` is `done`.
+- Queue snapshot: all 24 indexed records are terminal (`20 done`, `2 failed`
+  product records plus 2 Foundation `done`); FT-002..FT-006 contain `12 done`
+  and historical `TASK-012-T2-FT-004-W6=failed`. No record is
+  `planned|ready|in_progress|blocked`. Current FT-002..FT-006 task-plan review
+  coverage remains `APPROVE` at Planning Revision `2`.
+- Recovery decision: terminal task records are not replayed. No task card,
+  feature/REQ lifecycle, code, spec, task status, retry counter, or review
+  counter was mutated or consumed by this audit.
+- Run checkpoint decision: replace stale outer `SUCCESS` with `RUNNING`; current
+  task is `none`, current scheduler stage is `closure`. Exact next action is an
+  independent outer closure review, followed by owner lifecycle reconciliation;
+  only that owner may apply any accepted lifecycle transition.
+
+## 2026-08-11 — Independent outer closure review approved
+
+- Fresh independent Sol review returned `VERDICT: APPROVE` for the outer
+  closure surface. Its durable evidence reconciles the terminal indexed queue,
+  Planning Revision `2` task-plan review coverage, Foundation final gate,
+  strict-doctor/lint evidence, and historical failed records without treating
+  terminal history as current work.
+- Outer owner decision authorizes only lifecycle reconciliation: FT-002..FT-006
+  document/entity `draft`/`planned -> active`/`verified`, EP-001..EP-005
+  `-> active`/`verified`, and RTM REQ-003..REQ-016 `-> verified`.
+- This authorization is not human product acceptance. It does not mutate or
+  replay any terminal task, consume a counter, alter task evidence, or create a
+  product, specification, or acceptance change.
+- Checkpoint remains `RUNNING`, with current task `none` and stage
+  `wave-boundary`. Exact next action: `/mb-sync` for this outer lifecycle
+  boundary before any terminal lifecycle result is claimed.
+
+## 2026-08-11 — Outer lifecycle `/mb-sync` passed
+
+- `/mb-sync` successfully applied the already-authorized outer lifecycle
+  reconciliation. Durable evidence is
+  `.memory-bank/changelog.md#2026-08-11-product-outer-lifecycle-reconciliation`
+  plus the owning feature, epic, and RTM lifecycle artifacts.
+- Applied transitions: FT-002..FT-006 are `active` / `verified`, EP-001..EP-005
+  are `active` / `verified`, and RTM REQ-003..REQ-016 are `verified`, including
+  shared REQ-014. Existing FT-001 and REQ-001/REQ-002 verified state is
+  preserved.
+- No terminal task was mutated or replayed; no task status, dependency,
+  evidence, retry/review counter, product acceptance, AC, or specification
+  contract changed at this boundary.
+- Checkpoint remains `STATE: RUNNING`, current task `none`, stage
+  `wave-boundary`. Exact next actions, in order: `node scripts/mb-lint.mjs`,
+  `node scripts/mb-doctor.mjs --strict`, then project-native `npm run check`,
+  `npm run build`, and `npm run test`.
+
+## 2026-08-11 — Autonomous run terminal success
+
+- Final gates are durable: `node scripts/mb-lint.mjs` `PASS` across `66 files`
+  with `24` non-blocking metadata warnings; strict doctor `PASS` with `0 errors`
+  and `0 warnings`; `npm run check` `PASS` with `0 errors` and `0 warnings`;
+  build `PASS`; test `PASS` with `21/21 files` and `84/84 tests`; and
+  `git diff --check` `PASS`.
+- Terminal basis: the indexed product queue has no non-terminal record;
+  historical failed records remain preserved; every task-linked product
+  feature has a current Planning Revision `2` task-plan `APPROVE`; and the
+  outer lifecycle reconciliation has FT-002..FT-006 and EP-001..EP-005
+  `active` / `verified` with RTM REQ-003..REQ-016 `verified`.
+- `/autonomous` is now `STATE: SUCCESS`, current task `none`, current stage
+  `closure`, and next action `none`.
+- This workflow result is not final human product acceptance, deployment, or a
+  production-use claim. No terminal task was replayed, no retry or fix was
+  consumed during final closure, and historical `failed` records remain
+  unchanged.

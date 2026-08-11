@@ -1,0 +1,175 @@
+{
+  "id": "TASK-022-T3-FT-001-W10",
+  "title": "Bind authentication callback state to the browser context",
+  "status": "done",
+  "wave": "W10",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-021-T3-FT-001-W9"
+  ],
+  "touched_files": [
+    "src/lib/server/platform/auth-state.ts",
+    "src/routes/auth/",
+    "tests/routes/auth-transport.test.ts",
+    "tests/adapters/provider-boundary.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    }
+  ],
+  "verify": [
+    "RED: In a disposable transport fixture, issue a valid provider state in browser A and call the callback from browser B or without the start cookie; the current path accepts the portable state and can proceed to provider verification/session issuance because no browser binding is checked.",
+    "GREEN: The start path issues the opaque server state together with a short-lived opaque browser-binding cookie; callback requires the matching cookie, rejects missing/mismatched/expired/replayed binding before provider verification or Identity & Access, consumes the binding once, and clears the binding cookie after the callback attempt.",
+    "VERIFY: Independently run the cross-browser, missing-cookie, mismatch, replay, and valid Telegram/Google callback matrix with injected provider doubles; compare provider-call counts and account/identity/invitation/session state snapshots before and after each rejection, then inspect cookie attributes and cleanup on valid/failed attempts."
+    ,
+    {
+      "stage": "functional",
+      "attempt": "Verifier run before Attempt 3",
+      "verdict": "FAIL",
+      "report": ".protocols/TASK-022-T3-FT-001-W10/verification.md",
+      "artifact": ".tasks/TASK-022-T3-FT-001-W10/npm-test-verifier.txt",
+      "evidence": [
+        "The required full test gate failed only in the existing Admin invitation fixture because its callback jar did not retain the newly required start cookie; the task-owned browser-binding probe remained valid and the artifact is preserved as retry basis, not a production-path failure.",
+        "No task lifecycle, status, dependency, W9 record, or scheduler state changed at this historical gate."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "functional",
+      "attempt": "Attempt 3 / fresh independent verifier session",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-022-T3-FT-001-W10/verification.md",
+      "artifact": ".tasks/TASK-022-T3-FT-001-W10/TASK-022-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "The verifier-owned disposable browser A/B/empty-cookie probe passed 1 file / 5 tests; invalid bindings were rejected before provider verification with unchanged product snapshots, while valid Telegram/Google flows completed with one-use cleanup and the required cookie attributes.",
+        "Fresh npm run check, npm run build, focused auth/provider/Admin tests, full npm run test (21 files / 79 tests), and git diff --check passed after the bounded Attempt 3 fixture correction; the prior failure and all executor retry receipts remain preserved."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Per-task standalone /red-verify",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-022-T3-FT-001-W10/red-verification.md",
+      "artifact": ".tasks/TASK-022-T3-FT-001-W10/TASK-022-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent adversarial review found no material semantic finding or operator-owned question across browser binding, provider/Identity & Access ownership, state preservation, cookie cleanup, privacy, and the W9 hard boundary.",
+        "The semantic artifact records SEMANTIC_VERDICT: semantic-pass; task identity, status, dependency, retry history, and lifecycle remain unchanged."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md"
+  ],
+  "evidence_required": [
+    "FT-001-AC-006 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention RED: a valid provider state can complete from a different or cookie-less browser and reach session issuance; GREEN: only the browser that received the matching HttpOnly binding cookie can complete the callback, with one-use consumption and cleanup; decisive comparison: rejected callbacks do not invoke provider verification or mutate account, identity, invitation, or session state; artifact: .tasks/TASK-022-T3-FT-001-W10/ and .protocols/TASK-022-T3-FT-001-W10/.",
+    "FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#invitation-acceptance-path RED: a cross-browser, missing-cookie, mismatched, or replayed invitation callback can reach acceptance or consume the invitation; GREEN: browser binding remains server-bound and invalid callbacks fail before invitation consumption; decisive comparison: invitation and session snapshots remain equal on rejection; artifact: .tasks/TASK-022-T3-FT-001-W10/ and .protocols/TASK-022-T3-FT-001-W10/."
+  ],
+  "purpose": "Close the W9 login-CSRF/session-placement gap by binding provider callback state to the browser that initiated the flow.",
+  "success_outcome": "A provider callback completes only with the matching server-issued browser-binding cookie; invalid, cross-browser, and replayed attempts fail closed before provider or Identity & Access completion and leave product state unchanged.",
+  "anti_goals": [
+    "Do not replace the accepted process-local state store with SQLite, another durable store, a cache, or a multi-server mechanism.",
+    "Do not expose browser-readable authorization state, trust client role/center/account values, or add a development-login bypass.",
+    "Do not change provider protocols, Identity & Access ownership, membership writes, or any W9 task/history artifact."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/platform/",
+      "src/routes/auth/",
+      "tests/routes/",
+      "tests/adapters/"
+    ],
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-019-T3-FT-001-W9.task.json",
+      ".memory-bank/tasks/TASK-020-T3-FT-001-W9.task.json",
+      ".memory-bank/tasks/TASK-021-T3-FT-001-W9.task.json",
+      ".protocols/TASK-019-T3-FT-001-W9/",
+      ".protocols/TASK-020-T3-FT-001-W9/",
+      ".protocols/TASK-021-T3-FT-001-W9/",
+      ".tasks/TASK-019-T3-FT-001-W9/",
+      ".tasks/TASK-020-T3-FT-001-W9/",
+      ".tasks/TASK-021-T3-FT-001-W9/"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if browser binding requires changing the accepted one-server modular-monolith + SQLite architecture, adding durable auth-state persistence, or introducing a new service/event/background worker.",
+      "Stop if the patch requires changing the provider verification contract or writing Identity & Access or Center & Scheduling state outside the existing public boundaries.",
+      "Stop if any W9 task card, protocol, execution evidence, semantic evidence, lifecycle, or retry history would need modification."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-006",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-007",
+    ".memory-bank/requirements.md#req-001--account-binding-and-provider-access",
+    ".memory-bank/requirements.md#req-002--provider-failure-safety",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    "PAPERCUTS/TECHDEBTS/tech-debt-wave-W9-2026-08-11.md",
+    ".memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention",
+    ".memory-bank/contracts/authentication-transport.md#invitation-acceptance-path",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/contracts/provider-adapters.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/testing/strategy.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md#main-architecture-units",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract",
+    ".memory-bank/contracts/boundary-map.md#provider-verification-boundary",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Reuse the existing five-minute authentication-state TTL and the existing foundation_session Secure convention: HTTPS requires Secure, local HTTP may relax it.",
+    "The binding cookie is HttpOnly, Path=/, SameSite=Lax, and has Max-Age no greater than the authentication-state TTL.",
+    "Negative callback probes use disposable state/DB fixtures, injected provider doubles, safe rerun, and state-before/state-after comparison; no live credentials or production database."
+  ],
+  "invariants": [
+    "Provider callback state remains server-owned and opaque; the browser carries only the redirect state and opaque binding cookie.",
+    "A missing, mismatched, expired, or replayed browser binding cannot reach provider identity completion, invitation consumption, or session issuance.",
+    "A matched binding is one-use and its cookie is cleared after the callback attempt."
+  ],
+  "verification_targets": [
+    "Existing FT-001 login/invitation regression / REQ-001 / REQ-002 / REQ-014: disposable HTTP/SSR cross-browser login and invitation callback probes for Telegram and Google with provider-call, cookie, session, invitation, identity, and account state observations.",
+    "FT-001-AC-006 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention: compare cross-browser, missing-cookie, mismatch, expiry, replay, and valid callback behavior; verify invalid attempts stop before provider verification/session issuance and valid attempts preserve exact actor/session behavior.",
+    "FT-001-AC-007 / REQ-001 / REQ-002 / REQ-014 / .memory-bank/contracts/authentication-transport.md#invitation-acceptance-path: compare invalid browser-bound invitation callbacks with valid Telegram/Google acceptance; verify rejection preserves invitation/session snapshots and valid acceptance binds the exact account once.",
+    ".memory-bank/contracts/authentication-transport.md#browser-bound-callback-state-and-bounded-retention: verify HttpOnly/Path=/SameSite=Lax, protocol-dependent Secure, Max-Age <= five-minute TTL, matching browser requirement, one-use consumption, and post-attempt cleanup.",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract: verify the adapter receives no caller-trusted account, role, center, membership, or invitation decision and is not called for a rejected browser binding.",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership: store fresh task protocol, probe output, and independent functional/semantic verdicts under the task-local paths."
+  ]
+}

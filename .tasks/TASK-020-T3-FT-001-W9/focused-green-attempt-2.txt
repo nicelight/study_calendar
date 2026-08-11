@@ -1,0 +1,7 @@
+Command: npm run test -- tests/routes/auth-transport.test.ts
+Working directory: /home/serg/Projects/study_calendar
+Attempt: 2 (bounded correction retry 1/2)
+Result: exit 0; 1 test file passed, 5 tests passed.
+Claim evidence: server-issued invitationToken survives AuthenticationStateStore.issue() -> consume(); valid invitation callback reaches the exact pre-created account; forged, mismatched, and replayed state is rejected without consumption; wrong-account and session-write rollback return safe generic errors without auth confusion, invitation consumption, or sensitive failure leakage.
+Probe change: added one direct state-continuity assertion and exact safe-error body assertions to the existing route-focused task suite.
+Isolation: disposable in-memory SQLite fixtures and injected provider doubles; no credentials, network, production DB, or forbidden task writes.

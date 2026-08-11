@@ -1,0 +1,10 @@
+TASK: TASK-022-T3-FT-001-W10
+ATTEMPT: Attempt 1
+COMMANDS_ATTEMPTED: npm run build; npm run test
+CWD: /home/serg/Projects/study_calendar
+RESULT: the combined command invocation was intentionally interrupted by the
+operator after approximately 3.1 seconds; no command result was returned and
+no matching build/test process remained afterward.
+BLOCKER_CLASS: unavailable gate due operator interruption, not an observed code
+failure or confirmed hang.
+NEXT_OWNER: /verify must run the required build and full test gates independently.
