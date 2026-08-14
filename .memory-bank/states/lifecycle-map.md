@@ -27,6 +27,7 @@ neighbor cannot mutate the state directly.
 | Subject | States/transitions | Owner | Contract rule |
 |---|---|---|---|
 | Lesson | `planned -> completed`, `planned -> cancelled` | Center & Scheduling | A single transfer changes the lesson date without changing lesson identity or unrelated repetitions. |
+| Recurring schedule request | `accepted -> persisted` only when at least one date matches a selected weekday | Center & Scheduling | A valid date range/weekday combination with zero occurrences is rejected before Schedule or Lesson persistence; the failed state is unchanged. |
 | Lesson attendance | `absent <-> present` | Learning Progress | `absent` creates no charge; `absent -> present` calls Financial Ledger reconciliation. |
 | Shared material | editable while the owning lesson context allows | Lesson Context | Shared content is visible only in the permitted class context. |
 | Personal day view | composed on read | Lesson Context | It reuses shared material and includes only the selected student's permitted projections. |

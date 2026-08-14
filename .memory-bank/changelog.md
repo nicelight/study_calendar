@@ -4,6 +4,47 @@ status: active
 ---
 # Changelog
 
+## [2026-08-14] Wave 16 — TASK-032 zero-occurrence schedule planning
+
+- Applied operator decision `2` from the FT-002 semantic concern: a valid
+  date/weekday selection with zero actual occurrences is rejected before any
+  Schedule or Lesson persistence or mutation.
+- Added FT-002-AC-009 and the REQ-004 contract wording, extending the existing
+  Center & Scheduling boundary/lifecycle specs with the unchanged Admin `400
+  { error: "invalid_schedule" }` failure shape and state-before/state-after
+  equality requirement.
+- Queue action is `rebuild_required`: created ready
+  `TASK-032-T2-FT-002-W16` with direct dependencies on done TASK-026 and
+  TASK-031. TASK-031 localStorage/browser scope and all historical task
+  identities/evidence remain immutable; no code or test implementation is
+  included in planning.
+- FT-002 and REQ-004 are `planned`, not `verified`, until TASK-032 closes and a
+  fresh `/red-verify --feature FT-002` covers AC-001..AC-009.
+
+## [2026-08-14] Wave 15 — TASK-031 schedule-draft sync
+
+- Reconciled the already-recorded closure: `TASK-031-T2-FT-002-W15` is `done`
+  with independent functional `PASS` for FT-002-AC-008 / REQ-004.
+- Routed its verification/evidence through FT-002, REQ-004, IMPL-FT-002, the
+  FT-002 protocol plan/decision log, task index, and TODO. TASK-026 remains
+  `done` and unchanged; no promotion or dependent task state was changed.
+- Reconciled FT-002 and REQ-004 to `implemented`, not `verified`. A fresh
+  feature-level `/red-verify --feature FT-002` over AC-001..AC-008 is the next
+  semantic gate.
+
+## [2026-08-14] FT-002 scoped schedule-draft rebuild
+
+- Added exact AC-008 and the canonical browser draft contract: same
+  `centerId`/`classId` localStorage key, whitelisted ISO-date/weekday payload,
+  clean malformed fallback, failure retention, success cleanup, SSR safety,
+  and explicit secret/server/dependency anti-goals.
+- Queue action is `rebuild_required`: created ready
+  `TASK-031-T2-FT-002-W15` after done TASK-026. TASK-026 and all historical
+  code, task, protocol, verification, and semantic evidence remain unchanged.
+- Returned FT-002 and REQ-004 to `planned` for the new unimplemented claim;
+  Planning Revision remains `2`. Debug evidence preserves empty-weekday POST
+  rejection as expected and does not confirm a checkbox UI defect.
+
 ## [2026-08-14] FT-001 final feature verification sync
 
 - Reconciled the already-written explicit owner closure: FT-001 is

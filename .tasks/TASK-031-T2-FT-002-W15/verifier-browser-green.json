@@ -1,0 +1,44 @@
+{
+  "task": "TASK-031-T2-FT-002-W15",
+  "result": "PASS",
+  "runtime": {
+    "origin": "http://127.0.0.1:5175",
+    "browser": "Chrome/151.0.7922.71 headless",
+    "viewport": "1280x657@1",
+    "database": "fresh isolated temporary SQLite fixture",
+    "user_data": "none"
+  },
+  "scope": {
+    "center": "center-task031-a",
+    "class": "class-task031-a1",
+    "exact_key": "study-calendar:schedule-draft:center-task031-a:class-task031-a1"
+  },
+  "save_restore": {
+    "stored": {"startDate": "2026-08-12", "endDate": "2026-09-01", "weekdays": [2, 4, 6]},
+    "restored_after_reload": true,
+    "native_form_data": [["classId", "class-task031-a1"], ["startDate", "2026-08-12"], ["endDate", "2026-09-01"], ["weekdays", "2"], ["weekdays", "4"], ["weekdays", "6"]]
+  },
+  "isolation": {
+    "other_class_clean": true,
+    "other_center_clean": true
+  },
+  "clean_fallbacks": {
+    "missing": true,
+    "invalid_json": true,
+    "wrong_shape_extra_field": true,
+    "invalid_date_2026_02_30": true,
+    "out_of_range_weekday_7": true
+  },
+  "failed_submission": {
+    "server_action": {"type": "failure", "status": 400, "error": "invalid_schedule"},
+    "form_data_has_weekdays": false,
+    "matching_key_retained": {"startDate": "2026-08-12", "endDate": "2026-09-01", "weekdays": []}
+  },
+  "successful_submission": {
+    "message": "schedule_created",
+    "matching_key_after_success": null,
+    "unrelated_key_preserved": {"startDate": "2026-10-01", "endDate": "2026-10-31", "weekdays": [1, 3]},
+    "matching_form_clean_after_reload": true
+  },
+  "redaction": "No cookie/session value, secret, or user data is included."
+}

@@ -58,3 +58,47 @@
   were written.
 - Final report:
   `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-001-W13-R1-final-report-docs-01.md`.
+
+## Current review run — FT-002 W15 schedule draft
+
+- ROLE: Reviewer; target: FT-002; bounded prospective focus:
+  `TASK-031-T2-FT-002-W15` plus preservation of done TASK-005/006/026 and
+  dependency/Foundation evidence only where readiness requires it.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh architecture subreview: delegated by the parent orchestrator to a
+  separate Reviewer using `/architecture-review`; verdict `APPROVE`, no
+  findings or questions.
+- Validation: `node scripts/mb-lint.mjs` passed (`66 files`, existing advisory
+  frontmatter warnings only); the index has 29 unique identity-consistent
+  cards, exact FT-002-AC-001..008 ownership, resolving dependencies, and a
+  done transitive Foundation path. `git diff --check` passed.
+- Read-only review: no product, requirement, spec, plan, task card, task index,
+  code, protocol, lifecycle, status, dependency, evidence, or scheduler state
+  was changed. Only the required review request/report artifacts were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W15-final-report-docs-01.md`.
+
+## Current review run — FT-002 W15 locator repair re-review
+
+- ROLE: Reviewer; target: FT-002; bounded current review after adding the
+  existing unanchored canonical contract path
+  `.memory-bank/contracts/authentication-transport.md` to TASK-031
+  `normative_inputs`.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh architecture subreview: delegated by the parent orchestrator to a
+  separate Reviewer using `/architecture-review`; verdict `APPROVE`, no
+  findings or questions.
+- Scope preservation checked: exact anchored links, AC/REQ ownership, purpose,
+  scope, tier, wave, status, dependency, anti-goals, hard runtime limits, and
+  RED/GREEN proof remain unchanged. The full-file locator adds direct canonical
+  context but adopts no unrelated Authentication Transport claim.
+- Validation: `node scripts/mb-lint.mjs` passed (`66 files`, existing advisory
+  frontmatter warnings only); 29 indexed identities remain unique; exact
+  FT-002-AC-001..008 ownership, TASK-031 `ready` / TASK-026 `done`, both
+  contract locators, and `git diff --check` passed.
+- Review-only integrity: no reviewed product, requirement, spec, plan, task,
+  index, code, protocol, lifecycle, status, dependency, evidence, or scheduler
+  state was changed. Only this request entry and the current review report were
+  written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W15-LOCATOR-R1-final-report-docs-01.md`.

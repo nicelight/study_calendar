@@ -1,0 +1,94 @@
+{
+  "id": "TASK-032-T2-FT-002-W16",
+  "title": "Reject zero-occurrence recurring schedules before persistence",
+  "status": "ready",
+  "wave": "W16",
+  "feature": "FT-002",
+  "reqs": ["REQ-004"],
+  "depends_on": [
+    "TASK-026-T3-FT-002-W12",
+    "TASK-031-T2-FT-002-W15"
+  ],
+  "touched_files": [
+    "src/lib/server/modules/center-scheduling/public.ts",
+    "src/routes/admin/center-dashboard.server.ts",
+    "tests/center-scheduling/recurring-scheduling.test.ts",
+    "tests/routes/admin-center-management.test.ts"
+  ],
+  "tier": "T2",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md"
+  ],
+  "evidence_required": [
+    "FT-002-AC-009 / REQ-004: RED: with valid ISO dates and a valid weekday selection that has no occurrence in the inclusive range, the current implementation returns schedule_created and persists a zero-Lesson schedule; GREEN: the corrected implementation returns HTTP 400 with the existing { error: 'invalid_schedule' } envelope before any Schedule or Lesson write, leaves schedule/Lesson state-before/state-after identical, and preserves the valid-occurrence success path; artifact: .tasks/TASK-032-T2-FT-002-W16/ and .protocols/TASK-032-T2-FT-002-W16/."
+  ],
+  "purpose": "Ensure Center & Scheduling never persists an empty recurring schedule when a valid date range and weekday selection produce zero actual occurrences.",
+  "success_outcome": "An authorized zero-occurrence schedule command is rejected atomically through the existing invalid_schedule 400 contract before schedule or lesson mutation, while valid-occurrence scheduling and the protected browser form continue unchanged.",
+  "anti_goals": [
+    "Do not modify the completed TASK-031 card, protocol, evidence, localStorage implementation, or browser-draft test.",
+    "Do not change the completed TASK-026 card, protocol, evidence, authorization ownership, or protected UI behavior.",
+    "Do not introduce a new public error envelope, schema migration, dependency, server draft store, or persistence model.",
+    "Do not alter valid-occurrence recurrence, lesson identity, add/transfer/cancel behavior, or unrelated validation semantics."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "src/routes/admin/[centerId]/+page.svelte",
+      "tests/routes/admin-schedule-draft.test.ts",
+      ".memory-bank/tasks/TASK-026-T3-FT-002-W12.task.json",
+      ".protocols/TASK-026-T3-FT-002-W12/",
+      ".tasks/TASK-026-T3-FT-002-W12/",
+      ".memory-bank/tasks/TASK-031-T2-FT-002-W15.task.json",
+      ".protocols/TASK-031-T2-FT-002-W15/",
+      ".tasks/TASK-031-T2-FT-002-W15/",
+      "package.json",
+      "package-lock.json"
+    ],
+    "stop_conditions": [
+      "Stop if the rejection cannot use the existing Admin 400 invalid_schedule envelope without a new public error contract.",
+      "Stop if any schedule or lesson row is written before the zero-occurrence decision or if rollback/state equality cannot be demonstrated.",
+      "Stop if implementation requires changing AC-008 localStorage behavior, the protected UI, authorization scope, schema, dependencies, or valid-occurrence behavior."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-009",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#ft-002-ac-009--zero-occurrence-recurring-schedule-is-rejected-atomically",
+    ".memory-bank/requirements.md#req-004--lesson-scheduling-lifecycle",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
+    ".memory-bank/architecture/system-architecture.md#2-capability-module-runtime",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Center & Scheduling remains the sole owner of Schedule and Lesson persistence; validate the occurrence list before the insert transaction mutates state.",
+    "Expose only the existing Admin HTTP 400 invalid_schedule error envelope for this expected input failure; any internal sentinel is private to the owner/adapter.",
+    "Keep TASK-031 browser draft retention/cleanup and valid-occurrence schedule creation as unchanged prerequisites and regression checks.",
+    "Use the existing inclusive ISO-date recurrence basis and weekday domain 0..6; no recurrence exceptions or schema changes are introduced."
+  ],
+  "invariants": [
+    "A zero-occurrence request creates neither a schedules row nor a lessons row and leaves all relevant state unchanged.",
+    "Every failed zero-occurrence attempt returns HTTP 400 with error invalid_schedule through the existing Admin action path.",
+    "A request with at least one matching date still creates the planned lessons expected by the existing recurrence tests.",
+    "Authorization and center/class scope are checked before the command and remain unchanged."
+  ],
+  "verification_targets": [
+    "FT-002-AC-009 server boundary RED/GREEN: in fresh isolated database state, authorized Admin submits canonical valid dates and a valid weekday with no match; capture current zero-lesson schedule_created and row counts, then prove 400 invalid_schedule plus exact schedule/Lesson state-before/state-after equality after the fix.",
+    "Protected browser/action probe: submit the same zero-occurrence form through the existing Admin action, observe the exact failure envelope and absence of schedule_created, and confirm the matching TASK-031 draft remains available without changing the localStorage implementation or claiming AC-008 ownership.",
+    "Regression: retain existing valid recurring schedule, authorization, lesson identity, and exception tests; add only the minimal server/action no-occurrence assertions needed for AC-009.",
+    "Source and transaction review: prove Center & Scheduling computes occurrence dates and rejects the empty result before schedule/lesson inserts, with route mapping limited to the existing invalid_schedule contract; run npm run check, npm run build, and npm run test."
+  ]
+}

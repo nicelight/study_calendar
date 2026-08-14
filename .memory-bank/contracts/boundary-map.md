@@ -153,11 +153,16 @@ remain implementation details.
   an admin-owned membership workflow.
 - **Failure/compatibility:** moved lessons retain identity and context; removed
   assignments are denied at the next authorization check; unrelated recurring
-  lessons remain unchanged.
+  lessons remain unchanged. A valid ISO date range and valid weekday selection
+  whose inclusive range yields zero recurring dates is rejected before any
+  Schedule or Lesson write, using the existing Admin transport failure
+  envelope `400 { error: 'invalid_schedule' }`.
 - **Forbidden bypasses:** no consumer writes membership, assignment, lesson,
   or schedule tables or reconstructs class authorization from a UI route.
 - **Verification:** individual/group scheduling lifecycle, transfer identity,
-  cross-center membership, assignment removal, and historical access scenarios.
+  cross-center membership, assignment removal, and historical access scenarios;
+  a no-occurrence rejection probe compares schedule/Lesson state before and
+  after the failed command and observes the exact `invalid_schedule` response.
 
 ### Personal Progress Query Boundary
 

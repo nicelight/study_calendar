@@ -1,7 +1,7 @@
 ---
-description: Minimal SvelteKit browser and HTTP transport for password/provider login, invitations, sessions, and Admin provisioning.
+description: Minimal SvelteKit browser and HTTP transport for authentication, sessions, Admin provisioning, and schedule-form drafts.
 status: active
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 source_of_truth:
   - .memory-bank/contracts/authentication-transport.md
 ---
@@ -114,6 +114,36 @@ database writes.
   call owner commands; submitted role, center, or Admin fields cannot widen
   access.
 
+## Class schedule draft retention
+
+- Each recurring-schedule form MAY retain its unfinished browser draft only in
+  `localStorage` under
+  `study-calendar:schedule-draft:${centerId}:${classId}`. The exact JSON value
+  is `{ "startDate": string, "endDate": string, "weekdays": number[] }`:
+  each stored date is a canonical ISO calendar date `YYYY-MM-DD`, and weekdays
+  are unique integers from `0` through `6`.
+- The writer MUST serialize only `startDate`, `endDate`, and `weekdays`. It MUST
+  NOT store passwords, session/authentication values, invitation capabilities,
+  account/role data, arbitrary form fields, or other secrets in this draft.
+- Storage access MUST occur only in browser lifecycle/event code after client
+  mount. SSR and module evaluation MUST NOT read `window` or `localStorage`;
+  before restoration the form uses
+  `{ startDate: "", endDate: "", weekdays: [] }`.
+- A missing entry, unavailable storage, invalid JSON, wrong shape, non-ISO
+  non-empty date, or weekday outside integer range `0..6` MUST be ignored
+  without a render failure and MUST leave the clean default. A valid draft is
+  restored only into the form whose current `centerId` and `classId` produced
+  the key; it MUST NOT cross centers or classes.
+- A failed or rejected submission retains the matching draft. Only a confirmed
+  successful `schedule_created` result clears that exact key; submission alone
+  and failures MUST NOT clear it.
+- The draft is disposable UI state, not authorization or durable product data.
+  Existing form payloads and the server-side `invalid_schedule` error envelope
+  remain authoritative; the separate AC-009 rule rejects zero-occurrence
+  ranges before persistence without changing that payload or public shape. No
+  server draft persistence, dependency, migration, cookie, or alternate
+  schedule command is introduced.
+
 ## Bootstrap Admin and center creation
 
 - The supported empty-database bootstrap is a local server-only CLI which uses
@@ -153,3 +183,8 @@ output, normalized uniqueness, salted `scrypt` storage, account+credential
 atomicity, safe rerun, and unchanged state on every failure. HTTP/SSR proof
 covers successful password login, generic invalid credentials, existing cookie
 attributes, protected Admin entry, logout, and revoked-session denial.
+Schedule draft proof uses the real protected browser form to compare current
+draft loss with same-form reload/return restoration, cross-class isolation,
+malformed-value fallback, retention after validation failure, and matching-key
+removal after successful creation while submitted weekday Form Data remains
+observable.

@@ -34,7 +34,13 @@ status: draft
   FR-ORG-001..002, FR-ORG-006)
 - **REQ-004 — Lesson scheduling lifecycle:** Recurring schedules create planned
   lessons; one lesson may be added, moved, or cancelled without mutating other
-  repetitions, and moving preserves lesson identity and context. (PRD FR-ORG-003..005)
+  repetitions, and moving preserves lesson identity and context. The browser
+  schedule form retains its unfinished date/weekday draft only for the same
+  center and class until successful creation. A valid date range and weekday
+  selection that yields zero occurrences MUST be rejected before Schedule or
+  Lesson persistence/mutation, using the existing Admin `400
+  { error: "invalid_schedule" }` failure shape and leaving state unchanged.
+  (PRD FR-ORG-003..005; explicit operator requirements 2026-08-14)
 - **REQ-005 — Elastic calendar navigation:** Each week uses an elastic row with
   lesson days wider than non-lesson days; the date picker reaches the selected
   date, shared/personal calendars use one temporal basis, and visual state is
@@ -102,7 +108,7 @@ status: draft
 | REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..011 | verified |
 | REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
 | REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002 | verified |
-| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004 | verified |
+| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..009 | planned |
 | REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004 | verified |
 | REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-004-AC-001;FT-004-AC-005 | verified |
 | REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | verified |

@@ -1,0 +1,95 @@
+{
+  "id": "TASK-031-T2-FT-002-W15",
+  "title": "Retain each class schedule form draft in scoped browser storage",
+  "status": "done",
+  "wave": "W15",
+  "feature": "FT-002",
+  "reqs": ["REQ-004"],
+  "depends_on": ["TASK-026-T3-FT-002-W12"],
+  "touched_files": [
+    "src/routes/admin/[centerId]/+page.svelte",
+    "tests/routes/admin-schedule-draft.test.ts"
+  ],
+  "tier": "T2",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-031-T2-FT-002-W15/verification.md",
+      "artifact": ".tasks/TASK-031-T2-FT-002-W15/TASK-031-T2-FT-002-W15-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh isolated Chrome 151 probe proved exact scoped three-field draft save/reload restore, center/class isolation, clean invalid-state fallbacks, invalid_schedule retention, native Form Data, and confirmed-success exact-key cleanup while an unrelated key remained.",
+        "Fresh npm run check, npm run build, npm run test (29 files / 114 tests), source/diff boundary inspection, and git diff --check passed; no backend, secret/session, dependency, server-persistence, validation, or authorization change was observed."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".protocols/FT-002/plan.md"
+  ],
+  "evidence_required": [
+    "FT-002-AC-008 / REQ-004 RED: a populated schedule draft is lost on current same-form reload/return; GREEN: the exact center/class key restores only valid whitelisted dates/weekdays, other center/class and missing/malformed entries remain clean, an expected rejected submission retains the draft, and confirmed schedule_created clears only that key; decisive comparison: real-browser form values, submitted Form Data, localStorage before/after, and SSR-safe render/build; artifact: .tasks/TASK-031-T2-FT-002-W15/ and .protocols/TASK-031-T2-FT-002-W15/."
+  ],
+  "purpose": "Prevent an Admin from losing an unfinished recurring-schedule form while keeping the draft disposable, class-scoped, browser-only, and outside server authority.",
+  "success_outcome": "The same center/class schedule form restores its valid unfinished start date, end date, and weekday numbers after reload or return, retains them after a rejected submission, and clears only its matching draft after successful schedule creation.",
+  "anti_goals": [
+    "Do not change the server schedule payload, validation, persistence, authorization, or recurring-lesson behavior.",
+    "Do not store passwords, sessions, authentication/invitation values, account/role data, arbitrary fields, or other secrets.",
+    "Do not add a dependency, server store, cookie, migration, sync mechanism, or cross-center/class restore.",
+    "Do not modify or reinterpret the completed TASK-026 card, protocol, or evidence, and do not claim a confirmed checkbox UI bug."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "src/routes/admin/center-dashboard.server.ts",
+      "src/lib/server/modules/center-scheduling/",
+      "package.json",
+      "package-lock.json",
+      ".memory-bank/tasks/TASK-026-T3-FT-002-W12.task.json",
+      ".protocols/TASK-026-T3-FT-002-W12/",
+      ".tasks/TASK-026-T3-FT-002-W12/"
+    ],
+    "stop_conditions": [
+      "Stop if successful matching-key cleanup cannot be observed through the existing browser form result without changing server validation, persistence, authorization, or the accepted schedule command.",
+      "Stop if implementation would access localStorage during SSR/module evaluation or would retain any field beyond the accepted whitelist."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-008",
+    ".memory-bank/requirements.md#req-004--lesson-scheduling-lifecycle",
+    ".memory-bank/contracts/authentication-transport.md#class-schedule-draft-retention",
+    ".tasks/TASK-026-T3-FT-002-W12/TASK-026-T3-FT-002-W12-S-DEBUG-final-report-docs-01.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#ft-002-ac-008--schedule-form-restores-a-scoped-browser-draft",
+    ".memory-bank/contracts/authentication-transport.md#class-schedule-draft-retention",
+    ".memory-bank/architecture/system-architecture.md#1-sveltekit-application-shell",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership"
+  ],
+  "constraints": [
+    "Use the exact key study-calendar:schedule-draft:${centerId}:${classId} and exact JSON whitelist {startDate,endDate,weekdays}; stored dates are canonical ISO YYYY-MM-DD and weekdays are unique integers 0..6.",
+    "Read/write localStorage only in browser lifecycle/event code and fall back to clean defaults without throwing when storage is missing, unavailable, or malformed.",
+    "Retain the matching draft after failed validation and clear only after a confirmed successful schedule_created result while preserving the existing native form payload and server rules."
+  ],
+  "invariants": [
+    "A draft never restores across centerId or classId scope.",
+    "Browser draft storage contains no password, session, authentication/invitation value, arbitrary form field, or other secret.",
+    "Missing or malformed draft state is observationally equivalent to a clean default form and cannot break SSR.",
+    "Existing empty-weekday rejection remains expected server behavior."
+  ],
+  "verification_targets": [
+    "FT-002-AC-008 / REQ-004 real-browser RED/GREEN: in isolated protected state populate one class form, capture current reload loss as RED, then prove GREEN restores the same form after reload/return while another class and another center stay clean.",
+    "FT-002-AC-008 malformed/failure path: inject missing, invalid JSON, wrong-shape, invalid-date, and out-of-range-weekday values and observe clean defaults without render failure; submit dates with no weekdays, observe the expected 400 invalid_schedule and absent weekdays Form Data, then prove the accepted matching draft remains.",
+    "FT-002-AC-008 success path: submit valid ISO dates and selected weekday numbers, observe those exact Form Data values plus schedule_created, then prove only the matching localStorage key is absent and a later reload is clean.",
+    "Canonical transport boundary: source inspection plus npm run check/build/test prove no localStorage access during SSR/module evaluation, no new dependency, and no server validation/persistence/authorization change."
+  ]
+}

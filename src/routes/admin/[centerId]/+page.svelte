@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { onMount } from 'svelte';
+
 	let { data, form } = $props();
 
 	const teachers = $derived(
@@ -13,6 +17,125 @@
 		{ value: 6, label: 'Сб' },
 		{ value: 0, label: 'Вс' }
 	] as const;
+
+	type ScheduleDraft = {
+		startDate: string;
+		endDate: string;
+		weekdays: number[];
+	};
+
+	function scheduleDraftKey(centerId: string, classId: string): string {
+		return `study-calendar:schedule-draft:${centerId}:${classId}`;
+	}
+
+	function isStoredDate(value: unknown): value is string {
+		if (typeof value !== 'string') return false;
+		if (value === '') return true;
+		if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+		const date = new Date(`${value}T00:00:00.000Z`);
+		return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+	}
+
+	function isScheduleDraft(value: unknown): value is ScheduleDraft {
+		if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+		const draft = value as Record<string, unknown>;
+		if (
+			Object.keys(draft).length !== 3 ||
+			!('startDate' in draft) ||
+			!('endDate' in draft) ||
+			!('weekdays' in draft) ||
+			!isStoredDate(draft.startDate) ||
+			!isStoredDate(draft.endDate) ||
+			!Array.isArray(draft.weekdays) ||
+			!draft.weekdays.every((weekday) => Number.isInteger(weekday) && weekday >= 0 && weekday <= 6)
+		) {
+			return false;
+		}
+
+		return new Set(draft.weekdays).size === draft.weekdays.length;
+	}
+
+	function readScheduleDraft(key: string): ScheduleDraft | null {
+		try {
+			const stored = localStorage.getItem(key);
+			if (!stored) return null;
+			const draft: unknown = JSON.parse(stored);
+			return isScheduleDraft(draft) ? draft : null;
+		} catch {
+			return null;
+		}
+	}
+
+	function saveScheduleDraft(formElement: HTMLFormElement): void {
+		const key = formElement.dataset.scheduleDraftKey;
+		const startDate = formElement.querySelector<HTMLInputElement>('[name="startDate"]')?.value;
+		const endDate = formElement.querySelector<HTMLInputElement>('[name="endDate"]')?.value;
+		if (!key || startDate === undefined || endDate === undefined) return;
+
+		const draft: ScheduleDraft = {
+			startDate,
+			endDate,
+			weekdays: Array.from(
+				formElement.querySelectorAll<HTMLInputElement>('[name="weekdays"]:checked'),
+				(input) => Number(input.value)
+			)
+		};
+		if (!isScheduleDraft(draft)) return;
+
+		try {
+			localStorage.setItem(key, JSON.stringify(draft));
+		} catch {
+			// Browser storage is optional disposable UI state.
+		}
+	}
+
+	function persistScheduleDraft(event: Event): void {
+		saveScheduleDraft(event.currentTarget as HTMLFormElement);
+	}
+
+	function restoreScheduleDraft(formElement: HTMLFormElement): void {
+		const key = formElement.dataset.scheduleDraftKey;
+		if (!key) return;
+		const draft = readScheduleDraft(key);
+		if (!draft) return;
+
+		const startDate = formElement.querySelector<HTMLInputElement>('[name="startDate"]');
+		const endDate = formElement.querySelector<HTMLInputElement>('[name="endDate"]');
+		if (!startDate || !endDate) return;
+		startDate.value = draft.startDate;
+		endDate.value = draft.endDate;
+		for (const input of formElement.querySelectorAll<HTMLInputElement>('[name="weekdays"]')) {
+			input.checked = draft.weekdays.includes(Number(input.value));
+		}
+	}
+
+	function clearScheduleDraft(key: string): void {
+		try {
+			localStorage.removeItem(key);
+		} catch {
+			// Browser storage is optional disposable UI state.
+		}
+	}
+
+	const handleScheduleSubmit: SubmitFunction = ({ formData }) => {
+		const classId = formData.get('classId');
+		return async ({ result, update }) => {
+			await update();
+			if (
+				result.type === 'success' &&
+				result.data?.message === 'schedule_created' &&
+				typeof classId === 'string'
+			) {
+				clearScheduleDraft(scheduleDraftKey(data.centerId, classId));
+			}
+		};
+	};
+
+	onMount(() => {
+		for (const formElement of document.querySelectorAll<HTMLFormElement>('.schedule-form')) {
+			restoreScheduleDraft(formElement);
+		}
+	});
 
 	function roleLabel(role: string): string {
 		return {
@@ -189,7 +312,15 @@
 
 							<div class="subsection">
 								<h4>Новое расписание</h4>
-								<form method="POST" action="?/createSchedule" class="schedule-form">
+								<form
+									method="POST"
+									action="?/createSchedule"
+									class="schedule-form"
+									data-schedule-draft-key={scheduleDraftKey(data.centerId, classView.classId)}
+									oninput={persistScheduleDraft}
+									onchange={persistScheduleDraft}
+									use:enhance={handleScheduleSubmit}
+								>
 									<input type="hidden" name="classId" value={classView.classId} />
 									<div class="date-grid">
 										<label><span>С даты</span><input type="date" name="startDate" required /></label>
