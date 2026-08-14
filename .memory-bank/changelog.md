@@ -4,6 +4,65 @@ status: active
 ---
 # Changelog
 
+## [2026-08-14] Wave 16 — FT-002 feature semantic closure sync
+
+- Reconciled the fresh feature-level `SEMANTIC_VERDICT: semantic-pass` over
+  FT-002 AC-001..AC-009 and linked the durable report.
+- Promoted FT-002 and REQ-004 to `verified`; EP-001 is now `verified` after its
+  FT-001/FT-002 feature outcomes and applicable requirements are complete.
+- Preserved TASK-026, TASK-031, TASK-032, all implementation, dependencies,
+  and historical evidence; no task status or code changed.
+
+## [2026-08-14] Wave 16 — TASK-032 functional closure sync
+
+- Reconciled the explicit closure decision: `TASK-032-T2-FT-002-W16` is now
+  `done` with Attempt 2 functional `PASS` and linked verification evidence.
+- Preserved the adapter-specific contract: Admin maps to HTTP 400
+  `invalid_schedule`; assigned Teacher remains private sentinel-only with no
+  Teacher HTTP transport; exact Schedule/Lesson state equality and project
+  gates are recorded.
+- Kept FT-002, REQ-004, and EP-001 `planned` pending a fresh feature-level
+  `/red-verify --feature FT-002`; TASK-026/TASK-031 and all code/evidence remain
+  unchanged.
+
+## [2026-08-14] Wave 16 — TASK-032 adapter-specific verification correction
+
+- Reconciled the failed verification against the current implementation:
+  Center & Scheduling rejects zero-occurrence requests for both Admin and
+  assigned Teacher before Schedule/Lesson mutation, but only the existing
+  Admin adapter maps that rejection to HTTP 400 `{ error: "invalid_schedule" }`.
+- Updated FT-002-AC-009, REQ-004, TASK-032, and linked plans/protocols so the
+  assigned Teacher proof observes the private
+  `invalid-schedule-occurrences` owner/domain sentinel and exact state equality;
+  no Teacher HTTP transport is added. Admin browser/AC-008 proof remains
+  unchanged and Admin-only.
+- TASK-032 remains `in_progress` for re-execution; FT-002 remains `planned`.
+  No task was marked `done`, and no code/test or public error-contract change
+  was made by this reconciliation.
+
+## [2026-08-14] Wave 16 — TASK-032 R2 proof-scope correction
+
+- Added the canonical assigned-Teacher authority input
+  `.memory-bank/contracts/access-control.md#accepted-permission-matrix` to
+  TASK-032.
+- Kept AC-009 server-boundary proof for both own-center Admin and assigned
+  Teacher, each requiring `400 invalid_schedule` and exact Schedule/Lesson
+  state equality; restricted browser/action/draft-retention observation to the
+  Admin path supporting AC-008. No Teacher localStorage or browser-draft claim
+  remains in TASK-032 verification targets.
+
+## [2026-08-14] Wave 16 — TASK-032 lifecycle and principal-proof reconciliation
+
+- Reconciled the current lifecycle truth: FT-002 and REQ-004 remain `planned`
+  while TASK-032 is unimplemented, so EP-001 is now `active` / `planned`.
+  FT-001's verified evidence, shared REQ-014, REQ-003, and all done task
+  identities/evidence remain preserved; no task was reopened or promoted.
+- Corrected TASK-032 AC-009 proof obligations to run the same zero-occurrence
+  command as both an own-center Admin and an assigned Teacher. Each principal
+  must receive the existing HTTP 400 `{ error: "invalid_schedule" }` result
+  and independently prove exact Schedule/Lesson state-before/state-after
+  equality. No new public error shape or code/test change was introduced.
+
 ## [2026-08-14] Wave 16 — TASK-032 zero-occurrence schedule planning
 
 - Applied operator decision `2` from the FT-002 semantic concern: a valid

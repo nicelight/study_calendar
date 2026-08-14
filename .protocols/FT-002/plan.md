@@ -35,18 +35,21 @@ Deliver center-bounded membership/class management and recurring lesson scheduli
 5. Operator decision `2` resolves the feature-level semantic concern as a
    separate server-owned outcome: a valid ISO date range and valid weekday
    selection that yields no actual dates in the inclusive range MUST be
-   rejected before the schedule or lesson write path. The existing Admin
-   transport contract remains the external failure shape (`400` with
-   `{ error: 'invalid_schedule' }`). This is a fresh T2 unit, not a repair or
-   scope expansion of TASK-031: `TASK-032-T2-FT-002-W16` owns AC-009 and the
-   no-mutation proof, with direct prerequisites TASK-026 and TASK-031 for the
-   protected form/adapter and its already-closed draft lifecycle.
+   rejected before the schedule or lesson write path for both authorized
+   principals. The existing Admin adapter maps that owner rejection to
+   `400 { error: 'invalid_schedule' }`; the assigned Teacher has no schedule
+   HTTP adapter in the current scope, so verification retains the private
+   `invalid-schedule-occurrences` owner sentinel and adds no Teacher transport.
+   This is a fresh T2 unit, not a repair or scope expansion of TASK-031:
+   `TASK-032-T2-FT-002-W16` owns AC-009 and the no-mutation proof, with direct
+   prerequisites TASK-026 and TASK-031 for the protected form/adapter and its
+   already-closed draft lifecycle.
 
 Consumers query the named public boundary; they do not write scheduling state. Lesson Context composes downstream views, Collaboration and Learning Progress own their data, and Financial Ledger owns charge facts; adding dependencies on those downstream consumers would create cycles, so only TASK-007 is a prerequisite for TASK-006's charge-identity integration.
 
 ## Verification
 
-Use project-native gates plus claim-linked paths: AC-001/002 center and class authorization; AC-003 recurrence isolation; AC-004 transfer identity and charge uniqueness; AC-005 historical access; AC-006 immediate removal denial. Each owned AC has a concrete RED/GREEN observation and artifact path in its indexed card.
+Use project-native gates plus claim-linked paths: AC-001/002 center and class authorization; AC-003 recurrence isolation; AC-004 transfer identity and charge uniqueness; AC-005 historical access; AC-006 immediate removal denial; AC-009 zero-occurrence rejection before persistence. Each owned AC has a concrete RED/GREEN observation and artifact path in its indexed card.
 
 AC-008 uses a real-browser RED/GREEN comparison on the protected schedule
 form: the current page loses a populated draft after reload; GREEN restores the
@@ -81,14 +84,48 @@ until a fresh feature-level `/red-verify --feature FT-002` covers AC-001..AC-008
 The fresh AC-009 unit is `rebuild_required`: the accepted operator decision
 adds a material server-side invariant after TASK-031 closed. TASK-032 is T2
 because it changes Center & Scheduling domain validation and transaction
-preconditions, with persistence/lesson state and HTTP failure behavior in the
-proof surface. Its RED/GREEN path must show the current zero-lesson
-`schedule_created` behavior, then a `400 invalid_schedule` response with
-state-before/state-after equality and no schedule or lesson row. A valid
-occurrence path, authorization, and TASK-031 browser draft behavior remain
-regression prerequisites, not claims transferred to TASK-032.
+preconditions, with owner/domain state and Admin adapter failure behavior in
+the proof surface. Its RED/GREEN path must show the current zero-lesson
+`schedule_created` behavior, then owner rejection before writes with exact
+state-before/state-after equality for both Admin and assigned Teacher; only the
+Admin adapter maps to `400 invalid_schedule`, while Teacher proves the private
+`invalid-schedule-occurrences` sentinel and no Teacher HTTP transport is added.
+A valid occurrence path, authorization, and TASK-031 browser draft behavior
+remain regression prerequisites, not claims transferred to TASK-032.
 
 Expected gates are `npm run check`, `npm run build`, and `npm run test`, plus a
-fresh server/action probe and a protected-browser form submission observing
-the exact failure envelope and unchanged state. No schema migration,
+fresh owner-boundary probe run once as an own-center Admin and once as an
+assigned Teacher. Each principal must reject before writes with unchanged
+Schedule/Lesson state; only the Admin adapter must produce the exact `400
+invalid_schedule` failure. The assigned Teacher remains domain/sentinel-only;
+the protected-browser form/action probe is Admin-only and supports AC-008 draft
+retention. No schema migration,
 dependency, UI/localStorage, or new public error shape is authorized.
+
+The server-boundary probe supplies AC-009 evidence for both principals: the
+existing zero-lesson `schedule_created` result is RED; the corrected owner
+command's absence of persistence and exact state equality are GREEN for Admin
+and assigned Teacher separately. The Admin adapter's mapping is GREEN as
+`400 invalid_schedule`; Teacher's private `invalid-schedule-occurrences`
+sentinel remains internal. A separate Admin-only protected-browser/action
+probe observes matching-draft retention and supports AC-008 without
+transferring its ownership to TASK-032.
+
+## W16 task closure
+
+`TASK-032-T2-FT-002-W16` is reconciled as `done` with current Attempt 2
+functional `PASS` for AC-009 / REQ-004. Its owner-boundary proof covers both
+authorized principals and keeps the adapter split explicit: Admin HTTP 400
+`invalid_schedule`, assigned Teacher private `invalid-schedule-occurrences`,
+and no Teacher transport. At the task-only boundary FT-002 and REQ-004 were
+`planned` pending the separate feature-level `/red-verify --feature FT-002`;
+the feature closure below supersedes that pending state without changing the
+task outcome.
+
+## FT-002 feature semantic closure
+
+The fresh feature-level semantic report covers AC-001..AC-009 and records
+`SEMANTIC_VERDICT: semantic-pass`. FT-002 and REQ-004 are now `verified`, and
+EP-001 is reconciled to `verified` because its FT-001/FT-002 outcomes and
+REQ-001..REQ-004/REQ-014 mappings are verified. Task identities and statuses
+remain unchanged.

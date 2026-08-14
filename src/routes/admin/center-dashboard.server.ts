@@ -108,7 +108,8 @@ function actionError(cause: unknown): DashboardFailure {
 	if (
 		message === 'invalid-weekdays' ||
 		message === 'invalid-date-range' ||
-		message === 'invalid-iso-date'
+		message === 'invalid-iso-date' ||
+		message === 'invalid-schedule-occurrences'
 	) {
 		return fail(400, { error: 'invalid_schedule' });
 	}

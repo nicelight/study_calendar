@@ -3,7 +3,7 @@ description: Product feature for center membership, classes, and lesson scheduli
 status: active
 type: feature
 id: FT-002
-lifecycle: planned
+lifecycle: verified
 epic: EP-001
 requirements: [REQ-003, REQ-004, REQ-014]
 spec_design_status: complete
@@ -37,8 +37,11 @@ spec_design_links:
   never crosses center/class scope.
 - A valid date range and weekday selection that yields no actual occurrence in
   the inclusive range is rejected before any schedule or lesson persistence;
-  the Admin action returns the existing `400 { error: "invalid_schedule" }`
-  shape and leaves state unchanged.
+  the owner/domain command leaves Schedule/Lesson state unchanged for both an
+  own-center Admin and an assigned Teacher. The existing Admin adapter maps
+  that rejection to `400 { error: "invalid_schedule" }`; no Teacher schedule
+  HTTP transport exists in the current scope, so its private owner sentinel is
+  not exposed or replaced by a new transport.
 
 ## Acceptance Criteria
 
@@ -119,14 +122,19 @@ spec_design_links:
 - Given an authenticated, authorized Admin or assigned Teacher submits a valid
   ISO start/end date range and valid weekday numbers, when no selected weekday
   occurs inside the inclusive range, then Center & Scheduling rejects the
-  command before Schedule or Lesson persistence/mutation, the Admin action
-  returns HTTP 400 with the existing `{ error: "invalid_schedule" }` envelope,
-  and the state before and after the attempt is identical. A range with at
-  least one occurrence continues to create its planned lessons unchanged.
-- Verification: server-boundary and protected-browser action probes capture
-  the current zero-lesson `schedule_created` RED, then GREEN `invalid_schedule`
-  response, schedule/Lesson state-before/state-after equality, and unchanged
-  valid-occurrence regression; no AC-008 localStorage claim is transferred.
+  owner/domain command before Schedule or Lesson persistence/mutation and the
+  state before and after is identical for each principal. The existing Admin
+  adapter maps the rejection to HTTP 400 with `{ error: "invalid_schedule" }`;
+  an assigned Teacher has no schedule HTTP adapter in the current scope, so
+  verification observes the private `invalid-schedule-occurrences` owner
+  sentinel and MUST NOT add a Teacher HTTP transport. A range with at least one
+  occurrence continues to create its planned lessons unchanged.
+- Verification: fresh owner-boundary probes run the same zero-occurrence
+  command as both an own-center Admin and an assigned Teacher; Admin also
+  traverses the existing adapter and proves HTTP 400 `invalid_schedule`, while
+  Teacher proves the private owner/domain rejection. Each principal must show
+  exact Schedule/Lesson state-before/state-after equality; the Admin browser
+  draft/retention observation remains AC-008 supporting evidence only.
 
 ## Acceptance Closure
 | Material outcome | Coverage |
@@ -155,21 +163,28 @@ Feature-level contract detail remains downstream task-design work.
 ## Semantic Verification
 
 - Report: [.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md](../../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md): durable feature semantic report
-- Fresh independent adversarial review covered AC-001..AC-008, all four
-  indexed FT-002 tasks and their evidence, the actual TASK-031 diff, current
-  public boundaries, authorization/revocation, recurrence and lesson identity,
-  browser-draft scope/cleanup, SSR safety, server authority, and cross-center
-  isolation.
-- One unresolved material schedule-validation meaning remains: canonical dates
-  and a valid weekday that does not occur inside the range currently persist a
-  zero-Lesson schedule, return `schedule_created`, and clear the matching
-  draft. The report records the exact operator choice required before closure.
+- Fresh independent adversarial review covered AC-001..AC-009 across all five
+  indexed FT-002 tasks, current source and direct contracts, disposable owner
+  and route state, protected Chrome localStorage behavior, authorization and
+  cross-center isolation, assignment/history/revocation, valid recurrence,
+  lesson identity, adapter-specific failure handling, SSR safety, and secret
+  exclusion.
+- The accepted zero-occurrence decision now holds end to end: Center &
+  Scheduling rejects before Schedule/Lesson writes for an own-center Admin and
+  assigned Teacher; the existing Admin adapter alone maps the private sentinel
+  to `400 { error: "invalid_schedule" }`, and no Teacher HTTP transport exists.
+- Fresh gates passed: focused composition 14/14, independent TASK-026 probe
+  3/3, Chrome draft probe, `npm run check`, `npm run build`, `npm test` (29
+  files / 116 tests), and `git diff --check`.
 
-SEMANTIC_VERDICT: semantic-concern
+SEMANTIC_VERDICT: semantic-pass
 
-FT-002 is now `planned`, not `verified`, because AC-009 is a new unimplemented
-material outcome. The active lifecycle owner routed the report's operator
-question through the feature/spec repair path and created fresh
-TASK-032-T2-FT-002-W16; existing task statuses and historical evidence remain
-unchanged. A fresh feature-level `/red-verify --feature FT-002` is still
-required after TASK-032 closure.
+No material finding or operator question remains. The explicit lifecycle owner
+has consumed this gate and reconciled FT-002, REQ-004, and EP-001 at the owned
+`/mb-sync` boundary; this verifier changed no lifecycle or task status.
+
+- [TASK-032 card](../tasks/TASK-032-T2-FT-002-W16.task.json)
+- [TASK-032 functional evidence](../../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-VERIFY-final-report-docs-01.md)
+- [TASK-032 sync evidence](../../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-MB-SYNC-final-report-docs-01.md)
+- [fresh feature semantic evidence](../../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
+- [feature sync evidence](../../.tasks/FT-002/FT-002-S-MB-SYNC-final-report-docs-01.md)

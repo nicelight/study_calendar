@@ -112,6 +112,32 @@ describe('recurring schedules and stable lesson exceptions', () => {
 		});
 	}
 
+	it('rejects a valid zero-occurrence request for an assigned teacher before persistence', () => {
+		const api = scheduling(root);
+		const before = {
+			schedules: root.database.sqlite.prepare('SELECT * FROM schedules ORDER BY id').all(),
+			lessons: root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()
+		};
+		let cause: unknown;
+		try {
+			api.createRecurringSchedule({
+				sessionToken: 'session-teacher-own',
+				classId: 'class-own',
+				scheduleId: 'schedule-teacher-zero',
+				startDate: '2026-08-03',
+				endDate: '2026-08-03',
+				weekdays: [2]
+			});
+		} catch (error) {
+			cause = error;
+		}
+		expect(cause).toMatchObject({ message: 'invalid-schedule-occurrences' });
+		expect({
+			schedules: root.database.sqlite.prepare('SELECT * FROM schedules ORDER BY id').all(),
+			lessons: root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()
+		}).toEqual(before);
+	});
+
 	it('FT-002-AC-003 creates planned repetitions and isolates add/transfer/cancel exceptions', () => {
 		const api = scheduling(root);
 		const created = createWeeklySchedule() as any[];

@@ -322,4 +322,31 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 			WHERE invitations.status = 'pending'
 		`).get()).toEqual({ role: 'teacher', center_id: 'center-own' });
 	});
+
+	it('rejects a valid zero-occurrence Admin schedule before persistence', async () => {
+		root.centerScheduling.createClass({
+			sessionToken: 'session-admin-own',
+			centerId: 'center-own',
+			classId: 'class-zero',
+			name: 'Пустое расписание',
+			mode: 'group'
+		});
+		const before = {
+			schedules: root.database.sqlite.prepare('SELECT * FROM schedules ORDER BY id').all(),
+			lessons: root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()
+		};
+		const result = await actions().createSchedule(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-zero'],
+				['startDate', '2026-08-03'],
+				['endDate', '2026-08-03'],
+				['weekdays', '2']
+			])
+		);
+		expect(result).toMatchObject({ status: 400, data: { error: 'invalid_schedule' } });
+		expect({
+			schedules: root.database.sqlite.prepare('SELECT * FROM schedules ORDER BY id').all(),
+			lessons: root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()
+		}).toEqual(before);
+	});
 });

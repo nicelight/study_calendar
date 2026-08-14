@@ -384,6 +384,9 @@ export class CenterSchedulingBoundary {
 			);
 			const weekdays = this.normalizeWeekdays(request.weekdays);
 			const dates = this.getRecurringDates(request.startDate, request.endDate, weekdays);
+			if (dates.length === 0) {
+				throw new Error('invalid-schedule-occurrences');
+			}
 			const createdAt = this.now().toISOString();
 
 			this.database.sqlite

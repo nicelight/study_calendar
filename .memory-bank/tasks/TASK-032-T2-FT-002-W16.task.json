@@ -1,7 +1,7 @@
 {
   "id": "TASK-032-T2-FT-002-W16",
   "title": "Reject zero-occurrence recurring schedules before persistence",
-  "status": "ready",
+  "status": "done",
   "wave": "W16",
   "feature": "FT-002",
   "reqs": ["REQ-004"],
@@ -21,21 +21,35 @@
     {"name": "build", "command": "npm run build", "required": true},
     {"name": "test", "command": "npm run test", "required": true}
   ],
-  "verify": [],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-032-T2-FT-002-W16/verification.md",
+      "artifact": ".tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Attempt 2 focused owner/adapter probe passed: 2 files / 10 tests; own-center Admin maps the private rejection to HTTP 400 { error: 'invalid_schedule' }, assigned Teacher retains the private invalid-schedule-occurrences sentinel, and both principals have exact Schedule/Lesson state-before/state-after equality.",
+        "Attempt 2 project gates passed: npm run check, npm run build, npm run test (29 files / 116 tests), and git diff --check; no implementation or test files changed during the retry.",
+        "Fresh same-Reviewer re-verification approved the adapter-specific contract with no blocking findings: .tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W16-VERIFY-R1-final-report-docs-01.md."
+      ]
+    }
+  ],
   "docs": [
     ".memory-bank/tasks/plans/IMPL-FT-002.md",
     ".protocols/FT-002/plan.md",
     ".protocols/FT-002/decision-log.md"
   ],
   "evidence_required": [
-    "FT-002-AC-009 / REQ-004: RED: with valid ISO dates and a valid weekday selection that has no occurrence in the inclusive range, the current implementation returns schedule_created and persists a zero-Lesson schedule; GREEN: the corrected implementation returns HTTP 400 with the existing { error: 'invalid_schedule' } envelope before any Schedule or Lesson write, leaves schedule/Lesson state-before/state-after identical, and preserves the valid-occurrence success path; artifact: .tasks/TASK-032-T2-FT-002-W16/ and .protocols/TASK-032-T2-FT-002-W16/."
+    "FT-002-AC-009 / REQ-004: RED: in fresh isolated state, the same valid ISO date/weekday zero-occurrence command is exercised at the owner boundary as both own-center Admin and assigned Teacher; the unchanged owner persists a zero-Lesson schedule, while the Admin adapter reports schedule_created; capture each principal's row snapshot. GREEN: the owner rejects before writes and each principal's exact Schedule/Lesson state-before/state-after snapshots are identical; the existing Admin adapter maps its rejection to HTTP 400 { error: 'invalid_schedule' }, while the assigned Teacher proves the private owner sentinel invalid-schedule-occurrences. No Teacher HTTP transport is added; valid-occurrence success remains unchanged; artifact: .tasks/TASK-032-T2-FT-002-W16/ and .protocols/TASK-032-T2-FT-002-W16/."
   ],
-  "purpose": "Ensure Center & Scheduling never persists an empty recurring schedule when a valid date range and weekday selection produce zero actual occurrences.",
-  "success_outcome": "An authorized zero-occurrence schedule command is rejected atomically through the existing invalid_schedule 400 contract before schedule or lesson mutation, while valid-occurrence scheduling and the protected browser form continue unchanged.",
+  "purpose": "Ensure Center & Scheduling never persists an empty recurring schedule when a valid date range and weekday selection produce zero actual occurrences for either authorized scheduling principal, while preserving the adapter-specific error boundary.",
+  "success_outcome": "The owner rejects the same zero-occurrence command atomically for an own-center Admin and an assigned Teacher before Schedule/Lesson mutation with exact state equality; the existing Admin adapter returns 400 invalid_schedule, the Teacher owner boundary retains its private invalid-schedule-occurrences sentinel, no Teacher HTTP transport is added, and valid-occurrence scheduling plus Admin AC-008 behavior remain unchanged.",
   "anti_goals": [
     "Do not modify the completed TASK-031 card, protocol, evidence, localStorage implementation, or browser-draft test.",
     "Do not change the completed TASK-026 card, protocol, evidence, authorization ownership, or protected UI behavior.",
     "Do not introduce a new public error envelope, schema migration, dependency, server draft store, or persistence model.",
+    "Do not add a Teacher schedule HTTP transport; the assigned Teacher proof stops at the existing authorized owner/domain boundary and private sentinel.",
     "Do not alter valid-occurrence recurrence, lesson identity, add/transfer/cancel behavior, or unrelated validation semantics."
   ],
   "runtime_context": {
@@ -52,7 +66,7 @@
       "package-lock.json"
     ],
     "stop_conditions": [
-      "Stop if the rejection cannot use the existing Admin 400 invalid_schedule envelope without a new public error contract.",
+      "Stop if the Admin adapter cannot preserve the existing 400 invalid_schedule envelope or if the assigned Teacher owner rejection cannot remain private without adding a Teacher HTTP transport.",
       "Stop if any schedule or lesson row is written before the zero-occurrence decision or if rollback/state equality cannot be demonstrated.",
       "Stop if implementation requires changing AC-008 localStorage behavior, the protected UI, authorization scope, schema, dependencies, or valid-occurrence behavior."
     ]
@@ -68,6 +82,7 @@
     ".memory-bank/spec-backbone.md",
     ".memory-bank/contracts/boundary-map.md",
     ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
     ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
     ".memory-bank/architecture/system-architecture.md#2-capability-module-runtime",
     ".memory-bank/testing/strategy.md#evidence-and-ownership",
@@ -75,20 +90,20 @@
   ],
   "constraints": [
     "Center & Scheduling remains the sole owner of Schedule and Lesson persistence; validate the occurrence list before the insert transaction mutates state.",
-    "Expose only the existing Admin HTTP 400 invalid_schedule error envelope for this expected input failure; any internal sentinel is private to the owner/adapter.",
+    "Preserve the existing Admin HTTP 400 invalid_schedule envelope; assigned Teacher has no schedule HTTP adapter in this scope and retains the private owner/domain sentinel invalid-schedule-occurrences.",
     "Keep TASK-031 browser draft retention/cleanup and valid-occurrence schedule creation as unchanged prerequisites and regression checks.",
     "Use the existing inclusive ISO-date recurrence basis and weekday domain 0..6; no recurrence exceptions or schema changes are introduced."
   ],
   "invariants": [
     "A zero-occurrence request creates neither a schedules row nor a lessons row and leaves all relevant state unchanged.",
-    "Every failed zero-occurrence attempt returns HTTP 400 with error invalid_schedule through the existing Admin action path.",
+    "Every failed zero-occurrence attempt by either an own-center Admin or an assigned Teacher leaves Schedule/Lesson state unchanged; only the Admin adapter maps to HTTP 400 invalid_schedule, while Teacher remains a private owner/domain rejection.",
     "A request with at least one matching date still creates the planned lessons expected by the existing recurrence tests.",
     "Authorization and center/class scope are checked before the command and remain unchanged."
   ],
   "verification_targets": [
-    "FT-002-AC-009 server boundary RED/GREEN: in fresh isolated database state, authorized Admin submits canonical valid dates and a valid weekday with no match; capture current zero-lesson schedule_created and row counts, then prove 400 invalid_schedule plus exact schedule/Lesson state-before/state-after equality after the fix.",
-    "Protected browser/action probe: submit the same zero-occurrence form through the existing Admin action, observe the exact failure envelope and absence of schedule_created, and confirm the matching TASK-031 draft remains available without changing the localStorage implementation or claiming AC-008 ownership.",
-    "Regression: retain existing valid recurring schedule, authorization, lesson identity, and exception tests; add only the minimal server/action no-occurrence assertions needed for AC-009.",
-    "Source and transaction review: prove Center & Scheduling computes occurrence dates and rejects the empty result before schedule/lesson inserts, with route mapping limited to the existing invalid_schedule contract; run npm run check, npm run build, and npm run test."
+    "FT-002-AC-009 server-boundary RED/GREEN: in fresh isolated database state, run the same canonical valid dates and no-match weekday at the existing owner boundary once as an own-center Admin and once as an assigned Teacher; prove the owner rejects before writes and each has exact Schedule/Lesson state-before/state-after equality. Confirm the Admin adapter returns 400 invalid_schedule; confirm the Teacher owner call exposes only invalid-schedule-occurrences and no Teacher HTTP transport is required.",
+    "FT-002-AC-009 Admin browser/action supporting probe: submit the zero-occurrence form through the existing Admin schedule action, observe HTTP 400 { error: 'invalid_schedule' } and absence of schedule_created, and confirm the matching TASK-031 draft remains available; this supports AC-008 retention without transferring its ownership.",
+    "Regression: retain existing valid recurring schedule for Admin and assigned Teacher, authorization, lesson identity, and exception tests; add only the minimal owner/domain and Admin-adapter no-occurrence assertions needed for AC-009.",
+    "Source and transaction review: prove Center & Scheduling computes occurrence dates and rejects the empty result before schedule/lesson inserts, with only the existing Admin route mapping and no Teacher HTTP transport; run npm run check, npm run build, and npm run test."
   ]
 }

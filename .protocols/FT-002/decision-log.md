@@ -67,3 +67,45 @@ Scheduling validation and no-mutation proof, depends on done TASK-026 and
 TASK-031 for execution cohesion, and must leave the localStorage draft and
 valid-occurrence behavior unchanged. FT-002 remains unverified until the
 follow-up task and a fresh feature-level semantic gate pass.
+
+## 2026-08-14 — TASK-032 review correction: both authorized principals
+
+The task-plan review required AC-009 proof to cover the complete accepted
+authority surface, not only the Admin form. TASK-032 now requires the same
+valid-but-zero-occurrence command to be exercised independently at the owner
+boundary as an own-center Admin and as an assigned Teacher. The owner must
+reject before writes and prove exact Schedule/Lesson state-before/state-after
+equality for each. The existing Admin adapter maps its rejection to HTTP 400
+`{ error: 'invalid_schedule' }`; the assigned Teacher has no schedule HTTP
+adapter in this scope, so its private `invalid-schedule-occurrences` sentinel
+remains internal and no Teacher transport is added.
+
+This is a proof/contract-surface correction only: no new public error shape,
+authorization decision, task identity, dependency, implementation, or test is
+introduced. TASK-032 remains `in_progress` for re-execution after the failed
+verification; FT-002 remains `planned` and no task is marked `done` here.
+
+## 2026-08-14 — TASK-032 functional closure sync
+
+Attempt 2 and the same-Reviewer re-verification passed the corrected AC-009
+contract. The explicit lifecycle owner consumed the current functional PASS and
+closed `TASK-032-T2-FT-002-W16` as `done`. The current evidence records exact
+Schedule/Lesson state equality for own-center Admin and assigned Teacher, the
+existing Admin `400 invalid_schedule` adapter mapping, the Teacher private
+`invalid-schedule-occurrences` sentinel, and all required project gates.
+
+At the task-only boundary FT-002, REQ-004, and EP-001 remained `planned` until
+the fresh feature-level `/red-verify --feature FT-002` covered AC-001..AC-009.
+TASK-026 and TASK-031,
+their implementation, and all historical Attempt 1/VERIFY-FAIL evidence remain
+unchanged. No implementation, test, dependency, or promotion change occurred
+in this sync.
+
+## 2026-08-14 — FT-002 feature semantic closure sync
+
+Fresh `/red-verify --feature FT-002` returned `SEMANTIC_VERDICT: semantic-pass`
+across AC-001..AC-009 with no material finding or operator question. The
+explicit lifecycle owner reconciled FT-002 and REQ-004 to `verified`; EP-001 is
+also `verified` because both of its feature outcomes and applicable REQ
+mappings are verified. TASK-026, TASK-031, and TASK-032 remain `done` with all
+implementation and evidence unchanged.

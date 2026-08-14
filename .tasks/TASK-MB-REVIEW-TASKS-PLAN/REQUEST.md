@@ -102,3 +102,41 @@
   written.
 - Final report:
   `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W15-LOCATOR-R1-final-report-docs-01.md`.
+
+## Current review run — FT-002 W16 AC-009 final re-review
+
+- ROLE: Reviewer; target: FT-002; bounded scope: current TASK-032 AC-009
+  planning surface, including direct Access Control proof, Admin/assigned
+  Teacher server-boundary checks, Admin-only browser draft support, and
+  preservation of done TASK-026/TASK-031.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh bounded architecture review: local fallback using `/architecture-review`
+  after delegated launch did not complete; verdict `APPROVE`, no findings.
+- Validation: `node scripts/mb-lint.mjs` passed (`67 files`, existing advisory
+  frontmatter warnings only); task index has 30 unique IDs, TASK-032 resolves
+  as T2/FT-002/W16/ready with done TASK-026 and TASK-031 dependencies, and the
+  schema-required fields and canonical locators resolve.
+- Read-only review: no product/spec/plan/task/index/code/protocol/lifecycle,
+  status, dependency, evidence, or scheduler state was changed. Only this
+  request entry and the required fresh review report are written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W16-R3-final-report-docs-01.md`.
+
+## Current review run — FT-002 W16 VERIFY-FAIL adapter reconciliation
+
+- ROLE: Reviewer; target: FT-002; bounded scope: current TASK-032 after the
+  failed verification, checking owner/domain rejection for Admin and assigned
+  Teacher, Admin-only adapter mapping and AC-008 draft support, no Teacher HTTP
+  transport, and preservation of lifecycle/status and done TASK-026/TASK-031.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh bounded architecture review: local fallback using `/architecture-review`
+  after delegated launch did not complete; verdict `APPROVE`, no findings.
+- Validation: `node scripts/mb-lint.mjs` passed (`67 files`, existing advisory
+  frontmatter warnings only); task index has 30 unique IDs; TASK-032 is the
+  schema-valid T2/FT-002/W16 card in `in_progress` after VERIFY FAIL, with done
+  TASK-026 and TASK-031 dependencies.
+- Read-only review: no product/spec/plan/task/index/code/protocol/lifecycle,
+  status, dependency, evidence, or scheduler state was changed. Only this
+  request entry and the fresh review report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W16-VERIFY-R1-final-report-docs-01.md`.

@@ -37,9 +37,13 @@ status: draft
   repetitions, and moving preserves lesson identity and context. The browser
   schedule form retains its unfinished date/weekday draft only for the same
   center and class until successful creation. A valid date range and weekday
-  selection that yields zero occurrences MUST be rejected before Schedule or
-  Lesson persistence/mutation, using the existing Admin `400
-  { error: "invalid_schedule" }` failure shape and leaving state unchanged.
+  selection that yields zero occurrences MUST be rejected by the
+  Center & Scheduling owner before Schedule or Lesson persistence/mutation,
+  leaving state unchanged for both an own-center Admin and an assigned Teacher.
+  The existing Admin adapter maps that rejection to `400
+  { error: "invalid_schedule" }`; an assigned Teacher has no schedule HTTP
+  adapter in the current scope, so the private owner/domain rejection remains
+  internal and no new Teacher transport is introduced.
   (PRD FR-ORG-003..005; explicit operator requirements 2026-08-14)
 - **REQ-005 — Elastic calendar navigation:** Each week uses an elastic row with
   lesson days wider than non-lesson days; the date picker reaches the selected
@@ -108,7 +112,7 @@ status: draft
 | REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..011 | verified |
 | REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
 | REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002 | verified |
-| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..009 | planned |
+| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..009 | verified |
 | REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004 | verified |
 | REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-004-AC-001;FT-004-AC-005 | verified |
 | REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | verified |
@@ -229,9 +233,35 @@ remained `verified`.
 The fresh `/red-verify --feature FT-001` returned
 `SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-011, and the explicit
 top-level lifecycle owner closed FT-001 as `verified`. REQ-001 is therefore
-`verified` in the RTM. REQ-002, shared REQ-014, and EP-001 remain `verified`;
-no task status, dependency, or queue state changed.
+`verified` in the RTM. At that historical FT-001 boundary, REQ-002, shared
+REQ-014, and EP-001 remained `verified`; the later FT-002 W16 reconciliation
+is recorded below. No task status, dependency, or queue state changed in the
+FT-001 sync.
 
 - [FT-001 feature](features/FT-001-authentication-and-binding.md)
 - [fresh feature semantic evidence](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
 - [final feature sync evidence](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-03.md)
+
+## FT-002 W16 lifecycle reconciliation — 2026-08-14
+
+The fresh feature-level semantic gate for FT-002 now records
+`SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-009. The explicit lifecycle
+owner therefore reconciles FT-002 and REQ-004 to `verified`; EP-001 is also
+`lifecycle: verified` because its FT-001 and FT-002 feature outcomes and
+REQ-001..REQ-004/REQ-014 mappings are verified. All completed task identities,
+dependencies, and historical evidence remain unchanged.
+
+## FT-002 W16 task evidence route — 2026-08-14
+
+`TASK-032-T2-FT-002-W16` is now `done` with current Attempt 2 functional
+`PASS` for REQ-004 / FT-002-AC-009. The evidence proves owner-boundary
+zero-occurrence rejection and exact Schedule/Lesson state equality for an
+own-center Admin and an assigned Teacher; only the existing Admin adapter maps
+to HTTP 400 `invalid_schedule`, while the Teacher remains private
+`invalid-schedule-occurrences` sentinel-only. The RTM lifecycle for REQ-004 is
+now `verified` after the fresh FT-002 feature-level aggregate semantic gate.
+
+- [TASK-032 card](tasks/TASK-032-T2-FT-002-W16.task.json)
+- [functional evidence](../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-VERIFY-final-report-docs-01.md)
+- [sync evidence](../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-MB-SYNC-final-report-docs-01.md)
+- [feature semantic evidence](../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
