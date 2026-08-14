@@ -1,7 +1,7 @@
 ---
 description: Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership.
 status: active
-last_updated: 2026-08-11
+last_updated: 2026-08-13
 source_of_truth:
   - .memory-bank/contracts/boundary-map.md
 ---
@@ -18,7 +18,7 @@ business state and mutable invariants remain slice-owned.
 
 | Module / Change Unit | Parent Architecture Unit | Code Root | Responsibility |
 |---|---|---|---|
-| Identity & Access | [Capability module runtime](../architecture/system-architecture.md#2-capability-module-runtime) | `src/lib/server/modules/identity-access/` | Internal accounts, roles, external identities, invitations, sessions, and authentication context. |
+| Identity & Access | [Capability module runtime](../architecture/system-architecture.md#2-capability-module-runtime) | `src/lib/server/modules/identity-access/` | Internal accounts, roles, password credentials, external identities, invitations, sessions, and authentication context. |
 | Center & Scheduling | [Capability module runtime](../architecture/system-architecture.md#2-capability-module-runtime) | `src/lib/server/modules/center-scheduling/` | Centers, classes, class/center membership, parent links, teacher assignment, schedules, lesson identity, dates, and schedule lifecycle. |
 | Lesson Context | [Capability module runtime](../architecture/system-architecture.md#2-capability-module-runtime) | `src/lib/server/modules/lesson-context/` | Calendar navigation, shared lesson material, and composition of authorized shared/personal day views. |
 | Collaboration | [Capability module runtime](../architecture/system-architecture.md#2-capability-module-runtime) | `src/lib/server/modules/collaboration/` | Field comments, reactions, shared/personal discussion scope, threaded messages, and branch visibility. |
@@ -66,24 +66,32 @@ remain implementation details.
 - **Provider:** Identity & Access.
 - **Public surface:** expose one authoritative provisioning command,
   `provisionAccount`, for the account-plus-invitation write; also expose the
-  named invitation lifecycle, provider-binding, second-provider, session
-  authentication/revocation, and actor context operations. `createAccount` and
-  `issueInvitation` are not alternate public write commands.
+  named first-Admin password bootstrap/authentication, invitation lifecycle,
+  provider-binding, second-provider, session authentication/revocation, and
+  actor context operations. `createAccount` and `issueInvitation` are not
+  alternate public write commands.
 - **State/data authority:** Identity & Access exclusively writes account,
-  role, invitation, external-identity, and session state.
+  role, password-credential, invitation, external-identity, and session state.
 - **Allowed interaction:** Center & Scheduling resolves the server-side actor
   and the actor's own-center Admin authorization before requesting
   `provisionAccount`; Identity & Access then performs the account-plus-
   invitation write. The command does not accept caller-trusted role or center
   scope as authorization. Center & Scheduling receives only the resulting
   account/invitation facts needed to continue. Provider adapters are invoked
-  through this boundary.
+  through this boundary. A local server-only bootstrap command may call the
+  Identity & Access first-Admin operation, which checks the empty account set
+  and writes the account plus password credential atomically. Browser password
+  login calls Identity & Access and reuses the existing session lifecycle.
 - **Failure/compatibility:** the account and invitation are one atomic write;
   duplicate or failed provisioning rolls both back. Expired, revoked, reused,
   duplicate, or failed provider operations are rejected atomically; no partial
-  account, role, membership, or binding is left behind.
-- **Forbidden bypasses:** no route, UI, or other slice may assign a role, bind
-  an identity, or trust a provider response directly. No public
+  account, role, membership, or binding is left behind. First-Admin bootstrap
+  fails atomically when accounts are non-empty or credentials are invalid;
+  unknown email and wrong password return the same generic denial without a
+  session.
+- **Forbidden bypasses:** no route, UI, CLI, or other slice may assign a role,
+  bind an identity, write password credentials directly, or trust a provider
+  response directly. No public
   `createAccount`/`issueInvitation` write bypass may exist beside
   `provisionAccount`; no caller may bypass the Center & Scheduling actor and
   own-center Admin authorization or write Identity & Access persistence.
@@ -91,6 +99,9 @@ remain implementation details.
   unauthenticated/non-Admin/cross-center denial, valid own-center Admin
   provisioning, invitation reuse/failure, duplicate identities, alternate
   command absence, and state-before/state-after atomicity.
+  Password scenarios cover hidden local bootstrap input, normalized unique
+  email, salted `scrypt` storage, timing-safe generic failure, existing
+  session/cookie behavior, and account+credential atomicity.
 
 ### Actor Context Boundary
 

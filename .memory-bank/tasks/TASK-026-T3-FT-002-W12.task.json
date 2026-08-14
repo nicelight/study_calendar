@@ -1,0 +1,117 @@
+{
+  "id": "TASK-026-T3-FT-002-W12",
+  "title": "Provide the own-center Admin dashboard for classes, schedules, and teacher privileges",
+  "status": "done",
+  "wave": "W12",
+  "feature": "FT-002",
+  "reqs": ["REQ-003", "REQ-004", "REQ-014"],
+  "depends_on": ["TASK-025-T3-FT-001-W11", "TASK-006-T2-FT-002-W4"],
+  "touched_files": [
+    "src/lib/server/modules/center-scheduling/public.ts",
+    "src/routes/admin/center-dashboard.server.ts",
+    "src/routes/admin/center-page.server.ts",
+    "src/routes/admin/[centerId]/+page.server.ts",
+    "src/routes/admin/[centerId]/+page.svelte",
+    "tests/routes/admin-center-management.test.ts",
+    "tests/routes/admin-center-bootstrap.test.ts",
+    ".memory-bank/contracts/authentication-transport.md"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm test", "required": true}
+  ],
+  "verify": [
+    "Implementer completion handoff: the Admin dashboard, owner-boundary commands, and focused route coverage were completed; npm run check passed with 0 errors and 0 warnings, the focused suite passed 4/4, npm test passed 24 files / 94 tests, and npm run build passed.",
+    {
+      "stage": "functional",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-026-T3-FT-002-W12/verification.md",
+      "artifact": ".tasks/TASK-026-T3-FT-002-W12/TASK-026-T3-FT-002-W12-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent verification passed the task-owned disposable-state probe 1 file / 3 tests and the focused existing route/domain suite 3 files / 10 tests.",
+        "Own-center class CRUD, recurring schedules, teacher invitations, assignment/removal, and membership revocation passed; unauthenticated, non-Admin, cross-center, forged-scope, invalid-role, individual-capacity, and post-revocation paths were denied without unauthorized mutation.",
+        "Fresh npm run check, npm test (24 files / 94 tests), npm run build, and git diff --check passed."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-026-T3-FT-002-W12/red-verification.md",
+      "artifact": ".tasks/TASK-026-T3-FT-002-W12/TASK-026-T3-FT-002-W12-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent hostile review admitted no material finding across forged authority, cross-center isolation, individual capacity, Teacher assigned-class authority, assignment and membership revocation, cascading cleanup, and direct-route persistence bypass.",
+        "The semantic artifact records SEMANTIC_VERDICT: semantic-pass; the reviewer changed no lifecycle state."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".protocols/TASK-026-T3-FT-002-W12/verification.md",
+    ".protocols/TASK-026-T3-FT-002-W12/red-verification.md"
+  ],
+  "evidence_required": [
+    "FT-002-AC-007 / REQ-003 / REQ-004 / REQ-014 GREEN: an authenticated own-center Admin can manage individual/group classes, recurring schedules, teacher invitations, assignments, and removals through server-authorized owner boundaries; decisive comparison: valid own-center operations mutate only the intended center while unauthenticated, non-Admin, cross-center, forged-scope, invalid-role, capacity, and post-revocation attempts are denied without unauthorized mutation; artifact: .tasks/TASK-026-T3-FT-002-W12/ and .protocols/TASK-026-T3-FT-002-W12/.",
+    "FT-002-AC-007 / REQ-014 GREEN: a Teacher can operate only while assigned to the class and loses class/schedule authority at the next check after assignment or center-membership removal, while authored facts retain ownership and route adapters perform no direct persistence; decisive comparison: assigned access succeeds, removal cascades assignment cleanup, and the repeated operation is denied; artifact: .tasks/TASK-026-T3-FT-002-W12/verification-probe.test.ts and .protocols/TASK-026-T3-FT-002-W12/red-verification.md."
+  ],
+  "purpose": "Expose the accepted Center & Scheduling administration capabilities through one protected own-center browser surface without moving authorization or persistence into route code.",
+  "success_outcome": "An authenticated Admin can manage own-center classes, recurring schedules, teacher invitations, assignments, and revocation in the browser, while server-owned scope prevents privilege escalation and removed Teachers immediately lose assigned-class authority.",
+  "anti_goals": [
+    "Do not add user-selected roles, Admin promotion, passwords, development login, or another center bootstrap mechanism.",
+    "Do not trust submitted center, role, account, assignment, or Admin authority fields.",
+    "Do not move Center & Scheduling or Identity & Access persistence into SvelteKit routes."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"
+    ],
+    "stop_conditions": [
+      "Stop if the Admin surface requires client-owned authorization, direct route persistence, Teacher-to-Admin promotion, or a new ownership edge outside the accepted Center & Scheduling and Identity & Access boundaries."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-007",
+    ".memory-bank/requirements.md#req-003--center-and-class-administration",
+    ".memory-bank/requirements.md#req-004--lesson-scheduling-lifecycle",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    ".memory-bank/contracts/authentication-transport.md#protected-admin-provisioning-path",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#ft-002-ac-007--admin-manages-classes-and-teacher-privileges-in-the-browser",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/authentication-transport.md#protected-admin-provisioning-path",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/domains/core-domain.md#ownership-map",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Every Admin read and command resolves the actor and own-center scope on the server and delegates persistence to the accepted owner boundary.",
+    "Teacher invitations may create only permitted participant roles; no browser field can promote a Teacher to Admin or widen center scope.",
+    "Assignment and membership removal take effect at the next owner-boundary authorization check."
+  ],
+  "invariants": [
+    "Class, schedule, participant, and assignment state remains center-bounded and is written only by its owning capability.",
+    "A Teacher can access or change only assigned classes and immediately loses that authority after assignment or membership removal.",
+    "An individual class never accepts more than one student."
+  ],
+  "verification_targets": [
+    "FT-002-AC-007 / REQ-003 / REQ-004: protected browser/HTTP flow for own-center class CRUD, individual/group capacity, recurring schedule creation, teacher invitation, assignment, and removal.",
+    "FT-002-AC-007 / REQ-014: negative matrix for unauthenticated, non-Admin, cross-center, forged-scope, invalid-role, and post-revocation operations with unchanged unauthorized state.",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary: source and runtime probes prove that route adapters call owner queries/commands and contain no direct persistence.",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix: assigned Teacher scheduling authority succeeds only while assigned and is denied immediately after assignment or membership removal."
+  ]
+}

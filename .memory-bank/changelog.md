@@ -4,6 +4,69 @@ status: active
 ---
 # Changelog
 
+## [2026-08-14] FT-001 final feature verification sync
+
+- Reconciled the already-written explicit owner closure: FT-001 is
+  `active` / `verified` and RTM REQ-001 is `verified` after the fresh
+  feature-level `semantic-pass` covered AC-001..AC-011.
+- Routed the current aggregate semantic report and final sync evidence through
+  FT-001, requirements/RTM, `IMPL-FT-001`, and the FT-001 protocol plan and
+  decision log. The 2026-08-11 AC-001..008 reconciliation remains historical.
+- Preserved TASK-029/TASK-030 as `done` with all task-level evidence, shared
+  REQ-014 and EP-001 as `verified`, historical TASK-003 failure, dependencies,
+  task index/statuses, Planning Revision, architecture, code/tests, and dirty
+  worktree state. No queue promotion was applied by `/mb-sync`.
+
+## [2026-08-13] Wave 14 — TASK-030 password-login sync
+
+- Reconciled the already-recorded closure: authoritative
+  `TASK-030-T3-FT-001-W14` is `done` with independent functional `PASS` and
+  required T3 `semantic-pass` for FT-001-AC-011 / REQ-001 / REQ-014.
+- Routed TASK-030 evidence through FT-001, RTM, `IMPL-FT-001`, the FT-001
+  protocol plan/decision log, TODO, and the task-level sync report. Deployment
+  guidance was already current and required no change; task index/statuses were
+  not rewritten.
+- Reconciled FT-001 and REQ-001 to `implemented`. They are not `verified`:
+  the required fresh `/red-verify --feature FT-001` over AC-001..AC-011 is
+  pending, while the existing 2026-08-11 aggregate report covers AC-001..008.
+- Preserved shared REQ-014 and EP-001 as `verified`, TASK-029 and all historical
+  task/evidence state, Planning Revision, architecture, code/tests, queue
+  promotion, and unrelated dirty-worktree changes.
+
+## [2026-08-13] Wave 13 — TASK-029 first-Admin bootstrap sync
+
+- Reconciled the already-recorded closure: authoritative
+  `TASK-029-T3-FT-001-W13` is `done` with independent functional `PASS` and
+  required T3 `semantic-pass` for FT-001-AC-010 / REQ-001 / REQ-014.
+- Routed the existing task/evidence truth through FT-001, the REQ RTM route,
+  `IMPL-FT-001`, and the FT-001 plan. The task index already contained TASK-029;
+  its identity, dependency, tier, and evidence markers were not rewritten.
+- Preserved: TASK-030 remains `planned`; FT-001 remains `active` / `planned`;
+  REQ-001 remains `planned` and shared REQ-014 remains `verified`; TASK-025/026, historical task evidence,
+  dependencies, Planning Revision, architecture, and dirty worktree state are
+  unchanged. No promotion or lifecycle transition was applied by `/mb-sync`.
+
+## [2026-08-13] FT-001 W13 first-Admin authentication rebuild
+
+- Applied the operator decision replacing the unexecuted Telegram-discovery
+  bootstrap with local email/password bootstrap and browser login using an
+  interactive email prompt plus hidden password prompt, normalized unique
+  email, Node built-in `scrypt`, random salt,
+  `timingSafeEqual`, generic invalid credentials, and the existing session/
+  cookie.
+- Reconciled PRD/REQ/feature and canonical Identity & Access, transport, access,
+  data, lifecycle, verification, deployment, and plan artifacts. Existing
+  Telegram/Google flows remain accepted; registration/recovery/email
+  verification/MFA/password history/new dependency remain excluded.
+- Queue action is `rebuild_required`: removed never-executed/unreviewed stale
+  TASK-027 and formally rejected, unexecuted TASK-028 from the indexed model.
+  Fresh TASK-029 is T3/W13/ready after done TASK-025 and owns CLI bootstrap;
+  TASK-030 is T3/W14/planned after TASK-029 and owns browser login/session.
+  TASK-025 and TASK-026 were not changed.
+- REQ-001 and FT-001 return to `planned` for the new AC-010/011 scope; all
+  historical AC-001..009/task evidence is preserved. Planning Revision remains
+  `2`. No implementation or tests were executed by this planning run.
+
 ## [2026-08-11] Product outer lifecycle reconciliation
 
 - Applied the already-recorded outer owner decision: FT-002..FT-006 and

@@ -6,11 +6,12 @@ status: active
 
 ## Outcome and scope
 
-Deliver center-created role-bearing accounts, one-time invitations, safe
-Telegram/Google identity binding, server sessions, and the minimum working
-browser/API path for login, invite acceptance, logout, and protected Admin
-participant provisioning. Out of scope: UI polish, a dev-login bypass,
-multi-Admin bootstrap, provider SDK selection, and unrelated scheduling or
+Deliver first-Admin email/password bootstrap/login, center-created role-bearing
+accounts, one-time invitations, safe Telegram/Google identity binding, server
+sessions, and the minimum working browser/API path for login, invite acceptance,
+logout, and protected Admin participant provisioning. Out of scope: UI polish,
+a dev-login bypass, self-registration/recovery/MFA, multi-Admin bootstrap, a new
+authentication dependency, provider SDK selection, and unrelated scheduling or
 membership behavior.
 
 ## Canonical inputs and ownership
@@ -53,12 +54,50 @@ membership behavior.
    `TASK-023-T3-FT-001-W10` (TD-W9-002) ->
    `TASK-024-T3-FT-001-W10` (TD-W9-003). All three retain the existing
    Identity & Access owner, one SvelteKit server, and one shared database.
+8. `TASK-025-T3-FT-001-W11` is a preserved `done` prerequisite that owns only
+   authenticated browser center creation. The stale unexecuted Telegram
+   bootstrap TASK-027 and rejected unexecuted TASK-028 are retired from the
+   index. Fresh TASK-029 owns AC-010 local password-credential bootstrap;
+   sequential TASK-030 owns AC-011 browser password login/session. This is a
+   `rebuild_required` replacement, not a repair.
 
 The product tasks use the existing Identity & Access owner and do not write
 membership state owned by Center & Scheduling. Center & Scheduling remains the
 authorization resolver/orchestrator for provisioning; Identity & Access owns
 the atomic account+invitation, identity, and session writes. Routes/hooks/UI
 only adapt the public boundaries.
+
+## W13 replacement boundary
+
+Unmerged units and useful completions:
+
+1. Identity & Access atomically creates the empty-database first Admin plus a
+   normalized-email password credential from an interactive email prompt and a
+   hidden password prompt; disposable CLI/database proof completes this unit
+   without browser transport.
+2. Identity & Access verifies the password and the SvelteKit login action issues
+   the existing session/cookie with generic invalid-credentials behavior;
+   disposable pre-created credential plus HTTP/SSR proof completes this unit
+   without invoking the CLI.
+
+Justified merges: none. Shared AC history, Identity & Access ownership,
+credential shape, T3 tier, and end-to-end value are not merge evidence; the
+units have distinct rollback/retry/proof surfaces. TASK-029 is now
+T3/W13/done after done TASK-025 with independent functional PASS and required
+semantic-pass; TASK-030 is now T3/W14/done after TASK-029 with independent
+functional PASS and required semantic-pass.
+
+No new module, provider, session type, cookie, service, dependency, or
+registration/recovery lifecycle is introduced. Existing Telegram/Google flows
+stay compatible. TASK-025 and TASK-026 remain unchanged.
+
+The current task queue implements AC-001..AC-011. The fresh 2026-08-14
+[feature semantic report](../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
+returned `semantic-pass` over the complete surface, and the explicit lifecycle
+owner closed FT-001 and REQ-001 as `verified`. The
+[final feature sync report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-03.md)
+is the current durable reconciliation; the 2026-08-11 aggregate remains
+historical AC-001..AC-008 evidence.
 
 ## W10 debt remediation boundary
 

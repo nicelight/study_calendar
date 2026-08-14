@@ -4,7 +4,7 @@ status: draft
 type: prd
 clarification_status: complete
 constitution_checked: true
-last_updated: 2026-08-08
+last_updated: 2026-08-13
 ---
 # Product Requirements Document
 
@@ -22,9 +22,11 @@ last_updated: 2026-08-08
 чем неучебные. Один учебный день объединяет содержание урока, домашнюю работу,
 обсуждение, посещаемость и связанные с учеником финансовые состояния.
 
-Приложение разделяет общий контекст класса и личный контекст ученика. Вход
-доступен через Telegram Login и Google OAuth, а роли и доступ назначаются
-учебным центром, а не выбираются пользователем самостоятельно.
+Приложение разделяет общий контекст класса и личный контекст ученика. Первый
+Admin входит по созданным локальной CLI-командой email/password credentials;
+Telegram Login и Google OAuth остаются доступными provider flows. Роли и доступ
+назначаются системой и учебным центром, а не выбираются пользователем
+самостоятельно.
 
 ## Goals
 
@@ -36,7 +38,8 @@ last_updated: 2026-08-08
 - Сохранить связанные с уроком материалы и общение в одном месте.
 - Вести прозрачный денежный баланс ученика с воспроизводимым распределением
   платежей.
-- Предоставить вход через Telegram и Google без самовольного получения роли.
+- Предоставить первый локальный Admin-доступ по email/password и сохранить
+  вход через Telegram и Google без самовольного получения роли.
 
 ## Non-goals
 
@@ -50,6 +53,8 @@ last_updated: 2026-08-08
   календарь.
 - Самостоятельный выбор пользователем роли или получение доступа только по
   факту входа через внешний provider.
+- Self-registration, password reset/recovery, email verification, MFA,
+  password history и самостоятельная смена/выдача password credentials.
 
 ## Users / Actors
 
@@ -89,9 +94,16 @@ last_updated: 2026-08-08
 
 ### Authentication and Account Binding
 
-- **FR-AUTH-001:** MVP MUST поддерживать Telegram Login и Google OAuth.
-- **FR-AUTH-002:** Admin MUST заранее создать внутренний аккаунт с ролью и
-  необходимым членством, после чего выдать одноразовую invite-ссылку.
+- **FR-AUTH-001:** MVP MUST поддерживать браузерный вход по email/password для
+  аккаунта с password credential; существующие Telegram Login и Google OAuth
+  flows сохраняются.
+- **FR-AUTH-002:** Для пустой базы оператор MUST локально запустить server-only
+  CLI, которая в одной транзакции создаёт первый внутренний Admin-аккаунт и его
+  password credential. Bootstrap разрешён только когда `accounts` пуст; email
+  хранится как unique normalized `trim().toLowerCase()`, а пароль принимается
+  только скрытым интерактивным prompt и никогда не передаётся через argv, не
+  логируется и не хранится plaintext. Центр и membership создаются этим Admin в
+  защищённом браузерном интерфейсе после входа.
 - **FR-AUTH-003:** При открытии действующей invite-ссылки пользователь MUST
   выбрать Telegram или Google; подтверждённая provider identity привязывается к
   указанному внутреннему аккаунту.
@@ -106,11 +118,23 @@ last_updated: 2026-08-08
 - **FR-AUTH-008:** Недоступность одного provider MUST NOT давать обходной путь к
   роли или чужому внутреннему аккаунту; пользователь может использовать только
   provider, уже привязанный к его аккаунту, либо действующее приглашение.
+- **FR-AUTH-009:** После успешного provider callback или email/password входа
+  для Admin система MUST открыть защищённую Admin-поверхность; Admin без
+  membership MUST получить форму создания первого центра, а не ошибку доступа
+  к несуществующему centerId.
+- **FR-AUTH-010:** Password credential MUST использовать Node built-in
+  `scrypt` с отдельной cryptographically random salt и `timingSafeEqual`;
+  plaintext password MUST NOT сохраняться. Неизвестный email и неверный пароль
+  MUST давать один generic invalid-credentials результат без сессии и без
+  раскрытия существования аккаунта.
 
 ### Center, Classes, and Scheduling
 
 - **FR-ORG-001:** Admin MUST управлять учителями, классами, учениками,
   родителями и их связями внутри одного учебного центра.
+- **FR-ORG-006:** Admin MUST создать свой первый учебный центр из браузера;
+  создание центра и его membership должно быть атомарным и ограниченным
+  bootstrap Admin без существующего membership.
 - **FR-ORG-002:** При создании класса MUST выбираться режим `individual` или
   `group`.
 - **FR-ORG-003:** Класс MUST иметь повторяющееся расписание, из которого
@@ -289,12 +313,20 @@ last_updated: 2026-08-08
 
 ### Initial Access
 
-1. Admin создаёт внутренний аккаунт, назначает роль и доступ.
-2. Система выдаёт одноразовую invite-ссылку.
-3. Пользователь выбирает Telegram или Google и подтверждает identity.
-4. Система привязывает identity к заранее созданному аккаунту и открывает
+1. Оператор локально запускает bootstrap CLI, вводит email в интерактивном
+   prompt и пароль в скрытом prompt и атомарно создаёт первого Admin с password
+   credential в пустой базе.
+2. Admin вводит email/password на странице входа.
+3. Система проверяет credential, создаёт существующую server session и открывает
+   защищённую Admin-поверхность.
+4. Admin создаёт первый центр в браузере; система создаёт center membership и
+   открывает управление классами.
+5. Admin создаёт участников и выдаёт одноразовые invite-ссылки.
+6. Пользователь приглашения выбирает Telegram или Google и подтверждает
+   identity.
+7. Система привязывает identity к заранее созданному аккаунту и открывает
    разрешённый контекст.
-5. Уже авторизованный пользователь при необходимости добавляет второй provider
+8. Уже авторизованный пользователь при необходимости добавляет второй provider
    из настроек профиля.
 
 ### Class Work
@@ -332,6 +364,9 @@ last_updated: 2026-08-08
 - Попытка привязать provider identity, уже связанную с другим аккаунтом,
   отклоняется без автоматического merge.
 - Сбой provider callback не создаёт частично привязанный аккаунт.
+- Неизвестный email и неверный пароль возвращают одинаковый generic отказ и не
+  создают сессию; bootstrap в непустой базе или duplicate normalized email
+  оставляет account/credential state неизменным.
 - Удалённый из класса пользователь немедленно теряет доступ к его общим и личным
   данным, но авторские записи сохраняют атрибуцию согласно дальнейшей data
   policy.
@@ -352,6 +387,11 @@ last_updated: 2026-08-08
   приглашения.
 - **AC-AUTH-002:** Второй provider добавляется к тому же аккаунту только из
   подтверждённой сессии; повторно использованная identity не создаёт дубль.
+- **AC-AUTH-003:** Локальная CLI в пустой базе атомарно создаёт первого Admin и
+  его unique normalized email/password credential; скрытый prompt не допускает
+  пароль в argv/log, plaintext не сохраняется, а успешный browser login создаёт
+  существующую server session. Неверный email/password даёт generic отказ без
+  сессии.
 - **AC-CAL-001:** Неделя отображает учебные дни шире неучебных, а date picker
   приводит к выбранной дате.
 - **AC-DAY-001:** Общие поля урока видны классу, а личные оценки, финансы и
@@ -434,6 +474,19 @@ last_updated: 2026-08-08
   доступ остаётся запрещённым.
 - Эта clarification заменяет прежние group-only формулировки о charge
   eligibility и class-scoped формулировки об Admin payment authority.
+
+### 2026-08-13 — KISS first-Admin email/password access
+
+- Operator replaced the unexecuted Telegram-discovery bootstrap with local
+  email/password bootstrap and browser login; existing Telegram/Google flows
+  need not be removed.
+- Bootstrap is allowed only while `accounts` is empty and atomically creates
+  the Admin plus credential. Email is normalized unique. The CLI reads the
+  password from a hidden local prompt, never argv/log/chat, and stores only a
+  Node built-in `scrypt` result with random salt; login uses timing-safe compare
+  and the existing server session/cookie.
+- Invalid credentials are generic. Self-registration, reset/recovery, email
+  verification, MFA, password history, and a new dependency are out of scope.
 
 ## Unresolved Blockers
 

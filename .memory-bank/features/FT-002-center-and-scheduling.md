@@ -75,6 +75,17 @@ spec_design_links:
   attribution.
 - Verification: negative authorization scenario immediately after removal.
 
+### FT-002-AC-007 — Admin manages classes and teacher privileges in the browser
+- REQ: REQ-003, REQ-004, REQ-014
+- Given an authenticated Admin with a center membership, when the Admin opens
+  the center Admin UI, then the Admin can create/edit/delete individual or
+  group classes, create schedules, invite teachers, and assign or remove
+  teachers from classes. Every command is server-authorized for the Admin's own
+  center; a teacher can operate only on assigned classes and cannot be promoted
+  to Admin or access another center through client fields.
+- Verification: running UI/HTTP CRUD flow with own-center success and
+  cross-center, non-Admin, invalid-role, and removed-assignment denial.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|

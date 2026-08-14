@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto';
+import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import type { SharedDatabase } from '$lib/server/platform/database';
 
 export type Role = 'admin' | 'teacher' | 'student' | 'parent';
@@ -43,12 +43,23 @@ export type ProviderBindingSessionConfirmation = ProviderIdentity & {
 	sessionToken?: string;
 };
 
+export type FirstAdminBootstrap = {
+	email: string;
+	password: string;
+};
+
+export type PasswordAuthentication = {
+	email: string;
+	password: string;
+};
+
 export interface ProviderVerifier {
 	verify(identity: ProviderIdentity): boolean;
 }
 
 type IdentityAccessOptions = {
 	now?: () => Date;
+	derivePasswordCredential?: (password: string, salt: Buffer) => Buffer;
 };
 
 type InvitationRow = {
@@ -66,14 +77,97 @@ type ExternalIdentityRow = {
 	account_id: string;
 };
 
+type PasswordCredentialRow = {
+	account_id: string;
+	salt: Buffer;
+	password_hash: Buffer;
+};
+
+const UNKNOWN_PASSWORD_CREDENTIAL_SALT = Buffer.from('identity-access-password-denial-salt');
+const UNKNOWN_PASSWORD_CREDENTIAL_HASH = scryptSync(
+	'identity-access-password-denial',
+	UNKNOWN_PASSWORD_CREDENTIAL_SALT,
+	64
+);
+
 export class IdentityAccessBoundary {
 	private readonly now: () => Date;
+	private readonly derivePasswordCredential: (password: string, salt: Buffer) => Buffer;
 
 	constructor(
 		private readonly database: SharedDatabase,
 		options: IdentityAccessOptions = {}
 	) {
 		this.now = options.now ?? (() => new Date());
+		this.derivePasswordCredential =
+			options.derivePasswordCredential ?? ((password, salt) => scryptSync(password, salt, 64));
+	}
+
+	bootstrapFirstAdmin(request: FirstAdminBootstrap): void {
+		const email = this.normalizePasswordEmail(request?.email);
+		if (typeof request?.password !== 'string' || request.password.length === 0) {
+			throw new Error('invalid-password');
+		}
+
+		const salt = randomBytes(32);
+		const passwordHash = this.derivePasswordCredential(request.password, salt);
+		if (!Buffer.isBuffer(passwordHash) || passwordHash.length === 0) {
+			throw new Error('credential-derivation-failed');
+		}
+
+		this.database.transaction(() => {
+			const accountCount = this.database.sqlite
+				.prepare('SELECT COUNT(*) AS count FROM accounts')
+				.get() as { count: number };
+			if (accountCount.count !== 0) {
+				throw new Error('first-admin-already-bootstrapped');
+			}
+
+			const accountId = randomBytes(16).toString('base64url');
+			this.database.sqlite
+				.prepare("INSERT INTO accounts (id, role) VALUES (?, 'admin')")
+				.run(accountId);
+			this.database.sqlite
+				.prepare(
+					'INSERT INTO password_credentials (account_id, email, salt, password_hash) VALUES (?, ?, ?, ?)'
+				)
+				.run(accountId, email, salt, passwordHash);
+		});
+	}
+
+	authenticatePassword(request: PasswordAuthentication): string {
+		const email = this.normalizePasswordEmailForAuthentication(request?.email);
+		const password = typeof request?.password === 'string' ? request.password : '';
+
+		return this.database.transaction(() => {
+			const credential = email
+				? (this.database.sqlite
+						.prepare(
+							'SELECT account_id, salt, password_hash FROM password_credentials WHERE email = ?'
+						)
+						.get(email) as PasswordCredentialRow | undefined)
+				: undefined;
+			const salt = Buffer.isBuffer(credential?.salt)
+				? credential.salt
+				: UNKNOWN_PASSWORD_CREDENTIAL_SALT;
+			const expectedHash =
+				Buffer.isBuffer(credential?.password_hash) &&
+				credential.password_hash.length === UNKNOWN_PASSWORD_CREDENTIAL_HASH.length
+					? credential.password_hash
+					: UNKNOWN_PASSWORD_CREDENTIAL_HASH;
+			const derivedHash = this.derivePasswordCredential(password, salt);
+			const comparableHash =
+				Buffer.isBuffer(derivedHash) && derivedHash.length === expectedHash.length
+					? derivedHash
+					: UNKNOWN_PASSWORD_CREDENTIAL_HASH;
+			const passwordMatches = timingSafeEqual(comparableHash, expectedHash);
+
+			if (!credential || !passwordMatches) {
+				throw new Error('invalid-credentials');
+			}
+
+			return this.issueSession(credential.account_id);
+		});
 	}
 
 	revokeInvitation(invitationToken: string): void {
@@ -290,6 +384,23 @@ export class IdentityAccessBoundary {
 	private isExpired(expiresAt: string): boolean {
 		const expiryTime = Date.parse(expiresAt);
 		return !Number.isFinite(expiryTime) || expiryTime <= this.now().getTime();
+	}
+
+	private normalizePasswordEmail(email: unknown): string {
+		if (typeof email !== 'string') {
+			throw new Error('invalid-email');
+		}
+
+		const normalized = email.trim().toLowerCase();
+		if (!normalized) {
+			throw new Error('invalid-email');
+		}
+
+		return normalized;
+	}
+
+	private normalizePasswordEmailForAuthentication(email: unknown): string {
+		return typeof email === 'string' ? email.trim().toLowerCase() : '';
 	}
 
 	private assertVerifiedIdentity(identity: VerifiedProviderIdentity): void {

@@ -1,7 +1,7 @@
 ---
 description: Foundation and MVP verification path for the one-server shared-database deployment.
 status: active
-last_updated: 2026-08-11
+last_updated: 2026-08-13
 source_of_truth:
   - .memory-bank/runbooks/mvp-verification.md
 ---
@@ -52,6 +52,7 @@ before operator acceptance:
 | Shared boundary/write leakage | Module boundary review plus a cross-slice integration path showing each owner writes only its state. |
 | Privacy/access | Negative server-side matrix for unauthenticated, wrong center/class/student, removed teacher, and guessed personal context. |
 | Provider binding | Telegram and Google success/failure, invitation reuse, duplicate identity, no-partial-binding, session-cookie, protected Admin, and logout scenarios through the running SvelteKit server. |
+| Password access | Empty-database Admin+credential atomic bootstrap, hidden prompt/no argv or log secret, normalized-email uniqueness, salted `scrypt` storage, generic invalid credentials, existing session-cookie, protected Admin, logout, and revoked-session denial. |
 | Scheduling/history | Recurring schedule, one-lesson transfer/cancel, stable lesson identity, assignment removal, and historical access. |
 | Learning/finance | Both class modes, absent/no charge, absent-to-present correction, historical price, audit, deterministic replay, full/partial/excess payment. |
 | Projection/UI | Date navigation, shared/personal context preservation, non-color state cue, marker placement across week/month boundaries, and marker non-mutation. |

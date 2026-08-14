@@ -1,0 +1,86 @@
+{
+  "id": "TASK-025-T3-FT-001-W11",
+  "title": "Allow bootstrapped Admin to create the first center from the browser",
+  "status": "done",
+  "wave": "W11",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-003", "REQ-014"],
+  "depends_on": ["TASK-024-T3-FT-001-W10", "TASK-005-T3-FT-002-W3"],
+  "touched_files": [
+    "src/lib/server/modules/center-scheduling/public.ts",
+    "src/lib/server/modules/identity-access/",
+    "src/routes/admin/",
+    "src/routes/auth/transport.server.ts",
+    "tests/center-scheduling/",
+    "tests/routes/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm test", "required": true}
+  ],
+  "verify": [
+    "A bound Admin without center membership opens /admin, creates one server-generated center, and receives the center membership atomically.",
+    "An existing member Admin is routed to its own center Admin surface; unauthenticated, non-Admin, repeated, and forged-field requests fail before mutation.",
+    "Independent Attempt 2 verification is PASS and semantic-pass after the Attempt 1 forged-field failure and bounded correction."
+  ],
+  "docs": [
+    ".protocols/TASK-025-T3-FT-001-W11/plan.md",
+    ".protocols/TASK-025-T3-FT-001-W11/verification.md"
+  ],
+  "evidence_required": [
+    "FT-001-AC-009 Attempt 1 RED: forged centerId/role fields were accepted and mutated state; retained in .tasks/TASK-025-T3-FT-001-W11/ and .protocols/TASK-025-T3-FT-001-W11/.",
+    "FT-001-AC-009 Attempt 2 GREEN: /admin accepts exactly one name field, rejects forged/unknown/duplicate fields with 400 before the public command, and leaves center/membership state unchanged; verifier probe, functional PASS, and semantic-pass reports are retained under .tasks/TASK-025-T3-FT-001-W11/."
+  ],
+  "purpose": "Provide the browser entry and one-time center creation path for a manually bootstrapped provider-bound Admin.",
+  "success_outcome": "A provider-bound Admin without membership can create exactly one center in the protected browser UI, gain its membership atomically, and reach the own-center Admin surface without client-trusted scope.",
+  "anti_goals": [
+    "Do not add first-run onboarding, passwords, development login, or manual center seeding.",
+    "Do not trust submitted center, role, account, or membership fields.",
+    "Do not add class, schedule, teacher privilege, or participant management beyond the existing center Admin entry."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+      ".memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json"
+    ],
+    "stop_conditions": [
+      "Stop if the flow requires direct route persistence, a password/dev-login bypass, or a new unaccepted ownership edge."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-009",
+    ".memory-bank/contracts/authentication-transport.md#bootstrap-admin-and-center-creation",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/contracts/provider-adapters.md#verified-identity-contract",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/provider-adapters.md",
+    ".memory-bank/domains/core-domain.md#ownership-map",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Center & Scheduling owns center and membership writes; routes call only its public boundary.",
+    "The server resolves the session actor and Admin scope; browser fields cannot widen authorization.",
+    "The center and Admin membership commit together or neither persists."
+  ],
+  "invariants": [
+    "Only a provider-bound Admin without center membership can use the bootstrap center command, once.",
+    "Successful creation generates the center ID server-side and creates the Admin membership atomically.",
+    "Forged, unknown, duplicate, unauthenticated, non-Admin, and repeated requests fail before mutation."
+  ],
+  "verification_targets": [
+    "FT-001-AC-009: isolated browser/HTTP flow for bootstrap success, atomic rollback, once-only denial, member Admin routing, and no-mutation forged/non-Admin/unauthenticated denial.",
+    ".memory-bank/contracts/authentication-transport.md#bootstrap-admin-and-center-creation: protected entry and callback routing preserve server-owned identity and scope.",
+    ".memory-bank/contracts/access-control.md#authority-and-scope: no client-provided role, center, or membership is trusted.",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary: route delegates to the accepted public owner boundary without direct persistence."
+  ]
+}

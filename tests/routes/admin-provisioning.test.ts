@@ -224,7 +224,7 @@ describe('protected Admin participant transport', () => {
 	beforeEach(() => {
 		root = seedRoot();
 		transport = createAdminProvisioningTransport(root.centerScheduling, {
-			now: () => new Date('2026-08-11T00:00:00.000Z')
+			now: () => new Date('2098-01-01T00:00:00.000Z')
 		});
 	});
 

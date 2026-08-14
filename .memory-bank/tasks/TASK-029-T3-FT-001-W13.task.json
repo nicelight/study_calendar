@@ -1,0 +1,121 @@
+{
+  "id": "TASK-029-T3-FT-001-W13",
+  "title": "Bootstrap the first Admin password credential locally",
+  "status": "done",
+  "wave": "W13",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-014"],
+  "depends_on": ["TASK-025-T3-FT-001-W11"],
+  "touched_files": [
+    "src/lib/server/modules/identity-access/",
+    "src/lib/server/platform/database.ts",
+    "scripts/bootstrap-admin.mjs",
+    "tests/identity-access/",
+    "tests/scripts/bootstrap-admin.test.ts",
+    "package.json",
+    "deployment.md"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1 / fresh independent verifier session",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-029-T3-FT-001-W13/verification.md",
+      "artifact": ".tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned disposable probe passed 1 file / 5 tests: hidden prompt and argv/environment/output boundaries, normalized DB-unique email, distinct random 32-byte salts with Node built-in scrypt and no serialized plaintext, atomic first Admin plus credential, rollback/retry/rerun, Identity & Access ownership, no CLI SQL, and TASK-030 browser-login exclusion.",
+        "Fresh npm run check passed with 0 errors and 0 warnings; npm run test passed 26 files / 107 tests; npm run build and git diff --check passed. No execute receipt was reused and executor RED/GREEN remained supporting-only."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1 / fresh independent red-verifier session",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-029-T3-FT-001-W13/red-verification.md",
+      "artifact": ".tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh isolated hostile probe passed 1 file / 2 tests: two simultaneous independent processes against one empty SQLite file produced exactly one Admin plus credential, and hidden-prompt Ctrl-C restored terminal state, detached input, and emitted no entered value.",
+        "Adversarial diff, ownership, secret-channel, dependency, provider/session, and TASK-030 scope inspection admitted no material semantic finding or operator-owned question."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": ["deployment.md"],
+  "evidence_required": [
+    "FT-001-AC-010 / REQ-001 / REQ-014 RED: no project-owned local command atomically creates the empty database's first Admin plus password credential; GREEN: disposable CLI/database probes prove interactive normalized email, hidden password with no argv/log exposure, random-salt built-in scrypt storage without plaintext, and atomic empty/non-empty success/failure; artifact: .tasks/TASK-029-T3-FT-001-W13/ and .protocols/TASK-029-T3-FT-001-W13/."
+  ],
+  "purpose": "Create the first local Admin credential safely and reproducibly without external-provider discovery, direct SQL, plaintext password handling, or a new dependency.",
+  "success_outcome": "An operator can use a local interactive command to create exactly one Admin plus normalized-email password credential atomically while accounts is empty, with hidden password input and no secret disclosure or partial state.",
+  "anti_goals": [
+    "Do not add browser password login or session transport; TASK-030 owns that sibling outcome.",
+    "Do not add self-registration, password reset/recovery, email verification, MFA, password history, password management UI, or a new dependency.",
+    "Do not remove or change Telegram/Google provider flows.",
+    "Do not create a center or membership; TASK-025 remains the owner of browser center creation.",
+    "Do not accept the password from argv, environment, HTTP, logs, chat, or a repository file."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-025-T3-FT-001-W11.task.json",
+      ".memory-bank/tasks/TASK-026-T3-FT-002-W12.task.json",
+      ".protocols/TASK-025-T3-FT-001-W11/",
+      ".protocols/TASK-026-T3-FT-002-W12/",
+      ".tasks/TASK-025-T3-FT-001-W11/",
+      ".tasks/TASK-026-T3-FT-002-W12/"
+    ],
+    "stop_conditions": [
+      "Stop if implementation requires a new dependency, service, provider change, account-registration/recovery lifecycle, or accepted ownership-graph change.",
+      "Stop if the password would enter argv/environment/logs/output or be stored plaintext, reversibly encrypted, or outside Identity & Access ownership.",
+      "Stop if bootstrap cannot check the empty accounts set and create the Admin plus credential in one local database transaction."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-010",
+    ".memory-bank/requirements.md#req-001--account-binding-and-provider-access",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    ".memory-bank/contracts/authentication-transport.md#bootstrap-admin-and-center-creation",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#ft-001-ac-010--operator-bootstraps-the-first-admin-password-credential-locally",
+    ".memory-bank/contracts/authentication-transport.md#bootstrap-admin-and-center-creation",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/runbooks/mvp-verification.md#required-pre-real-data-checks",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Identity & Access owns credential derivation and account+credential persistence; the CLI is an adapter and performs no direct credential table write.",
+    "Normalize email exactly with trim().toLowerCase() before storage and enforce uniqueness in the database.",
+    "Use only Node built-in crypto: cryptographically random per-credential salt and scrypt derivation; add no dependency.",
+    "Read email interactively and password only from a hidden local prompt; accept no password argv option and emit no password or derived secret."
+  ],
+  "invariants": [
+    "The first Admin account and password credential commit together only when accounts is empty, or neither state changes.",
+    "Plaintext password is never persisted or logged; each credential has its own cryptographically random salt and scrypt result.",
+    "Bootstrap assigns only the fixed admin role and never creates center or membership state."
+  ],
+  "verification_targets": [
+    "FT-001-AC-010 / REQ-001 / REQ-014: disposable initialized SQLite plus CLI-I/O doubles prove interactive email, hidden password/no argv or output, trim().toLowerCase() uniqueness, random salt, built-in scrypt-only stored credential, empty-set account+credential atomic success, safe rerun/non-empty/duplicate/cancel/failure rollback, and no persisted plaintext.",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary: source/runtime probe proves the CLI calls the Identity & Access public bootstrap operation and does not write account/password tables directly.",
+    "deployment.md: bootstrap instructions use only DATABASE_URL plus the interactive command and contain no password literal, argv/env example, or exposed secret."
+  ]
+}

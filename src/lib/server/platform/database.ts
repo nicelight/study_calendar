@@ -17,6 +17,12 @@ export class SharedDatabase {
 				id TEXT PRIMARY KEY,
 				role TEXT NOT NULL CHECK (role IN ('admin', 'teacher', 'student', 'parent'))
 			);
+			CREATE TABLE IF NOT EXISTS password_credentials (
+				account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
+				email TEXT NOT NULL UNIQUE,
+				salt BLOB NOT NULL,
+				password_hash BLOB NOT NULL
+			);
 			CREATE TABLE IF NOT EXISTS sessions (
 				token TEXT PRIMARY KEY,
 				account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,

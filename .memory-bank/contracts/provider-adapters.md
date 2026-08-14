@@ -1,7 +1,7 @@
 ---
 description: Server-only provider verification boundary for Telegram Login and Google OAuth.
 status: active
-last_updated: 2026-08-11
+last_updated: 2026-08-13
 source_of_truth:
   - .memory-bank/contracts/provider-adapters.md
 ---
@@ -32,14 +32,18 @@ database or create sessions.
 ## Accepted providers and local operation
 
 - Telegram uses the accepted Telegram Login protocol and server-side bot
-  secret verification.
+  secret verification. Deployment links each production domain to the bot with
+  `@BotFather /setdomain`; the verified subject is the Telegram user ID.
 - Google uses the accepted OAuth authorization-code protocol and server-side
-  token/identity verification.
+  token/identity verification. Deployment registers the exact
+  `/auth/google/callback` redirect URI in a Web application OAuth client; the
+  verified subject is the OpenID Connect `sub` claim.
 - Provider-specific SDK choice is not part of the product contract. The
   implementation MAY use the platform HTTP/crypto APIs or a small compatible
   dependency, provided the normalized contract and failure rules remain fixed.
 - A local/test adapter MAY be injected into isolated tests. It MUST NOT create
-  a role-selection, password, or unauthenticated development login route. A
+  a role-selection or unauthenticated development login route. Password
+  authentication is owned by Identity & Access and is not a provider adapter. A
   real local browser smoke uses configured provider credentials; missing
   configuration returns an explicit provider-configuration failure.
 

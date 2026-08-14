@@ -6,17 +6,19 @@ status: active
 
 ## Goal
 
-Implement the Identity & Access account/invitation/provider-binding outcome and
-the minimum real SvelteKit browser/API path defined by FT-001.
+Implement the Identity & Access account/password/invitation/provider-binding
+outcome and the minimum real SvelteKit browser/API path defined by FT-001.
 
 ## Scope / non-goals
 
-Scope is role-bearing internal accounts, one-time invitation lifecycle,
-Telegram/Google binding, server-issued sessions, login/logout transport, invite
-acceptance, and a protected Admin participant/invitation form. The W9 Admin
+Scope is role-bearing internal accounts, local first-Admin password bootstrap,
+email/password login, one-time invitation lifecycle, Telegram/Google binding,
+server-issued sessions, login/logout transport, invite acceptance, and a
+protected Admin participant/invitation form. The W9 Admin
 form uses the existing `createParticipant` contract for teacher/student/parent
 participants. Do not introduce a second service, client-trusted roles, a
-dev-login bypass, multi-Admin bootstrap, or consumer-owned identity writes.
+dev-login bypass, self-registration/recovery/MFA, multi-Admin bootstrap, new
+authentication dependency, or consumer-owned identity writes.
 
 ## Strategy and ownership
 
@@ -42,15 +44,73 @@ transport adapters.
 | W10 | TASK-022-T3-FT-001-W10 | bind callback state to the browser context and fail closed before provider/session completion | TASK-021-T3-FT-001-W9 |
 | W10 | TASK-023-T3-FT-001-W10 | bound expired auth-state retention and failed provider-start discard | TASK-022-T3-FT-001-W10 |
 | W10 | TASK-024-T3-FT-001-W10 | move provider configuration/registry wiring to platform and composition root; keep route dependency-only | TASK-023-T3-FT-001-W10 |
+| W11 | TASK-025-T3-FT-001-W11 | allow the authenticated bootstrap Admin to create the first center in the browser | TASK-024-T3-FT-001-W10; TASK-005-T3-FT-002-W3 |
+| W13 | TASK-029-T3-FT-001-W13 | atomically bootstrap the empty-database first Admin password credential through a local hidden-input CLI | TASK-025-T3-FT-001-W11 |
+| W14 | TASK-030-T3-FT-001-W14 | verify password credentials and expose browser login through the existing session/cookie | TASK-029-T3-FT-001-W13 |
 
 ## Gates and verification
 
 Use `npm run check`, `npm run build`, and `npm run test`; verify AC-003/005 on
 TASK-015, AC-001/002/004 on TASK-004, AC-006/007 on TASK-020, and AC-008 on
-TASK-021. W9 HTTP/SSR checks use disposable fixtures, server-issued sessions,
+TASK-021. Verify AC-010 on TASK-029 and AC-011 on TASK-030; AC-009 remains
+historically owned by done TASK-025. W9 HTTP/SSR checks use disposable fixtures, server-issued sessions,
 state-before/state-after comparisons for failures, and one running local
 SvelteKit process. Each new task has a claim-linked RED/GREEN contract and
 direct canonical links.
+
+## W13 email/password rebuild
+
+The unexecuted `TASK-027-T3-FT-001-W13` described Telegram Bot API discovery.
+The operator replaced that material outcome with email/password bootstrap and
+browser login. Under the existing-queue identity rule this is
+`rebuild_required`: TASK-027 and the rejected, unexecuted TASK-028 are removed
+from the indexed task model. Fresh `TASK-029-T3-FT-001-W13` owns
+FT-001-AC-010, and `TASK-030-T3-FT-001-W14` owns FT-001-AC-011. TASK-025 and
+the FT-002 TASK-026 remain `done` and unchanged.
+
+Unmerged grounded units remain separate: (1) first-Admin account+password-
+credential bootstrap reaches useful completion through disposable database/CLI
+proof without HTTP; (2) password credential verification and browser session
+transport reaches useful completion through a disposable pre-created
+credential without the CLI. Their failure, rollback, retry, and proof surfaces
+are independent; the shared owner and credential shape do not justify a merge.
+The owner is Identity & Access at
+`src/lib/server/modules/identity-access/`; platform/database and SvelteKit
+login/CLI adapters may wire/call that public owner but may not write credential
+state or own authorization.
+
+TASK-029 owns the Identity & Access credential creation/storage boundary, shared
+database schema, local CLI under `scripts/`, `package.json`, focused CLI/data
+tests, and bootstrap deployment instructions. It is T3/W13/done with
+independent functional `PASS` and required per-task `semantic-pass`; its
+dependency on done TASK-025 remains unchanged. TASK-030 owns password verification, `/login` server/UI
+transport, existing session/cookie integration, and focused identity/route
+tests. It is T3/W14/done with independent functional `PASS` and required
+per-task `semantic-pass`; its dependency on TASK-029 remains unchanged. The
+Foundation final gate remains transitively satisfied.
+
+## W13 TASK-029 completion evidence
+
+The authoritative [TASK-029-T3-FT-001-W13 card](../TASK-029-T3-FT-001-W13.task.json)
+is `done` with [functional PASS](../../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-VERIFY-final-report-docs-01.md)
+and [T3 semantic-pass](../../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md).
+The [task sync report](../../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-MB-SYNC-final-report-docs-01.md)
+routes this AC-010-only closure. At the W13 boundary TASK-030 remained
+`planned`; no dependent promotion or FT-001/REQ lifecycle transition was made
+by that reconciliation.
+
+## W14 TASK-030 completion evidence
+
+The authoritative [TASK-030-T3-FT-001-W14 card](../TASK-030-T3-FT-001-W14.task.json)
+is `done` with [functional PASS](../../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-VERIFY-final-report-docs-01.md)
+and [T3 semantic-pass](../../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md).
+The [task sync report](../../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-MB-SYNC-final-report-docs-01.md)
+routes this AC-011 closure. The fresh aggregate
+[feature semantic report](../../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
+subsequently returned `semantic-pass` over AC-001..AC-011, and the explicit
+lifecycle owner closed FT-001 and REQ-001 as `verified`. The
+[final feature sync report](../../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-03.md)
+is the current reconciliation route.
 
 ## Planning Revision 2 reconciliation
 

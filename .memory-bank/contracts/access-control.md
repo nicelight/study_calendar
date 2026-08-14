@@ -1,7 +1,7 @@
 ---
 description: Server-side authentication, authorization scope, and privacy contract.
 status: active
-last_updated: 2026-08-11
+last_updated: 2026-08-13
 source_of_truth:
   - .memory-bank/contracts/access-control.md
 ---
@@ -26,6 +26,7 @@ authorization by itself.
 
 | Capability/outcome | Admin | Teacher | Student | Parent |
 |---|---|---|---|---|
+| Create first center from protected Admin UI | Bootstrap Admin without center membership, once | No | No | No |
 | Create center accounts, roles, invitations | Own center | No | No | No |
 | Manage center, classes, links, and assignments | Own center | Assigned-class operations only where the product allows | No | No |
 | Read shared class context | Own center | Assigned classes | Own classes | Child's classes |
@@ -53,6 +54,10 @@ every role.
   back together inside the Identity & Access transaction.
 - A role-bearing internal account and its permitted context exist before the
   first provider binding.
+- A password credential belongs to exactly one Identity & Access account. Its
+  email is normalized with `trim().toLowerCase()` before lookup/storage and is
+  database-unique; its password is represented only by a cryptographically
+  random salt plus Node built-in `scrypt` result, never plaintext.
 - An invitation is one-time, expiring, and revocable. Binding Telegram or
   Google consumes it atomically only after provider verification.
 - A provider identity is unique to one internal account. Duplicate identity,
@@ -60,11 +65,19 @@ every role.
   role, membership, and binding state unchanged.
 - A second provider is added only from a re-confirmed authenticated profile.
 - A session is issued only by Identity & Access after a verified bound identity
-  or an atomic invitation binding; session revocation is checked on every
-  protected request and logout revokes the server-side session before the
-  browser cookie is cleared.
+  or an atomic invitation binding, or after a password credential succeeds;
+  session revocation is checked on every protected request and logout revokes
+  the server-side session before the browser cookie is cleared.
 - Removing a class assignment or membership takes effect at the next server-side
   authorization check; authored records retain attribution.
+- The first-Admin CLI is local/server-only, accepts the password only through a
+  hidden interactive prompt, and MUST NOT accept it from argv or expose it in
+  output/logs. It may atomically create one Admin plus credential only while
+  `accounts` is empty; a failure or rerun leaves both states unchanged.
+- A manually bootstrapped Admin without center membership may create exactly one
+  center through the protected Admin command. The command creates the center and
+  Admin membership atomically; after membership exists it is denied. Client
+  center, role, and membership values are never trusted.
 
 ## Data minimization and failure behavior
 
@@ -97,6 +110,12 @@ hide/show check:
   cross-center Admin and unassigned Teacher commands fail;
 - provider failure, invitation reuse, duplicate identity, and partial-binding
   cases show unchanged persisted state.
+- unknown normalized email and wrong password produce the same generic
+  invalid-credentials result, issue no session, and are compared through the
+  same password-verification path using `timingSafeEqual`;
+- disposable bootstrap checks prove empty-set gating, account+credential
+  atomicity, normalized-email uniqueness, hidden prompt/no-argv/no-log handling,
+  random salt, and absence of persisted plaintext.
 - provisioning authorization tests cover unauthenticated, non-Admin,
   cross-center, and valid own-center Admin actors; alternate public write
   commands are absent and duplicate provisioning rolls back account plus

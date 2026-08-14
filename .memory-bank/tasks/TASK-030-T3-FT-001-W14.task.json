@@ -1,0 +1,122 @@
+{
+  "id": "TASK-030-T3-FT-001-W14",
+  "title": "Add browser password login through the existing session",
+  "status": "done",
+  "wave": "W14",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-014"],
+  "depends_on": ["TASK-029-T3-FT-001-W13"],
+  "touched_files": [
+    "src/lib/server/modules/identity-access/",
+    "src/routes/login/+page.server.ts",
+    "src/routes/login/+page.svelte",
+    "tests/identity-access/",
+    "tests/routes/",
+    "deployment.md"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1 / fresh independent verifier session",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-030-T3-FT-001-W14/verification.md",
+      "artifact": ".tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned disposable SvelteKit action/SSR probe passed 1 file / 1 test: normalized pre-created scrypt credential, exact persisted Admin, common timingSafeEqual denial path, identical generic 401 body with no cookie/session, existing foundation_session attributes, /admin redirect and protected entry, separate logout/revocation denial, both provider starts, UI/form exports, owner boundary, and non-goals.",
+        "Fresh provider/session regression passed 2 files / 18 tests; npm run check passed with 0 errors/warnings; npm run test passed 28 files / 112 tests; npm run build and git diff --check passed. No execute receipt was reused and executor RED/GREEN remained supporting-only."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1 / fresh independent red-verifier session",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-030-T3-FT-001-W14/red-verification.md",
+      "artifact": ".tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh disposable hostile probe passed 1 file / 2 tests: dummy known-password integrity, malformed-credential closed denial, one scrypt derivation and shared timingSafeEqual path per denial, fresh tokens over a preexisting cookie, distinct concurrent sessions, current-session logout, persisted-role routing, HTTP/HTTPS cookie semantics, provider callback coexistence, and absence of password/provider secrets from the client build.",
+        "Focused password/session/invitation/Telegram/Google regression passed 4 files / 23 tests and git diff --check passed. Diff and boundary review admitted no material auth bypass, account enumeration, second auth lifecycle, provider regression, scope creep, or unjustified helper maintenance cost."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": ["deployment.md"],
+  "evidence_required": [
+    "FT-001-AC-011 / REQ-001 / REQ-014 RED: /login cannot verify a pre-created password credential or issue the existing server session; GREEN: disposable credential and HTTP/SSR probes prove normalized-email password success, scrypt/timingSafeEqual verification, externally identical invalid-credential denial without a session, existing cookie/Admin redirect, logout/revocation, and unchanged provider login paths; artifact: .tasks/TASK-030-T3-FT-001-W14/ and .protocols/TASK-030-T3-FT-001-W14/."
+  ],
+  "purpose": "Allow a password-credential account to authenticate in the browser while reusing the existing server session/cookie and preserving provider login compatibility.",
+  "success_outcome": "A pre-created password credential can authenticate through /login into the existing revocable server session and permitted context, while unknown email and wrong password are generic, timing-safe, and sessionless.",
+  "anti_goals": [
+    "Do not implement or re-prove CLI bootstrap/account+credential creation; TASK-029 owns that dependency outcome.",
+    "Do not add self-registration, password reset/recovery, email verification, MFA, password history, password management UI, or a new dependency.",
+    "Do not remove or materially change Telegram/Google provider flows.",
+    "Do not add a new session token, cookie, authentication state store, role selector, or client-owned authorization context."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-025-T3-FT-001-W11.task.json",
+      ".memory-bank/tasks/TASK-026-T3-FT-002-W12.task.json",
+      ".protocols/TASK-025-T3-FT-001-W11/",
+      ".protocols/TASK-026-T3-FT-002-W12/",
+      ".tasks/TASK-025-T3-FT-001-W11/",
+      ".tasks/TASK-026-T3-FT-002-W12/"
+    ],
+    "stop_conditions": [
+      "Stop if implementation requires a new dependency, service, session/cookie type, durable auth-state store, provider removal, account-registration/recovery lifecycle, or accepted ownership-graph change.",
+      "Stop if route code would write credential/session tables directly, trust client role/account/center input, expose account existence, or persist/log plaintext password.",
+      "Stop if unknown email and wrong password cannot use one externally indistinguishable generic denial and the same timing-safe comparison path."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-011",
+    ".memory-bank/requirements.md#req-001--account-binding-and-provider-access",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#ft-001-ac-011--password-credential-creates-the-existing-browser-session",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/runbooks/mvp-verification.md#required-pre-real-data-checks",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Identity & Access owns password verification and session issuance; SvelteKit login adapts form data and sets the existing cookie without direct persistence.",
+    "Normalize submitted email exactly with trim().toLowerCase() before lookup.",
+    "Use Node built-in scrypt derivation plus timingSafeEqual verification and add no dependency.",
+    "Reuse foundation_session cookie attributes, actor resolution, protected redirects, logout, and revocation behavior."
+  ],
+  "invariants": [
+    "Unknown email and wrong password are externally indistinguishable, issue no session, and use the same timing-safe comparison path.",
+    "Successful password login grants only the persisted account role and creates the existing session type/cookie.",
+    "Routes never write credential/session persistence directly or accept client role, account, center, membership, or session identity as authorization.",
+    "Existing Telegram/Google login and invitation flows remain available and behaviorally unchanged."
+  ],
+  "verification_targets": [
+    "FT-001-AC-011 / REQ-001 / REQ-014 / .memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation: disposable pre-created credential plus HTTP/SSR probes prove normalized-email success, exact Admin actor and /admin redirect, existing foundation_session cookie attributes, logout/revocation denial, and no direct route persistence.",
+    "FT-001-AC-011 / REQ-001 / .memory-bank/contracts/access-control.md#binding-and-session-rules: unknown email and wrong password return the same status/body and issue no session; instrumentation/source probe confirms scrypt plus timingSafeEqual and no externally observable account-existence branch.",
+    ".memory-bank/states/lifecycle-map.md#access-and-membership: successful password verification is the only new session issuance predecessor and the existing issued-to-revoked lifecycle remains unchanged.",
+    "Existing FT-001 provider login/invitation regression: focused Telegram/Google login/invitation tests remain green without deleting or changing provider routes.",
+    "deployment.md: browser instructions use the normalized email/password form and existing Admin flow without documenting password literals or new secret transport."
+  ]
+}

@@ -4,6 +4,46 @@ status: active
 ---
 # FT-001 Decision Log
 
+## 2026-08-14 — Final FT-001 verification closure
+
+Fresh `/red-verify --feature FT-001` returned `semantic-pass` across
+AC-001..AC-011, and the explicit top-level lifecycle owner set FT-001 and
+REQ-001 to `verified`. TASK-029/TASK-030 remain `done`; all task evidence,
+dependencies, historical TASK-003 failure, architecture, Planning Revision,
+and queue state remain unchanged. The current durable route is the fresh
+feature semantic report plus `FT-001-S-MB-SYNC-final-report-docs-03.md`.
+
+## 2026-08-13 — W14 task completion before aggregate feature gate
+
+At that boundary TASK-030 was durably `done` with functional `PASS` and per-task T3
+`semantic-pass`; together with the preserved AC-001..AC-010 task evidence, all
+current FT-001 task-owned outcomes were implemented. The feature remained
+`implemented`, not `verified`, because the then-current aggregate report
+covered only AC-001..AC-008. No task promotion, architecture decision, or
+Planning Revision change was introduced by that boundary.
+
+## 2026-08-13 — Rebuild unexecuted first-Admin bootstrap as email/password
+
+The operator explicitly replaced the unexecuted Telegram Bot API bootstrap with
+a KISS local email/password path: an interactive email prompt plus a hidden
+password prompt create the empty-database first Admin and normalized unique
+credential atomically; Node built-in
+`scrypt`, random salt, and `timingSafeEqual` protect password handling; browser
+login reuses the existing session/cookie and generic invalid credentials.
+Self-registration, reset/recovery, email verification, MFA, password history,
+and a new dependency are excluded. Existing Telegram/Google flows are retained.
+
+This changes TASK-027 identity/material scope. The feature-to-tasks hard
+invariant requires `rebuild_required`; therefore the stale, never-executed,
+never-reviewed TASK-027 is removed from the indexed task model rather than
+silently repaired. The first replacement TASK-028 was also retired unexecuted
+after formal review found two independently completable units. Fresh TASK-029
+owns AC-010 CLI/account+credential atomicity, and sequential TASK-030 owns
+AC-011 browser password verification/session transport. TASK-025 and TASK-026
+remain `done` and unchanged; Planning Revision remains 2 because this extends
+the accepted Identity & Access leaf/data/transport contract without changing
+the global module graph or architecture ownership.
+
 ## 2026-08-08 — Task queue created
 
 Accepted architecture and feature ACs fully settle provider ownership, authorization, atomicity, and task boundaries. Reused existing canonical contracts; no new feature spec or behavior example is required. Planning Revision remains `1`.

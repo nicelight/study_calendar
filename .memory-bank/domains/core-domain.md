@@ -1,7 +1,7 @@
 ---
 description: Global domain model, persistence ownership, and cross-slice data-flow rules.
 status: active
-last_updated: 2026-08-10
+last_updated: 2026-08-13
 source_of_truth:
   - .memory-bank/domains/core-domain.md
 ---
@@ -18,7 +18,7 @@ mutable invariant and transition has one capability owner as listed below.
 
 | Capability slice | Owned entities/state | Must not own |
 |---|---|---|
-| Identity & Access | Internal Account, role, External Identity, Invitation, Session | Class/student membership, lesson schedule, grades, payment facts |
+| Identity & Access | Internal Account, role, Password Credential, External Identity, Invitation, Session | Class/student membership, lesson schedule, grades, payment facts |
 | Center & Scheduling | Center, Class, Student Membership, Parent Link, Teacher Assignment, Schedule, Lesson identity/date/status | Provider binding, grades/attendance, discussion, charges/payments |
 | Lesson Context | Shared lesson material and authorized calendar/personal-day composition | Personal grade/attendance records, discussion objects, financial facts |
 | Collaboration | Field Comment, Reaction, Message, Reply relationship, branch activity/visibility | Lesson ownership, grade/attendance, payment or balance state |
@@ -69,6 +69,11 @@ second Payment.
 
 ## Persistence and transaction rules
 
+- A Password Credential belongs to one Internal Account and stores only one
+  normalized unique email, a cryptographically random per-credential salt, and
+  the Node built-in `scrypt` result required for `timingSafeEqual` verification.
+  Plaintext password is never persisted. The first Admin account and credential
+  are one atomic empty-account-set transaction.
 - All durable business writes use the one shared database and an explicit
   transaction boundary appropriate to the owning public command.
 - Cross-slice commands may participate in one transaction when the use case

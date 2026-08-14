@@ -1,12 +1,12 @@
 ---
-description: Product feature for center-created accounts and external identity binding.
+description: Product feature for account authentication, center-created accounts, and external identity binding.
 status: active
 type: feature
 id: FT-001
 lifecycle: verified
 epic: EP-001
 requirements: [REQ-001, REQ-002, REQ-014]
-last_updated: 2026-08-11
+last_updated: 2026-08-14
 source_of_truth:
   - .memory-bank/features/FT-001-authentication-and-binding.md
 spec_design_status: complete
@@ -29,6 +29,9 @@ spec_design_links:
 - User with a previously bound provider signs in through the browser and gets a
   server session; an Admin uses the protected Admin page to create a participant
   account and receive its invitation link.
+- The operator locally bootstraps the first Admin with normalized email and a
+  hidden-prompt password; that Admin signs in by email/password and receives the
+  same server session/cookie used by provider login.
 - Authenticated user adds the second provider from a confirmed profile.
 
 ## Edge / Failure Behavior
@@ -38,6 +41,8 @@ spec_design_links:
 - Provider outage returns an explicit error and does not bypass authorization.
 - Invalid, missing, or revoked sessions cannot reach protected routes or Admin
   actions; logout revokes the server-side session.
+- Unknown email and wrong password return the same invalid-credentials response
+  without a session; bootstrap in a non-empty account set fails atomically.
 
 ## Acceptance Criteria
 
@@ -116,6 +121,47 @@ spec_design_links:
 - Verification: running SvelteKit page/form or HTTP action smoke with own-center
   success and negative authorization/state-before/state-after assertions.
 
+### FT-001-AC-009 — Bootstrapped Admin enters center creation from the browser
+- REQ: REQ-001, REQ-003, REQ-014
+- Given a manually bootstrapped Admin account with an authenticated server
+  session and no center membership, when the Admin opens the protected UI and
+  submits the protected center form, then the server creates the center and Admin
+  membership atomically and opens the center Admin surface. A second center
+  creation through the bootstrap path, a non-Admin, or a forged center/role is
+  rejected before mutation.
+- Verification: browser/HTTP flow with empty membership, own success, atomic
+  state-before/state-after, and repeated/non-Admin denial.
+
+### FT-001-AC-010 — Operator bootstraps the first Admin password credential locally
+- REQ: REQ-001, REQ-014
+- Given an initialized database whose `accounts` set is empty, when the operator
+  runs the local server-only bootstrap command and enters email interactively
+  plus password in a hidden prompt, then exactly one `admin` account and one
+  password credential commit atomically. The email is stored only in normalized
+  `trim().toLowerCase()` form with database-enforced uniqueness; the password is
+  never accepted from argv or logged/stored plaintext and is stored only as a
+  Node built-in `scrypt` result with a cryptographically random per-credential
+  salt. Any existing account, duplicate normalized email, CLI cancellation, or
+  derivation/write failure leaves account and credential state unchanged.
+- Verification: disposable SQLite and CLI-I/O scenarios covering email
+  normalization/uniqueness, hidden password prompt and argv/log non-exposure,
+  random salt plus `scrypt` storage without plaintext, and atomic empty/non-empty
+  bootstrap with safe cancellation/failure rerun.
+
+### FT-001-AC-011 — Password credential creates the existing browser session
+- REQ: REQ-001, REQ-014
+- Given an account with a password credential, when the user submits the same
+  normalized email and password through `/login`, then Identity & Access
+  verifies the credential with `timingSafeEqual`, issues the existing server
+  session/cookie, and opens the permitted context, including `/admin` for the
+  first Admin. Unknown email and wrong password return the same generic
+  invalid-credentials response and issue no session; logout and revocation deny
+  later protected access.
+- Verification: disposable credential and HTTP/SSR scenarios covering
+  normalized-email success, timing-safe generic invalid credentials, existing
+  cookie attributes, protected Admin entry, logout/revocation, no route-owned
+  credential persistence, and unchanged Telegram/Google login paths.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -127,6 +173,9 @@ spec_design_links:
 | Browser login/session and logout | FT-001-AC-006 |
 | Browser invitation acceptance/binding | FT-001-AC-007 |
 | Protected Admin participant/invitation form | FT-001-AC-008 |
+| Bootstrap Admin creates the first center from the browser | FT-001-AC-009 |
+| Safe local first-Admin password-credential bootstrap | FT-001-AC-010 |
+| Password browser login through the existing session/cookie | FT-001-AC-011 |
 
 ## Task Coverage at W9 — TASK-019 Boundary
 
@@ -301,24 +350,29 @@ Feature-level contract detail remains downstream task-design work.
 
 ## Semantic Verification
 
-Standalone feature-level `/red-verify --feature FT-001` was independently
-rerun after TASK-022/023/024 closure evidence was present, against the current
-implementation, all W9/W10 task evidence, the repaired TASK-015 coverage, the
-full FT-001 AC-001…008 surface, fresh adversarial probes, and current project
-gates. No material semantic finding or operator-owned question was evidenced.
-The feature report is
+Fresh standalone `/red-verify --feature FT-001` on 2026-08-14 covered the
+complete AC-001..AC-011 surface against every indexed FT-001 task and its
+terminal evidence, the current implementation/diff, direct canonical specs,
+the historical AC-001..AC-008 aggregate report, and a disposable operational
+path from hidden-prompt first-Admin bootstrap through password session, center
+creation, own-center Admin routing, and first-class creation. Provider and
+password access share the same account/session ownership and remain available;
+no material semantic finding or operator-owned question was evidenced.
+
+The current aggregate evidence is the
 [FT-001 red-verification report](../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md).
-The current feature-level reconciliation is recorded in the
-[FT-001 MB-SYNC report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md).
+The 2026-08-11 MB-SYNC report remains historical AC-001..AC-008 reconciliation;
+the explicit lifecycle owner's verified closure is reconciled in the
+[current feature MB-SYNC report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-03.md).
 
 SEMANTIC_VERDICT: semantic-pass
 
-## Feature-Level Coverage Index — 2026-08-11
+## Feature-Level Coverage Index — 2026-08-14
 
-The fresh feature semantic pass is the current evidence basis for the complete
-FT-001 acceptance surface. This index routes only the claims proven by the
-independent task evidence; TASK-019 is recorded as supporting integration
-coverage where its primitives are used, not as a replacement for an AC owner.
+The fresh 2026-08-14 feature semantic pass covers AC-001..AC-011. TASK-019 is
+recorded as supporting integration coverage where its primitives are used, not
+as a replacement for an AC owner; the 2026-08-11 aggregate remains historical
+AC-001..AC-008 evidence only.
 
 | AC | Proven claim | Primary proof owner | Supporting boundary |
 |---|---|---|---|
@@ -330,6 +384,9 @@ coverage where its primitives are used, not as a replacement for an AC owner.
 | FT-001-AC-006 | Browser/API login resolves the exact bound actor, issues the defined server session cookie, and logout/revocation deny later protected access. | TASK-020 (`PASS` + `semantic-pass`) | TASK-019 session primitives; TASK-022 browser binding; TASK-024 composition wiring |
 | FT-001-AC-007 | Server-bound invitation state survives the browser callback; valid Telegram/Google acceptance binds and consumes the exact account once, while rejected/failed paths are safe and non-consuming. | TASK-020 (`PASS` + `semantic-pass`) | TASK-019 acceptance/rollback; TASK-022 browser binding; TASK-023 retention/failure; TASK-024 composition wiring |
 | FT-001-AC-008 | Protected Admin SSR/form/API provisioning enforces own-center Admin authorization before mutation, ignores client scope, uses `createParticipant`, and commits account/membership/invitation atomically. | TASK-021 (`PASS` + `semantic-pass`) | TASK-020 accepted invitation path |
+| FT-001-AC-009 | A session-authenticated bootstrap Admin without membership creates the first center and Admin membership atomically; repeated, non-Admin, and forged-field paths deny before mutation. | TASK-025 (`PASS` + `semantic-pass`) | 2026-08-14 aggregate operational path |
+| FT-001-AC-010 | Local hidden-input bootstrap creates exactly one normalized-email Admin plus password credential atomically without plaintext or secret transport. | TASK-029 (`PASS` + `semantic-pass`) | 2026-08-14 aggregate operational path |
+| FT-001-AC-011 | Password login uses the existing session/cookie, generic timing-safe invalid denial, protected Admin entry, logout/revocation, and unchanged providers. | TASK-030 (`PASS` + `semantic-pass`) | 2026-08-14 aggregate operational path |
 
 ### Task evidence index
 
@@ -341,7 +398,10 @@ coverage where its primitives are used, not as a replacement for an AC owner.
 - [TASK-022 card](../tasks/TASK-022-T3-FT-001-W10.task.json), [functional PASS](../../.tasks/TASK-022-T3-FT-001-W10/TASK-022-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md), and [semantic-pass](../../.tasks/TASK-022-T3-FT-001-W10/TASK-022-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md) provide browser-binding hardening support for AC-006/AC-007; TASK-020 remains their primary proof owner.
 - [TASK-023 card](../tasks/TASK-023-T3-FT-001-W10.task.json), [functional PASS](../../.tasks/TASK-023-T3-FT-001-W10/TASK-023-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md), and [semantic-pass](../../.tasks/TASK-023-T3-FT-001-W10/TASK-023-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md) provide bounded auth-state retention/failure support for AC-004/AC-007; TASK-004 and TASK-020 remain their primary proof owners.
 - [TASK-024 card](../tasks/TASK-024-T3-FT-001-W10.task.json), [functional PASS](../../.tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-VERIFY-final-report-docs-01.md), and [semantic-pass](../../.tasks/TASK-024-T3-FT-001-W10/TASK-024-T3-FT-001-W10-S-RED-VERIFY-final-report-docs-01.md) provide composition/platform wiring support for AC-006/AC-007; TASK-020 remains the primary proof owner.
-- The [feature semantic report](../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md) records the independent `semantic-pass` over AC-001..008 and the combined current implementation surface.
+- [TASK-025 card](../tasks/TASK-025-T3-FT-001-W11.task.json), [functional PASS](../../.tasks/TASK-025-T3-FT-001-W11/TASK-025-T3-FT-001-W11-S-VERIFY-final-report-docs-01.md), and [semantic-pass](../../.tasks/TASK-025-T3-FT-001-W11/TASK-025-T3-FT-001-W11-S-RED-VERIFY-final-report-docs-01.md) cover AC-009.
+- [TASK-029 card](../tasks/TASK-029-T3-FT-001-W13.task.json), [functional PASS](../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-VERIFY-final-report-docs-01.md), and [semantic-pass](../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md) cover AC-010.
+- [TASK-030 card](../tasks/TASK-030-T3-FT-001-W14.task.json), [functional PASS](../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-VERIFY-final-report-docs-01.md), [semantic-pass](../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md), and [task sync](../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-MB-SYNC-final-report-docs-01.md) cover AC-011 at task level.
+- The [feature semantic report](../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md) records the fresh independent `semantic-pass` over AC-001..011 and the current implementation surface.
 - The [feature MB-SYNC report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md) records the aggregate AC-001..008 reconciliation and the W10 supporting ownership without changing primary task claims.
 
 `TASK-003-T3-FT-001-W2` remains the indexed `failed` historical attempt. Its
@@ -371,3 +431,78 @@ feature mappings are not part of this decision.
 Evidence: [feature semantic report](../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md),
 [feature MB-SYNC report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md),
 and [W10 tech-debt report](../../PAPERCUTS/TECHDEBTS/tech-debt-wave-W10-2026-08-11.md).
+
+## W13 Planning Reconciliation — 2026-08-13
+
+The operator replaced the unexecuted Telegram-discovery bootstrap with the
+email/password scope in FT-001-AC-010 and FT-001-AC-011. Historical AC-001..009
+outcomes and all completed task evidence remain unchanged. Because AC-011
+remains unverified, FT-001 stays at `lifecycle: planned`; its design coverage remains
+`complete` through the existing Identity & Access, authentication transport,
+access-control, domain, lifecycle, and boundary contracts.
+
+The stale unexecuted `TASK-027-T3-FT-001-W13` and rejected unexecuted
+`TASK-028-T3-FT-001-W13` are removed from the indexed task model. Fresh sibling
+cards `TASK-029-T3-FT-001-W13` and `TASK-030-T3-FT-001-W14` separately own CLI
+bootstrap and browser login/session proof. This is a `rebuild_required`
+material-scope/task-boundary reconciliation, not a repair of either retired
+card.
+
+## Task Coverage at W13 — TASK-029 First-Admin Bootstrap
+
+The authoritative [TASK-029-T3-FT-001-W13 card](../tasks/TASK-029-T3-FT-001-W13.task.json)
+is `done` with independent functional `PASS` and required T3
+`semantic-pass`. Its evidence covers only FT-001-AC-010: hidden local password
+input with no argv/environment/output disclosure, normalized unique email,
+random-salt Node built-in `scrypt` storage without plaintext, and atomic
+first-Admin-plus-credential success, rollback, and safe repeat behavior under
+Identity & Access ownership.
+
+- [functional verification report](../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-VERIFY-final-report-docs-01.md)
+- [functional verification protocol](../../.protocols/TASK-029-T3-FT-001-W13/verification.md)
+- [semantic verification report](../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md)
+- [semantic verification protocol](../../.protocols/TASK-029-T3-FT-001-W13/red-verification.md)
+- [task-level sync report](../../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-MB-SYNC-final-report-docs-01.md)
+
+TASK-030 remains `planned` and solely owns AC-011 browser password
+verification/session proof. FT-001 remains `status: active` /
+`lifecycle: planned`; REQ-001 remains `planned` while shared REQ-014 remains
+`verified`; no feature, requirement, dependency, architecture, or
+promotion transition is implied by this W13 task evidence.
+
+## W14 Task Completion Reconciliation — 2026-08-13
+
+The authoritative [TASK-030-T3-FT-001-W14 card](../tasks/TASK-030-T3-FT-001-W14.task.json)
+is `done` with independent functional `PASS` and required T3
+`semantic-pass`. Its evidence proves AC-011 through normalized-email password
+authentication, the common built-in `scrypt` plus `timingSafeEqual` invalid
+path, generic sessionless denial, the existing `foundation_session`, protected
+Admin entry, logout/revocation, and unchanged Telegram/Google paths.
+
+- [functional verification report](../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-VERIFY-final-report-docs-01.md)
+- [functional verification protocol](../../.protocols/TASK-030-T3-FT-001-W14/verification.md)
+- [semantic verification report](../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md)
+- [semantic verification protocol](../../.protocols/TASK-030-T3-FT-001-W14/red-verification.md)
+- [task-level sync report](../../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-MB-SYNC-final-report-docs-01.md)
+
+At this W14 reconciliation all AC-001..AC-011 task owners were implemented and
+task-verified, so FT-001 moved to `status: active` / `lifecycle: implemented`.
+The feature was not yet eligible for `verified` at that boundary because the
+then-existing aggregate report covered only AC-001..AC-008. The current
+feature-level result is recorded in `## Semantic Verification`; no task or
+queue promotion was performed by the W14 reconciliation.
+
+## Final Lifecycle Reconciliation — 2026-08-14
+
+The explicit top-level lifecycle owner closed FT-001 as `verified` after the
+fresh feature-level `SEMANTIC_VERDICT: semantic-pass` covered AC-001..AC-011.
+The authoritative feature state is `status: active` / `lifecycle: verified`;
+REQ-001 is `verified` in the RTM, while shared REQ-014 and EP-001 remain
+`verified`.
+
+The current evidence is the
+[fresh aggregate semantic report](../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
+and [final feature sync report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-03.md).
+TASK-029 and TASK-030 remain `done` with their task-level functional and
+semantic evidence. No task status, dependency, queue promotion, architecture,
+or Planning Revision changed in this reconciliation.

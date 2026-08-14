@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import {
 	IdentityAccessBoundary,
 	type ActorContext,
@@ -13,6 +14,34 @@ export type CenterScope = {
 };
 
 export type ClassMode = 'individual' | 'group';
+
+export type CenterView = {
+	centerId: string;
+	name: string;
+};
+
+export type AdminParticipantView = {
+	accountId: string;
+	role: Role;
+};
+
+export type AdminClassView = {
+	classId: string;
+	name: string;
+	mode: ClassMode;
+	teacherAccountIds: string[];
+	studentCount: number;
+	schedules: ScheduleView[];
+};
+
+export type AdminCenterView = CenterView & {
+	participants: AdminParticipantView[];
+	classes: AdminClassView[];
+};
+
+export type AdminEntry =
+	| { mode: 'bootstrap' }
+	| ({ mode: 'center' } & CenterView);
 
 export type AuthorizedClassScope = CenterScope & {
 	classId: string;
@@ -96,16 +125,23 @@ type LessonRow = {
 	created_at: string;
 };
 
+type ParticipantRow = {
+	account_id: string;
+	role: Role;
+};
+
 type IdentityAccessProvisioningPort = Pick<IdentityAccessBoundary, 'resolveActor'> & {
 	provisionAccount: (provisioning: AccountProvisioning) => void;
 };
 
 type CenterSchedulingOptions = {
 	now?: () => Date;
+	centerIdFactory?: () => string;
 };
 
 export class CenterSchedulingBoundary {
 	private readonly now: () => Date;
+	private readonly centerIdFactory: () => string;
 
 	constructor(
 		private readonly database: SharedDatabase,
@@ -113,6 +149,109 @@ export class CenterSchedulingBoundary {
 		options: CenterSchedulingOptions = {}
 	) {
 		this.now = options.now ?? (() => new Date());
+		this.centerIdFactory = options.centerIdFactory ?? randomUUID;
+	}
+
+	getAdminEntry(request: { sessionToken?: string }): AdminEntry {
+		const actor = this.identityAccess.resolveActor(request.sessionToken);
+		if (!actor || actor.role !== 'admin') {
+			throw new Error('not-authorized');
+		}
+
+		const center = this.database.sqlite
+			.prepare(
+				`SELECT centers.id, centers.name
+				 FROM center_memberships
+				 JOIN centers ON centers.id = center_memberships.center_id
+				 WHERE center_memberships.account_id = ?
+				 ORDER BY centers.id
+				 LIMIT 1`
+			)
+			.get(actor.accountId) as { id: string; name: string } | undefined;
+
+		return center
+			? { mode: 'center', centerId: center.id, name: center.name }
+			: { mode: 'bootstrap' };
+	}
+
+	createBootstrapCenter(request: { sessionToken?: string; name: string }): CenterView {
+		const name = typeof request.name === 'string' ? request.name.trim() : '';
+		if (!name) {
+			throw new Error('invalid-center-name');
+		}
+
+		return this.database.transaction(() => {
+			const actor = this.identityAccess.resolveActor(request.sessionToken);
+			if (!actor || actor.role !== 'admin') {
+				throw new Error('not-authorized');
+			}
+
+			const existingMembership = this.database.sqlite
+				.prepare('SELECT 1 FROM center_memberships WHERE account_id = ? LIMIT 1')
+				.get(actor.accountId);
+			if (existingMembership) {
+				throw new Error('bootstrap-center-already-created');
+			}
+
+			const centerId = this.centerIdFactory();
+			this.database.sqlite
+				.prepare('INSERT INTO centers (id, name) VALUES (?, ?)')
+				.run(centerId, name);
+			this.database.sqlite
+				.prepare('INSERT INTO center_memberships (center_id, account_id) VALUES (?, ?)')
+				.run(centerId, actor.accountId);
+
+			return { centerId, name };
+		});
+	}
+
+	getAdminCenter(request: { sessionToken?: string; centerId: string }): AdminCenterView {
+		const actor = this.identityAccess.resolveActor(request.sessionToken);
+		if (!this.getAuthorizedCenterAdminScope(actor, request.centerId)) {
+			throw new Error('not-authorized');
+		}
+
+		const center = this.database.sqlite
+			.prepare('SELECT id, name FROM centers WHERE id = ?')
+			.get(request.centerId) as { id: string; name: string } | undefined;
+		if (!center) {
+			throw new Error('center-not-found');
+		}
+
+		const participants = this.database.sqlite
+			.prepare(
+				`SELECT center_memberships.account_id, accounts.role
+				 FROM center_memberships
+				 JOIN accounts ON accounts.id = center_memberships.account_id
+				 WHERE center_memberships.center_id = ?
+				 ORDER BY accounts.role, center_memberships.account_id`
+			)
+			.all(request.centerId) as ParticipantRow[];
+		const classes = this.database.sqlite
+			.prepare(
+				`SELECT id, center_id, name, mode
+				 FROM classes
+				 WHERE center_id = ?
+				 ORDER BY name, id`
+			)
+			.all(request.centerId) as ClassRow[];
+
+		return {
+			centerId: center.id,
+			name: center.name,
+			participants: participants.map((participant) => ({
+				accountId: participant.account_id,
+				role: participant.role
+			})),
+			classes: classes.map((classRow) => ({
+				classId: classRow.id,
+				name: classRow.name,
+				mode: classRow.mode,
+				teacherAccountIds: this.getClassTeacherIds(classRow.id),
+				studentCount: this.getClassStudentCount(classRow.id),
+				schedules: this.getScheduleViewsForClass(classRow.id)
+			}))
+		};
 	}
 
 	provisionAccount(request: AccountProvisioningRequest): void {
@@ -175,6 +314,7 @@ export class CenterSchedulingBoundary {
 		mode: ClassMode;
 	}): void {
 		this.requireClassMode(request.mode);
+		const name = this.requireName(request.name, 'invalid-class-name');
 		const actor = this.identityAccess.resolveActor(request.sessionToken);
 		if (!this.getAuthorizedCenterAdminScope(actor, request.centerId)) {
 			throw new Error('not-authorized');
@@ -182,7 +322,7 @@ export class CenterSchedulingBoundary {
 
 		this.database.sqlite
 			.prepare('INSERT INTO classes (id, center_id, name, mode) VALUES (?, ?, ?, ?)')
-			.run(request.classId, request.centerId, request.name, request.mode);
+			.run(request.classId, request.centerId, name, request.mode);
 	}
 
 	updateClass(request: {
@@ -192,13 +332,14 @@ export class CenterSchedulingBoundary {
 		mode: ClassMode;
 	}): void {
 		this.requireClassMode(request.mode);
+		const name = this.requireName(request.name, 'invalid-class-name');
 		const classRow = this.requireAuthorizedClassAdmin(request.sessionToken, request.classId);
 		if (request.mode === 'individual' && this.getClassStudentCount(classRow.id) > 1) {
 			throw new Error('individual-class-capacity-exceeded');
 		}
 		this.database.sqlite
 			.prepare('UPDATE classes SET name = ?, mode = ? WHERE id = ? AND center_id = ?')
-			.run(request.name, request.mode, classRow.id, classRow.center_id);
+			.run(name, request.mode, classRow.id, classRow.center_id);
 	}
 
 	deleteClass(request: { sessionToken?: string; classId: string }): void {
@@ -618,6 +759,28 @@ export class CenterSchedulingBoundary {
 			.get(scheduleId) as ScheduleRow | undefined;
 	}
 
+	private getScheduleViewsForClass(classId: string): ScheduleView[] {
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT id, center_id, class_id, start_date, end_date, weekdays,
+						created_by_account_id, created_at
+				 FROM schedules
+				 WHERE class_id = ?
+				 ORDER BY start_date, id`
+			)
+			.all(classId) as ScheduleRow[];
+		return rows.map((row) => ({
+			scheduleId: row.id,
+			centerId: row.center_id,
+			classId: row.class_id,
+			startDate: row.start_date,
+			endDate: row.end_date,
+			weekdays: JSON.parse(row.weekdays) as number[],
+			createdByAccountId: row.created_by_account_id,
+			createdAt: row.created_at
+		}));
+	}
+
 	private getLesson(lessonId: string): LessonRow | undefined {
 		return this.database.sqlite
 			.prepare(
@@ -741,6 +904,26 @@ export class CenterSchedulingBoundary {
 		if (mode !== 'individual' && mode !== 'group') {
 			throw new Error('invalid-class-mode');
 		}
+	}
+
+	private requireName(value: string, errorCode: string): string {
+		const name = typeof value === 'string' ? value.trim() : '';
+		if (!name) {
+			throw new Error(errorCode);
+		}
+		return name;
+	}
+
+	private getClassTeacherIds(classId: string): string[] {
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT teacher_account_id
+				 FROM teacher_assignments
+				 WHERE class_id = ?
+				 ORDER BY teacher_account_id`
+			)
+			.all(classId) as Array<{ teacher_account_id: string }>;
+		return rows.map((row) => row.teacher_account_id);
 	}
 
 	private getClassStudentIds(classId: string): string[] {

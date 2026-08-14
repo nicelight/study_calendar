@@ -53,7 +53,7 @@ describe('server-owned Identity & Access session lifecycle', () => {
 		seedAccount('precreated-account', 'parent');
 		root.database.sqlite
 			.prepare("INSERT INTO invitations (token, account_id, status, expires_at) VALUES (?, ?, 'pending', ?)")
-			.run('invite-one', 'precreated-account', '2026-08-12T00:00:00.000Z');
+			.run('invite-one', 'precreated-account', '2099-01-01T00:00:00.000Z');
 
 		const sessionToken = root.identityAccess.acceptInvitation({
 			invitationToken: 'invite-one',
@@ -98,10 +98,10 @@ describe('server-owned Identity & Access session lifecycle', () => {
 			.run('google', 'already-bound', 'existing-account');
 		root.database.sqlite
 			.prepare("INSERT INTO invitations (token, account_id, status, expires_at) VALUES (?, ?, 'pending', ?)")
-			.run('invite-duplicate', 'existing-account', '2026-08-12T00:00:00.000Z');
+			.run('invite-duplicate', 'existing-account', '2099-01-01T00:00:00.000Z');
 		root.database.sqlite
 			.prepare("INSERT INTO invitations (token, account_id, status, expires_at) VALUES (?, ?, 'revoked', ?)")
-			.run('invite-revoked', 'existing-account', '2026-08-12T00:00:00.000Z');
+			.run('invite-revoked', 'existing-account', '2099-01-01T00:00:00.000Z');
 		root.database.sqlite
 			.prepare("INSERT INTO invitations (token, account_id, status, expires_at) VALUES (?, ?, 'pending', ?)")
 			.run('invite-expired', 'existing-account', '2026-08-10T00:00:00.000Z');
@@ -152,7 +152,7 @@ describe('server-owned Identity & Access session lifecycle', () => {
 		seedAccount('atomic-account', 'student');
 		root.database.sqlite
 			.prepare("INSERT INTO invitations (token, account_id, status, expires_at) VALUES (?, ?, 'pending', ?)")
-			.run('invite-atomic', 'atomic-account', '2026-08-12T00:00:00.000Z');
+			.run('invite-atomic', 'atomic-account', '2099-01-01T00:00:00.000Z');
 		root.database.sqlite.exec(`
 			CREATE TRIGGER fail_session_insert
 			BEFORE INSERT ON sessions

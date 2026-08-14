@@ -7,7 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "bootstrap:admin": "node --loader ./scripts/bootstrap-admin-loader.mjs scripts/bootstrap-admin.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",

@@ -23,6 +23,7 @@ type IdentityAccessTransportBoundary = Pick<
 	| 'authenticateVerifiedIdentity'
 	| 'acceptInvitation'
 	| 'revokeSession'
+	| 'resolveActor'
 >;
 
 export type AuthenticationTransportDependencies = {
@@ -173,7 +174,8 @@ export class AuthenticationTransport {
 				sessionToken,
 				foundationSessionCookieOptions(event.url.protocol)
 			);
-			throw redirect(303, '/');
+			const actor = this.dependencies.identityAccess.resolveActor(sessionToken);
+			throw redirect(303, actor?.role === 'admin' ? '/admin' : '/');
 		} finally {
 			event.cookies.delete(
 			AUTHENTICATION_BINDING_COOKIE,

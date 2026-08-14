@@ -1,7 +1,7 @@
 ---
-description: Minimal SvelteKit browser and HTTP transport for login, invitations, sessions, and Admin provisioning.
+description: Minimal SvelteKit browser and HTTP transport for password/provider login, invitations, sessions, and Admin provisioning.
 status: active
-last_updated: 2026-08-11
+last_updated: 2026-08-13
 source_of_truth:
   - .memory-bank/contracts/authentication-transport.md
 ---
@@ -12,22 +12,31 @@ source_of_truth:
 The application shell is a thin transport adapter over Identity & Access and
 Center & Scheduling. The minimum real path is:
 
-1. `GET /login` presents Telegram and Google choices for an already bound
-   account.
-2. `GET /auth/{provider}/start` creates a short-lived server-owned state,
+1. `GET /login` presents an email/password form for a password-credential
+   account and retains Telegram and Google choices for already bound provider
+   identities, including a bootstrapped Admin without center membership.
+2. `POST /login` normalizes the submitted email, asks Identity & Access to
+   verify the password, sets the existing session cookie on success, and
+   returns one generic invalid-credentials response for unknown email or wrong
+   password.
+3. `GET /auth/{provider}/start` creates a short-lived server-owned state,
    starts the selected provider adapter, and redirects to the provider.
-3. `GET /auth/{provider}/callback` validates state through the adapter, asks
+4. `GET /auth/{provider}/callback` validates state through the adapter, asks
    Identity & Access to authenticate the verified identity or atomically accept
    the pending invitation, sets the session cookie, and redirects to the
    permitted application context.
-4. `GET /invite/{token}` validates the one-time capability without mutating it
+5. `GET /invite/{token}` validates the one-time capability without mutating it
    and presents the same provider choices. The invitation capability remains
    server-bound through the authentication state until callback completion.
-5. `POST /auth/logout` revokes the current session through Identity & Access
+6. `POST /auth/logout` revokes the current session through Identity & Access
    and clears the browser cookie.
-6. `GET/POST /admin/{centerId}/participants` is the protected Admin page and
-   form action for creating a center participant and returning its one-time
-   invitation link.
+7. `GET/POST /admin` is the protected Admin entry point. A bootstrapped Admin
+   without center membership may create the first center in the browser; the
+   server then creates the Admin membership and redirects to
+   `GET/POST /admin/{centerId}`, the protected own-center surface for class
+   CRUD, recurring schedules, participant invitations, and teacher
+   assignment/removal. The narrower `/admin/{centerId}/participants` transport
+   remains available for participant provisioning.
 
 Concrete SvelteKit route files may vary only within this path. Routes, loads,
 form actions, and components MUST adapt transport data and call public module
@@ -60,7 +69,8 @@ database writes.
 ## Session issuance and revocation
 
 - Identity & Access MUST generate the opaque session token server-side only
-  after a verified bound identity is resolved or an invitation binding commits.
+  after a verified bound identity is resolved, an invitation binding commits,
+  or a password credential verifies.
 - The existing `foundation_session` request cookie is reused as the single
   browser session cookie for the local MVP. It MUST be `HttpOnly`, `Path=/`,
   and `SameSite=Lax`; `Secure` is required for HTTPS deployment and relaxed
@@ -98,6 +108,36 @@ database writes.
   submitted center, role, or hidden field cannot widen access.
 - Unauthenticated, non-Admin, and cross-center requests are rejected before
   the Identity & Access or Center & Scheduling state changes.
+- The own-center Admin surface reads center participants, classes, teacher
+  assignments, and schedules only through an authorized Center & Scheduling
+  query. Its form actions generate class/schedule identities server-side and
+  call owner commands; submitted role, center, or Admin fields cannot widen
+  access.
+
+## Bootstrap Admin and center creation
+
+- The supported empty-database bootstrap is a local server-only CLI which uses
+  the same `DATABASE_URL` as the application and prompts interactively for email
+  and password. The password prompt MUST be hidden. Password MUST NOT be
+  accepted through argv or emitted to stdout/stderr/logs.
+- The CLI normalizes email with `trim().toLowerCase()` and atomically creates
+  one `accounts` row with `role = 'admin'` plus one password-credential row.
+  It MUST fail before mutation when any account already exists, normalized email
+  is empty/duplicate, the prompt is cancelled, or credential derivation/write
+  fails. Re-running is a denial, not an update or second-Admin path.
+- The credential stores normalized unique email, a cryptographically random
+  per-credential salt, and a Node built-in `scrypt` result only. Plaintext
+  password MUST NOT be persisted. Browser verification uses `timingSafeEqual`
+  and returns the same generic invalid-credentials response for unknown email
+  and wrong password without issuing a session.
+- The CLI MUST NOT create a center or membership, expose a client-selected role,
+  or add self-registration, recovery/reset, email verification, MFA, password
+  history, or a new dependency. Center creation remains the authenticated
+  browser action below. Existing Telegram/Google provider flows remain valid.
+- A bound Admin without center membership may create one center through the
+  protected Admin UI. Center & Scheduling creates the center and the Admin's
+  membership atomically. Once membership exists, this bootstrap path is no
+  longer authorized.
 
 ## Verification target
 
@@ -107,4 +147,9 @@ invite acceptance/reuse, Admin own-center success, non-Admin and cross-center
 denial, safe errors, and no direct route persistence. A running local server
 smoke must reach the protected Admin response with a server-issued fixture
 session; live provider credentials are required only for an operational
-provider smoke.
+provider smoke. The password bootstrap proof additionally uses a disposable
+database and interactive-CLI doubles to prove hidden input, no password argv or
+output, normalized uniqueness, salted `scrypt` storage, account+credential
+atomicity, safe rerun, and unchanged state on every failure. HTTP/SSR proof
+covers successful password login, generic invalid credentials, existing cookie
+attributes, protected Admin entry, logout, and revoked-session denial.

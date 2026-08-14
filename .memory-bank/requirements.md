@@ -16,16 +16,22 @@ status: draft
   commands, an isolated schema/fixture roundtrip, and an atomic failure probe
   that leaves no partial binding or transaction state. (Foundation Dev Path)
 
-- **REQ-001 — Account binding and provider access:** MVP supports Telegram Login
-  and Google OAuth; a center-created role and membership are bound through a
-  one-time invitation, no user-selected role is allowed, and one external
-  identity cannot bind to multiple accounts. (PRD FR-AUTH-001..008)
+- **REQ-001 — Account binding and provider access:** MVP
+  supports browser email/password authentication for password-credential
+  accounts and retains Telegram Login and Google OAuth. The locally bootstrapped
+  first Admin can enter the protected Admin surface without membership, while
+  invited center-created roles and memberships remain bound through one-time
+  provider invitations. No user-selected role is allowed, one external identity
+  cannot bind to multiple accounts, and password credentials use normalized
+  unique email plus salted `scrypt` verification without stored plaintext.
+  (PRD FR-AUTH-001..010)
 - **REQ-002 — Provider failure safety:** expired, revoked, reused, duplicate, or
   failed provider binding attempts reject without creating an account, changing
   role/membership, or creating a partial binding. (PRD Integrations; Edge Cases)
-- **REQ-003 — Center and class administration:** Admin manages teachers,
-  classes, students, parents, and links inside one center; a class is individual
-  or group. (PRD FR-ORG-001..002)
+- **REQ-003 — Center and class administration:** Bootstrap Admin creates the
+  first center from the browser, then manages teachers, classes, students,
+  parents, and links inside that center; a class is individual or group. (PRD
+  FR-ORG-001..002, FR-ORG-006)
 - **REQ-004 — Lesson scheduling lifecycle:** Recurring schedules create planned
   lessons; one lesson may be added, moved, or cancelled without mutating other
   repetitions, and moving preserves lesson identity and context. (PRD FR-ORG-003..005)
@@ -93,7 +99,7 @@ status: draft
 | REQ | Epic | Feature | Test | Lifecycle |
 |---|---|---|---|---|
 | REQ-000 | Foundation | FT-000 | test:foundation-baseline;test:foundation-smoke | planned |
-| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..008 | verified |
+| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..011 | verified |
 | REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
 | REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002 | verified |
 | REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004 | verified |
@@ -178,3 +184,48 @@ dependency, tier, or historical failure record changed.
 - [FT-001 feature document](features/FT-001-authentication-and-binding.md)
 - [feature semantic evidence](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
 - [feature reconciliation evidence](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md)
+
+## FT-001 W13 email/password reconciliation — 2026-08-13
+
+The operator-added email/password first-Admin scope introduced FT-001-AC-010/011
+behavior. TASK-029 now independently verifies AC-010, but REQ-001 remains
+`planned` until planned TASK-030 independently verifies AC-011. Historical
+AC-001..009 evidence and every completed task remain preserved; REQ-002 and
+shared REQ-014 are not reopened by this password-only scope.
+
+`TASK-029-T3-FT-001-W13` provides current task-owned evidence for the
+REQ-001/REQ-014 portions of local first-Admin password-credential bootstrap
+under FT-001-AC-010. The authoritative card is `done` with independent
+`VERDICT: PASS` and per-task `SEMANTIC_VERDICT: semantic-pass`; REQ-001 remains
+`planned` for AC-011 and shared REQ-014 remains `verified`.
+
+- [TASK-029 card](tasks/TASK-029-T3-FT-001-W13.task.json)
+- [functional evidence](../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-VERIFY-final-report-docs-01.md)
+- [semantic evidence](../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md)
+- [sync evidence](../.tasks/TASK-029-T3-FT-001-W13/TASK-029-T3-FT-001-W13-S-MB-SYNC-final-report-docs-01.md)
+
+## FT-001 W14 password-login reconciliation — 2026-08-13
+
+At that W14 task boundary, `TASK-030-T3-FT-001-W14` was `done` with independent functional `PASS` and
+required T3 `semantic-pass` for FT-001-AC-011 / REQ-001 / REQ-014. Together
+with the preserved task evidence for AC-001..AC-010, REQ-001 moved to
+`implemented`. It was not yet `verified` at that boundary because the then-
+current feature-level aggregate covered only AC-001..AC-008. Shared REQ-014
+remained `verified`.
+
+- [TASK-030 card](tasks/TASK-030-T3-FT-001-W14.task.json)
+- [functional evidence](../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-VERIFY-final-report-docs-01.md)
+- [semantic evidence](../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md)
+- [sync evidence](../.tasks/TASK-030-T3-FT-001-W14/TASK-030-T3-FT-001-W14-S-MB-SYNC-final-report-docs-01.md)
+
+## FT-001 final verification reconciliation — 2026-08-14
+
+The fresh `/red-verify --feature FT-001` returned
+`SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-011, and the explicit
+top-level lifecycle owner closed FT-001 as `verified`. REQ-001 is therefore
+`verified` in the RTM. REQ-002, shared REQ-014, and EP-001 remain `verified`;
+no task status, dependency, or queue state changed.
+
+- [FT-001 feature](features/FT-001-authentication-and-binding.md)
+- [fresh feature semantic evidence](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
+- [final feature sync evidence](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-03.md)
