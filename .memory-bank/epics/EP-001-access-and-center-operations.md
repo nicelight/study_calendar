@@ -18,6 +18,16 @@ lifecycle: verified
 ## Requirements
 - REQ-001, REQ-002, REQ-003, REQ-004, REQ-014.
 
+## FT-002 feature-boundary reconciliation — 2026-08-15
+
+The final FT-002 semantic gate passed across AC-001..AC-011. The explicit
+owner reconciles EP-001 to `verified` for the accepted FT-002 boundary while
+preserving all task identities/evidence and leaving FT-003 and other feature
+ownership unchanged.
+
+- [FT-002 semantic evidence](../../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
+- [FT-002 sync evidence](../../.tasks/FT-002/FT-002-S-MB-SYNC-final-report-docs-01.md)
+
 ## Success / acceptance
 - Все внешние identity привязаны только к заранее созданному аккаунту и
   разрешённому контексту.

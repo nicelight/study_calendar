@@ -690,3 +690,132 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
   production-use claim. No terminal task was replayed, no retry or fix was
   consumed during final closure, and historical `failed` records remain
   unchanged.
+
+## 2026-08-15 — Operator decision applied: shared-only FT-003 AC-008
+
+- The operator selected option 1 for the TASK-038 blocker: calendar lesson
+  navigation carries exactly `date`, `classId`, and `lessonId` to the existing
+  `/lesson-context`; no `studentAccountId` is carried or invented. Personal
+  student context is deferred to a separate role-scoped follow-up after
+  dashboard work.
+- Owning `/feature-to-tasks FT-003` applied the decision with
+  `rebuild_required`: TASK-038 remains preserved `in_progress` with its old
+  optional-student RED/blocker evidence; fresh planned TASK-039-T3-FT-003-W10
+  owns the shared-only AC-008 result. Planning Revision remains `2` and
+  completed prerequisite identities/evidence are unchanged.
+- Fresh `/review-tasks-plan FT-003` returned `APPROVE` with
+  `REVIEWED_PLANNING_REVISION: 2`; evidence is
+  `.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-003-W10-SHARED-R1-final-report-docs-01.md`.
+- Outer state resumes as `RUNNING`. Next action is
+  `node scripts/mb-doctor.mjs --strict`, then `/autopilot`; the scheduler must
+  record TASK-038's superseded lifecycle disposition before promoting/selecting
+  TASK-039. No code, execution, verification, or sync was performed by this
+  planning/review boundary.
+
+## 2026-08-15 — TASK-038 superseded lifecycle disposition
+
+- Recovery evidence reconciled the indexed TASK-038 record, its current
+  handoff/progress, and claim-specific RED. The original optional-student
+  outcome cannot close after the accepted shared-only target change and was
+  not safely replayable.
+- Scheduler decision: `TASK-038-T3-FT-003-W10` is terminal `failed` with
+  disposition `superseded` by fresh `TASK-039-T3-FT-003-W10`. The authoritative
+  task record and lifecycle artifact are
+  `.memory-bank/tasks/TASK-038-T3-FT-003-W10.task.json` and
+  `.tasks/TASK-038-T3-FT-003-W10/TASK-038-T3-FT-003-W10-S-LIFECYCLE-final-report-docs-02.md`.
+- No retry budget, code, unsafe side effect, verification, or semantic proof
+  was consumed. TASK-039 remains `planned` until the post-recovery strict
+  doctor and promotion pass.
+
+## 2026-08-15 — TASK-039 promotion
+
+- Post-recovery `node scripts/mb-lint.mjs` and
+  `node scripts/mb-doctor.mjs --strict` passed (`0 errors`, one non-blocking
+  planned-ready candidate warning).
+- Scheduler promoted only `TASK-039-T3-FT-003-W10` from `planned` to `ready`;
+  its dependencies TASK-014 and TASK-037 are `done`, and the Foundation gate
+  is reachable and `done`. No other product task was promoted.
+- Exact next action is `/exe TASK-039-T3-FT-003-W10`; the task's hard boundary,
+  T3 tier, shared-only query contract, and independent RED/GREEN proof remain
+  authoritative.
+
+## 2026-08-15 — TASK-038 resumed execution blocker
+
+- Reconciliation: the current indexed queue contains one non-terminal record,
+  `TASK-038-T3-FT-003-W10=in_progress`; its dependencies TASK-014 and TASK-037
+  are `done`. The previous outer `SUCCESS` checkpoint was stale after this
+  resumed task attempt and was replaced with `HALT_BLOCKING_QUESTIONS`.
+- Exact unresolved question: should AC-008 be narrowed to shared navigation
+  carrying `date`, `classId`, and `lessonId` only, deferring personal student
+  context to a role-scoped follow-up; or may the `/calendar` server
+  loader/output contract be expanded to expose only a server-permitted selected
+  student identity?
+- Evidence: `CalendarPageData` currently exposes `classId`, `className`, `role`,
+  `selectedDate`, and `lessons`, but no `studentAccountId` or authorized student
+  scope. TASK-038's hard boundary forbids changing the calendar loader and its
+  stop condition forbids guessing student context. The claim-specific RED and
+  handoff are recorded under `.tasks/TASK-038-T3-FT-003-W10/` and
+  `.protocols/TASK-038-T3-FT-003-W10/`.
+- Disposition: no code, task lifecycle, retry budget, review counter, or
+  product scope was changed. The task remains `in_progress` as its handoff
+  requires; no GREEN, `/verify`, `/red-verify`, closure, or sync was attempted.
+- Owner/resume route: operator decision through `/feature-to-tasks FT-003`,
+  then `/review-tasks-plan FT-003`, applicable lint/strict-doctor gates, and
+  resume `/autonomous`. Unattended mode does not select either material branch.
+
+## 2026-08-15 — TASK-039 verification clarification halt
+
+- Fresh `/verify TASK-039-T3-FT-003-W10` independently proved the complete
+  shared-only AC-008 outcome: the DB-backed rendered calendar link targets the
+  existing `/lesson-context` route with exactly `date`, `classId`, and
+  `lessonId`, without `studentAccountId`; shared Lesson Context ownership and
+  read-path state equality were also observed. Evidence is in
+  `.protocols/TASK-039-T3-FT-003-W10/verification.md` and
+  `.tasks/TASK-039-T3-FT-003-W10/verifier-evidence.md`.
+- `npm run check`, focused navigation test, `npm run build`, and
+  `git diff --check` passed. The required full `npm run test` independently
+  exited `1` only at `tests/routes/calendar-authorized.test.ts:232`, whose
+  stale negative assertion requires no `lesson-context` link and directly
+  contradicts accepted FT-003-AC-008.
+- Scheduler disposition: `VERDICT: NEEDS-CLARIFICATION`; leave TASK-039
+  `in_progress`, do not run `/red-verify`, do not close/promote the task, and
+  do not edit the forbidden test from this task. Required operator direction:
+  identify/authorize the owning reconciliation outside TASK-039's boundary,
+  then rerun the full gates and fresh `/verify`.
+
+## 2026-08-15 — TASK-039 reconciliation and lifecycle closure
+
+- The operator explicitly authorized removing the stale negative source
+  expectation in `tests/routes/calendar-authorized.test.ts:232`; it now checks
+  for the accepted `/lesson-context?` link contract. The change is recorded as
+  a post-execution closure reconciliation, not as an executor boundary change.
+- Fresh gates after reconciliation passed: `npm run test` 32 files / 143 tests,
+  `npm run check`, `npm run build`, and `git diff --check`.
+- Fresh `/verify` returned `VERDICT: PASS`; fresh `/red-verify` returned
+  `SEMANTIC_VERDICT: semantic-pass`. Evidence is in
+  `.protocols/TASK-039-T3-FT-003-W10/verification.md`,
+  `.protocols/TASK-039-T3-FT-003-W10/red-verification.md`, and
+  `.tasks/TASK-039-T3-FT-003-W10/reverification-evidence.md`.
+- Explicit owner decision: TASK-039-T3-FT-003-W10 is now `done`; the indexed
+  task card, verify markers, and lifecycle report are authoritative. No
+  retry was consumed, TASK-038 historical failure remains preserved, and
+  personal student context remains deferred.
+- Next durable boundary: `/mb-sync` for W10, followed by authoritative lint
+  and strict doctor. Outer run remains `RUNNING` until that boundary is
+  reconciled.
+
+## 2026-08-15 — TASK-039 W10 Memory Bank sync and outer closure
+
+- `/mb-sync` reconciled the already-decided TASK-039 `done` state, functional
+  and semantic evidence links, FT-003 navigation, REQ-005/REQ-006/REQ-014
+  evidence routing, and the W10 changelog entry. FT-003 and mapped RTM
+  lifecycles remain `planned` pending their aggregate feature gate; no new
+  product lifecycle decision was inferred.
+- Sync-local consistency validation passed for the indexed task, evidence
+  artifacts, feature document, requirements route, and changelog.
+- Post-sync `node scripts/mb-lint.mjs` passed across 67 files with the existing
+  non-blocking metadata warnings. Post-sync `node scripts/mb-doctor.mjs
+  --strict` passed with 0 errors and 0 warnings.
+- Outer autonomous checkpoint is now `SUCCESS`; no non-terminal product task
+  remains. This is not final human product acceptance, deployment, or a
+  production-use claim.

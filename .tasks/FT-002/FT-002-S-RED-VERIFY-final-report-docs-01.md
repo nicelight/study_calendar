@@ -6,65 +6,66 @@ status: final
 
 ## Accepted semantic target
 
-FT-002 AC-001..AC-009 must compose center-bounded membership and class modes,
-recurring Lesson creation and stable exceptions, assignment-based historical
-access and immediate revocation, the protected own-center Admin surface, and
-the scoped browser draft without weakening server authority or isolation.
-Valid zero-occurrence requests must be rejected before Schedule/Lesson writes
-for an own-center Admin and assigned Teacher; only the existing Admin adapter
-maps that private owner rejection to `400 { error: "invalid_schedule" }`.
+FT-002 AC-001..AC-011 must compose center-bounded membership and class modes,
+stable recurring scheduling and exceptions, assignment-based historical access
+and immediate revocation, the protected Admin surface, scoped browser drafts,
+strict `dd/mm/yyyy` presentation with ISO transport/storage, and the protected
+role-scoped class shell. Existing Admin, valid/zero-occurrence scheduling, and
+draft behavior must remain intact. The class shell must expose only
+server-authorized class/role context and must not absorb FT-003 calendar or
+Lesson Context ownership.
 
 ## Evidence and adversarial coverage
 
-- Inspected all five indexed FT-002 cards and their current functional and
-  semantic evidence: `TASK-005`, `TASK-006`, `TASK-026`, `TASK-031`, and
-  `TASK-032`. The prior feature-level `semantic-concern` was historical
-  correction basis only; the operator's reject decision and AC-009 are now
-  durable in the feature, REQ-004, boundary, lifecycle, plan, and task card.
-- Inspected the current implementation and change surface in
-  `src/lib/server/modules/center-scheduling/public.ts`,
-  `src/routes/admin/center-dashboard.server.ts`, and
-  `src/routes/admin/[centerId]/+page.svelte`, plus the direct architecture,
-  Calendar/Membership, Access Control, Authentication Transport, Core Domain,
-  Lifecycle, and Testing contracts.
-- A fresh disposable-state compositional run of
-  `tests/center-scheduling/membership-class-mode.test.ts`,
-  `tests/center-scheduling/recurring-scheduling.test.ts`,
-  `tests/routes/admin-center-management.test.ts`, and
-  `tests/routes/admin-schedule-draft.test.ts` passed 4 files / 14 tests. It
-  covered AC-001..AC-009, including exact Schedule/Lesson state equality for
-  both accepted scheduling principals, Admin `400 invalid_schedule`, valid
-  recurrence, lesson identity, cross-center denial, and revocation.
-- The fresh independent TASK-026 disposable-state probe at
-  `.tasks/TASK-026-T3-FT-002-W12/verification-probe.test.ts` passed 3/3,
-  confirming server-derived center/role scope, assigned-Teacher valid schedule
-  authority followed by immediate revocation, cross-center rejection, and
-  persistence-free route adapters.
-- A fresh isolated Chrome/Vite/disposable-SQLite rerun through
-  `.tasks/TASK-031-T2-FT-002-W15/browser-probe.mjs` confirmed the exact
-  center/class localStorage key and three-field payload, reload restoration,
-  cross-class/center isolation, malformed fallback, failed
-  `invalid_schedule` retention, native Form Data, and exact-key cleanup only
-  after confirmed success. The retained redacted task artifact is
-  `.tasks/TASK-031-T2-FT-002-W15/verifier-browser-green.json`.
-- Current AC-009 functional evidence is
-  `.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-VERIFY-final-report-docs-01.md`;
-  its supporting owner/adapter and gate receipts are
-  `.tasks/TASK-032-T2-FT-002-W16/green-focused-attempt2.md` and
-  `.tasks/TASK-032-T2-FT-002-W16/gate-evidence-attempt2.md`.
+- Inspected all seven indexed FT-002 task cards and current verification
+  evidence (`TASK-005`, `TASK-006`, `TASK-026`, `TASK-031`, `TASK-032`,
+  `TASK-034`, and `TASK-035`), the current implementation/change surface, and
+  the direct Architecture, Calendar and Membership, Access Control,
+  Authentication Transport, Core Domain, Lifecycle, Testing, and tier-policy
+  contracts.
+- A fresh Chrome 151 run at `1280x800` against a disposable SQLite/Vite runtime
+  confirmed that valid `29/02/2028` and `31/12/2028` inputs satisfy native
+  constraints and produce only ISO `2028-02-29` / `2028-12-31` Form Data and
+  scoped draft values. Malformed, incomplete, and impossible dates exposed the
+  explicit invalid state and no non-ISO transport/storage value. ISO draft
+  restoration rendered the matching localized values.
+- The same protected browser runtime composed AC-008..AC-010: a valid
+  zero-occurrence submission retained the exact ISO draft and showed the
+  existing `invalid_schedule` UI result; a valid-occurrence submission created
+  the lesson, cleared only the matching draft key, and preserved an unrelated
+  key.
+- A fresh real SvelteKit SSR/HTTP matrix on the disposable database returned
+  matching `200` class/role context for Admin, assigned Teacher, own-class
+  Student, and linked Parent. Anonymous and revoked sessions redirected `303`
+  to `/login`; path mismatch, cross-center, non-member, unassigned, and removed
+  access returned `403` without protected markers. Admin removed the Teacher
+  assignment through the supported action before the removed-access probe.
+  Ordered database-state digests were identical across all read matrices.
+- Source and production-build inspection confirmed a recognized SvelteKit
+  `load`, request Actor Context plus Center & Scheduling
+  `AuthorizedClassScope`, a minimized serializable projection, and no direct
+  database/client-authority path. `/admin/{centerId}` remained present; no
+  FT-003 calendar, Lesson Context, Collaboration, Learning Progress, Financial
+  Ledger, or persistence source was changed by AC-010/AC-011.
+- Fresh composition regressions passed 8 files / 36 tests across AC-001..AC-011,
+  Admin, valid and zero-occurrence schedules, strict date presentation, class
+  entry authorization, calendar, and Lesson Context preservation. The
+  independent TASK-026 owner-boundary probe also passed 3/3. The Admin adapter
+  retained its `400` `invalid_schedule` action failure, the assigned Teacher
+  retained the private `invalid-schedule-occurrences` sentinel, and both
+  zero-occurrence paths remained mutation-free.
 - Fresh project gates passed: `npm run check` reported 0 errors and 0 warnings,
-  `npm run build` completed, `npm test` passed 29 files / 116 tests, and
-  `git diff --check` reported no whitespace errors. Source scans found no
-  Teacher schedule HTTP transport and no password, session, authentication,
-  invitation, role, account, or arbitrary form field entering schedule-draft
-  storage.
+  `npm test` passed 30 files / 131 tests, `npm run build` completed with the
+  class-route `load` export, and `git diff --check` reported no whitespace
+  errors. The required `Codex Luna` co-review model was unavailable after both
+  prescribed attempts for each focus; no substitute model was used.
 
 ## Owner handoff
 
 No material finding or unresolved operator-owned decision remains. The
 explicit lifecycle owner may consume this feature gate and reconcile FT-002,
-REQ-004, and EP-001 at the owned `/mb-sync` boundary. This verifier changed no
-task status, feature lifecycle, dependency, promotion, implementation, or
-scheduler state.
+REQ-003, REQ-004, shared REQ-014, and EP-001 at the owned `/mb-sync` boundary.
+This verifier changed no task status, feature lifecycle, dependency,
+promotion, implementation, or scheduler state.
 
 SEMANTIC_VERDICT: semantic-pass

@@ -1,0 +1,95 @@
+{
+  "id": "TASK-033-T1-FT-001-W17",
+  "title": "Expose the public home login link",
+  "status": "done",
+  "wave": "W17",
+  "feature": "FT-001",
+  "reqs": ["REQ-001"],
+  "depends_on": ["TASK-030-T3-FT-001-W14"],
+  "touched_files": ["src/routes/+page.svelte", "tests/calendar/elastic-calendar.test.ts"],
+  "tier": "T1",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-033-T1-FT-001-W17/run.md",
+      "artifact": ".tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "FT-001-AC-012 / REQ-001: SSR and source smoke show the public `/` page renders a visible ordinary anchor `<a class=\"login-link\" href=\"/login\">Вход</a>` with focus-visible styling; no imperative `/login` navigation or authentication action is present.",
+        "Implementer evidence and independent reviewer evidence both PASS: SSR GET / returned 200, exactly one href=/login Вход anchor was observed, the fixture remained preserved, full tests passed 117/117, focused checks passed 38/38, npm run check/build and git diff --check passed, and forbidden authentication paths were untouched."
+      ]
+    },
+    {
+      "stage": "independent_review",
+      "attempt": "Fresh reviewer pass",
+      "verdict": "PASS",
+      "report": ".tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "SSR GET / returned HTTP 200 and exactly one ordinary href=/login anchor with visible text Вход; the fixture calendar remained preserved.",
+        "Full test suite 117/117 and focused checks 38/38 passed; npm run check, npm run build, and git diff --check passed; forbidden auth paths remained untouched."
+      ]
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "manual_explicit_owner": "/root",
+      "decision": "done",
+      "accepted_evidence": "The explicit top-level owner accepted the Implementer PASS and independent Reviewer PASS for the bounded T1 outcome and requested this task-boundary sync.",
+      "accepted_residual_risk": "FT-001 remains planned because remaining product/UI outcomes are not covered by this single public login-entry task."
+    }
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-001.md", ".protocols/FT-001/plan.md", ".protocols/FT-001/decision-log.md"],
+  "evidence_required": [],
+  "purpose": "Make the existing browser login route discoverable from the public landing page without widening the authentication surface.",
+  "success_outcome": "The public `/` page visibly exposes an accessible `Вход` anchor whose exact href is `/login`; activating it only navigates to the existing login page.",
+  "anti_goals": [
+    "Do not replace, remove, or make database-backed the public calendar fixture; FT-003 owns that separate product outcome.",
+    "Do not change `/login`, provider routes, hooks, Identity & Access, sessions, cookies, role routing, authorization, or persistence.",
+    "Do not add a dependency, dashboard, new route, redirect, client-owned authorization state, or authentication UI beyond the one ordinary anchor."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/routes/+page.svelte", "tests/calendar/elastic-calendar.test.ts"],
+    "forbidden_scope": [
+      "src/routes/login/", "src/routes/auth/", "src/hooks.server.ts", "src/lib/server/",
+      ".memory-bank/tasks/TASK-030-T3-FT-001-W14.task.json",
+      ".protocols/TASK-030-T3-FT-001-W14/", ".tasks/TASK-030-T3-FT-001-W14/"
+    ],
+    "stop_conditions": [
+      "Stop if the visible CTA requires any session, provider, account, role, cookie, hook, server-load, or redirect change.",
+      "Stop if implementation requires replacing the public calendar fixture or adding a class/dashboard/calendar navigation path; those belong to FT-003 planning.",
+      "Stop if the page cannot use an ordinary accessible anchor with exact href `/login`."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-012",
+    ".memory-bank/requirements.md#req-001--account-binding-and-provider-access",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path",
+    ".memory-bank/architecture/system-architecture.md#1-sveltekit-application-shell"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md", ".memory-bank/spec-backbone.md", ".memory-bank/spec-index.md", ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-001-authentication-and-binding.md#ft-001-ac-012--public-home-exposes-the-login-entry",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path",
+    ".memory-bank/architecture/system-architecture.md#1-sveltekit-application-shell",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership"
+  ],
+  "constraints": [
+    "Use the existing Svelte 5 runes component and an ordinary declarative `<a href=\"/login\">` link; do not add imperative navigation for this link.",
+    "Keep the existing public calendar content and its current date-navigation behavior intact.",
+    "The CTA is presentation-only and cannot read or mutate session, provider, account, role, cookie, or persistence state."
+  ],
+  "invariants": [
+    "`/` remains public and contains a visible, keyboard-reachable `Вход` link with exact href `/login`.",
+    "Following the CTA changes no authentication or authorization state before the existing `/login` behavior begins.",
+    "The calendar fixture remains an FT-003-owned scope exclusion for this task."
+  ],
+  "verification_targets": [
+    "FT-001-AC-012 / REQ-001: SSR/source smoke renders visible `Вход` text in an anchor with exact href `/login`; the focused test also proves the link is not a form control, redirect, or script-generated auth action.",
+    "Regression: existing calendar date navigation and existing login/provider/session test suites remain green; source/diff review confirms no change outside the two hard-boundary files."
+  ]
+}

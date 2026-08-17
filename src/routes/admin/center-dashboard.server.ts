@@ -48,6 +48,7 @@ type DashboardError =
 	| 'invalid_name'
 	| 'invalid_mode'
 	| 'invalid_schedule'
+	| 'schedule_conflict'
 	| 'invalid_teacher'
 	| 'invalid_role'
 	| 'conflict'
@@ -112,6 +113,9 @@ function actionError(cause: unknown): DashboardFailure {
 		message === 'invalid-schedule-occurrences'
 	) {
 		return fail(400, { error: 'invalid_schedule' });
+	}
+	if (message === 'schedule-date-conflict') {
+		return fail(409, { error: 'schedule_conflict' });
 	}
 	if (
 		message === 'individual-class-capacity-exceeded' ||

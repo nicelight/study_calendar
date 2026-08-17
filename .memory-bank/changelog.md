@@ -4,6 +4,147 @@ status: active
 ---
 # Changelog
 
+## [2026-08-15] TASK-039 AC-008 closure and W10 boundary sync
+
+- Reconciled the explicit operator decision: `TASK-039-T3-FT-003-W10` is now
+  `done` after fresh functional `PASS`, T3 `semantic-pass`, and green
+  `check`/`test`/`build`/diff gates.
+- Recorded the shared-only AC-008 evidence: calendar lesson navigation carries
+  exactly `date`, `classId`, and `lessonId` to the existing `/lesson-context`
+  route and no `studentAccountId`.
+- Reconciled the operator-authorized stale regression expectation in
+  `tests/routes/calendar-authorized.test.ts:232` to the accepted link
+  contract; the post-execution reconciliation and current 32-file/143-test
+  result are recorded in the TASK-039 lifecycle artifact.
+- Preserved TASK-038's terminal superseded history, the existing task
+  boundaries/ownership, and the intentional deferral of personal student
+  context. FT-003 and mapped REQ-005/REQ-006/REQ-014/REQ-016 remain `planned`
+  pending the aggregate feature gate.
+
+## [2026-08-15] TASK-038 readiness promotion
+
+- Promoted only `TASK-038-T3-FT-003-W10` from `planned` to `ready` after
+  TASK-037 AC-007 closure and the existing FT-003 task-plan `APPROVE`.
+- Preserved AC-008 ownership, T3/W10 identity, dependencies on TASK-014 and
+  TASK-037, navigation hard boundary, FT-003 planned lifecycle, and all other
+  task/feature/requirement/code statuses.
+
+## [2026-08-15] TASK-037 AC-007 closure sync
+
+- Reconciled the explicit owner decision: `TASK-037-T3-FT-003-W9` is now
+  `done` after independent functional `PASS` and required T3 `semantic-pass`
+  evidence for AC-007 / REQ-005 / REQ-014 / REQ-016.
+- Preserved TASK-037 identity, T3/W9 tiering, TASK-013 dependency, code and
+  evidence; TASK-038 remains `planned`, FT-003 and mapped RTM lifecycles remain
+  `planned`, and FT-002 plus all prior done/verified boundaries are unchanged.
+
+## [2026-08-15] TASK-037 readiness promotion
+
+- After the fresh FT-003 task-plan `APPROVE` and strict `mb-doctor` pass,
+  promoted only `TASK-037-T3-FT-003-W9` from `planned` to `ready` for AC-007.
+- Preserved TASK-037 identity, T3/W9 tiering, done TASK-013 dependency, and
+  all boundaries; `TASK-038-T3-FT-003-W10` remains `planned`, with no other
+  task, feature, requirement, or code status changed.
+
+## [2026-08-15] FT-003 task-link readiness repair
+
+- Preserved exact AC-007/AC-008 feature anchors in TASK-037/TASK-038 and added
+  their plain existing canonical SDD paths so strict `mb-doctor` resolves the
+  direct links; task identities, tiers, waves, dependencies, scope, and code
+  remain unchanged.
+- Strict readiness now passes with only the expected planned-ready candidate
+  warning for TASK-037.
+
+## [2026-08-15] FT-003 W9/W10 reviewer repair — sibling calendar tasks
+
+- Repaired the rejected merged W9 surface: retired unexecuted/unreviewed
+  `TASK-036-T3-FT-003-W9` from the indexed model and created independent
+  `TASK-037-T3-FT-003-W9` (AC-007 calendar read) and
+  `TASK-038-T3-FT-003-W10` (AC-008 navigation/context), with TASK-038
+  depending on TASK-037 and done TASK-014.
+- Corrected the direct Authentication Transport locator to
+  `#browserapi-path`; preserved the public `/` fixture, completed
+  TASK-013/TASK-014/TASK-018 evidence, and FT-002's verified boundary.
+- FT-003 and mapped planned lifecycles remain unchanged pending fresh review,
+  independent execution, and the aggregate semantic gate.
+
+## [2026-08-15] FT-003 W9 authorized calendar-route planning reconciliation
+
+- Accepted FT-003-AC-007 for the protected DB-backed `/calendar` route and
+  FT-003-AC-008 for exact calendar-to-`/lesson-context` context preservation.
+- Created `TASK-036-T3-FT-003-W9` as the single route-owned T3 task, dependent on
+  done TASK-013/TASK-014; preserved all prior FT-003 task identities/evidence and
+  FT-002's verified boundary.
+- Reopened FT-003, EP-002, and mapped REQ-005/006/014/016 to `planned` for the
+  newly accepted outcome; no new canonical SDD spec was created.
+
+## [2026-08-15] FT-002 final feature-boundary closure
+
+- Reconciled FT-002 to `verified` after the fresh report's sole
+  `SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-011 with no material
+  finding.
+- Promoted REQ-003, REQ-004, shared REQ-014, and EP-001 to `verified` at the
+  same explicit lifecycle boundary.
+- Preserved TASK-026/031/032/034/035 as `done`, all code/evidence, and FT-003
+  plus unrelated feature/requirement lifecycles unchanged.
+
+## [2026-08-14] Wave 19 — TASK-035 protected class-entry closure sync
+
+- Reconciled the explicit owner decision: `TASK-035-T3-FT-002-W19` is now
+  `done` with independent Attempt 2 functional `PASS` and required T3
+  semantic-pass evidence for FT-002-AC-011 / REQ-003 / REQ-014.
+- Preserved the initial route-wiring `FAIL`, bounded retry correction, real
+  SSR/HTTP role/denial matrix, state-equality proof, and all prior task/code
+  boundaries. FT-002 and mapped requirements remain planned pending the
+  feature-level aggregate red-verify.
+
+## [2026-08-14] Wave 19 — TASK-035 readiness promotion
+
+- Promoted only `TASK-035-T3-FT-002-W19` from `planned` to `ready` after the
+  fresh FT-002 task-plan `APPROVE`, Planning Revision 2 architecture approval,
+  no blocking findings, and strict-doctor `PASS`.
+- Preserved TASK-035 identity, T3/W19 tiering, AC-011 ownership, direct SDD
+  locators, done TASK-032 dependency, TASK-034 `done`, and all other task and
+  feature/requirement lifecycle statuses.
+
+## [2026-08-14] Wave 18 — TASK-034 strict schedule-date closure sync
+
+- Reconciled the explicit owner decision: `TASK-034-T1-FT-002-W18` is now
+  `done` with Implementer Attempt 2 and same-Reviewer retry `PASS` evidence for
+  FT-002-AC-010 / REQ-004.
+- Recorded strict rendered `dd/mm/yyyy` acceptance, canonical ISO Form Data and
+  scoped draft preservation, invalid-date rejection, project gates, and the
+  unchanged hard-boundary diff.
+- Preserved the first reviewer `FAIL`, retry correction, TASK-035 `planned`
+  state, FT-002/REQ-003/REQ-004/shared REQ-014 planned lifecycle, and all prior
+  task identities, evidence, dependencies, and implementation.
+
+## [2026-08-14] Wave 18/19 — FT-002 UI task planning reconciliation
+
+- Added accepted FT-002-AC-010 for strict user-facing `dd/mm/yyyy` schedule
+  dates while preserving canonical ISO Form Data and the existing scoped draft
+  JSON; extended the existing Authentication Transport contract only.
+- Added accepted FT-002-AC-011 for the role-scoped Admin/Teacher/Student/Parent
+  class entry shell at `/center/{centerId}/class/{classId}` using the existing
+  Actor Context and Calendar/Membership Query Boundary; preserved
+  `/admin/{centerId}` and excluded Lesson Context/calendar content.
+- Created `TASK-034-T1-FT-002-W18` and `TASK-035-T3-FT-002-W19`, both planned and
+  dependent on done TASK-032; preserved TASK-026, TASK-031, TASK-032 and all
+  prior evidence/code. FT-002, REQ-003, REQ-004, and shared REQ-014 remain
+  planned; Planning Revision remains 2.
+
+## [2026-08-14] Wave 17 — TASK-033 public home login-entry closure sync
+
+- Reconciled the explicit lifecycle decision: `TASK-033-T1-FT-001-W17` is now
+  `done` with Implementer and independent Reviewer `PASS` evidence for
+  FT-001-AC-012 / REQ-001.
+- Recorded SSR `/` 200, exactly one visible ordinary `Вход` anchor to `/login`,
+  preserved fixture behavior, 117/117 full tests, 38/38 focused checks,
+  passing check/build/diff gates, and untouched forbidden authentication paths.
+- Preserved FT-001, REQ-001, and EP-001 as `planned` for remaining UI/product
+  gaps; all prior task identities, evidence, dependencies, and implementation
+  remain unchanged.
+
 ## [2026-08-14] Wave 16 — FT-002 feature semantic closure sync
 
 - Reconciled the fresh feature-level `SEMANTIC_VERDICT: semantic-pass` over

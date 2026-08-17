@@ -129,6 +129,8 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		expect(rendered.body).toContain('?/createClass');
 		expect(rendered.body).toContain('?/inviteParticipant');
 		expect(rendered.body).toContain('teacher-own');
+		expect(rendered.body).toContain('href="/center/center-own/class/class-existing"');
+		expect(rendered.body).toContain('Открыть класс');
 
 		const unauthenticated = await thrown(() => load(event(root)));
 		expect(unauthenticated).toMatchObject({ status: 303, location: '/login' });

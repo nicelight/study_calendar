@@ -41,6 +41,8 @@ sentinel because no Teacher schedule HTTP adapter exists in this scope.
 | W12 | TASK-026-T3-FT-002-W12 | protected own-center Admin class/schedule and teacher-privilege browser surface | TASK-025-T3-FT-001-W11; TASK-006-T2-FT-002-W4 |
 | W15 | TASK-031-T2-FT-002-W15 | same-center/class schedule draft save, restore, failure retention, and success cleanup | TASK-026-T3-FT-002-W12 |
 | W16 | TASK-032-T2-FT-002-W16 | reject valid zero-occurrence schedules before Schedule/Lesson mutation with existing invalid_schedule failure | TASK-026-T3-FT-002-W12; TASK-031-T2-FT-002-W15 |
+| W18 | TASK-034-T1-FT-002-W18 | strict `dd/mm/yyyy` schedule date presentation with unchanged ISO wire/storage/draft values | TASK-032-T2-FT-002-W16 |
+| W19 | TASK-035-T3-FT-002-W19 | role-scoped Admin/Teacher/Student/Parent class entry shell at `/center/{centerId}/class/{classId}` | TASK-032-T2-FT-002-W16 |
 
 ## Gates and verification
 
@@ -53,7 +55,11 @@ maps to the existing `400 invalid_schedule` envelope, while Teacher retains
 the private owner sentinel and no Teacher HTTP transport is added. Only the
 Admin protected-browser/action probe may observe AC-008 draft retention. TASK-031 adds a real-browser RED/GREEN probe for same-form
 restoration, cross-class isolation, malformed fallback, failure retention, and
-success cleanup while observing submitted weekday Form Data. Lesson Context,
+success cleanup while observing submitted weekday Form Data. AC-010 is verified
+on TASK-034 with strict user-facing date parsing plus unchanged ISO Form Data
+and draft assertions. AC-011 is verified on T3 TASK-035 with the
+role/principal SSR matrix and denial checks before protected class rendering.
+Lesson Context,
 Collaboration, and Learning Progress projections remain downstream
 consumer-owned outcomes; adding dependencies on those consumers would create
 cycles.
@@ -133,3 +139,60 @@ TASK-032 remain `done`; no task, implementation, dependency, or historical
 evidence is changed by this feature-boundary sync.
 
 Evidence: `.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md`.
+
+## W18/W19 accepted UI boundary reconciliation
+
+The operator accepted two new cohesive FT-002 outcomes after the prior
+AC-001..AC-009 feature closure, so the queue action is `rebuild_required` and
+fresh identities are used. `TASK-034-T1-FT-002-W18` owns only the local Admin
+schedule-form presentation/parser: strict user-facing `dd/mm/yyyy` values,
+explicit malformed/impossible-date handling, and unchanged canonical ISO
+Form Data plus `{startDate,endDate,weekdays}` scoped draft storage. It does
+not change Center & Scheduling validation, persistence, or the existing draft
+key/shape.
+
+`TASK-035-T3-FT-002-W19` owns the protected role-scoped class entry shell at
+`/center/{centerId}/class/{classId}`. It consumes the existing
+`AuthorizedClassScope`/Actor Context through Center & Scheduling for Admin,
+Teacher, Student, and Parent membership/assignment scope, denies invalid
+principal/path combinations before rendering protected class data, and leaves
+`/admin/{centerId}` management intact. It does not add Lesson Context/calendar
+content, a Teacher transport, direct database access, or role-changing
+controls. Both cards depend on the completed TASK-032 prerequisite; neither
+changes TASK-026, TASK-031, TASK-032, or their evidence. TASK-034 is now
+`done` after Attempt 2 and same-Reviewer retry `PASS`; TASK-035 remains
+`planned` for its separate protected route outcome.
+
+The accepted canonical concerns are extensions of the existing Authentication
+Transport schedule-draft and Browser/API path contracts plus the existing
+Boundary Map Calendar and Membership Query Boundary. Planning Revision remains
+`2`; no new SDD spec or global architecture decision is required. FT-002,
+REQ-003, REQ-004, and shared REQ-014 remain `planned` until the new outcomes
+are implemented and verified.
+
+## TASK-035 readiness promotion — 2026-08-14
+
+Fresh `/review-tasks-plan FT-002` returned `APPROVE` at Planning Revision `2`
+with `ARCHITECTURE_VERDICT: APPROVE` and no blocking findings. The strict gate
+owner's `mb-doctor --strict` result is `PASS`. Therefore
+`TASK-035-T3-FT-002-W19` is promoted from `planned` to `ready` without changing
+its identity, T3 tier, W19 wave, AC-011 ownership, direct SDD locators, or
+dependency on done `TASK-032-T2-FT-002-W16`. TASK-034 remains `done`; all other
+task and feature/requirement lifecycle statuses remain unchanged.
+
+## TASK-035 T3 closure — 2026-08-14
+
+`TASK-035-T3-FT-002-W19` is now `done` after independent Attempt 2 functional
+`PASS` and the required per-task T3 `semantic-pass` for AC-011 / REQ-003 /
+REQ-014. Attempt 1 functional failure and the bounded retry correction remain
+historical evidence. FT-002 and its mapped requirements remain `planned`
+pending the feature-level aggregate red-verify; TASK-034, TASK-026, TASK-031,
+and TASK-032 remain `done` with identity and evidence preserved.
+
+## FT-002 final feature-boundary closure — 2026-08-15
+
+The fresh feature-level adversarial report records exactly one
+`SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-011 with no material
+finding. The explicit owner reconciles FT-002, REQ-003, REQ-004, shared
+REQ-014, and EP-001 to `verified`; task identities and evidence remain
+unchanged, and FT-003 remains outside this boundary.

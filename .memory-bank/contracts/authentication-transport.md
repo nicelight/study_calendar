@@ -12,31 +12,54 @@ source_of_truth:
 The application shell is a thin transport adapter over Identity & Access and
 Center & Scheduling. The minimum real path is:
 
-1. `GET /login` presents an email/password form for a password-credential
+1. `GET /` remains public and MUST expose a visible ordinary `Вход` anchor to
+   `/login`. It has no authentication/session side effect.
+2. `GET /login` presents an email/password form for a password-credential
    account and retains Telegram and Google choices for already bound provider
    identities, including a bootstrapped Admin without center membership.
-2. `POST /login` normalizes the submitted email, asks Identity & Access to
+3. `POST /login` normalizes the submitted email, asks Identity & Access to
    verify the password, sets the existing session cookie on success, and
    returns one generic invalid-credentials response for unknown email or wrong
    password.
-3. `GET /auth/{provider}/start` creates a short-lived server-owned state,
+4. `GET /auth/{provider}/start` creates a short-lived server-owned state,
    starts the selected provider adapter, and redirects to the provider.
-4. `GET /auth/{provider}/callback` validates state through the adapter, asks
+5. `GET /auth/{provider}/callback` validates state through the adapter, asks
    Identity & Access to authenticate the verified identity or atomically accept
    the pending invitation, sets the session cookie, and redirects to the
    permitted application context.
-5. `GET /invite/{token}` validates the one-time capability without mutating it
+6. `GET /invite/{token}` validates the one-time capability without mutating it
    and presents the same provider choices. The invitation capability remains
    server-bound through the authentication state until callback completion.
-6. `POST /auth/logout` revokes the current session through Identity & Access
+7. `POST /auth/logout` revokes the current session through Identity & Access
    and clears the browser cookie.
-7. `GET/POST /admin` is the protected Admin entry point. A bootstrapped Admin
+8. `GET/POST /admin` is the protected Admin entry point. A bootstrapped Admin
    without center membership may create the first center in the browser; the
    server then creates the Admin membership and redirects to
    `GET/POST /admin/{centerId}`, the protected own-center surface for class
    CRUD, recurring schedules, participant invitations, and teacher
    assignment/removal. The narrower `/admin/{centerId}/participants` transport
    remains available for participant provisioning.
+9. `GET /center/{centerId}/class/{classId}` is the protected role-scoped class
+   entry shell. The server resolves the actor and permitted class scope through
+   Center & Scheduling; Admin, Teacher, Student, and Parent members may receive
+   the shell only when their center/class membership or assignment permits it.
+   Unauthenticated requests redirect to `/login`; cross-center, non-member,
+   and removed-assignment requests fail before protected class data renders.
+   This entry does not replace `/admin/{centerId}`, add lesson-context or
+   calendar content, trust client role/center/class fields, or own direct
+   persistence.
+10. `GET /calendar?classId={classId}&date={YYYY-MM-DD}` is the protected
+   database-backed class calendar path. The server resolves the request actor,
+   matching `AuthorizedClassScope`, and current lessons through the existing
+   Calendar and Membership Query Boundary; it MUST NOT render the public home
+   fixture as an authenticated calendar. Unauthenticated/revoked sessions
+   redirect to `/login`, and cross-center, non-member, unassigned, or removed
+   access fails before class lessons render. Calendar lesson links preserve
+   exactly the `date`, `classId`, and `lessonId` query values when navigating to
+   the existing `/lesson-context` path and MUST NOT add `studentAccountId`.
+   That path remains the Lesson Context owner and rechecks authorization
+   server-side. Personal student context is deferred to a separate role-scoped
+   follow-up after dashboard work.
 
 Concrete SvelteKit route files may vary only within this path. Routes, loads,
 form actions, and components MUST adapt transport data and call public module
@@ -143,6 +166,12 @@ database writes.
   ranges before persistence without changing that payload or public shape. No
   server draft persistence, dependency, migration, cookie, or alternate
   schedule command is introduced.
+- The schedule form's visible date controls MUST present and accept strict
+  `dd/mm/yyyy` user-facing values, reject malformed or impossible calendar
+  dates explicitly, and convert valid values to canonical ISO `YYYY-MM-DD`
+  before ordinary Form Data submission. The existing ISO wire payload and
+  scoped draft JSON remain unchanged; this is presentation/input formatting,
+  not a server or storage contract change.
 
 ## Bootstrap Admin and center creation
 

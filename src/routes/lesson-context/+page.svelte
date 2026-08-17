@@ -1,6 +1,7 @@
 <script lang="ts">
 	let { data } = $props();
 	let context = $derived(data.dayContext);
+	let lesson = $derived(data.lesson);
 
 	function contextHref(
 		current: NonNullable<typeof context>,
@@ -13,6 +14,14 @@
 		});
 		if (studentAccountId) params.set('studentAccountId', studentAccountId);
 		return `/lesson-context?${params.toString()}`;
+	}
+
+	function statusLabel(status: 'planned' | 'completed' | 'cancelled'): string {
+		return {
+			planned: 'Запланировано',
+			completed: 'Завершено',
+			cancelled: 'Отменено'
+		}[status];
 	}
 </script>
 
@@ -69,6 +78,23 @@
 				<p>Личные оценки, обсуждения и финансовые данные здесь не раскрываются.</p>
 			</section>
 		{/if}
+	{:else if lesson}
+		<header class="context-header">
+			<div>
+				<p class="eyebrow">{lesson.className}</p>
+				<h1>{lesson.lessonDate}</h1>
+				<p class="identity-line">
+					Класс <strong>{lesson.classId}</strong> · Урок <strong>{lesson.lessonId}</strong>
+				</p>
+			</div>
+			<p class="status">{statusLabel(lesson.status)}</p>
+		</header>
+
+		<section class="empty" aria-labelledby="empty-material-title">
+			<div class="section-label">Урок открыт</div>
+			<h2 id="empty-material-title">Материал пока не добавлен</h2>
+			<p>Доступ к уроку есть. Общий материал, домашнее задание и практическая работа появятся здесь после заполнения.</p>
+		</section>
 	{:else}
 		<section class="empty" aria-labelledby="empty-title">
 			<p class="eyebrow">Lesson Context</p>

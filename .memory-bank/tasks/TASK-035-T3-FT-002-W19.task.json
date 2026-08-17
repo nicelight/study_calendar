@@ -1,0 +1,150 @@
+{
+  "id": "TASK-035-T3-FT-002-W19",
+  "title": "Expose a role-scoped class entry shell",
+  "status": "done",
+  "wave": "W19",
+  "feature": "FT-002",
+  "reqs": ["REQ-003", "REQ-014"],
+  "depends_on": ["TASK-032-T2-FT-002-W16"],
+  "touched_files": [
+    "src/routes/center/[centerId]/class/[classId]/+page.server.ts",
+    "src/routes/center/[centerId]/class/[classId]/+page.svelte",
+    "tests/routes/center-class-entry.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Independent verifier Attempt 1",
+      "verdict": "FAIL",
+      "report": ".protocols/TASK-035-T3-FT-002-W19/verification.md",
+      "artifact": ".tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh disposable SvelteKit SSR/HTTP matrix: permitted Admin, Teacher, Student, and Parent all returned 200 with an empty shell and no server-resolved center/class/role context; anonymous, path mismatch, cross-center, non-member, unassigned, removed-assignment, and revoked-session cases also returned 200 rather than redirect/403.",
+        "The route server module and production build export only _createClassEntryPageLoad, not SvelteKit load; the focused test directly invokes the factory and therefore misses actual route wiring. Fresh selected regressions passed 36/36, full tests 131/131, check/build/diff gates passed, and denied-read state remained unchanged."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "functional",
+      "attempt": "Independent verifier retry after Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-035-T3-FT-002-W19/verification.md",
+      "artifact": ".tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-VERIFY-RETRY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh disposable real SvelteKit SSR/HTTP matrix passed all 13 cases: permitted Admin, Teacher, Student, and Parent returned matching 200 class/role context; anonymous/revoked returned 303 /login; path mismatch, cross-center, non-member, unassigned, and removed branches returned 403 with no protected markers and complete state equality.",
+        "Source and production build export the recognized SvelteKit load; the route-level regression imports actual load. Selected /admin, TASK-032, TASK-034, calendar, and Lesson Context regressions passed 36/36; full tests 131/131, check, build, and diff-check passed."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Independent red verification after Attempt 2 functional PASS",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-035-T3-FT-002-W19/red-verification.md",
+      "artifact": ".tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Adversarial review found no admitted material authority/privacy break across real load wiring, request/session consistency, revocation and assignment/link removal, cross-center/non-member denial, minimized projection, state non-mutation, and owner-boundary enforcement.",
+        "Task source introduces no direct database or client permission bypass and preserves /admin, FT-003 calendar/Lesson Context, TASK-034, and downstream ownership; selected regressions passed 36/36 and full check/test/build/diff gates remained green."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "manual_explicit_owner": "/root",
+      "decision": "done",
+      "accepted_evidence": "The explicit top-level owner accepted the independent Attempt 2 functional PASS and the required T3 semantic-pass for FT-002-AC-011 / REQ-003 / REQ-014, and requested this task-boundary sync. Current evidence is .tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-VERIFY-RETRY-final-report-docs-02.md and .tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-RED-VERIFY-final-report-docs-01.md.",
+      "accepted_residual_risk": "FT-002 and REQ-003, REQ-004, and shared REQ-014 remain planned pending the feature-level red-verify aggregate for the accepted follow-up outcomes; TASK-034, TASK-026, TASK-031, and TASK-032 remain done and unchanged."
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md"
+  ],
+  "evidence_required": [
+    "FT-002-AC-011 / REQ-003 / REQ-014 RED: in a fresh protected route probe, `/center/{centerId}/class/{classId}` has no role-scoped class entry shell or accepts a mismatched path/principal; GREEN: server-resolved Admin, Teacher, Student, and Parent fixtures with permitted class scope each receive the shell with their role and class context, while unauthenticated, cross-center, non-member, and removed-assignment requests fail before protected class data renders. Decisive comparison: SSR/HTTP status/body, actor role, AuthorizedClassScope center/class match, and state-before/state-after equality for denied reads; artifact under `.tasks/TASK-035-T3-FT-002-W19/` and `.protocols/TASK-035-T3-FT-002-W19/`."
+  ],
+  "purpose": "Provide one protected, role-scoped class entry point that exposes only server-authorized class context for the four accepted participant roles while preserving the existing Admin management route.",
+  "success_outcome": "An authenticated permitted Admin, Teacher, Student, or Parent receives a server-rendered class entry shell at `/center/{centerId}/class/{classId}` with the resolved role and class context; unauthenticated, cross-center, non-member, and removed-assignment requests are denied before protected class data renders.",
+  "anti_goals": [
+    "Do not replace or redirect the existing `/admin/{centerId}` class/schedule management surface.",
+    "Do not add Lesson Context, calendar, lesson navigation, personal day data, Collaboration/Learning Progress/Financial projections, or a Teacher schedule HTTP transport; FT-003 and downstream features own those outcomes.",
+    "Do not trust client-supplied role, centerId, classId, membership, or assignment fields; do not add direct route database access, role-changing controls, persistence, or a new dependency."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/center/[centerId]/class/[classId]/",
+      "tests/routes/center-class-entry.test.ts"
+    ],
+    "forbidden_scope": [
+      "src/routes/admin/[centerId]/",
+      "src/routes/lesson-context/",
+      "src/routes/api/lesson-context/",
+      "src/lib/server/platform/database.ts",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/collaboration/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      ".memory-bank/tasks/TASK-026-T3-FT-002-W12.task.json",
+      ".protocols/TASK-026-T3-FT-002-W12/",
+      ".tasks/TASK-026-T3-FT-002-W12/",
+      ".memory-bank/tasks/TASK-031-T2-FT-002-W15.task.json",
+      ".protocols/TASK-031-T2-FT-002-W15/",
+      ".tasks/TASK-031-T2-FT-002-W15/",
+      ".memory-bank/tasks/TASK-032-T2-FT-002-W16.task.json",
+      ".protocols/TASK-032-T2-FT-002-W16/",
+      ".tasks/TASK-032-T2-FT-002-W16/"
+    ],
+    "stop_conditions": [
+      "Stop if the accepted route cannot use the existing server-resolved Actor Context and Center & Scheduling AuthorizedClassScope without a new authorization or persistence contract.",
+      "Stop if role-specific rendering requires exposing lesson-context/calendar data, direct database reads, role mutation, or a client-owned authorization decision.",
+      "Stop if `/admin/{centerId}` management, cross-center denial, removed-assignment denial, or existing task evidence would need to change."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-011",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#ft-002-ac-011--role-scoped-class-entry-shell-is-available-for-permitted-members",
+    ".memory-bank/requirements.md#req-003--center-and-class-administration",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/architecture/system-architecture.md#2-capability-module-runtime",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#ft-002-ac-011--role-scoped-class-entry-shell-is-available-for-permitted-members",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership"
+  ],
+  "constraints": [
+    "The route server load must resolve the request actor from the existing server session and call the existing Center & Scheduling authorized-class query; path centerId must match the returned scope centerId.",
+    "The Svelte component remains a thin transport/presentation adapter and renders only server-provided role/class context; it must not authorize, query persistence, or infer class membership.",
+    "Keep the existing `/admin/{centerId}` transport and all lesson-context/calendar ownership outside this task; no new API or cross-slice edge is introduced."
+  ],
+  "invariants": [
+    "Only an actor with a server-authorized membership/assignment receives the matching center/class shell; client fields cannot widen scope.",
+    "The shell exposes role context for exactly Admin, Teacher, Student, or Parent and contains no role-changing or lesson-context/calendar capability.",
+    "Denied route reads do not render protected class data and leave persisted state unchanged; existing Admin management and done TASK-026/031/032 behavior remain intact."
+  ],
+  "verification_targets": [
+    "FT-002-AC-011 / REQ-003 / REQ-014 RED/GREEN: run a disposable SSR/HTTP matrix for permitted Admin, Teacher, Student, and Parent class members plus unauthenticated, cross-center, non-member, and removed-assignment requests; compare status/body, resolved role, class context, and denied-read state.",
+    "Canonical boundary proof: source review confirms the route consumes Actor Context and Center & Scheduling AuthorizedClassScope, checks path centerId/classId against server scope, and owns no direct database access or authorization logic in the component.",
+    "Regression: existing Admin center-management and TASK-032 zero-occurrence tests remain green; npm run check, npm run test, npm run build, and git diff --check pass; no `/admin/{centerId}`, lesson-context, calendar fixture, or downstream projection source changes occur."
+  ]
+}

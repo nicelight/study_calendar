@@ -13,6 +13,28 @@ dependencies, historical TASK-003 failure, architecture, Planning Revision,
 and queue state remain unchanged. The current durable route is the fresh
 feature semantic report plus `FT-001-S-MB-SYNC-final-report-docs-03.md`.
 
+## 2026-08-14 — Public home login entry
+
+The operator accepted a bounded UI correction: public `/` exposes a visible
+ordinary `Вход` link with exact href `/login`; activating it has no
+authentication/session side effect. This adds AC-012 / REQ-001 and fresh
+`TASK-033-T1-FT-001-W17` after completed browser login TASK-030. The static
+calendar on `/` is deliberately not changed: database-backed calendar work is
+FT-003 scope. Existing task identities, statuses, evidence, architecture, and
+Planning Revision remain unchanged; FT-001, REQ-001, and EP-001 are planned
+until the new outcome is verified.
+
+## 2026-08-14 — TASK-033 public home login entry closure
+
+The explicit top-level lifecycle owner accepted the Implementer and independent
+Reviewer `PASS` evidence for `TASK-033-T1-FT-001-W17`. The task is now `done`:
+SSR `/` returned 200 with exactly one visible ordinary `Вход` anchor to
+`/login`; the fixture remained preserved; full tests were 117/117 and focused
+checks 38/38; check, build, and diff checks passed; forbidden authentication
+paths were untouched. FT-001, REQ-001, and EP-001 remain `planned` because
+remaining UI/product outcomes are outside AC-012. Prior task identities,
+statuses, evidence, dependencies, and code remain unchanged.
+
 ## 2026-08-13 — W14 task completion before aggregate feature gate
 
 At that boundary TASK-030 was durably `done` with functional `PASS` and per-task T3

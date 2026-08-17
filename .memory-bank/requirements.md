@@ -23,15 +23,19 @@ status: draft
   invited center-created roles and memberships remain bound through one-time
   provider invitations. No user-selected role is allowed, one external identity
   cannot bind to multiple accounts, and password credentials use normalized
-  unique email plus salted `scrypt` verification without stored plaintext.
+  unique email plus salted `scrypt` verification without stored plaintext. The
+  public home route visibly links to the existing `/login` transport without
+  changing authentication or session behavior.
   (PRD FR-AUTH-001..010)
 - **REQ-002 — Provider failure safety:** expired, revoked, reused, duplicate, or
   failed provider binding attempts reject without creating an account, changing
   role/membership, or creating a partial binding. (PRD Integrations; Edge Cases)
 - **REQ-003 — Center and class administration:** Bootstrap Admin creates the
   first center from the browser, then manages teachers, classes, students,
-  parents, and links inside that center; a class is individual or group. (PRD
-  FR-ORG-001..002, FR-ORG-006)
+  parents, and links inside that center; a class is individual or group. The
+  browser exposes a role-scoped class entry shell for permitted Admin, Teacher,
+  Student, and Parent members without replacing the existing Admin management
+  surface. (PRD FR-ORG-001..002, FR-ORG-006)
 - **REQ-004 — Lesson scheduling lifecycle:** Recurring schedules create planned
   lessons; one lesson may be added, moved, or cancelled without mutating other
   repetitions, and moving preserves lesson identity and context. The browser
@@ -43,7 +47,12 @@ status: draft
   The existing Admin adapter maps that rejection to `400
   { error: "invalid_schedule" }`; an assigned Teacher has no schedule HTTP
   adapter in the current scope, so the private owner/domain rejection remains
-  internal and no new Teacher transport is introduced.
+  internal and no new Teacher transport is introduced. Schedule date controls
+  present strict user-facing `dd/mm/yyyy` values while submitted Form Data and
+  scoped browser drafts remain canonical ISO `YYYY-MM-DD`.
+  Creating a new recurring schedule replaces overlapping `planned` lessons for
+  that class; `completed` or `cancelled` lessons are preserved and make the
+  replacement reject atomically.
   (PRD FR-ORG-003..005; explicit operator requirements 2026-08-14)
 - **REQ-005 — Elastic calendar navigation:** Each week uses an elastic row with
   lesson days wider than non-lesson days; the date picker reaches the selected
@@ -51,7 +60,9 @@ status: draft
   not conveyed by color alone. (PRD FR-CAL-001..005; NFR-UX-001..002)
 - **REQ-006 — Shared and personal lesson context:** A shared day contains lesson
   topic, practical work, and homework; a personal day reuses shared material
-  while isolating student-specific grades, discussions, and financial data.
+  while isolating student-specific grades, discussions, and financial data. If
+  shared material has not yet been entered, an authorized lesson still opens a
+  shared lesson shell instead of failing as an access error.
   (PRD FR-DAY-001..005; AC-DAY-001)
 - **REQ-007 — Field collaboration and reactions:** Authorized participants can
   edit one account-owned comment per field with author/time attribution and use
@@ -109,12 +120,12 @@ status: draft
 | REQ | Epic | Feature | Test | Lifecycle |
 |---|---|---|---|---|
 | REQ-000 | Foundation | FT-000 | test:foundation-baseline;test:foundation-smoke | planned |
-| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..011 | verified |
+| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..012 | planned |
 | REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
-| REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002 | verified |
-| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..009 | verified |
-| REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004 | verified |
-| REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-004-AC-001;FT-004-AC-005 | verified |
+| REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002;FT-002-AC-011 | verified |
+| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..010 | verified |
+| REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004;FT-003-AC-007..008 | planned |
+| REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-003-AC-008;FT-004-AC-001;FT-004-AC-005 | planned |
 | REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | verified |
 | REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | verified |
 | REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | verified |
@@ -122,9 +133,9 @@ status: draft
 | REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
 | REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
 | REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006 | verified |
-| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006 | test:FT-001-AC-001;FT-001-AC-005..008;FT-002-AC-001;FT-002-AC-005..006;FT-003-AC-006;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005 | verified |
+| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006 | test:FT-001-AC-001;FT-001-AC-005..008;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005 | planned |
 | REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
-| REQ-016 | EP-002, EP-005 | FT-003, FT-006 | test:FT-003-AC-001;FT-006-AC-002..006 | verified |
+| REQ-016 | EP-002, EP-005 | FT-003, FT-006 | test:FT-003-AC-001;FT-003-AC-007..008;FT-006-AC-002..006 | planned |
 
 ## W10 task evidence route
 
@@ -242,6 +253,21 @@ FT-001 sync.
 - [fresh feature semantic evidence](../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
 - [final feature sync evidence](../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-03.md)
 
+## FT-001 W17 public login-entry reconciliation — 2026-08-14
+
+`TASK-033-T1-FT-001-W17` is now `done` with Implementer and independent
+Reviewer `PASS` evidence for `FT-001-AC-012` / `REQ-001`: SSR `/` returned 200,
+exactly one visible ordinary `Вход` anchor targets `/login`, the fixture
+calendar remains preserved, full tests pass 117/117, focused checks pass
+38/38, check/build/diff gates pass, and forbidden authentication paths remain
+untouched. REQ-001 remains `planned` because the newly accepted public entry
+does not close the remaining FT-001 UI/product outcomes. All prior task
+identities, evidence, dependencies, and implementation remain unchanged.
+
+- [TASK-033 card](tasks/TASK-033-T1-FT-001-W17.task.json)
+- [independent verification](../.tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-VERIFY-final-report-docs-01.md)
+- [task sync evidence](../.tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-MB-SYNC-final-report-docs-01.md)
+
 ## FT-002 W16 lifecycle reconciliation — 2026-08-14
 
 The fresh feature-level semantic gate for FT-002 now records
@@ -265,3 +291,105 @@ now `verified` after the fresh FT-002 feature-level aggregate semantic gate.
 - [functional evidence](../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-VERIFY-final-report-docs-01.md)
 - [sync evidence](../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-MB-SYNC-final-report-docs-01.md)
 - [feature semantic evidence](../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
+
+## FT-002 W18/W19 planning reconciliation — 2026-08-14
+
+Two new FT-002 outcomes were accepted after the prior AC-001..AC-009 semantic
+closure: strict user-facing `dd/mm/yyyy` schedule date presentation with
+unchanged ISO wire/storage (`FT-002-AC-010` / REQ-004), and a protected
+role-scoped class entry shell for permitted Admin, Teacher, Student, and Parent
+members (`FT-002-AC-011` / REQ-003, REQ-014). The RTM therefore keeps REQ-003,
+REQ-004, and shared REQ-014 at `planned` until the fresh outcomes are
+implemented and verified.
+
+- [FT-002 feature](features/FT-002-center-and-scheduling.md)
+- [TASK-034 card](tasks/TASK-034-T1-FT-002-W18.task.json)
+- [TASK-035 card](tasks/TASK-035-T3-FT-002-W19.task.json)
+- [FT-002 implementation plan](tasks/plans/IMPL-FT-002.md)
+
+## FT-002 TASK-034 closure route — 2026-08-14
+
+`TASK-034-T1-FT-002-W18` is now `done` for the AC-010 / REQ-004 slice. The
+Implementer Attempt 2 and same-Reviewer retry both passed: the browser renders
+strict `dd/mm/yyyy` inputs, accepts valid dates, emits canonical ISO Form Data,
+keeps the exact scoped ISO draft, and rejects malformed or impossible values.
+The historical reviewer failure and retry correction remain preserved.
+
+REQ-004 stays `planned` pending the remaining FT-002 feature-level gate; the
+separate protected AC-011 outcome remains in `TASK-035-T3-FT-002-W19`. This
+sync does not promote FT-002, REQ-003, REQ-004, shared REQ-014, or EP-001.
+
+- [TASK-034 card](tasks/TASK-034-T1-FT-002-W18.task.json)
+- [retry verification](../.tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-VERIFY-RETRY-final-report-docs-02.md)
+- [task sync evidence](../.tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-MB-SYNC-final-report-docs-01.md)
+
+## TASK-035 readiness route — 2026-08-14
+
+The fresh FT-002 task-plan review returned `APPROVE` at Planning Revision `2`
+with architecture approval, no blocking findings, and a strict-doctor `PASS`.
+`TASK-035-T3-FT-002-W19` is promoted to `ready` as the sole AC-011 / REQ-003 /
+REQ-014 execution card. Its identity, T3/W19 tiering, direct SDD links, and
+done TASK-032 dependency remain unchanged. FT-002 and REQ-003/REQ-014 remain
+`planned`; no other task or lifecycle status changed.
+
+- [TASK-035 card](tasks/TASK-035-T3-FT-002-W19.task.json)
+- [pre-execution review](../.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-PRE035-R2-final-report-docs-01.md)
+
+## TASK-035 T3 closure route — 2026-08-14
+
+`TASK-035-T3-FT-002-W19` is now `done` for AC-011 / REQ-003 / REQ-014 after
+independent Attempt 2 functional `PASS` and the required per-task semantic
+`pass`. The real route matrix proves four-role server context, anonymous/
+revoked redirects, denial branches, minimized bodies, state equality, and
+unchanged protected boundaries. FT-002 and REQ-003, REQ-004, and shared REQ-014
+remain `planned` pending the feature-level aggregate red-verify.
+
+- [TASK-035 card](tasks/TASK-035-T3-FT-002-W19.task.json)
+- [functional retry](../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-VERIFY-RETRY-final-report-docs-02.md)
+- [semantic verification](../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-RED-VERIFY-final-report-docs-01.md)
+
+## FT-002 final feature-boundary route — 2026-08-15
+
+The fresh feature report contains exactly one `SEMANTIC_VERDICT:
+semantic-pass` across AC-001..AC-011 with no material finding. The explicit
+owner reconciles FT-002 and the RTM lifecycle for REQ-003, REQ-004, and shared
+REQ-014 to `verified`; EP-001 is reconciled to `verified` at the same boundary.
+TASK-026, TASK-031, TASK-032, TASK-034, and TASK-035 remain `done`. FT-003 and
+all unrelated feature/requirement lifecycles are unchanged.
+
+- [FT-002 feature](features/FT-002-center-and-scheduling.md)
+- [semantic report](../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
+- [feature sync report](../.tasks/FT-002/FT-002-S-MB-SYNC-final-report-docs-02.md)
+
+## FT-003 W9 accepted calendar-route scope — 2026-08-15
+
+The accepted FT-003-AC-007/AC-008 scope adds a protected DB-backed `/calendar`
+read path and exact navigation into the existing `/lesson-context` route. The
+RTM therefore reopens FT-003, EP-002, and REQ-005/REQ-006/REQ-014/REQ-016 to
+`planned` until the fresh sibling tasks `TASK-037-T3-FT-003-W9` and
+`TASK-038-T3-FT-003-W10` are implemented and independently verified. The
+unexecuted/unreviewed TASK-036 merge was retired under `rebuild_required`;
+completed FT-003 task identities/evidence and the verified FT-002 boundary
+remain unchanged.
+
+- [FT-003 feature](features/FT-003-calendar-and-lesson-context.md)
+- [TASK-037 card](tasks/TASK-037-T3-FT-003-W9.task.json)
+- [TASK-038 card](tasks/TASK-038-T3-FT-003-W10.task.json)
+
+`TASK-037-T3-FT-003-W9` now provides current independent functional `PASS` and
+T3 `semantic-pass` evidence for AC-007 / REQ-005 / REQ-014 / REQ-016. The RTM
+lifecycles remain `planned` because AC-008 and the aggregate FT-003 gate are
+still outstanding.
+
+- [TASK-037 functional evidence](../.tasks/TASK-037-T3-FT-003-W9/TASK-037-T3-FT-003-W9-S-VERIFY-final-report-docs-01.md)
+- [TASK-037 semantic evidence](../.tasks/TASK-037-T3-FT-003-W9/TASK-037-T3-FT-003-W9-S-RED-VERIFY-final-report-docs-01.md)
+
+`TASK-039-T3-FT-003-W10` now provides current independent functional `PASS`
+and T3 `semantic-pass` evidence for AC-008 / REQ-005 / REQ-006 / REQ-014.
+The shared-only link contract is closed with exact `date`, `classId`, and
+`lessonId` query identity and no `studentAccountId`. REQ-005, REQ-006, and
+REQ-014 remain `planned` until the FT-003 aggregate feature gate is completed.
+
+- [TASK-039 card](tasks/TASK-039-T3-FT-003-W10.task.json)
+- [TASK-039 functional evidence](../.tasks/TASK-039-T3-FT-003-W10/reverification-evidence.md)
+- [TASK-039 semantic evidence](../.tasks/TASK-039-T3-FT-003-W10/TASK-039-T3-FT-003-W10-S-RED-VERIFY-final-report-docs-01.md)

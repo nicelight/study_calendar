@@ -1,0 +1,138 @@
+{
+  "id": "TASK-038-T3-FT-003-W10",
+  "title": "Preserve lesson context from calendar navigation",
+  "status": "failed",
+  "wave": "W10",
+  "feature": "FT-003",
+  "reqs": ["REQ-005", "REQ-006", "REQ-014"],
+  "depends_on": ["TASK-014-T3-FT-003-W8", "TASK-037-T3-FT-003-W9"],
+  "touched_files": [
+    "src/routes/calendar/+page.svelte",
+    "tests/routes/calendar-navigation.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "lifecycle",
+      "attempt": "Rebuild reconciliation 1",
+      "verdict": "failed",
+      "report": ".protocols/FT-003/decision-log.md",
+      "artifact": ".tasks/TASK-038-T3-FT-003-W10/TASK-038-T3-FT-003-W10-S-LIFECYCLE-final-report-docs-02.md",
+      "evidence": [
+        "The original task requires optional studentAccountId context and its claim-specific RED proves that the current calendar output cannot provide a server-authorized student identity without changing the task-forbidden loader.",
+        "The operator accepted shared-only AC-008 through /feature-to-tasks FT-003; fresh TASK-039-T3-FT-003-W10 is the reviewed replacement for exact date/class/lesson navigation with no studentAccountId.",
+        "TASK-038 is not closure-eligible and its RED is not reused as TASK-039 proof. No production code, unsafe side effect, retry, or verification gate was replayed."
+      ],
+      "lifecycle_changed": true,
+      "disposition": "superseded",
+      "superseded_by": ["TASK-039-T3-FT-003-W10"]
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-003.md",
+    ".protocols/FT-003/plan.md",
+    ".protocols/FT-003/decision-log.md"
+  ],
+  "evidence_required": [
+    "FT-003-AC-008 / REQ-005 / REQ-006 / REQ-014 RED: a rendered calendar lesson link loses date/class/lesson/optional-student context, points outside the existing `/lesson-context` route, or permits guessed student context; GREEN: a fresh real route/SSR probe follows a DB-backed calendar lesson link, preserves the exact query identity, observes the existing Lesson Context response recheck, and proves denied student context renders no private data and leaves state unchanged; artifact: `.tasks/TASK-038-T3-FT-003-W10/` and `.protocols/TASK-038-T3-FT-003-W10/verification.md`."
+  ],
+  "purpose": "Make each authorized calendar lesson navigate to the existing Lesson Context route without losing or widening actor/class/student context.",
+  "success_outcome": "A lesson rendered by the authorized calendar exposes a link to `/lesson-context` carrying the exact date, classId, lessonId, and only an optional server-permitted studentAccountId; the existing route rechecks authorization and rejects guessed student context without private data or mutation.",
+  "anti_goals": [
+    "Do not replace the public home fixture or change the `/calendar` server load and DB-backed lesson ownership established by TASK-037.",
+    "Do not modify the existing `/lesson-context` route/module, add a second day-context API, or move composition/authorization ownership out of Lesson Context.",
+    "Do not trust a client-selected role, center, class, lesson, or student account and do not write scheduling, lesson, progress, collaboration, or financial state."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/calendar/+page.svelte",
+      "tests/routes/calendar-navigation.test.ts"
+    ],
+    "forbidden_scope": [
+      "src/routes/+page.svelte",
+      "src/lib/calendar.ts",
+      "src/routes/calendar/+page.server.ts",
+      "src/routes/lesson-context/",
+      "src/routes/api/lesson-context/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/collaboration/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      ".memory-bank/tasks/TASK-013-T2-FT-003-W7.task.json",
+      ".protocols/TASK-013-T2-FT-003-W7/",
+      ".tasks/TASK-013-T2-FT-003-W7/",
+      ".memory-bank/tasks/TASK-014-T3-FT-003-W8.task.json",
+      ".protocols/TASK-014-T3-FT-003-W8/",
+      ".tasks/TASK-014-T3-FT-003-W8/",
+      ".memory-bank/tasks/TASK-018-T3-FT-005-W8.task.json",
+      ".protocols/TASK-018-T3-FT-005-W8/",
+      ".tasks/TASK-018-T3-FT-005-W8/",
+      ".memory-bank/tasks/TASK-037-T3-FT-003-W9.task.json",
+      ".protocols/TASK-037-T3-FT-003-W9/",
+      ".tasks/TASK-037-T3-FT-003-W9/"
+    ],
+    "stop_conditions": [
+      "Stop if preserving context requires changing the existing Lesson Context route/module, adding a new API or persistence boundary, or bypassing its server-side authorization; route to /spec-redesign only for an accepted shared-boundary change.",
+      "Stop if studentAccountId cannot be limited to the server-returned authorized scope or if a guessed/mismatched student context cannot be shown denied with state equality.",
+      "Stop if the calendar link cannot be proved independently from TASK-037's protected-load matrix; do not inherit its proof as navigation evidence."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-003-calendar-and-lesson-context.md#FT-003-AC-008",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/domains/core-domain.md#read-and-write-data-flow",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
+    ".memory-bank/states/lifecycle-map.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/domains/core-domain.md#read-and-write-data-flow",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "The component consumes the server-rendered lesson identity and the server-authorized class/student scope from TASK-037; it does not resolve authorization or read persistence itself.",
+    "Lesson links use the existing `/lesson-context` query contract (`date`, `classId`, `lessonId`, optional `studentAccountId`) and the existing route remains responsible for final composition and authorization.",
+    "The navigation probe must follow a real rendered link and independently compare authorized and guessed-student responses; TASK-037's DB calendar proof is a dependency, not inherited AC-008 evidence."
+  ],
+  "invariants": [
+    "Calendar-to-Lesson-Context navigation preserves exact date/class/lesson identity and only carries a studentAccountId permitted by the server-resolved scope.",
+    "Guessed or mismatched student context renders no private data and leaves persisted state unchanged because the existing Lesson Context route rechecks authorization.",
+    "The public `/` fixture, TASK-037 protected-load boundary, existing Lesson Context owner, downstream feature ownership, and all completed prerequisite tasks remain unchanged."
+  ],
+  "verification_targets": [
+    "FT-003-AC-008 / REQ-005 / REQ-006 / REQ-014: follow one real rendered lesson link with and without permitted studentAccountId, assert exact `/lesson-context` query preservation and existing DayContext navigation identity, then attempt a guessed student context and assert denial-body minimization plus state equality.",
+    "Boundary regression: source review confirms only the calendar presentation/link surface and its isolated navigation test changed, the link targets the existing `/lesson-context` path, no client role/student trust or direct persistence exists, and project-native check/test/build/diff gates pass."
+  ]
+}

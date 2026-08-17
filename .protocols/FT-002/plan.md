@@ -129,3 +129,60 @@ The fresh feature-level semantic report covers AC-001..AC-009 and records
 EP-001 is reconciled to `verified` because its FT-001/FT-002 outcomes and
 REQ-001..REQ-004/REQ-014 mappings are verified. Task identities and statuses
 remain unchanged.
+
+## W18/W19 accepted UI boundary reconciliation
+
+The operator accepted two material follow-up outcomes after AC-001..AC-009
+feature closure. Queue action is `rebuild_required`; completed TASK-026,
+TASK-031, and TASK-032 retain identity, status, dependencies, implementation,
+and evidence.
+
+- `TASK-034-T1-FT-002-W18` owns the local schedule-form date presentation:
+  strict `dd/mm/yyyy` user-facing input with explicit invalid/impossible-date
+  handling, while Form Data and the existing center/class-scoped draft remain
+  canonical ISO `YYYY-MM-DD`. It is T1 because it is a contained component and
+  focused test change with no server, persistence, authorization, or schedule
+  lifecycle change.
+- `TASK-035-T3-FT-002-W19` owns the protected
+  `/center/{centerId}/class/{classId}` role-scoped entry shell. It uses the
+  existing Actor Context and `AuthorizedClassScope` from Center & Scheduling for
+  Admin, Teacher, Student, and Parent; invalid or mismatched path/principal
+  combinations fail before protected class data renders. It preserves
+  `/admin/{centerId}` management and excludes Lesson Context/calendar content,
+  direct database access, and role-changing controls.
+
+Because AC-011 is a protected permission-sensitive route outcome, TASK-035 is
+T3 and requires the full protocol, independent `/verify`, and per-task
+`/red-verify` semantic pass; its dependency proof is not inherited.
+
+Both cards depend on done TASK-032. TASK-034 is now `done` after independent
+retry verification; TASK-035 remains `planned` pending fresh
+`/review-tasks-plan FT-002`. FT-002, REQ-003, REQ-004, and shared REQ-014 are
+`planned` for the remaining unverified outcomes; Planning Revision remains `2`
+and the existing canonical graph is unchanged.
+
+## TASK-035 readiness promotion — 2026-08-14
+
+The fresh pre-execution `/review-tasks-plan FT-002` returned `APPROVE` at
+Planning Revision `2`, with architecture approval and no blocking findings.
+The strict doctor gate is `PASS`. `TASK-035-T3-FT-002-W19` is consequently
+`ready` for execution; its T3/W19 identity, AC-011 ownership, direct SDD
+locators, hard boundary, and dependency on done TASK-032 are unchanged.
+TASK-034 remains `done`; no other task, feature, requirement, or dependency
+status is promoted by this boundary.
+
+## TASK-035 T3 closure — 2026-08-14
+
+The explicit owner consumed independent Attempt 2 functional `PASS` and the
+required T3 `semantic-pass` for AC-011 / REQ-003 / REQ-014. TASK-035 is now
+`done`; its initial functional `FAIL`, retry correction, and all route evidence
+remain preserved. FT-002 and REQ-003, REQ-004, and shared REQ-014 remain
+`planned` pending the feature-level aggregate red-verify gate; no code,
+dependency, or Planning Revision changed.
+
+## FT-002 final feature-boundary closure — 2026-08-15
+
+The current feature-level report has exactly one `SEMANTIC_VERDICT:
+semantic-pass` across AC-001..AC-011 and no material finding. The explicit
+owner reconciles FT-002, REQ-003, REQ-004, shared REQ-014, and EP-001 to
+`verified`; TASK-026/031/032/034/035 remain `done`, and FT-003 is unchanged.

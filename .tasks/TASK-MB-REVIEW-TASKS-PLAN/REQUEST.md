@@ -1,5 +1,23 @@
 # /review-tasks-plan FT-001
 
+## Current review run — FT-003 shared-only AC-008 rebuild
+
+- ROLE: Reviewer; target: FT-003; fresh read-only review after the operator
+  selected shared-only calendar navigation.
+- REVIEWED_PLANNING_REVISION: 2
+- Required architecture subreview: local fallback using `/architecture-review`
+  after the delegated fresh Reviewer did not return; verdict `APPROVE`, no
+  material architecture finding.
+- The reviewed surface includes the accepted FT-003 AC-008 narrowing, the
+  preserved historical `TASK-038-T3-FT-003-W10`, and planned replacement
+  `TASK-039-T3-FT-003-W10`.
+- No reviewed product, requirement, spec, plan, task card, task index, code,
+  protocol, lifecycle, status, dependency, evidence, or scheduler state was
+  changed by the review. Only this request entry and the fresh report were
+  written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-003-W10-SHARED-R1-final-report-docs-01.md`.
+
 - ROLE: Reviewer
 - Scope: FT-001 current planning surface, with Foundation and direct FT-002 dependency context only where the DAG requires it
 - Mode: fresh independent read-only semantic planning review after W9 proof correction
@@ -140,3 +158,202 @@
   request entry and the fresh review report were written.
 - Final report:
   `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W16-VERIFY-R1-final-report-docs-01.md`.
+
+## Current review run — FT-001 W17 public home login entry
+
+- ROLE: Reviewer; target: FT-001; bounded prospective focus:
+  `TASK-033-T1-FT-001-W17`, with explicit preservation of done
+  `TASK-030-T3-FT-001-W14` and its auth/session/provider evidence.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh bounded architecture review: delegated to a separate Reviewer using
+  `/architecture-review`; verdict `APPROVE`, no findings or questions.
+- Scope checked: public `/` exposes one visible, keyboard-accessible ordinary
+  `Вход` anchor with exact href `/login`; no session, provider, account,
+  role, cookie, hook, server-load, redirect, or existing login behavior changes;
+  the fixture calendar remains an FT-003-owned exclusion.
+- Validation: `node scripts/mb-lint.mjs` passed (`67 files`, existing advisory
+  frontmatter warnings only); the index has 31 unique identity-consistent
+  cards, all dependencies resolve, the DAG is acyclic, TASK-033 is
+  T1/FT-001/W17/`planned`, and its sole dependency TASK-030 remains `done` with
+  functional `PASS` and T3 `semantic-pass`.
+- Read-only review: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+  Only this request entry, the required fresh review report, and the mandatory
+  session papercut note for unavailable co-reviewer model routing are written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-001-W17-final-report-docs-01.md`.
+
+## Current review run — FT-002 W18/W19 UI boundaries
+
+- ROLE: Reviewer; target: FT-002; prospective focus:
+  `TASK-034-T1-FT-002-W18` and the current indexed
+  `TASK-035-T3-FT-002-W19`, with preservation of done TASK-026, TASK-031, and
+  TASK-032.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh bounded architecture review: delegated to a separate Reviewer using
+  `/architecture-review`; verdict `APPROVE`, no findings or questions.
+- Scope checked: strict `dd/mm/yyyy` presentation retains canonical ISO Form
+  Data and scoped draft JSON; the four-role protected class shell uses existing
+  server authorization, preserves `/admin/{centerId}`, and excludes FT-003
+  lesson-context/calendar behavior.
+- Validation: `node scripts/mb-lint.mjs` passed (`67 files`, advisory
+  frontmatter warnings only); the index has 33 unique identity-consistent
+  cards, all dependencies resolve, the DAG is acyclic, all eleven FT-002 ACs
+  have exact single-task ownership, and TASK-026/031/032 remain done and
+  unmodified.
+- Identity note: the current canonical record is T3 TASK-035 because protected
+  permission-sensitive routing triggers T3; no T2 TASK-035 exists.
+- Read-only review: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+  Only this request entry and the required fresh review report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-W18-W19-final-report-docs-01.md`.
+
+## Current review run — FT-002 strict-gate correction re-review
+
+- ROLE: Reviewer; bounded rerun after strict-gate planning correction. Focus:
+  TASK-035 direct SDD locators, AC-010/AC-011 exact mapping, canonical
+  TASK-035-T3-FT-002-W19 identity, TASK-034, and done TASK-026/031/032.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh bounded architecture review: delegated to a separate Reviewer using
+  `/architecture-review`; verdict `APPROVE`, no findings or questions.
+- Validation: TASK-035 remains the sole T3/W19 identity; its full-file Boundary
+  Map, Access Control, and System Architecture locators plus exact SDD anchors
+  resolve; AC-010 maps only to TASK-034 and AC-011 only to TASK-035;
+  `node scripts/mb-lint.mjs` passed (`67 files`, advisory warnings only), and
+  `git diff --check` passed. The strict-gate owner reported `mb-doctor --strict`
+  PASS with zero errors.
+- Preservation: TASK-034 remains T1/W18/planned; TASK-026, TASK-031, and
+  TASK-032 remain done with unchanged identities, dependencies, evidence, and
+  scope. No T2 TASK-035 record exists.
+- Read-only review: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+  Only this request entry and the fresh rerun report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-STRICT-R1-final-report-docs-01.md`.
+
+## Current review run — FT-002 pre-TASK-035 execution after TASK-034 closure
+
+- ROLE: Reviewer; bounded fresh rerun before TASK-035 execution. Focus:
+  canonical TASK-035-T3-FT-002-W19 identity/AC-011, direct SDD locators,
+  done TASK-032 dependency, TASK-034 closure boundary, and preservation of
+  done TASK-026/031/032.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh bounded architecture review: delegated to a separate Reviewer using
+  `/architecture-review`; verdict `APPROVE`, no findings or questions.
+- Validation: TASK-035 remains planned T3/W19 and is the sole TASK-035 identity;
+  AC-011 remains its sole exact claim, direct SDD locators resolve, TASK-032 is
+  done, TASK-034 is done with retry PASS, and AC-010/AC-011 ownership has no
+  overlap. `node scripts/mb-lint.mjs` passed (`67 files`, advisory warnings
+  only); `git diff --check` passed.
+- Scope preservation: TASK-034's product diff is limited to its Admin component
+  and draft test boundary; no TASK-035 route/test or downstream scope drift is
+  present. TASK-026/031/032 identities, status, dependencies, evidence, and
+  forbidden scopes remain unchanged. Strict-gate owner reports
+  `mb-doctor --strict` PASS with zero errors.
+- Read-only review: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+  Only this request entry and the fresh rerun report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-PRE035-R2-final-report-docs-01.md`.
+
+## Current review run — FT-003 W9 protected calendar route
+
+- ROLE: Reviewer; fresh target: FT-003, with detailed prospective review of
+  `TASK-036-T3-FT-003-W9` and preservation of done TASK-013, TASK-014,
+  TASK-018 and verified FT-002.
+- REVIEWED_PLANNING_REVISION: 2
+- Fresh bounded architecture review: delegated to a separate Reviewer using
+  `/architecture-review`; verdict `APPROVE`, no architecture finding or owner
+  question.
+- Scope checked: DB-backed protected `/calendar`, exact links into the existing
+  `/lesson-context`, role/center/class/student authorization, unchanged public
+  `/` fixture, and no Collaboration/Learning Progress/Financial expansion.
+- Validation: TASK-036 matches T3/FT-003/W9 and the task-schema surface; the
+  index has 34 unique identity-consistent cards, all dependencies resolve, the
+  DAG is acyclic, and direct dependencies TASK-013/TASK-014 are done. TASK-018
+  remains a done provider prerequisite through TASK-014. `node
+  scripts/mb-lint.mjs` passed (`67 files`, advisory frontmatter warnings only)
+  and `git diff --check` passed.
+- Review blockers: the direct Authentication Transport locator uses unresolved
+  `#browser-api-path` instead of canonical `#browserapi-path`; AC-007 and AC-008
+  also remain independently implementable/provable route-load and
+  navigation-link outcomes, so the current one-card merge violates the
+  execution-cohesive task boundary.
+- Read-only review: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+  Only this request entry and the required fresh review report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-003-W9-final-report-docs-01.md`.
+
+## Current review run — FT-003 W9/W10 repair re-review
+
+- ROLE: Reviewer; fresh target: FT-003 after the `rebuild_required` repair of
+  the rejected W9 merge. Prospective scope is
+  `TASK-037-T3-FT-003-W9` / AC-007 and
+  `TASK-038-T3-FT-003-W10` / AC-008, with preservation of done TASK-013,
+  TASK-014, TASK-018, verified FT-002, and the public `/` fixture.
+- REVIEWED_PLANNING_REVISION: 2
+- Verdict: `APPROVE`; no blocking finding or unresolved operator decision.
+- Fresh bounded architecture review: performed locally with
+  `/architecture-review` because no fresh delegation slot/model-pinned
+  co-review was available; verdict `APPROVE`, no findings or questions.
+- Repaired ownership: TASK-037 solely owns the protected DB-backed `/calendar`
+  load and denial matrix; TASK-038 solely owns exact links into the existing
+  `/lesson-context` path and depends on done TASK-014 plus TASK-037. Their
+  implementation, claim proof, and retry boundaries are separate. Shared
+  `+page.svelte` makes execution sequential, not semantically merged.
+- Retirement check: TASK-036 has no indexed entry, task card, protocol/task
+  directory, dependency, claim locator, or current ordered-plan row. Its only
+  FT-003 mentions are explicit historical retirement/tombstone context.
+- Validation: `node scripts/mb-lint.mjs` passed for 67 Memory Bank files with
+  existing advisory frontmatter warnings only; `git diff --check` passed; the
+  index has 35 unique identity-consistent cards, all dependencies resolve, the
+  DAG is acyclic, direct locators resolve, and both repaired cards use the
+  canonical `authentication-transport.md#browserapi-path` locator.
+- Semantic co-review fallback: the required Codex Luna model is unavailable in
+  this runtime; both prescribed attempts for each of the independent
+  cohesion/claim-ownership and architecture/boundary focuses were unavailable
+  before launch. No substitute model was used.
+- Read-only integrity: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+  Only this request append and the required fresh review report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-003-W9-W10-R1-final-report-docs-01.md`.
+
+## Current review run — FT-003 W9/W10 readiness-metadata repair
+
+- ROLE: Reviewer; fresh target: FT-003 after the readiness-metadata repair for
+  `TASK-037-T3-FT-003-W9` and `TASK-038-T3-FT-003-W10`.
+- REVIEWED_PLANNING_REVISION: 2
+- Verdict: `APPROVE`; no blocking semantic, structural, architecture, slicing,
+  or execution-readiness finding.
+- Repair checked: both cards now retain their exact AC/canonical anchors and
+  also name the existing full-file canonical SDD paths recognized as direct
+  task inputs. The added path identities adopt no new claim or scope.
+- Preservation checked: TASK-037 remains sole AC-007 owner at T3/W9 after done
+  TASK-013; TASK-038 remains sole AC-008 owner at T3/W10 after done TASK-014
+  and TASK-037. Purpose, outcome, proof, hard write boundaries, forbidden
+  scope, status, dependencies, and sequential cohesion match the last approved
+  surface. Done TASK-013/TASK-014/TASK-018, verified FT-002, the public `/`
+  fixture, and downstream slice ownership remain unchanged.
+- Retirement checked: TASK-036 has no runnable/index/file/dependency/locator
+  surface; remaining mentions are historical retirement tombstones only.
+- Fresh bounded architecture review: delegated to a separate Reviewer using
+  `/architecture-review`; verdict `APPROVE`, no findings or questions.
+- Deterministic-doctor handling: the prior owner result (4 errors, 1 warning,
+  2 info) was inspected as supplied; this semantic review did not rerun or
+  impersonate `/mb-doctor` and does not claim a post-repair doctor pass.
+- Validation: `node scripts/mb-lint.mjs` passed for 67 Memory Bank files with
+  existing advisory frontmatter warnings; `git diff --check` passed; the
+  read-only task-schema/index/identity/dependency/DAG/AC-ownership probe passed
+  across 35 indexed cards; every repaired full-file path exists and every
+  retained exact anchor resolves to its canonical heading/claim.
+- Semantic co-review fallback: Codex Luna was unavailable; the original launch
+  and one retry failed for each selected focus, and no substitute model was
+  used.
+- Read-only integrity: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle/status/dependency/evidence/scheduler state was changed. Only this
+  request append and the required fresh report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-003-W9-W10-METADATA-R1-final-report-docs-01.md`.

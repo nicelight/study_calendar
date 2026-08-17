@@ -326,3 +326,23 @@ configured Telegram/Google starts and safe missing-config failure remain
 intact, and provider secrets do not reach client output. TASK-020 retains
 primary AC-006/AC-007 ownership; no feature/requirement lifecycle, dependency,
 promotion, architecture, or W9 history transition was made.
+
+## W17 public home login entry
+
+The operator accepted one new, presentation-only FT-001 outcome: public `/`
+visibly links to existing `/login` through an ordinary `Вход` anchor. The new
+`TASK-033-T1-FT-001-W17` depends on done `TASK-030-T3-FT-001-W14`, owns only
+`FT-001-AC-012` / `REQ-001`, and is T1 because it neither changes authentication
+nor observes/mutates session state. Its hard code boundary is the existing home
+component and calendar presentation test. FT-003 retains exclusive ownership of
+any future replacement of the public calendar fixture with a database-backed
+calendar. All prior FT-001 tasks/evidence remain unchanged.
+
+The authoritative card is now `done` with Implementer and independent Reviewer
+`PASS` evidence. The current sources are the
+[verification report](../../../.tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-VERIFY-final-report-docs-01.md),
+[compact execution protocol](../../../.protocols/TASK-033-T1-FT-001-W17/run.md),
+and [task-boundary sync report](../../../.tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-MB-SYNC-final-report-docs-01.md).
+FT-001, REQ-001, and EP-001 remain `planned` because remaining UI/product
+outcomes are outside AC-012; no prior task identity, evidence, dependency,
+implementation, or feature promotion changed.

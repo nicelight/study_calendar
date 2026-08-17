@@ -146,6 +146,14 @@ remain implementation details.
   assignment, student/parent links, lesson identity/date/status, schedule facts,
   and the class context needed by a consumer; accept owner-side center,
   membership, assignment, and schedule commands.
+- **Role-scoped class entry:** the protected
+  `/center/{centerId}/class/{classId}` route consumes this boundary with the
+  server-resolved actor. Admin, Teacher, Student, and Parent receive a class
+  entry shell only when the returned `AuthorizedClassScope` matches the path's
+  center and the actor's membership/assignment; unauthenticated,
+  cross-center, non-member, and removed-assignment requests fail before class
+  data renders. The route remains presentation/transport-only and does not
+  replace `/admin/{centerId}` or compose Lesson Context/calendar content.
 - **State/data authority:** Center & Scheduling exclusively writes Center,
   Class, membership, parent-link, assignment, schedule, and Lesson state.
 - **Allowed interaction:** consumers use scoped queries and named commands; the

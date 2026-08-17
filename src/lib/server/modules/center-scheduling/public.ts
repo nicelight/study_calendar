@@ -387,6 +387,34 @@ export class CenterSchedulingBoundary {
 			if (dates.length === 0) {
 				throw new Error('invalid-schedule-occurrences');
 			}
+
+			const datePlaceholders = dates.map(() => '?').join(', ');
+			const overlappingLessons = this.database.sqlite
+				.prepare(
+					`SELECT status
+					 FROM lessons
+					 WHERE class_id = ? AND lesson_date IN (${datePlaceholders})`
+				)
+				.all(scope.classId, ...dates) as Array<{ status: LessonStatus }>;
+			if (overlappingLessons.some((lesson) => lesson.status !== 'planned')) {
+				throw new Error('schedule-date-conflict');
+			}
+
+			this.database.sqlite
+				.prepare(
+					`DELETE FROM lessons
+					 WHERE class_id = ? AND status = 'planned' AND lesson_date IN (${datePlaceholders})`
+				)
+				.run(scope.classId, ...dates);
+			this.database.sqlite
+				.prepare(
+					`DELETE FROM schedules
+					 WHERE class_id = ?
+					   AND NOT EXISTS (
+							SELECT 1 FROM lessons WHERE lessons.schedule_id = schedules.id
+					   )`
+				)
+				.run(scope.classId);
 			const createdAt = this.now().toISOString();
 
 			this.database.sqlite

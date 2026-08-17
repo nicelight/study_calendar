@@ -3,7 +3,7 @@ description: Product feature for account authentication, center-created accounts
 status: active
 type: feature
 id: FT-001
-lifecycle: verified
+lifecycle: planned
 epic: EP-001
 requirements: [REQ-001, REQ-002, REQ-014]
 last_updated: 2026-08-14
@@ -162,6 +162,16 @@ spec_design_links:
   cookie attributes, protected Admin entry, logout/revocation, no route-owned
   credential persistence, and unchanged Telegram/Google login paths.
 
+### FT-001-AC-012 — Public home exposes the login entry
+- REQ: REQ-001
+- Given an unauthenticated visitor opens the public home route `/`, then a
+  visible, keyboard-accessible `Вход` link has the exact destination `/login`.
+  Following it is ordinary browser navigation only: it MUST NOT create,
+  inspect, revoke, or otherwise change a session, provider, account, or role.
+- Verification: SSR/render and focused route-source smoke prove the visible
+  accessible anchor and exact `href`, while the existing login/session/provider
+  tests remain green.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -176,6 +186,7 @@ spec_design_links:
 | Bootstrap Admin creates the first center from the browser | FT-001-AC-009 |
 | Safe local first-Admin password-credential bootstrap | FT-001-AC-010 |
 | Password browser login through the existing session/cookie | FT-001-AC-011 |
+| Public entry to the existing login route | FT-001-AC-012 |
 
 ## Task Coverage at W9 — TASK-019 Boundary
 
@@ -506,3 +517,18 @@ and [final feature sync report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-repor
 TASK-029 and TASK-030 remain `done` with their task-level functional and
 semantic evidence. No task status, dependency, queue promotion, architecture,
 or Planning Revision changed in this reconciliation.
+
+## W17 Task Completion Reconciliation — 2026-08-14
+
+The explicit top-level lifecycle owner closed
+`TASK-033-T1-FT-001-W17` as `done` after Implementer and independent Reviewer
+`PASS` evidence for the new `FT-001-AC-012` / `REQ-001` presentation outcome.
+Independent verification observed SSR `/` HTTP 200, exactly one visible
+ordinary `Вход` anchor to `/login`, preserved fixture-calendar behavior,
+117/117 full tests, 38/38 focused checks, passing check/build/diff gates, and no
+touches to forbidden authentication paths.
+
+This task closes only the public login entry. FT-001, REQ-001, and EP-001 remain
+`planned` because remaining UI/product outcomes are not covered by AC-012. The
+previous AC-001..011 evidence, every prior task identity/status/dependency,
+and all existing implementation remain unchanged.

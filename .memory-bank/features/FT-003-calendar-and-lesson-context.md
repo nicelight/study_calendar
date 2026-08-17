@@ -3,7 +3,7 @@ description: Product feature for elastic calendar navigation and shared/personal
 status: active
 type: feature
 id: FT-003
-lifecycle: verified
+lifecycle: planned
 epic: EP-002
 requirements: [REQ-005, REQ-006, REQ-014, REQ-016]
 spec_design_status: complete
@@ -11,6 +11,7 @@ spec_design_links:
   - .memory-bank/architecture/system-architecture.md#composition-and-request-data-flow
   - .memory-bank/contracts/boundary-map.md#personal-progress-query-boundary
   - .memory-bank/contracts/access-control.md
+  - .memory-bank/contracts/authentication-transport.md#browserapi-path
   - .memory-bank/domains/core-domain.md#read-and-write-data-flow
   - .memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context
 ---
@@ -28,6 +29,9 @@ spec_design_links:
 - A non-lesson day remains visually compact but navigable.
 - Color is never the only state signal.
 - A class-to-personal transition cannot open another student's personal context.
+- An authorized lesson without shared material still opens its lesson shell and
+  explains that the material is not yet available; `403` remains for invalid or
+  unauthorized lesson access.
 
 ## Acceptance Criteria
 
@@ -72,6 +76,31 @@ spec_design_links:
   UI element is guessed; server-side authorization is decisive.
 - Verification: negative role/membership/student access scenarios.
 
+### FT-003-AC-007 — Authorized `/calendar` uses DB-backed class lessons
+- REQ: REQ-005, REQ-014, REQ-016
+- Given an authenticated Admin, Teacher, Student, or Parent with permitted
+  class scope, when `/calendar?classId={classId}&date={YYYY-MM-DD}` is opened,
+  then the server-rendered calendar reads current lesson identity/date/status
+  through the existing Center & Scheduling Calendar and Membership Query
+  Boundary and does not use the public home fixture. Unauthenticated, revoked,
+  cross-center, non-member, unassigned, or removed requests fail before lesson
+  data renders.
+- Verification: disposable SSR/HTTP role and denial matrix with database state
+  snapshots, real route wiring, fixture-absence assertion, and project gates.
+
+### FT-003-AC-008 — Calendar lesson navigation preserves context
+- REQ: REQ-005, REQ-006, REQ-014
+- Given an authorized shared lesson in `/calendar`, then its navigation to the
+  existing `/lesson-context` path carries the exact date, classId, and lessonId
+  query values and carries no studentAccountId. The existing Lesson Context
+  route remains the composition/authorization owner; personal student context
+  is deferred to a separate role-scoped follow-up after dashboard work. If the
+  lesson has no shared material yet, the same authorized route renders the
+  lesson shell rather than an access error.
+- Verification: a real route/link/SSR probe follows a calendar lesson link and
+  proves exact shared query preservation, absence of studentAccountId, existing
+  shared day-context response identity, and read-path non-mutation.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -80,6 +109,8 @@ spec_design_links:
 | Shared lesson materials | FT-003-AC-003 |
 | Personal context composition | FT-003-AC-004 |
 | Wrong-student navigation/access | FT-003-AC-005, FT-003-AC-006 |
+| DB-backed authorized class calendar at `/calendar` | FT-003-AC-007 |
+| Calendar-to-Lesson-Context navigation context preservation | FT-003-AC-008 |
 
 ## SDD Design Gate
 Global calendar runtime, temporal source of truth, shared/personal boundaries,
@@ -135,8 +166,9 @@ and feature lifecycle are preserved; the provider follow-up is indexed as
   - [functional verification protocol](../../.protocols/TASK-018-T3-FT-005-W8/verification.md)
   - [semantic verification report](../../.tasks/TASK-018-T3-FT-005-W8/TASK-018-T3-FT-005-W8-S-RED-VERIFY-final-report-docs-01.md)
   - [provider sync report](../../.tasks/TASK-018-T3-FT-005-W8/TASK-018-T3-FT-005-W8-S-MB-SYNC-final-report-docs-01.md)
-- FT-003 document `status: draft`, feature `lifecycle: planned`, and the
-  existing RTM lifecycle values remain unchanged.
+- At that historical W7/W8 boundary, the FT-003 document had `status: draft`,
+  feature `lifecycle: planned`, and the existing RTM lifecycle values remained
+  unchanged; the later W9 scope is reconciled below.
 
 ## Semantic Verification
 
@@ -163,3 +195,76 @@ SEMANTIC_VERDICT: semantic-pass
 - The sync carries only claim-linked durable evidence into feature navigation;
   it does not create a new product decision or change task, architecture,
   dependency, retry-budget, or lifecycle state.
+
+## W9 Accepted Calendar Route Reconciliation — 2026-08-15
+
+The operator accepted two material FT-003 follow-ups after the prior AC-001..AC-006
+closure: a DB-backed authorized class calendar at `/calendar` with the public
+home fixture removed from the authenticated path, and shared-only navigation
+from each calendar lesson to the existing `/lesson-context` route while
+preserving date, class, and lesson identity. The current calendar link must not
+carry or invent `studentAccountId`; personal student context is deferred to a
+separate role-scoped follow-up after dashboard work. The existing Calendar and
+Membership Query Boundary, Access Control, Lesson Context composition boundary,
+and Browser/API path contract are sufficient; no new SDD spec or Planning
+Revision change is required.
+
+The initial queue action was `rebuild_required`, with AC-007 and AC-008 drafted
+as one T3 route task. The fresh task-plan Reviewer rejected that merge because
+the protected calendar load and the lesson-link/context follow-through are
+independently implementable, provable, and retryable. The original unexecuted
+and unreviewed `TASK-036-T3-FT-003-W9` is therefore retired from the indexed
+model rather than silently repaired.
+
+## W9/W10 Calendar Route Repair — 2026-08-15
+
+The repaired queue keeps the accepted contracts and splits the claims into
+independent sibling cards: `TASK-037-T3-FT-003-W9` owns AC-007's DB-backed
+authorized `/calendar` load and denial matrix; `TASK-038-T3-FT-003-W10`
+initially owned AC-008's broader navigation/context proof. Completed TASK-013,
+TASK-014, and TASK-018 evidence/code remain unchanged. The later accepted
+shared-only narrowing of AC-008 requires a replacement card; it does not repair
+or close TASK-038.
+
+## TASK-037 AC-007 closure sync — 2026-08-15
+
+`TASK-037-T3-FT-003-W9` is `done` after independent functional `PASS` and
+required T3 `semantic-pass` evidence for AC-007. The closure proves the
+DB-backed authorized calendar path and denial matrix only; FT-003 and the
+mapped requirement lifecycles remain `planned` pending the reconciled AC-008
+card and the aggregate feature gate. TASK-038 retains its `in_progress`
+claim-specific RED attempt and is not current GREEN or closure evidence.
+
+## Shared-only AC-008 reconciliation — 2026-08-15
+
+The operator selected option 1: the current FT-003 AC-008 outcome is narrowed
+to shared-only calendar navigation. A calendar lesson link carries exact
+`date`, `classId`, and `lessonId` to the existing `/lesson-context` route and
+does not carry or invent `studentAccountId`. Personal student context is
+deferred to a separate role-scoped follow-up after dashboard work. The existing
+Lesson Context server authorization boundary remains unchanged.
+
+Because this decision changes the material AC-008 scope and proof obligation,
+the queue action is `rebuild_required`. `TASK-038-T3-FT-003-W10` retains its
+identity, T3/W10 classification, dependencies, `in_progress` status, protocol
+links, and claim-specific RED evidence; it is not rewritten, closed, or given
+GREEN evidence. New `TASK-039-T3-FT-003-W10` is the planned shared-only
+replacement after `TASK-014-T3-FT-003-W8` and `TASK-037-T3-FT-003-W9`.
+
+## TASK-039 AC-008 closure sync — 2026-08-15
+
+`TASK-039-T3-FT-003-W10` is now `done` after fresh independent functional
+`PASS`, required T3 `semantic-pass`, and green project gates. The closure
+proves shared-only calendar navigation into the existing `/lesson-context`
+route with exact `date`, `classId`, and `lessonId`, without
+`studentAccountId`; the existing Lesson Context composition and authorization
+boundary remains unchanged.
+
+- [TASK-039 card](../tasks/TASK-039-T3-FT-003-W10.task.json)
+- [functional verification](../../.tasks/TASK-039-T3-FT-003-W10/reverification-evidence.md)
+- [semantic verification](../../.tasks/TASK-039-T3-FT-003-W10/TASK-039-T3-FT-003-W10-S-RED-VERIFY-final-report-docs-01.md)
+- [lifecycle closure](../../.tasks/TASK-039-T3-FT-003-W10/TASK-039-T3-FT-003-W10-S-LIFECYCLE-final-report-docs-02.md)
+
+FT-003 and its mapped RTM requirements remain `planned` pending the
+feature-level aggregate gate. TASK-038 remains preserved as terminal
+`failed`/`superseded`; personal student context remains deferred.

@@ -1,0 +1,114 @@
+{
+  "id": "TASK-034-T1-FT-002-W18",
+  "title": "Present schedule dates as strict dd/mm/yyyy inputs",
+  "status": "done",
+  "wave": "W18",
+  "feature": "FT-002",
+  "reqs": ["REQ-004"],
+  "depends_on": ["TASK-032-T2-FT-002-W16"],
+  "touched_files": [
+    "src/routes/admin/[centerId]/+page.svelte",
+    "tests/routes/admin-schedule-draft.test.ts"
+  ],
+  "tier": "T1",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "independent_review",
+      "attempt": "Fresh reviewer pass",
+      "verdict": "FAIL",
+      "report": ".tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh authenticated SSR and Chrome 151 rendered the intended source pattern as [0-9]2/[0-9]2/[0-9]4; valid 29/02/2028 and 31/12/2028 values converted to canonical ISO Form Data/draft JSON but failed native constraint validation, so the visible controls do not accept valid strict dd/mm/yyyy input.",
+        "Malformed, impossible, and incomplete input received an explicit invalid state and never reached Form Data/localStorage as a non-ISO literal; ISO draft restoration passed. Focused 4/4, full 119/119, check, build, diff-check, and hard-boundary review passed but do not overturn the observed valid-input failure."
+      ]
+    },
+    {
+      "stage": "independent_review",
+      "attempt": "Fresh reviewer retry after Attempt 2",
+      "verdict": "PASS",
+      "report": ".tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-VERIFY-RETRY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh authenticated SSR and hydrated Chrome 151 rendered both strict patterns exactly; valid 29/02/2028 and 31/12/2028 passed native constraint validation and produced canonical ISO Form Data plus the exact ISO-only scoped draft JSON.",
+        "Malformed, impossible, and incomplete values were visibly invalid and supplied no non-ISO Form Data/storage value; ISO draft restoration passed. Focused 5/5, full 120/120, check, build, diff-check, and forbidden-scope review passed."
+      ]
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "manual_explicit_owner": "/root",
+      "decision": "done",
+      "accepted_evidence": "The explicit top-level owner accepted the Implementer Attempt 2 PASS and the same-Reviewer retry PASS for the bounded T1 AC-010 outcome and requested this task-boundary sync. The accepted retry evidence is .tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-VERIFY-RETRY-final-report-docs-02.md.",
+      "accepted_residual_risk": "FT-002 and REQ-003, REQ-004, and shared REQ-014 remain planned because TASK-035 owns the separate protected AC-011 class-entry outcome and the new outcomes still require their feature-level planning and semantic gates."
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md"
+  ],
+  "evidence_required": [],
+  "purpose": "Make recurring-schedule date entry strict and understandable for users while preserving the existing ISO request, storage, and scheduling contracts.",
+  "success_outcome": "The Admin schedule form presents and validates strict dd/mm/yyyy start/end values, converts valid values to canonical ISO YYYY-MM-DD Form Data, and leaves the existing center/class-scoped ISO draft JSON unchanged.",
+  "anti_goals": [
+    "Do not change Center & Scheduling date validation, recurrence, zero-occurrence rejection, Schedule/Lesson persistence, or the existing invalid_schedule envelope.",
+    "Do not change the study-calendar:schedule-draft:${centerId}:${classId} key, whitelist, ISO storage representation, or success/failure cleanup behavior.",
+    "Do not add a dependency, server route, server parser, calendar/lesson-context UI, authentication behavior, or FT-003 fixture work."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/admin/[centerId]/+page.svelte",
+      "tests/routes/admin-schedule-draft.test.ts"
+    ],
+    "forbidden_scope": [
+      "src/routes/admin/[centerId]/+page.server.ts",
+      "src/lib/server/modules/center-scheduling/",
+      "src/routes/lesson-context/",
+      "src/routes/api/lesson-context/",
+      ".memory-bank/tasks/TASK-031-T2-FT-002-W15.task.json",
+      ".protocols/TASK-031-T2-FT-002-W15/",
+      ".tasks/TASK-031-T2-FT-002-W15/",
+      ".memory-bank/tasks/TASK-032-T2-FT-002-W16.task.json",
+      ".protocols/TASK-032-T2-FT-002-W16/",
+      ".tasks/TASK-032-T2-FT-002-W16/"
+    ],
+    "stop_conditions": [
+      "Stop if strict dd/mm/yyyy input cannot preserve canonical ISO Form Data and the existing draft JSON without changing a server or storage boundary.",
+      "Stop if invalid or impossible dates cannot be rejected without changing Center & Scheduling validation or the existing schedule error contract.",
+      "Stop if implementation requires changing the protected Admin route's server load/action, adding a dependency, or touching FT-003/lesson-context behavior."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-010",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#ft-002-ac-010--schedule-date-input-uses-strict-ddmmyyyy-presentation",
+    ".memory-bank/requirements.md#req-004--lesson-scheduling-lifecycle",
+    ".memory-bank/contracts/authentication-transport.md#class-schedule-draft-retention",
+    ".memory-bank/architecture/system-architecture.md#1-sveltekit-application-shell"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#ft-002-ac-010--schedule-date-input-uses-strict-ddmmyyyy-presentation",
+    ".memory-bank/contracts/authentication-transport.md#class-schedule-draft-retention",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership"
+  ],
+  "constraints": [
+    "Use the existing Admin schedule form and preserve ordinary form submission; valid user text dd/mm/yyyy must become the same ISO YYYY-MM-DD values consumed by the existing action.",
+    "Keep storage/browser lifecycle SSR-safe and serialize only the existing startDate, endDate, and weekdays whitelist under the existing center/class key.",
+    "Keep the current calendar, schedule lifecycle, authorization, and zero-occurrence behavior unchanged."
+  ],
+  "invariants": [
+    "A valid dd/mm/yyyy date maps to exactly one canonical ISO YYYY-MM-DD wire/storage value; no locale-dependent value reaches the server or draft storage.",
+    "Malformed, impossible, or incomplete dates remain visibly invalid and cannot submit a non-ISO value.",
+    "Existing draft isolation, failure retention, successful cleanup, and SSR safety remain unchanged."
+  ],
+  "verification_targets": [
+    "FT-002-AC-010 / REQ-004: focused SSR/source and browser/form checks prove strict dd/mm/yyyy presentation and malformed/impossible-date rejection, while valid entry submits the unchanged ISO YYYY-MM-DD Form Data.",
+    "Regression: the existing AC-008 draft test proves the study-calendar:schedule-draft:${centerId}:${classId} key and exact ISO JSON whitelist remain unchanged; npm run check, npm run test, npm run build, and git diff --check pass.",
+    "Boundary review: source/diff inspection confirms no Admin server action, Center & Scheduling module, persistence, calendar/lesson-context route, dependency, or FT-003 fixture changes."
+  ]
+}

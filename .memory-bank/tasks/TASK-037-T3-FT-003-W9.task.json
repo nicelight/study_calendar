@@ -1,0 +1,140 @@
+{
+  "id": "TASK-037-T3-FT-003-W9",
+  "title": "Serve the authorized database-backed class calendar",
+  "status": "done",
+  "wave": "W9",
+  "feature": "FT-003",
+  "reqs": ["REQ-005", "REQ-014", "REQ-016"],
+  "depends_on": ["TASK-013-T2-FT-003-W7"],
+  "touched_files": [
+    "src/routes/calendar/+page.server.ts",
+    "src/routes/calendar/+page.svelte",
+    "tests/routes/calendar-authorized.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true}
+  ],
+  "verify": [
+    "VERDICT: PASS — fresh verifier-owned disposable production-preview HTTP/SSR matrix proved authorized Admin/Teacher/Student/Parent DB lesson facts and geometry; anonymous/revoked/cross-center/non-member/unassigned/removed denial; complete 29-table state equality and safe rerun; public /, /lesson-context, FT-002, source boundary, check/test/build/diff gates passed. Evidence: .protocols/TASK-037-T3-FT-003-W9/verification.md and .tasks/TASK-037-T3-FT-003-W9/TASK-037-T3-FT-003-W9-S-VERIFY-final-report-docs-01.md",
+    {
+      "stage": "semantic",
+      "attempt": "Fresh independent red-verifier session after functional PASS",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-037-T3-FT-003-W9/red-verification.md",
+      "artifact": ".tasks/TASK-037-T3-FT-003-W9/TASK-037-T3-FT-003-W9-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Adversarial review found no admitted material authority/privacy break across real load/hook/session wiring, provider-owned authorization and lesson queries, serialized SSR data, DB-derived geometry, client-context injection, revocation/removal, and state non-mutation.",
+        "Public /, /lesson-context, FT-002, Center & Scheduling, and downstream ownership remained intact; selected regressions passed 42/42, full tests 142/142, and check/build/diff gates passed."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "manual_explicit_owner": "/root",
+      "decision": "done",
+      "accepted_evidence": "The explicit top-level owner accepted the independent functional PASS and required T3 semantic-pass for FT-003-AC-007 / REQ-005 / REQ-014 / REQ-016, then requested this task-boundary sync. Current evidence is .tasks/TASK-037-T3-FT-003-W9/TASK-037-T3-FT-003-W9-S-VERIFY-final-report-docs-01.md and .tasks/TASK-037-T3-FT-003-W9/TASK-037-T3-FT-003-W9-S-RED-VERIFY-final-report-docs-01.md.",
+      "accepted_residual_risk": "FT-003, EP-002, and REQ-005/REQ-006/REQ-014/REQ-016 remain planned pending TASK-038's AC-008 outcome and the aggregate feature semantic gate; TASK-038 remains planned and all prior verified/done task identities, evidence, dependencies, and code remain unchanged."
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-003.md",
+    ".protocols/FT-003/plan.md",
+    ".protocols/FT-003/decision-log.md"
+  ],
+  "evidence_required": [
+    "FT-003-AC-007 / REQ-005 / REQ-014 RED: authenticated `/calendar` is absent, renders the public fixture, or accepts a class/role without server scope; GREEN: a fresh disposable SvelteKit SSR/HTTP matrix proves Admin, assigned Teacher, permitted Student, and linked Parent receive only current DB-backed lessons for the authorized class, while anonymous/revoked, cross-center, non-member, unassigned, and removed requests fail before lesson data renders. Decisive comparison: HTTP status/body, fixture absence, role/class scope, lesson identity/date/status, and complete database state-before/state-after equality; artifact: `.tasks/TASK-037-T3-FT-003-W9/` and `.protocols/TASK-037-T3-FT-003-W9/verification.md`."
+  ],
+  "purpose": "Replace the authenticated calendar fixture path with an authorized DB-backed class calendar.",
+  "success_outcome": "An authorized Admin, Teacher, Student, or Parent opening `/calendar?classId={classId}&date={YYYY-MM-DD}` receives current class lessons from Center & Scheduling through a server-rendered calendar, while invalid or revoked scope fails before protected lesson data renders.",
+  "anti_goals": [
+    "Do not change the public home fixture or its existing `/` presentation; the authenticated `/calendar` path must stop using that fixture without removing public-home behavior.",
+    "Do not implement the calendar lesson-link query contract or modify the existing `/lesson-context` route/module; TASK-038 owns navigation context.",
+    "Do not trust client-supplied role, center, class, lesson, or student fields; do not write scheduling, lesson, progress, collaboration, or financial state."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/calendar/",
+      "tests/routes/calendar-authorized.test.ts"
+    ],
+    "forbidden_scope": [
+      "src/routes/+page.svelte",
+      "src/lib/calendar.ts",
+      "src/routes/lesson-context/",
+      "src/routes/api/lesson-context/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/collaboration/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      ".memory-bank/tasks/TASK-013-T2-FT-003-W7.task.json",
+      ".protocols/TASK-013-T2-FT-003-W7/",
+      ".tasks/TASK-013-T2-FT-003-W7/",
+      ".memory-bank/tasks/TASK-014-T3-FT-003-W8.task.json",
+      ".protocols/TASK-014-T3-FT-003-W8/",
+      ".tasks/TASK-014-T3-FT-003-W8/",
+      ".memory-bank/tasks/TASK-018-T3-FT-005-W8.task.json",
+      ".protocols/TASK-018-T3-FT-005-W8/",
+      ".tasks/TASK-018-T3-FT-005-W8/"
+    ],
+    "stop_conditions": [
+      "Stop if `/calendar` cannot consume the existing server Actor Context and Center & Scheduling Calendar and Membership Query Boundary without a new authorization or persistence contract; route to /spec-redesign only for an accepted shared-boundary change.",
+      "Stop if the authenticated calendar must read the public home fixture, access Center & Scheduling persistence directly, or change the existing Lesson Context route/module.",
+      "Stop if the role/center/class scope cannot be resolved server-side or if the denial matrix cannot prove no protected lesson data and state equality."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-003-calendar-and-lesson-context.md#FT-003-AC-007",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/domains/core-domain.md#read-and-write-data-flow",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
+    ".memory-bank/states/lifecycle-map.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/domains/core-domain.md#read-and-write-data-flow",
+    ".memory-bank/domains/core-domain.md",
+    ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "The route server load resolves the request actor through the existing session/Actor Context and reads class scope plus lesson facts through Center & Scheduling's named public query; the component remains presentation-only.",
+    "The authenticated `/calendar` path uses current DB-backed LessonView facts and the existing calendar geometry helper only as a pure presenter; it does not invoke the public home fixture's default lesson weekdays.",
+    "This task owns the protected calendar read only; exact lesson-link query construction and follow-through belong to TASK-038."
+  ],
+  "invariants": [
+    "Every rendered lesson belongs to the server-authorized center/class scope and is not synthesized from fixture weekdays or client role/class fields.",
+    "Unauthenticated, revoked, cross-center, non-member, unassigned, and removed requests render no protected lesson data and leave persisted state unchanged.",
+    "The public `/` fixture, existing `/lesson-context` owner, FT-004/FT-005/FT-006 ownership, and all completed prerequisite tasks remain unchanged."
+  ],
+  "verification_targets": [
+    "FT-003-AC-007 / REQ-005 / REQ-014: a fresh isolated real SvelteKit SSR/HTTP matrix exercises four permitted roles plus anonymous/revoked, cross-center, non-member, unassigned, and removed branches; compare status/body, fixture absence, current DB lesson identity/date/status, authorized class scope, complete state snapshots, safe rerun, and cleanup.",
+    "Boundary regression: source and generated-build review confirms the route imports only named public queries and the pure calendar presenter, does not modify `/`, `/lesson-context`, Center & Scheduling, or downstream slices, and project-native check/test/build/diff gates pass."
+  ]
+}

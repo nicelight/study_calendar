@@ -5,6 +5,18 @@ import { buildCalendarWeeks } from '../../src/lib/calendar';
 
 const routeSource = readFileSync(resolve(process.cwd(), 'src/routes/+page.svelte'), 'utf8');
 
+describe('FT-001 public home login entry', () => {
+	it('FT-001-AC-012 exposes a visible ordinary login anchor without an auth action', () => {
+		const loginEntry = '<a class="login-link" href="/login">Вход</a>';
+
+		expect(routeSource).toContain(loginEntry);
+		expect(routeSource).toMatch(/\.login-link:focus-visible/);
+		expect(routeSource).not.toMatch(/goto\(['"]\/login/);
+		expect(routeSource).not.toMatch(/(?:window\.)?location(?:\.href)?\s*=\s*['"]\/login/);
+		expect(routeSource).not.toMatch(/location\.(?:assign|replace)\(['"]\/login/);
+	});
+});
+
 describe('FT-003 calendar presentation claims', () => {
 	it('FT-003-AC-001 exposes exact date navigation and elastic weekly geometry', () => {
 		expect(routeSource).toMatch(/type=["']date["']/);

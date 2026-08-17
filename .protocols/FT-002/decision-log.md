@@ -109,3 +109,60 @@ explicit lifecycle owner reconciled FT-002 and REQ-004 to `verified`; EP-001 is
 also `verified` because both of its feature outcomes and applicable REQ
 mappings are verified. TASK-026, TASK-031, and TASK-032 remain `done` with all
 implementation and evidence unchanged.
+
+## 2026-08-14 — Accepted W18/W19 UI outcomes
+
+The operator accepted two cohesive FT-002 follow-ups after the AC-001..AC-009
+feature closure. First, the schedule form must present strict user-facing
+`dd/mm/yyyy` date values, explicitly reject malformed/impossible dates, and
+preserve canonical ISO `YYYY-MM-DD` Form Data plus the existing scoped draft
+JSON. This is a local T1 presentation/input task and does not alter server
+validation, persistence, draft key/shape, or schedule lifecycle.
+
+Second, the protected `/center/{centerId}/class/{classId}` entry shell must be
+role-scoped for permitted Admin, Teacher, Student, and Parent members using
+server-resolved Actor Context and `AuthorizedClassScope`. Unauthenticated,
+cross-center, non-member, and removed-assignment requests fail before protected
+class data renders. The existing `/admin/{centerId}` management route remains;
+Lesson Context/calendar content, direct database access, and role-changing
+controls are excluded.
+
+This is `rebuild_required`: create `TASK-034-T1-FT-002-W18` and
+`TASK-035-T3-FT-002-W19`, both depending on done TASK-032. Extend the existing
+Authentication Transport schedule-draft/Browser API rules and Boundary Map
+Calendar and Membership Query Boundary; no new SDD spec or global architecture
+decision is needed. FT-002, REQ-003, REQ-004, and shared REQ-014 remain
+`planned`; all prior task identities, evidence, dependencies, implementation,
+and Planning Revision `2` remain unchanged.
+
+## 2026-08-14 — TASK-034 strict date-input closure sync
+
+The explicit lifecycle owner consumed Implementer Attempt 2 `PASS` and the
+same-Reviewer retry `PASS` for AC-010 / REQ-004. `TASK-034-T1-FT-002-W18` is
+now `done`; its prior reviewer `FAIL`, retry correction, implementation, and
+all task-scoped evidence remain preserved. The retry report proves the exact
+`dd/mm/yyyy` native patterns, valid leap/end-of-year acceptance, canonical ISO
+Form Data and scoped draft, malformed/impossible rejection, and project gates.
+
+This is a task-boundary closure only: TASK-035 remains `planned`, FT-002,
+REQ-003, REQ-004, and shared REQ-014 remain `planned`, and no feature-level
+promotion, dependency, Planning Revision, or implementation change is made.
+
+## 2026-08-14 — TASK-035 protected class-entry closure sync
+
+The explicit lifecycle owner consumed independent Attempt 2 functional `PASS`
+and the required T3 per-task `semantic-pass` for AC-011 / REQ-003 / REQ-014.
+`TASK-035-T3-FT-002-W19` is now `done`; its initial route-wiring `FAIL`, bounded
+retry correction, fresh real SSR/HTTP matrix, and adversarial evidence remain
+preserved. FT-002, REQ-003, REQ-004, and shared REQ-014 remain `planned`
+pending the feature-level aggregate red-verify. TASK-034, TASK-026, TASK-031,
+and TASK-032 remain `done`; no code, dependency, or Planning Revision changed.
+
+## 2026-08-15 — FT-002 final feature-boundary closure
+
+Fresh feature-level adversarial verification returned exactly one
+`SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-011 with no material
+finding or unresolved operator decision. The explicit owner reconciled FT-002,
+REQ-003, REQ-004, shared REQ-014, and EP-001 to `verified`. TASK-026, TASK-031,
+TASK-032, TASK-034, and TASK-035 remain `done`; FT-003 and unrelated lifecycle
+surfaces are unchanged.

@@ -178,6 +178,73 @@ describe('recurring schedules and stable lesson exceptions', () => {
 		);
 	});
 
+	it('replaces overlapping planned dates while preserving completed and cancelled history', () => {
+		const api = scheduling(root);
+		createWeeklySchedule('schedule-old');
+
+		const replacement = api.createRecurringSchedule({
+			sessionToken: 'session-admin-own',
+			classId: 'class-own',
+			scheduleId: 'schedule-new',
+			startDate: '2026-08-03',
+			endDate: '2026-08-10',
+			weekdays: [1]
+		}) as any[];
+
+		expect(replacement.map((lesson) => lesson.lessonDate)).toEqual(['2026-08-03', '2026-08-10']);
+		expect(api.getLessons({ sessionToken: 'session-admin-own', classId: 'class-own' })).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ lessonDate: '2026-08-03', scheduleId: 'schedule-new' }),
+				expect.objectContaining({ lessonDate: '2026-08-10', scheduleId: 'schedule-new' }),
+				expect.objectContaining({ lessonDate: '2026-08-05', scheduleId: 'schedule-old' }),
+				expect.objectContaining({ lessonDate: '2026-08-12', scheduleId: 'schedule-old' }),
+				expect.objectContaining({ lessonDate: '2026-08-17', scheduleId: 'schedule-old' })
+			])
+		);
+		expect(
+			root.database.sqlite
+				.prepare('SELECT lesson_date, COUNT(*) AS count FROM lessons WHERE class_id = ? GROUP BY lesson_date')
+				.all('class-own')
+		).toEqual([
+			{ lesson_date: '2026-08-03', count: 1 },
+			{ lesson_date: '2026-08-05', count: 1 },
+			{ lesson_date: '2026-08-10', count: 1 },
+			{ lesson_date: '2026-08-12', count: 1 },
+			{ lesson_date: '2026-08-17', count: 1 }
+		]);
+
+		const completed = root.database.sqlite
+			.prepare('SELECT id FROM lessons WHERE class_id = ? AND lesson_date = ?')
+			.get('class-own', '2026-08-05') as { id: string };
+		root.database.sqlite.prepare("UPDATE lessons SET status = 'completed' WHERE id = ?").run(completed.id);
+		const cancelled = root.database.sqlite
+			.prepare('SELECT id FROM lessons WHERE class_id = ? AND lesson_date = ?')
+			.get('class-own', '2026-08-12') as { id: string };
+		root.database.sqlite.prepare("UPDATE lessons SET status = 'cancelled' WHERE id = ?").run(cancelled.id);
+		const beforeConflict = {
+			schedules: root.database.sqlite.prepare('SELECT * FROM schedules ORDER BY id').all(),
+			lessons: root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()
+		};
+		let cause: unknown;
+		try {
+			api.createRecurringSchedule({
+				sessionToken: 'session-admin-own',
+				classId: 'class-own',
+				scheduleId: 'schedule-conflict',
+				startDate: '2026-08-05',
+				endDate: '2026-08-05',
+				weekdays: [3]
+			});
+		} catch (error) {
+			cause = error;
+		}
+		expect(cause).toMatchObject({ message: 'schedule-date-conflict' });
+		expect({
+			schedules: root.database.sqlite.prepare('SELECT * FROM schedules ORDER BY id').all(),
+			lessons: root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()
+		}).toEqual(beforeConflict);
+	});
+
 	it('FT-002-AC-004 preserves transfer identity/context and prevents duplicate chargeable lesson identity', () => {
 		const api = scheduling(root);
 		const financial = ledger(root);

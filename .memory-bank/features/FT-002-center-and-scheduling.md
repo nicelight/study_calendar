@@ -42,6 +42,10 @@ spec_design_links:
   that rejection to `400 { error: "invalid_schedule" }`; no Teacher schedule
   HTTP transport exists in the current scope, so its private owner sentinel is
   not exposed or replaced by a new transport.
+- Creating a new recurring schedule replaces overlapping `planned` lessons for
+  the class and removes empty superseded schedules. Existing `completed` or
+  `cancelled` lessons are preserved; if the new dates overlap either status,
+  the operation rejects before changing schedules or lessons.
 
 ## Acceptance Criteria
 
@@ -63,8 +67,11 @@ spec_design_links:
 - REQ: REQ-004
 - Given a recurring class schedule, then planned lessons are created for its
   repetitions and an explicit add/transfer/cancel operation affects only the
-  selected lesson.
-- Verification: schedule lifecycle scenario with unaffected-repetition check.
+  selected lesson. When a new recurring schedule overlaps existing dates, its
+  planned lessons replace the old planned lessons for those dates; completed
+  and cancelled lessons remain protected and cause an atomic conflict.
+- Verification: schedule lifecycle scenario with unaffected-repetition and
+  protected-history checks.
 
 ### FT-002-AC-004 — Transfer preserves lesson identity
 - REQ: REQ-004
@@ -136,6 +143,36 @@ spec_design_links:
   exact Schedule/Lesson state-before/state-after equality; the Admin browser
   draft/retention observation remains AC-008 supporting evidence only.
 
+### FT-002-AC-010 — Schedule date input uses strict dd/mm/yyyy presentation
+- REQ: REQ-004
+- Given an Admin opens a recurring-schedule form, then each start/end date
+  control presents and accepts the strict user-facing `dd/mm/yyyy` format with
+  an explicit invalid-date state for malformed or impossible calendar values.
+  The submitted form payload and the existing scoped browser draft continue to
+  carry canonical ISO `YYYY-MM-DD` values; no server schedule contract or
+  persistence representation changes.
+- Verification: SSR/source and focused browser/form checks prove the visible
+  `dd/mm/yyyy` controls, strict parse/format behavior, unchanged ISO Form Data,
+  unchanged `study-calendar:schedule-draft:${centerId}:${classId}` payload,
+  and clean handling of invalid dates.
+
+### FT-002-AC-011 — Role-scoped class entry shell is available for permitted members
+- REQ: REQ-003, REQ-014
+- Given an authenticated Admin, Teacher, Student, or Parent has permitted
+  membership/assignment scope for a class, when they open
+  `/center/{centerId}/class/{classId}`, then the server-rendered class entry
+  shell exposes the server-resolved role and class context for that principal.
+  Unauthenticated, cross-center, non-member, and removed-assignment requests
+  are denied or redirected before protected class data is rendered. The
+  existing `/admin/{centerId}` management surface remains intact; this outcome
+  adds no lesson-context/calendar content, role-changing control, or direct
+  database access.
+- Verification: SSR/HTTP matrix covers all four permitted roles plus
+  unauthenticated, cross-center, non-member, and removed-assignment denials;
+  source review confirms `Center & Scheduling` authorization is used and no
+  client-supplied role/center/class field or FT-003 lesson-context route is
+  trusted.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -146,6 +183,8 @@ spec_design_links:
 | Removed teacher/member access revocation | FT-002-AC-006 |
 | Unfinished schedule survives same-form return/reload without cross-scope restore | FT-002-AC-008 |
 | Zero-occurrence recurring schedule cannot create empty persisted state | FT-002-AC-009 |
+| Strict localized schedule date presentation preserves ISO wire/storage | FT-002-AC-010 |
+| Role-scoped class entry for permitted Admin/Teacher/Student/Parent | FT-002-AC-011 |
 
 ## SDD Design Gate
 Global membership, scheduling, storage, authorization, and boundary ownership
@@ -163,28 +202,108 @@ Feature-level contract detail remains downstream task-design work.
 ## Semantic Verification
 
 - Report: [.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md](../../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md): durable feature semantic report
-- Fresh independent adversarial review covered AC-001..AC-009 across all five
-  indexed FT-002 tasks, current source and direct contracts, disposable owner
-  and route state, protected Chrome localStorage behavior, authorization and
-  cross-center isolation, assignment/history/revocation, valid recurrence,
-  lesson identity, adapter-specific failure handling, SSR safety, and secret
-  exclusion.
-- The accepted zero-occurrence decision now holds end to end: Center &
-  Scheduling rejects before Schedule/Lesson writes for an own-center Admin and
-  assigned Teacher; the existing Admin adapter alone maps the private sentinel
-  to `400 { error: "invalid_schedule" }`, and no Teacher HTTP transport exists.
-- Fresh gates passed: focused composition 14/14, independent TASK-026 probe
-  3/3, Chrome draft probe, `npm run check`, `npm run build`, `npm test` (29
-  files / 116 tests), and `git diff --check`.
+- Fresh independent adversarial review covered AC-001..AC-011 across all seven
+  indexed FT-002 tasks, current source and direct contracts, a disposable
+  SQLite/Vite runtime, protected Chrome 151, real SSR/HTTP requests, and the
+  generated production route.
+- Strict `dd/mm/yyyy` inputs produced only ISO Form Data and scoped draft JSON,
+  rejected malformed/impossible values explicitly, retained the matching draft
+  after zero-occurrence rejection, and cleared only that key after confirmed
+  success. Existing Admin and schedule behavior remained intact.
+- The role-scoped class shell returned matching server-resolved context for
+  permitted Admin, Teacher, Student, and Parent requests; anonymous, revoked,
+  cross-center, non-member, unassigned, and removed access failed before
+  protected rendering with unchanged read state. The route uses Center &
+  Scheduling authorization and introduces no FT-003 calendar/Lesson Context
+  content or direct persistence.
+- Fresh gates passed: composition regressions 36/36, independent TASK-026 probe
+  3/3, `npm run check`, `npm run build`, `npm test` (30 files / 131 tests), and
+  `git diff --check`.
 
 SEMANTIC_VERDICT: semantic-pass
 
 No material finding or operator question remains. The explicit lifecycle owner
-has consumed this gate and reconciled FT-002, REQ-004, and EP-001 at the owned
-`/mb-sync` boundary; this verifier changed no lifecycle or task status.
+may consume this current AC-001..AC-011 gate and reconcile FT-002, REQ-003,
+REQ-004, shared REQ-014, and EP-001 at the owned `/mb-sync` boundary; this
+verifier changed no lifecycle or task status.
 
 - [TASK-032 card](../tasks/TASK-032-T2-FT-002-W16.task.json)
-- [TASK-032 functional evidence](../../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-VERIFY-final-report-docs-01.md)
-- [TASK-032 sync evidence](../../.tasks/TASK-032-T2-FT-002-W16/TASK-032-T2-FT-002-W16-S-MB-SYNC-final-report-docs-01.md)
+- [TASK-034 retry verification](../../.tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-VERIFY-RETRY-final-report-docs-02.md)
+- [TASK-035 retry verification](../../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-VERIFY-RETRY-final-report-docs-02.md)
+- [TASK-035 semantic verification](../../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-RED-VERIFY-final-report-docs-01.md)
+
+## FT-002 final feature-boundary closure — 2026-08-15
+
+The fresh feature-level report records exactly one
+`SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-011 with no material
+finding or unresolved operator decision. The explicit lifecycle owner now
+reconciles FT-002 to `verified`; TASK-026, TASK-031, TASK-032, TASK-034, and
+TASK-035 remain `done` with their identities, code, and evidence preserved.
+FT-003 and downstream feature ownership are unchanged.
+
+- [feature semantic report](../../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
+- [feature sync report](../../.tasks/FT-002/FT-002-S-MB-SYNC-final-report-docs-02.md)
 - [fresh feature semantic evidence](../../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
-- [feature sync evidence](../../.tasks/FT-002/FT-002-S-MB-SYNC-final-report-docs-01.md)
+
+## W18/W19 Planning Reconciliation — 2026-08-14
+
+The operator accepted two new material outcomes after the prior AC-001..AC-009
+feature closure. `FT-002-AC-010` adds strict user-facing `dd/mm/yyyy` schedule
+date input while preserving canonical ISO Form Data and the existing scoped
+draft JSON. `FT-002-AC-011` adds a protected role-scoped class entry shell at
+`/center/{centerId}/class/{classId}` for server-authorized Admin, Teacher,
+Student, and Parent members, while preserving `/admin/{centerId}` and excluding
+Lesson Context/calendar content.
+
+The fresh queue is `rebuild_required`: `TASK-034-T1-FT-002-W18` owns AC-010 and
+`TASK-035-T3-FT-002-W19` owns AC-011; both depend on done TASK-032. The accepted
+Authentication Transport and Boundary Map concerns are extended in place, with
+no new SDD spec or Planning Revision change. FT-002, REQ-003, REQ-004, and
+shared REQ-014 remain `planned` until these outcomes are implemented and
+verified. TASK-026, TASK-031, TASK-032, their evidence, and all prior code stay
+unchanged.
+
+## TASK-034 task closure — 2026-08-14
+
+The explicit owner reconciled `TASK-034-T1-FT-002-W18` to `done` after the
+Implementer Attempt 2 and same-Reviewer retry both passed. The accepted
+AC-010 evidence proves strict rendered `dd/mm/yyyy` controls, valid-date
+native constraint acceptance, canonical ISO Form Data and scoped draft values,
+malformed/impossible rejection, and unchanged protected boundaries. The first
+reviewer `FAIL` and all retry history remain preserved in the task protocol and
+reports.
+
+This task sync does not promote the feature or requirements. `TASK-035` remains
+`planned` for AC-011, and FT-002, REQ-003, REQ-004, and shared REQ-014 remain
+`planned` pending the remaining task-planning and feature-level semantic gates.
+
+- [TASK-034 card](../tasks/TASK-034-T1-FT-002-W18.task.json)
+- [TASK-034 retry verification](../../.tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-VERIFY-RETRY-final-report-docs-02.md)
+- [TASK-034 sync report](../../.tasks/TASK-034-T1-FT-002-W18/TASK-034-T1-FT-002-W18-S-MB-SYNC-final-report-docs-01.md)
+
+## TASK-035 readiness promotion — 2026-08-14
+
+The fresh pre-execution task-plan review returned `APPROVE` for Planning
+Revision `2`, with architecture approval and no blocking findings. The strict
+doctor gate is `PASS`, so `TASK-035-T3-FT-002-W19` is now `ready` for its
+protected AC-011 route execution. Its T3/W19 identity, server-resolved
+authorization boundary, direct SDD links, and dependency on done TASK-032 are
+unchanged. TASK-034 remains `done`; FT-002 and its mapped requirements remain
+`planned` until implementation and semantic verification complete.
+
+- [TASK-035 card](../tasks/TASK-035-T3-FT-002-W19.task.json)
+- [fresh pre-execution review](../../.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-002-PRE035-R2-final-report-docs-01.md)
+
+## TASK-035 T3 closure — 2026-08-14
+
+The explicit owner reconciled `TASK-035-T3-FT-002-W19` to `done` after the
+independent Attempt 2 functional `PASS` and required per-task T3
+`semantic-pass`. The initial route-wiring `FAIL`, retry correction, real
+SSR/HTTP role/denial matrix, and adversarial review remain preserved. FT-002
+and REQ-003, REQ-004, and shared REQ-014 remain `planned` pending the
+feature-level aggregate red-verify; TASK-034 and earlier completed tasks stay
+unchanged.
+
+- [TASK-035 card](../tasks/TASK-035-T3-FT-002-W19.task.json)
+- [TASK-035 retry verification](../../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-VERIFY-RETRY-final-report-docs-02.md)
+- [TASK-035 semantic verification](../../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-RED-VERIFY-final-report-docs-01.md)

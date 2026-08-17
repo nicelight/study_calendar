@@ -315,3 +315,17 @@ W10 supporting ownership is recorded by TASK-022 (AC-006/007 browser binding),
 TASK-023 (AC-004/007 bounded retention/failure), and TASK-024 (AC-006/007
 composition/platform wiring). The current durable reconciliation is the
 [feature MB-SYNC report](../../.tasks/FT-001/FT-001-S-MB-SYNC-final-report-docs-02.md).
+
+## W17 public home login entry
+
+The accepted boundary is one ordinary visible `Вход` anchor from public `/` to
+existing `/login`, with no session/auth/provider behavior. `TASK-033-T1-FT-001-W17`
+is its single implementation/proof unit after done TASK-030; calendar fixture
+replacement and every FT-003 data-backed calendar decision are excluded. The
+task is now `done` with independent functional `PASS` and Reviewer `PASS`.
+FT-001, REQ-001, and EP-001 remain `planned` because remaining UI/product
+outcomes are outside AC-012.
+
+- [TASK-033 card](../../.memory-bank/tasks/TASK-033-T1-FT-001-W17.task.json)
+- [independent verification](../../.tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-VERIFY-final-report-docs-01.md)
+- [task-level sync](../../.tasks/TASK-033-T1-FT-001-W17/TASK-033-T1-FT-001-W17-S-MB-SYNC-final-report-docs-01.md)

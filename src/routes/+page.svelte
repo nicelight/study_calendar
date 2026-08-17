@@ -45,6 +45,7 @@
 					Занятия получают больше места, а свободные дни остаются рядом — чтобы видеть
 					всю неделю и не терять точную дату.
 				</p>
+				<a class="login-link" href="/login">Вход</a>
 			</div>
 
 			<label class="date-picker">
@@ -183,6 +184,26 @@
 		line-height: 1.6;
 	}
 
+	.login-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 2.5rem;
+		margin-top: 1.2rem;
+		padding: 0.55rem 1rem;
+		border: 1px solid var(--sage-deep);
+		border-radius: 999px;
+		background: var(--sage-deep);
+		color: var(--surface);
+		font-size: 0.9rem;
+		font-weight: 800;
+		text-decoration: none;
+	}
+
+	.login-link:hover {
+		filter: brightness(0.92);
+	}
+
 	.date-picker {
 		display: grid;
 		min-width: 13.5rem;
@@ -210,6 +231,7 @@
 		font-weight: 800;
 	}
 
+	.login-link:focus-visible,
 	.date-picker input:focus-visible,
 	.day:focus-visible {
 		outline: 3px solid var(--clay);

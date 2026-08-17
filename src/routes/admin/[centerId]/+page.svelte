@@ -24,6 +24,8 @@
 		weekdays: number[];
 	};
 
+	type ScheduleDateField = 'startDate' | 'endDate';
+
 	function scheduleDraftKey(centerId: string, classId: string): string {
 		return `study-calendar:schedule-draft:${centerId}:${classId}`;
 	}
@@ -34,6 +36,19 @@
 		if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
 		const date = new Date(`${value}T00:00:00.000Z`);
 		return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+	}
+
+	function parseScheduleDate(value: string): string | null {
+		const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+		if (!match) return null;
+		const [, day, month, year] = match;
+		const isoDate = `${year}-${month}-${day}`;
+		return isStoredDate(isoDate) ? isoDate : null;
+	}
+
+	function formatScheduleDate(value: string): string {
+		if (!isStoredDate(value) || value === '') return '';
+		return `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
 	}
 
 	function isScheduleDraft(value: unknown): value is ScheduleDraft {
@@ -89,6 +104,30 @@
 		}
 	}
 
+	function syncScheduleDateInput(input: HTMLInputElement): void {
+		const field = input.dataset.scheduleDateField as ScheduleDateField | undefined;
+		if (field !== 'startDate' && field !== 'endDate') return;
+
+		const formElement = input.form;
+		const hiddenInput = formElement?.querySelector<HTMLInputElement>(
+			`input[type="hidden"][name="${field}"]`
+		);
+		if (!formElement || !hiddenInput) return;
+
+		const isoDate = parseScheduleDate(input.value);
+		const invalid = input.value !== '' && isoDate === null;
+		input.setCustomValidity(invalid ? 'Введите существующую дату в формате dd/mm/yyyy.' : '');
+		input.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+		hiddenInput.value = isoDate ?? '';
+
+		const error = formElement.querySelector<HTMLElement>(`[data-date-error-for="${field}"]`);
+		if (error) error.hidden = !invalid;
+	}
+
+	function syncScheduleDate(event: Event): void {
+		syncScheduleDateInput(event.currentTarget as HTMLInputElement);
+	}
+
 	function persistScheduleDraft(event: Event): void {
 		saveScheduleDraft(event.currentTarget as HTMLFormElement);
 	}
@@ -101,9 +140,19 @@
 
 		const startDate = formElement.querySelector<HTMLInputElement>('[name="startDate"]');
 		const endDate = formElement.querySelector<HTMLInputElement>('[name="endDate"]');
-		if (!startDate || !endDate) return;
+		const startDateInput = formElement.querySelector<HTMLInputElement>(
+			'[data-schedule-date-field="startDate"]'
+		);
+		const endDateInput = formElement.querySelector<HTMLInputElement>(
+			'[data-schedule-date-field="endDate"]'
+		);
+		if (!startDate || !endDate || !startDateInput || !endDateInput) return;
 		startDate.value = draft.startDate;
 		endDate.value = draft.endDate;
+		startDateInput.value = formatScheduleDate(draft.startDate);
+		endDateInput.value = formatScheduleDate(draft.endDate);
+		syncScheduleDateInput(startDateInput);
+		syncScheduleDateInput(endDateInput);
 		for (const input of formElement.querySelectorAll<HTMLInputElement>('[name="weekdays"]')) {
 			input.checked = draft.weekdays.includes(Number(input.value));
 		}
@@ -151,7 +200,7 @@
 			class_created: 'Класс создан.',
 			class_updated: 'Класс обновлён.',
 			class_deleted: 'Класс удалён.',
-			schedule_created: 'Расписание и запланированные уроки созданы.',
+			schedule_created: 'Расписание создано; пересекающиеся запланированные даты заменены.',
 			teacher_assigned: 'Учитель назначен на класс.',
 			teacher_removed: 'Доступ учителя к классу отозван.',
 			teacher_membership_removed: 'Учитель удалён из центра.',
@@ -167,6 +216,7 @@
 			invalid_name: 'Укажите название класса.',
 			invalid_mode: 'Выберите индивидуальный или групповой режим.',
 			invalid_schedule: 'Проверьте даты и выберите хотя бы один день недели.',
+			schedule_conflict: 'Нельзя заменить завершённое или отменённое занятие.',
 			invalid_teacher: 'Выберите учителя этого центра.',
 			invalid_role: 'Выберите разрешённую роль участника.',
 			conflict: 'Операция конфликтует с текущими данными класса.',
@@ -252,7 +302,15 @@
 									<h3>{classView.name}</h3>
 									<p>{classView.studentCount} учеников · {classView.schedules.length} расписаний</p>
 								</div>
-								<code>{classView.classId}</code>
+								<div class="class-title-actions">
+									<code>{classView.classId}</code>
+									<a
+										class="button secondary"
+										href={`/center/${data.centerId}/class/${classView.classId}`}
+									>
+										Открыть класс
+									</a>
+								</div>
 							</div>
 
 							<details>
@@ -323,8 +381,42 @@
 								>
 									<input type="hidden" name="classId" value={classView.classId} />
 									<div class="date-grid">
-										<label><span>С даты</span><input type="date" name="startDate" required /></label>
-										<label><span>По дату</span><input type="date" name="endDate" required /></label>
+										<input type="hidden" name="startDate" />
+										<input type="hidden" name="endDate" />
+										<label>
+											<span>С даты (dd/mm/yyyy)</span>
+											<input
+												type="text"
+												inputmode="numeric"
+												placeholder="dd/mm/yyyy"
+												pattern={'[0-9]{2}/[0-9]{2}/[0-9]{4}'}
+												required
+												data-schedule-date-field="startDate"
+												aria-invalid="false"
+												oninput={syncScheduleDate}
+												onchange={syncScheduleDate}
+											/>
+											<span class="date-error" data-date-error-for="startDate" hidden role="alert">
+												Введите существующую дату в формате dd/mm/yyyy.
+											</span>
+										</label>
+										<label>
+											<span>По дату (dd/mm/yyyy)</span>
+											<input
+												type="text"
+												inputmode="numeric"
+												placeholder="dd/mm/yyyy"
+												pattern={'[0-9]{2}/[0-9]{2}/[0-9]{4}'}
+												required
+												data-schedule-date-field="endDate"
+												aria-invalid="false"
+												oninput={syncScheduleDate}
+												onchange={syncScheduleDate}
+											/>
+											<span class="date-error" data-date-error-for="endDate" hidden role="alert">
+												Введите существующую дату в формате dd/mm/yyyy.
+											</span>
+										</label>
 									</div>
 									<fieldset>
 										<legend>Дни занятий</legend>
@@ -467,6 +559,8 @@
 	.class-title-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: start; justify-content: space-between; }
 	.class-title-row h3 { margin: .55rem 0 .25rem; font-size: 1.45rem; }
 	.class-title-row p { margin: 0; color: var(--muted); font-size: .88rem; }
+	.class-title-actions { display: grid; gap: .65rem; justify-items: end; }
+	.class-title-actions .button { width: auto; }
 	code { color: var(--muted); font: .78rem/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace; overflow-wrap: anywhere; }
 	.mode-pill { display: inline-flex; padding: .28rem .52rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: .7rem; font-weight: 850; }
 	.mode-pill.individual { background: #f3e6d0; color: #815f2e; }
@@ -483,6 +577,8 @@
 	.inline-form { display: grid; gap: .65rem; }
 	.schedule-form { display: grid; gap: .9rem; padding: 1rem; border-radius: .8rem; background: var(--surface-soft); }
 	.date-grid { display: grid; gap: .75rem; }
+	.date-error { color: var(--danger); }
+	:global([data-schedule-date-field][aria-invalid="true"]) { border-color: var(--danger); }
 	fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 	.weekday-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; margin-top: .5rem; }
 	.weekday-grid label { position: relative; }
