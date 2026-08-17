@@ -9,8 +9,11 @@ status: active
 - [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md): ready pre-PRD framing.
 
 ## Decomposition
-- Derive one L1 Product, stable REQ IDs, five value-oriented epics, and six product features.
+- Derive one L1 Product, stable REQ IDs, six value-oriented epics, and seven product features.
 - Keep authentication, center operations, calendar/day context, collaboration, learning progress, and finance traceable to PRD behavior.
+- Keep protected navigation and center-scoped read-only statistics as a separate
+  product outcome without introducing a global Admin role, cross-center scope,
+  or a new statistics source of truth.
 - Keep privacy, financial correctness, and final acceptance as cross-cutting requirements with feature-level acceptance coverage.
 - Stop before architecture/task design; `/spec-design` owns global backbone and Foundation decisions.
 
@@ -19,6 +22,9 @@ status: active
 - Split scheduling/center administration from the calendar because recurring schedule exceptions and membership lifecycle have an independently observable administrative outcome.
 - Keep shared/personal day context with the calendar because both use one temporal navigation outcome and one authorized day-opening flow.
 - Keep payment ledger separate from learning progress because monetary allocation, audit, and historical-price correctness are independently verifiable outcomes.
+- Split navigation/statistics from core calendar and finance because the menu,
+  role-scoped registries, typed sorting, and derived metrics form an independent
+  read-only acceptance cluster.
 
 ## Validation
 - Every feature has stable `FT-<NNN>-AC-<NNN>` criteria, governing `REQ-*`, verification method, and acceptance closure.

@@ -6,7 +6,7 @@ id: FT-006
 lifecycle: verified
 last_updated: 2026-08-17
 epic: EP-005
-requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015, REQ-016]
+requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015]
 spec_design_status: complete
 spec_design_links:
   - .memory-bank/architecture/system-architecture.md#storage-and-data-flow-rules
@@ -49,7 +49,7 @@ spec_design_links:
 - Verification: pricing integration scenario with before/after setting change.
 
 ### FT-006-AC-002 — Payments allocate oldest debts deterministically
-- REQ: REQ-012, REQ-015, REQ-016
+- REQ: REQ-012, REQ-015
 - Given a sequence of charges and a payment with factual date, then the payment
   is allocated to the oldest uncovered charges first, producing the same balance
   and allocation for the same input sequence.
@@ -81,7 +81,7 @@ spec_design_links:
 - Verification: positive and negative role/membership authorization scenarios.
 
 ### FT-006-AC-006 — Payment marker is a non-financial projection
-- REQ: REQ-013, REQ-016
+- REQ: REQ-013
 - Given a payment dated on a lesson day, then its marker appears on the closest
   previous non-lesson day, including a prior week/month when needed, shows the
   factual date, and keeps multiple markers discoverable without changing Payment,
@@ -95,7 +95,7 @@ spec_design_links:
 - Verification: idempotency/retry scenario with payment-count assertion.
 
 ### FT-006-AC-008 — Browser payment entry and personal paid state
-- REQ: REQ-013, REQ-016
+- REQ: REQ-013
 - Given an assigned teacher and a student with an active lesson charge, when
   the teacher submits the existing lesson-context payment form, then the
   authoritative ledger records and allocates the payment. In the student's

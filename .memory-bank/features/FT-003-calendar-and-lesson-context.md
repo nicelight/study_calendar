@@ -5,7 +5,7 @@ type: feature
 id: FT-003
 lifecycle: verified
 epic: EP-002
-requirements: [REQ-005, REQ-006, REQ-014, REQ-016]
+requirements: [REQ-005, REQ-006, REQ-014]
 spec_design_status: complete
 spec_design_links:
   - .memory-bank/architecture/system-architecture.md#composition-and-request-data-flow
@@ -39,7 +39,7 @@ spec_design_links:
 ## Acceptance Criteria
 
 ### FT-003-AC-001 — Elastic weekly geometry and exact navigation
-- REQ: REQ-005, REQ-016
+- REQ: REQ-005
 - Given a calendar week, then lesson days occupy more space than non-lesson days,
   each week may have independent geometry, and the standard date picker reaches
   the selected date.
@@ -83,7 +83,7 @@ spec_design_links:
 - Verification: negative role/membership/student access scenarios.
 
 ### FT-003-AC-007 — Authorized `/calendar` uses DB-backed class lessons
-- REQ: REQ-005, REQ-014, REQ-016
+- REQ: REQ-005, REQ-014
 - Given an authenticated Admin, Teacher, Student, or Parent with permitted
   class scope, when `/calendar?classId={classId}&date={YYYY-MM-DD}` is opened,
   then the server-rendered calendar reads current lesson identity/date/status
@@ -99,10 +99,10 @@ spec_design_links:
 - Given an authorized shared lesson in `/calendar`, then its navigation to the
   existing `/lesson-context` path carries the exact date, classId, and lessonId
   query values and carries no studentAccountId. The existing Lesson Context
-  route remains the composition/authorization owner; personal student context
-  is deferred to a separate role-scoped follow-up after dashboard work. If the
-  lesson has no shared material yet, the same authorized route renders the
-  lesson shell rather than an access error.
+  route remains the composition/authorization owner; this criterion defers only
+  the studentAccountId parameter in this link. Personal context remains covered
+  by FT-003-AC-004..006. If the lesson has no shared material yet, the same
+  authorized route renders the lesson shell rather than an access error.
 - Verification: a real route/link/SSR probe follows a calendar lesson link and
   proves exact shared query preservation, absence of studentAccountId, existing
   shared day-context response identity, and read-path non-mutation.
@@ -210,8 +210,8 @@ closure: a DB-backed authorized class calendar at `/calendar` with the public
 home fixture removed from the authenticated path, and shared-only navigation
 from each calendar lesson to the existing `/lesson-context` route while
 preserving date, class, and lesson identity. The current calendar link must not
-carry or invent `studentAccountId`; personal student context is deferred to a
-separate role-scoped follow-up after dashboard work. The existing Calendar and
+carry or invent `studentAccountId`; only that link parameter is deferred. Personal
+student context remains covered by FT-003-AC-004..006. The existing Calendar and
 Membership Query Boundary, Access Control, Lesson Context composition boundary,
 and Browser/API path contract are sufficient; no new SDD spec or Planning
 Revision change is required.

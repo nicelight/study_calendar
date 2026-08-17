@@ -20,8 +20,8 @@ spec_design_links:
 ## Use Cases
 - Admin manages teachers, classes, students, parents, and links within one
   center and chooses individual or group class mode.
-- Admin or assigned teacher creates a recurring schedule and changes one lesson
-  without rewriting other repetitions.
+- Admin creates a recurring schedule; Admin or assigned teacher changes one
+  lesson without rewriting other repetitions.
 - Admin can leave or reload a partially completed class schedule form and
   resume that same class draft in the same browser.
 - Admin assigns or removes a teacher while preserving author attribution and
@@ -37,11 +37,10 @@ spec_design_links:
   never crosses center/class scope.
 - A valid date range and weekday selection that yields no actual occurrence in
   the inclusive range is rejected before any schedule or lesson persistence;
-  the owner/domain command leaves Schedule/Lesson state unchanged for both an
-  own-center Admin and an assigned Teacher. The existing Admin adapter maps
-  that rejection to `400 { error: "invalid_schedule" }`; no Teacher schedule
-  HTTP transport exists in the current scope, so its private owner sentinel is
-  not exposed or replaced by a new transport.
+  the owner/domain command leaves Schedule/Lesson state unchanged for an
+  own-center Admin. The existing Admin adapter maps that rejection to
+  `400 { error: "invalid_schedule" }`; recurring schedule creation is
+  Admin-owned.
 - Creating a new recurring schedule replaces overlapping `planned` lessons for
   the class and removes empty superseded schedules. Existing `completed` or
   `cancelled` lessons are preserved; if the new dates overlap either status,
@@ -65,13 +64,13 @@ spec_design_links:
 
 ### FT-002-AC-003 — Recurring schedule creates lessons
 - REQ: REQ-004
-- Given a recurring class schedule, then planned lessons are created for its
-  repetitions and an explicit add/transfer/cancel operation affects only the
-  selected lesson. When a new recurring schedule overlaps existing dates, its
-  planned lessons replace the old planned lessons for those dates; completed
-  and cancelled lessons remain protected and cause an atomic conflict.
-- Verification: schedule lifecycle scenario with unaffected-repetition and
-  protected-history checks.
+- Given an Admin creates a recurring class schedule, then planned lessons are
+  created for its repetitions. Given an Admin or assigned Teacher adds, moves or
+  cancels one lesson, only that lesson changes. A new recurring schedule
+  replaces overlapping `planned` lessons; `completed` and `cancelled` overlap
+  rejects atomically.
+- Verification: Admin/Teacher schedule lifecycle scenario with unaffected-
+  repetition, authorization and protected-history checks.
 
 ### FT-002-AC-004 — Transfer preserves lesson identity
 - REQ: REQ-004
@@ -126,22 +125,16 @@ spec_design_links:
 
 ### FT-002-AC-009 — Zero-occurrence recurring schedule is rejected atomically
 - REQ: REQ-004
-- Given an authenticated, authorized Admin or assigned Teacher submits a valid
+- Given an authenticated, authorized Admin submits a valid
   ISO start/end date range and valid weekday numbers, when no selected weekday
   occurs inside the inclusive range, then Center & Scheduling rejects the
-  owner/domain command before Schedule or Lesson persistence/mutation and the
-  state before and after is identical for each principal. The existing Admin
-  adapter maps the rejection to HTTP 400 with `{ error: "invalid_schedule" }`;
-  an assigned Teacher has no schedule HTTP adapter in the current scope, so
-  verification observes the private `invalid-schedule-occurrences` owner
-  sentinel and MUST NOT add a Teacher HTTP transport. A range with at least one
+  owner/domain command before Schedule or Lesson persistence/mutation; the state
+  before and after is identical. The existing Admin adapter maps the rejection
+  to HTTP 400 with `{ error: "invalid_schedule" }`. A range with at least one
   occurrence continues to create its planned lessons unchanged.
-- Verification: fresh owner-boundary probes run the same zero-occurrence
-  command as both an own-center Admin and an assigned Teacher; Admin also
-  traverses the existing adapter and proves HTTP 400 `invalid_schedule`, while
-  Teacher proves the private owner/domain rejection. Each principal must show
-  exact Schedule/Lesson state-before/state-after equality; the Admin browser
-  draft/retention observation remains AC-008 supporting evidence only.
+- Verification: Admin owner-boundary probe with exact Schedule/Lesson
+  state-before/state-after equality; browser draft retention remains AC-008
+  supporting evidence only.
 
 ### FT-002-AC-010 — Schedule date input uses strict dd/mm/yyyy presentation
 - REQ: REQ-004

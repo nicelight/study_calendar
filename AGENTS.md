@@ -16,7 +16,8 @@ Planning/design priming:
 10. If ROLE: Explorer, read `.memory-bank/roles/explorer.md`.
 11. If ROLE: Implementer, read `.memory-bank/roles/implementer.md`.
 12. If ROLE: Reviewer, read `.memory-bank/roles/reviewer.md`.
-13. Read task/feature-specific docs
+13. If ROLE: JUDGE, read `.memory-bank/roles/judge.md`.
+14. Read task/feature-specific docs
 
 Manual execution priming is owned by the installed `/exe` skill. Invoke it with
 one concrete `TASK-NNN-TN-FT-NNN-WN`; its input contract selects the required
@@ -38,6 +39,7 @@ Full role contracts live in:
 - `.memory-bank/roles/explorer.md`
 - `.memory-bank/roles/implementer.md`
 - `.memory-bank/roles/reviewer.md`
+- `.memory-bank/roles/judge.md`
 
 Delegated Explorer, Implementer, and Reviewer analyze the consequences of their
 work and report potential or evident problems.
@@ -208,7 +210,6 @@ Maintenance commands:
 
 
 
-
 ## SvelteKit / Svelte 5
 
 * MUST use runes mode and current non-legacy Svelte 5 APIs in new Svelte components/reactive modules; preserve existing legacy mode unless migration is task-required.
@@ -221,6 +222,5 @@ Maintenance commands:
 * SHOULD use form actions for browser form submissions and `+server` for HTTP APIs/non-page clients; use remote functions only when the project has explicitly opted in.
 * MUST keep components and universal modules SSR-safe; isolate browser-only execution/imports and NEVER disable SSR merely to bypass browser-only code.
 * SHOULD use `<a>`/`<form>` declaratively, `$app/navigation` for imperative internal navigation/history, and `$app/state` in runes code; use `window.location` for external URLs and `$app/stores` only for legacy compatibility.
-
 
 

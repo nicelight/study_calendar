@@ -11,4 +11,4 @@ status: active
 
 ## Product Brief
 
-- [.memory-bank/analysis/product-brief.md](product-brief.md): `status: draft`, source `BR-001` и `BR-002`, включая доработку глобальной навигации и статистики; `Decision: proceed`; PRD обновлён, но требует ответов на blockers перед `/spec-init`.
+- [.memory-bank/analysis/product-brief.md](product-brief.md): `status: draft`, source `BR-001` и `BR-002`, включая доработку center-scoped навигации и статистики; `Decision: proceed`; PRD согласован и готов к `/prd-to-features`.

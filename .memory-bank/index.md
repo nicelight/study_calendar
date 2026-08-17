@@ -25,6 +25,7 @@ status: active
 - [.memory-bank/epics/EP-003-day-collaboration.md](epics/EP-003-day-collaboration.md): Comments, reactions, and threaded chat.
 - [.memory-bank/epics/EP-004-learning-progress.md](epics/EP-004-learning-progress.md): Homework, grades, and attendance.
 - [.memory-bank/epics/EP-005-financial-ledger.md](epics/EP-005-financial-ledger.md): Monetary ledger and balance.
+- [.memory-bank/epics/EP-006-navigation-and-statistics.md](epics/EP-006-navigation-and-statistics.md): Protected navigation and scoped statistics.
 - [.memory-bank/foundation.md](foundation.md): Foundation Dev Path decision, pressure map, and FT-000 handoff.
 - [.memory-bank/features/FT-000-foundation.md](features/FT-000-foundation.md): Reserved Foundation pseudo-feature.
 - [.memory-bank/features/FT-001-authentication-and-binding.md](features/FT-001-authentication-and-binding.md): Provider binding and account access.
@@ -33,6 +34,7 @@ status: active
 - [.memory-bank/features/FT-004-day-collaboration.md](features/FT-004-day-collaboration.md): Field comments, reactions, and chat.
 - [.memory-bank/features/FT-005-learning-progress.md](features/FT-005-learning-progress.md): Homework, grades, and attendance.
 - [.memory-bank/features/FT-006-financial-ledger.md](features/FT-006-financial-ledger.md): Charges, payments, allocation, and markers.
+- [.memory-bank/features/FT-007-navigation-and-statistics.md](features/FT-007-navigation-and-statistics.md): Protected navigation and center-scoped registries.
 - [.memory-bank/behavior-specs/](behavior-specs/): Optional JSON behavior examples linked from feature docs and task `source_artifacts`.
 - [.memory-bank/tasks/index.json](tasks/index.json): Authoritative JSON task record index.
 - [.memory-bank/tasks/plans/IMPL-FT-001.md](tasks/plans/IMPL-FT-001.md): FT-001 ordered implementation plan and task ownership.

@@ -3,20 +3,54 @@ description: Final fresh-context review of PRD decomposition.
 status: complete
 task_id: TASK-MB-REVIEW-FEAT-PLAN
 stage_id: S-FEAT
-repair_cycle: 2
+review_cycle: 4
 verdict: APPROVE
 ---
 
+# PRD decomposition review
+
 VERDICT: APPROVE
 
-EVIDENCE: `.memory-bank/constitution.md`; `.memory-bank/analysis/index.md`; `.memory-bank/analysis/product-brief.md`; `.memory-bank/prd.md`; `.memory-bank/product.md`; `.memory-bank/requirements.md`; `.memory-bank/epics/EP-001-access-and-center-operations.md` through `EP-005-financial-ledger.md`; `.memory-bank/features/FT-001-authentication-and-binding.md` through `FT-006-financial-ledger.md`; `.memory-bank/spec-index.md`; `.memory-bank/spec-backbone.md`; `.protocols/AUTONOMOUS-RUN/status.md`; `.protocols/AUTONOMOUS-RUN/decision-log.md`; prior-cycle report path `.tasks/TASK-MB-REVIEW-FEAT-PLAN/TASK-MB-REVIEW-FEAT-PLAN-S-FEAT-final-report-docs-01.md`. `.memory-bank/prd.md:373-379` now scopes `AC-PRIV-001` to unauthorized cross-class/cross-student/cross-center access, explicitly preserving the accepted Admin center-wide payment authority inside the Admin's own center and the Teacher assigned-class create-only restriction; this is consistent with `.memory-bank/prd.md:207-213,431-434`, `.memory-bank/requirements.md:57-66`, and `.memory-bank/features/FT-006-financial-ledger.md:63-69`. RTM is complete (`REQ-001..016`, 16/16 rows at `.memory-bank/requirements.md:85-103`), including shared mappings for `REQ-006`, `REQ-010`, `REQ-014`, `REQ-015` and `FT-006-AC-007`; all 32 `FT-<NNN>-AC-<NNN>` IDs are unique, sequential under their owning features, linked to existing `REQ-*`, and no `FT-000` is used. Five epics and six features have explicit value, scope/boundary, edge/failure behavior, acceptance, verification, and acceptance-closure coverage. `node scripts/mb-lint.mjs` passes.
+## EVIDENCE
 
-BLOCKING_FINDINGS: none
+Проверены Constitution, Product Brief, analysis index, PRD, product,
+requirements/RTM, `EP-001..EP-006`, `FT-000..FT-007`, spec-index и
+spec-backbone. JSON task design и task implementation не проверялись.
 
-NON_BLOCKING_NOTES: `.memory-bank/prd.md:5,438-442` truthfully reports `clarification_status: complete` and no unresolved blockers. `.memory-bank/spec-backbone.md` remains intentionally blocked until `/spec-design`; this is the expected pre-design handoff signal and is outside this decomposition verdict.
+- `clarification_status: complete`, `constitution_checked: true`, blockers —
+  `None`.
+- Payment capability определена через Payment Allocation к lesson charge;
+  timely rule, `0%/100%` и исключения для advance/unallocated согласованы в
+  PRD, REQ-017 и FT-007-AC-005.
+- Participant password flow, Admin-owned recurring schedule и Teacher
+  single-lesson operations имеют PRD source и feature AC.
+- Personal context остаётся в FT-003; AC-008 ограничивает только
+  `studentAccountId` в calendar link.
+- REQ-003 протянут к FT-001-AC-009 и FT-002; REQ-016 вынесен в product-level
+  release gate без отдельного product feature.
+- `FT-000` зарезервирован; `EP-006 -> FT-007 -> REQ-017` трассируется; 56 AC
+  IDs уникальны и каждый имеет governing `REQ-*`.
 
-UNRESOLVED_OPERATOR_QUESTIONS: none; Admin center-wide payment authority and Teacher assigned-class restriction are already accepted and consistently decomposed.
+## BLOCKING_FINDINGS
 
-REPAIR_ROUTE: none
+Нет.
 
-NEXT_ACTION: `/spec-design --all`
+## NON_BLOCKING_NOTES
+
+- Датированные lifecycle reconciliation sections сохранены как история; их
+  текущие состояния явно отделены frontmatter/Current lifecycle state.
+- `spec-backbone` одновременно хранит Pre-PRD status и Global Backbone Status;
+  это разные state sections, не изменение backbone и не повод для
+  `/spec-redesign`.
+
+## UNRESOLVED_OPERATOR_QUESTIONS
+
+Нет.
+
+## REPAIR_ROUTE
+
+Нет. Decomposition передаётся в `/spec-design`.
+
+## NEXT_ACTION
+
+`/spec-design`.

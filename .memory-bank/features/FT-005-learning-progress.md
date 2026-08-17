@@ -21,6 +21,8 @@ spec_design_links:
 ## Use Cases
 - Student marks their homework complete.
 - Teacher records a grade using `α`, `β`, `γ`, or `F`.
+- At the end of a lesson, Teacher opens the class lesson day, marks absent
+  students with a minus, and saves the attendance list.
 - Teacher or admin records/corrects attendance and the financial charge eligibility
   follows the resulting state.
 
@@ -28,6 +30,8 @@ spec_design_links:
 - Homework completion is class-visible, while the grade remains personal.
 - MVP attendance has only `present` and `absent`; late/partial presence does not
   create a separate financial state.
+- In the class attendance form, a minus marks the selected student `absent`;
+  every student without a minus is saved as `present`.
 - An absent student in either class mode is not charged; correcting `absent` to
   `present` creates the applicable historical-price charge, recalculates the
   balance, and records an audit entry.
@@ -62,6 +66,16 @@ spec_design_links:
   audit record without changing unrelated students' records.
 - Verification: correction/recalculation scenario with audit and isolation checks.
 
+### FT-005-AC-005 — Teacher records attendance from the class lesson day
+- REQ: REQ-010
+- Given an assigned Teacher at the end of an individual or group lesson, when
+  the Teacher opens the lesson day and saves the student list with a minus next
+  to each absent student, then those students are stored as `absent` and every
+  unmarked student is stored as `present`. The resulting attendance remains
+  the source for charge eligibility and later correction.
+- Verification: browser/integration attendance flow for both class modes with
+  persisted state and charge-eligibility assertions.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -69,6 +83,7 @@ spec_design_links:
 | Grade scale and privacy | FT-005-AC-002 |
 | Absent student in either class mode not charged | FT-005-AC-003 |
 | Absent-to-present correction, historical charge, balance, and audit | FT-005-AC-004 |
+| Teacher attendance input and default-present save behavior | FT-005-AC-005 |
 
 ## SDD Design Gate
 Global education state, charge eligibility, audit, storage, and privacy

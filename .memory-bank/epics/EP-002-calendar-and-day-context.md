@@ -15,7 +15,7 @@ lifecycle: verified
 - [.memory-bank/features/FT-003-calendar-and-lesson-context.md](../features/FT-003-calendar-and-lesson-context.md)
 
 ## Requirements
-- REQ-005, REQ-006, REQ-014, REQ-016.
+- REQ-005, REQ-006, REQ-014.
 
 ## Success / acceptance
 - Учебные дни визуально доминируют, date picker приводит к выбранной дате, а

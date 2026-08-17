@@ -5,8 +5,8 @@ type: feature
 id: FT-001
 lifecycle: planned
 epic: EP-001
-requirements: [REQ-001, REQ-002, REQ-014]
-last_updated: 2026-08-17
+requirements: [REQ-001, REQ-002, REQ-003, REQ-014]
+last_updated: 2026-08-18
 source_of_truth:
   - .memory-bank/features/FT-001-authentication-and-binding.md
 spec_design_status: complete
@@ -20,6 +20,12 @@ spec_design_links:
   - .memory-bank/states/lifecycle-map.md#access-and-membership
 ---
 # FT-001 — Authentication and Identity Binding
+
+## Current lifecycle state — 2026-08-18
+
+`lifecycle: planned` is current. Later product outcomes remain in the RTM at
+`planned`; dated reconciliation sections below preserve historical boundary
+states and do not override frontmatter.
 
 ## Use Cases
 - Admin creates an internal account with role and membership and issues a
@@ -127,7 +133,7 @@ spec_design_links:
   success and negative authorization/state-before/state-after assertions.
 
 ### FT-001-AC-009 — Bootstrapped Admin enters center creation from the browser
-- REQ: REQ-001, REQ-014
+- REQ: REQ-001, REQ-003, REQ-014
 - Given a manually bootstrapped Admin account with an authenticated server
   session and no center membership, when the Admin opens the protected UI and
   submits the protected center form, then the server creates the center and Admin
@@ -443,9 +449,9 @@ transition is implied by this index.
 
 ## Lifecycle Reconciliation — 2026-08-11
 
-The explicit top-level operator decision authorizes closing FT-001 as verified
-after the already completed gates. The authoritative feature state is now
-document `status: active` and entity `lifecycle: verified`.
+At that historical boundary, the explicit top-level operator decision authorized
+closing FT-001 as verified after the then-completed gates. The feature state at
+that boundary was document `status: active` and entity `lifecycle: verified`.
 
 The decision is grounded in the terminal product queue, TASK-019 through
 TASK-024 current functional `PASS` plus required per-task T3 `semantic-pass`,
@@ -525,9 +531,9 @@ queue promotion was performed by the W14 reconciliation.
 
 ## Final Lifecycle Reconciliation — 2026-08-14
 
-The explicit top-level lifecycle owner closed FT-001 as `verified` after the
+At that historical boundary, the explicit top-level lifecycle owner closed FT-001 as `verified` after the
 fresh feature-level `SEMANTIC_VERDICT: semantic-pass` covered AC-001..AC-011.
-The authoritative feature state is `status: active` / `lifecycle: verified`;
+The feature state at that boundary was `status: active` / `lifecycle: verified`;
 REQ-001 is `verified` in the RTM, while shared REQ-014 and EP-001 remain
 `verified`.
 

@@ -16,7 +16,7 @@ lifecycle: verified
 - [.memory-bank/features/FT-006-financial-ledger.md](../features/FT-006-financial-ledger.md)
 
 ## Requirements
-- REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015, REQ-016.
+- REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015.
 
 ## Success / acceptance
 - Полная, частичная и избыточная оплаты дают точный детерминированный баланс.

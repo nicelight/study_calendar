@@ -3,7 +3,7 @@ description: Epic for controlled access, center membership, and scheduling opera
 status: active
 type: epic
 id: EP-001
-lifecycle: verified
+lifecycle: planned
 ---
 # EP-001 — Access and Center Operations
 
@@ -20,8 +20,8 @@ lifecycle: verified
 
 ## FT-002 feature-boundary reconciliation — 2026-08-15
 
-The final FT-002 semantic gate passed across AC-001..AC-011. The explicit
-owner reconciles EP-001 to `verified` for the accepted FT-002 boundary while
+The final FT-002 semantic gate passed across AC-001..AC-011. At that historical
+boundary, the explicit owner reconciled EP-001 to `verified` for the accepted FT-002 boundary while
 preserving all task identities/evidence and leaving FT-003 and other feature
 ownership unchanged.
 

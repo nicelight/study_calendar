@@ -27,16 +27,17 @@ status: draft
   `scrypt` verification without stored plaintext. The public home route visibly
   links to the existing `/login` transport without changing authentication or
   session behavior.
-  (PRD FR-AUTH-001..010)
+  (PRD FR-AUTH-001..011)
 - **REQ-002 — Provider failure safety:** expired, revoked, reused, duplicate, or
   failed provider binding attempts reject without creating an account, changing
   role/membership, or creating a partial binding. (PRD Integrations; Edge Cases)
-- **REQ-003 — Center and class administration:** Bootstrap Admin creates the
-  first center from the browser, then manages teachers, classes, students,
-  parents, and links inside that center; a class is individual or group. The
-  browser exposes a role-scoped class entry shell for permitted Admin, Teacher,
-  Student, and Parent members without replacing the existing Admin management
-  surface. (PRD FR-ORG-001..002, FR-ORG-006)
+- **REQ-003 — Center and class administration:** Bootstrap Admin creates exactly
+  one center from the browser and receives its membership atomically, then
+  manages teachers, classes, students, parents, and links inside that center; a
+  class is individual or group. Cross-center administration is out of scope.
+  The browser exposes a role-scoped class entry shell for permitted Admin,
+  Teacher, Student, and Parent members without replacing the existing Admin
+  management surface. (PRD FR-ORG-001..002, FR-ORG-006)
 - **REQ-004 — Lesson scheduling lifecycle:** Recurring schedules create planned
   lessons; one lesson may be added, moved, or cancelled without mutating other
   repetitions, and moving preserves lesson identity and context. The browser
@@ -44,17 +45,16 @@ status: draft
   center and class until successful creation. A valid date range and weekday
   selection that yields zero occurrences MUST be rejected by the
   Center & Scheduling owner before Schedule or Lesson persistence/mutation,
-  leaving state unchanged for both an own-center Admin and an assigned Teacher.
-  The existing Admin adapter maps that rejection to `400
-  { error: "invalid_schedule" }`; an assigned Teacher has no schedule HTTP
-  adapter in the current scope, so the private owner/domain rejection remains
-  internal and no new Teacher transport is introduced. Schedule date controls
+  leaving state unchanged for an own-center Admin. The existing Admin adapter
+  maps that rejection to `400 { error: "invalid_schedule" }`; recurring schedule
+  creation is Admin-owned, while assigned Teacher operations cover one lesson.
+  Schedule date controls
   present strict user-facing `dd/mm/yyyy` values while submitted Form Data and
   scoped browser drafts remain canonical ISO `YYYY-MM-DD`.
   Creating a new recurring schedule replaces overlapping `planned` lessons for
   that class; `completed` or `cancelled` lessons are preserved and make the
   replacement reject atomically.
-  (PRD FR-ORG-003..005; explicit operator requirements 2026-08-14)
+  (PRD FR-ORG-003..005; clarification 2026-08-18)
 - **REQ-005 — Elastic calendar navigation:** Each week uses an elastic row with
   lesson days wider than non-lesson days; the date picker reaches the selected
   date, shared/personal calendars use one temporal basis, and visual state is
@@ -80,9 +80,12 @@ status: draft
   are restricted to the corresponding family, assigned teacher, and admin.
   (PRD FR-EDU-001..003)
 - **REQ-010 — Attendance and charge eligibility:** MVP attendance is `present` or
-  `absent`; an absent student in either individual or group lesson is not charged,
-  and correcting `absent` to `present` creates the historical-price charge,
-  recalculates the balance, and records an audit entry. (PRD FR-EDU-004..006)
+  `absent`; at the end of a lesson an assigned Teacher records absence by
+  marking the student with a minus, and unmarked students are saved as
+  `present`. An absent student in either individual or group lesson is not
+  charged, and correcting `absent` to `present` creates the historical-price
+  charge, recalculates the balance, and records an audit entry.
+  (PRD FR-EDU-004..007)
 - **REQ-011 — Historical lesson pricing:** Class lesson price, default payment
   amount, and student-specific price override are supported; the applied lesson
   price is fixed in its charge and settings changes affect only future charges.
@@ -94,9 +97,10 @@ status: draft
 - **REQ-013 — Payment authority and projection:** Admin may create, edit, and
   cancel payments for any student/class in the Admin's own center; an assigned
   teacher may create only for an assigned class and may not edit/cancel. Cross-
-  center access is denied. A payment marker may move to the closest previous
-  non-lesson day and show factual date without changing the Payment, allocation,
-  or balance; all markers remain discoverable. (PRD FR-FIN-011..015)
+  center access is denied for every role. A payment marker may move to the
+  closest previous non-lesson day and show factual date without changing the
+  Payment, allocation, or balance; all markers remain discoverable.
+  (PRD FR-FIN-011..015)
 - **REQ-014 — Role and context privacy:** Every server-side read/change checks
   role and center/class/student membership; students and parents cannot receive
   another student's private data; assigned teachers get full class history only
@@ -107,11 +111,26 @@ status: draft
   cases are checked. (PRD NFR-FIN-001..002; Constitution)
 - **REQ-016 — Product quality and acceptance:** The MVP requires build/smoke,
   integrated functional, privacy/access, and financial-correctness checks, then
-  explicit operator acceptance or returned corrections. (PRD NFR-QA-001..003)
+  explicit operator acceptance or returned corrections. This is a product-level
+  release gate after feature closure, not a separate product feature.
+  (PRD NFR-QA-001..003, AC-MVP-001)
+- **REQ-017 — Scoped navigation and statistics:** Protected pages expose one
+  navigation shell with Home, Classes, Statistics, Profile, and Logout. Home,
+  Classes, and Statistics are server-scoped: Admin sees its own Center, Teacher
+  assigned classes, Student/Parent an accessible class calendar and no
+  center-wide registry. The three read-only registries use the PRD columns and
+  typed bidirectional sorting; teacher classes render one per line and sort by
+  the first class. Payment capability uses `payment date < actual lesson date`
+  for each counted Payment Allocation (`0%` with none, `100%` when all are on
+  time; advances and unallocated amounts are excluded); attendance uses
+  all conducted lessons. This is a projection and does not mutate source facts.
+  (PRD FR-NAV-001..005, FR-STAT-001..007, NFR-PRIV-005, AC-HOME-001)
 
 ## Out of scope
 - Полноценная школьная информационная система, школьная иерархия и
   государственная отчётность.
+- Глобальное администрирование нескольких центров, cross-center статистика и
+  управление филиалами.
 - Оплата количеством уроков и ручное распределение каждого платежа как
   основной сценарий.
 - Финансовая цветовая кодировка общего календаря и классическая
@@ -125,20 +144,24 @@ status: draft
 | REQ-000 | Foundation | FT-000 | test:foundation-baseline;test:foundation-smoke | planned |
 | REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..013 | planned |
 | REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
-| REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002;FT-002-AC-011 | verified |
+| REQ-003 | EP-001 | FT-001, FT-002 | test:FT-001-AC-009;test:FT-002-AC-001..002;FT-002-AC-011 | verified |
 | REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..010 | verified |
 | REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004;FT-003-AC-007..008 | verified |
 | REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-003-AC-008;FT-004-AC-001;FT-004-AC-005 | planned |
 | REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | verified |
 | REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | verified |
 | REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | verified |
-| REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-004 | verified |
+| REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..005;FT-006-AC-004 | verified |
 | REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
 | REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
 | REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006;FT-006-AC-008 | verified |
-| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005 | planned |
+| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-007-AC-002..003 | planned |
 | REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
-| REQ-016 | EP-002, EP-005 | FT-003, FT-006 | test:FT-003-AC-001;FT-003-AC-007..008;FT-006-AC-002..006;FT-006-AC-008 | planned |
+| REQ-016 | Product release gate | — | test:product-release-acceptance after mapped feature checks | planned |
+| REQ-017 | EP-006 | FT-007 | test:FT-007-AC-001..006 | planned |
+
+`REQ-016` release-gate verification runs after mapped feature acceptance
+checks and before operator acceptance: `test:product-release-acceptance`.
 
 ## W10 task evidence route
 
@@ -273,10 +296,10 @@ identities, evidence, dependencies, and implementation remain unchanged.
 
 ## FT-002 W16 lifecycle reconciliation — 2026-08-14
 
-The fresh feature-level semantic gate for FT-002 now records
-`SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-009. The explicit lifecycle
-owner therefore reconciles FT-002 and REQ-004 to `verified`; EP-001 is also
-`lifecycle: verified` because its FT-001 and FT-002 feature outcomes and
+The fresh feature-level semantic gate for FT-002 recorded
+`SEMANTIC_VERDICT: semantic-pass` across AC-001..AC-009. At that historical
+boundary, the explicit lifecycle owner reconciled FT-002 and REQ-004 to
+`verified`; EP-001 was also `lifecycle: verified` because its FT-001 and FT-002 feature outcomes and
 REQ-001..REQ-004/REQ-014 mappings are verified. All completed task identities,
 dependencies, and historical evidence remain unchanged.
 

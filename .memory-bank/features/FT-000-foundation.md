@@ -14,7 +14,7 @@ requirements: [REQ-000]
 ## Scope
 
 FT-000 is a reserved pseudo-feature for product-enabling Foundation work. It
-does not describe product behavior and does not authorize any of the six
+does not describe product behavior and does not authorize any of the seven
 product features. Its purpose is to make the accepted modular-monolith target
 executable and verifiable before product tasking.
 
