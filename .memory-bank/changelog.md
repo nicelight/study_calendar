@@ -4,6 +4,59 @@ status: active
 ---
 # Changelog
 
+## [2026-08-17] Real payment entry and personal paid/unpaid calendar state
+
+- Added the protected Lesson Context payment form. Admin and assigned Teacher
+  can record a payment for an authorized student through the existing Financial
+  Ledger boundary; Student cannot submit the action.
+- Student calendar cards now derive `paid`/`unpaid` from the authoritative
+  balance projection and use distinct colors/labels. Admin and Teacher shared
+  calendars do not receive per-student payment status.
+- Added route regression coverage and a real-database Playwright E2E that
+  creates/reuses `e2e.teacher@study-calendar.test` and
+  `e2e.student@study-calendar.test`, records 20 for the first lesson, and
+  verifies one payment, one allocation, and both calendar states.
+- The real payment, allocation, price/charge, class membership, and dedicated
+  test accounts remain in `study-calendar.db` for manual inspection. Exact
+  automation sessions are cleaned up; existing product data is preserved.
+- Gates passed: `npm test` 32 files / 148 tests, `npm run check`, `npm run
+  build`, payment E2E 1/1, `git diff --check`, `mb-lint`, and strict
+  `mb-doctor`.
+
+## [2026-08-17] Direct Admin participant accounts and minimal calendar cards
+
+- Calendar day cards no longer display lesson statuses or lesson IDs; they show
+  only the day information, the lesson marker, and the `Открыть урок` action.
+- Replaced the visible Admin invitation form with direct account creation for
+  teacher, student, and parent roles using email plus an Admin-chosen password.
+- Parent creation requires selecting an existing center student; account,
+  credential, center membership, and parent link are server-authorized and
+  atomic. Users enter through the existing `/login` route.
+- Existing OAuth invitation transport remains available for compatibility but
+  is no longer the visible Admin account-creation path.
+- The real local database was not seeded with a new account; its existing
+  teacher account and lesson material were preserved.
+
+## [2026-08-17] Lesson material authoring and real browser smoke
+
+- Added the minimal protected Lesson Context form/action for shared topic,
+  practical work, and homework. Admin and assigned Teacher can save; Student
+  and Parent remain read-only.
+- Added real Playwright configuration and a local real-database smoke path:
+  login → Admin → class → calendar → lesson → save → reload → mobile free-day
+  navigation → logout. Local credentials remain in ignored `.env.e2e.local`; no
+  temporary database, synthetic session, or test account is used.
+- The E2E restores the selected lesson's original material and removes only the
+  exact real session created by that run; current `study-calendar.db` remains
+  without test material rows and with its original 8 active sessions.
+- Added a narrow mobile overflow treatment so all seven weekly day links keep a
+  usable target when lesson-weighted grid tracks are rendered on a 390px
+  viewport.
+- Removed internal class and lesson UUIDs from user-visible Lesson Context and
+  calendar lesson cards; the identifiers remain only in navigation metadata.
+- Gates passed: `npm test` 32 files / 146 tests, `npm run check`, `npm run
+  build`, `npm run e2e` 1/1, and `git diff --check`.
+
 ## [2026-08-15] TASK-039 AC-008 closure and W10 boundary sync
 
 - Reconciled the explicit operator decision: `TASK-039-T3-FT-003-W10` is now

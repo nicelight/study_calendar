@@ -3,7 +3,7 @@ description: Product feature for elastic calendar navigation and shared/personal
 status: active
 type: feature
 id: FT-003
-lifecycle: planned
+lifecycle: verified
 epic: EP-002
 requirements: [REQ-005, REQ-006, REQ-014, REQ-016]
 spec_design_status: complete
@@ -32,6 +32,9 @@ spec_design_links:
 - An authorized lesson without shared material still opens its lesson shell and
   explains that the material is not yet available; `403` remains for invalid or
   unauthorized lesson access.
+- Admin and the assigned Teacher can create or update the shared topic,
+  practical work, and homework from the lesson view; Student and Parent can
+  read the result but cannot submit the authoring form.
 
 ## Acceptance Criteria
 
@@ -53,8 +56,11 @@ spec_design_links:
 ### FT-003-AC-003 — Shared day form exposes common lesson material
 - REQ: REQ-006
 - Given an authorized class lesson day, then the shared form exposes topic,
-  practical work, and homework to the permitted class context.
-- Verification: role-based smoke flow for teacher, student, and parent.
+  practical work, and homework to the permitted class context. Admin and the
+  assigned Teacher can create or update those fields from the browser; Student
+  and Parent remain read-only.
+- Verification: real browser smoke for Admin save/reload plus route action
+  authorization checks for Admin, assigned Teacher, and Student.
 
 ### FT-003-AC-004 — Personal day reuses shared material
 - REQ: REQ-006
@@ -173,17 +179,18 @@ and feature lifecycle are preserved; the provider follow-up is indexed as
 ## Semantic Verification
 
 - Current standalone adversarial review:
-  [FT-003 red verification](../../.tasks/FT-003/FT-003-S-RED-VERIFY-final-report-docs-01.md).
-- Fresh evidence passes AC-001..AC-006 for calendar geometry/date navigation,
-  shared/personal material reuse, selected-student grade projection/rendering,
-  navigation identity, generic API/SSR denial, privacy, and non-mutation. No
-  material product-semantic finding was admitted.
+  [FT-003 red verification](../../.tasks/FT-003/FT-003-S-RED-VERIFY-final-report-docs-02.md).
+- Fresh evidence passes AC-001..AC-008 for calendar geometry/date navigation,
+  shared-material authoring, shared/personal material reuse, selected-student
+  grade projection/rendering, navigation identity, generic API/SSR denial,
+  privacy, non-mutation, and DB-backed authorized calendar loading. No material
+  product-semantic finding remains.
 - TASK-013, TASK-014, and provider dependency TASK-018 have current indexed
   claim-linked functional/semantic evidence; `node scripts/mb-doctor.mjs
   --strict` passes with 0 errors and 0 warnings.
-- Coverage includes provider-owned lesson-scoped grade selection, visible grade
-  rendering, privacy/403 behavior, navigation identity, SSR/API adapters, and
-  read-path non-mutation. No semantic replan is required.
+- Coverage additionally includes the real Admin browser save/reload flow,
+  assigned Teacher/Student action authorization, exact logout cleanup, and
+  mobile free-day navigation. No semantic replan is required.
 
 SEMANTIC_VERDICT: semantic-pass
 
@@ -265,6 +272,6 @@ boundary remains unchanged.
 - [semantic verification](../../.tasks/TASK-039-T3-FT-003-W10/TASK-039-T3-FT-003-W10-S-RED-VERIFY-final-report-docs-01.md)
 - [lifecycle closure](../../.tasks/TASK-039-T3-FT-003-W10/TASK-039-T3-FT-003-W10-S-LIFECYCLE-final-report-docs-02.md)
 
-FT-003 and its mapped RTM requirements remain `planned` pending the
-feature-level aggregate gate. TASK-038 remains preserved as terminal
-`failed`/`superseded`; personal student context remains deferred.
+FT-003 is now `verified` after its aggregate AC-001..AC-008 gate. Its mapped
+RTM requirements remain governed by their other feature mappings; personal
+student context remains intentionally deferred outside the shared-only route.

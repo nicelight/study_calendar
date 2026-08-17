@@ -1,7 +1,9 @@
 <script lang="ts">
-	let { data } = $props();
+	let { data, form } = $props();
 	let context = $derived(data.dayContext);
 	let lesson = $derived(data.lesson);
+	let material = $derived(context?.material ?? null);
+	let payment = $derived(data.payment ?? null);
 
 	function contextHref(
 		current: NonNullable<typeof context>,
@@ -23,6 +25,26 @@
 			cancelled: 'Отменено'
 		}[status];
 	}
+
+	function errorLabel(error: string): string {
+		return {
+			invalid_request: 'Проверьте данные формы.',
+			invalid_material: 'Заполните все поля материала.',
+			forbidden: 'У вас нет права редактировать материал этого урока.',
+			operation_failed: 'Не удалось сохранить материал.'
+		}[error] ?? 'Не удалось сохранить материал.';
+	}
+
+	function paymentErrorLabel(error: string): string {
+		return {
+			invalid_payment_request: 'Проверьте данные формы оплаты.',
+			invalid_payment_amount: 'Укажите положительную сумму.',
+			invalid_payment_date: 'Укажите корректную фактическую дату.',
+			invalid_payment_confirmation: 'Введите подтверждение операции.',
+			payment_forbidden: 'У вас нет права внести эту оплату.',
+			payment_operation_failed: 'Не удалось внести оплату.'
+		}[error] ?? 'Не удалось внести оплату.';
+	}
 </script>
 
 <svelte:head>
@@ -36,10 +58,7 @@
 			<div>
 				<p class="eyebrow">{context.lesson.className}</p>
 				<h1>{context.lesson.lessonDate}</h1>
-				<p class="identity-line">
-					Класс <strong>{context.navigation.classId}</strong> · Урок
-					<strong>{context.navigation.lessonId}</strong>
-				</p>
+				<p class="identity-line">Общий контекст занятия в классе «{context.lesson.className}»</p>
 			</div>
 			<nav aria-label="Контекст дня">
 				<a href={contextHref(context)}>Общий день</a>
@@ -83,9 +102,7 @@
 			<div>
 				<p class="eyebrow">{lesson.className}</p>
 				<h1>{lesson.lessonDate}</h1>
-				<p class="identity-line">
-					Класс <strong>{lesson.classId}</strong> · Урок <strong>{lesson.lessonId}</strong>
-				</p>
+				<p class="identity-line">Занятие в классе «{lesson.className}»</p>
 			</div>
 			<p class="status">{statusLabel(lesson.status)}</p>
 		</header>
@@ -102,6 +119,71 @@
 			<p>Передайте дату, класс и lesson identity через URL календаря.</p>
 		</section>
 	{/if}
+
+	{#if data.canEditMaterial && (context || lesson)}
+		<section class="material-editor" aria-labelledby="material-editor-title">
+			<div class="section-label">Материал занятия</div>
+			<h2 id="material-editor-title">{material ? 'Изменить материал' : 'Заполнить занятие'}</h2>
+			<p class="editor-intro">Эти данные будут видны участникам класса в общем контексте урока.</p>
+			{#if form?.success}
+				<p class="form-message success" role="status">Материал сохранён.</p>
+			{:else if form?.error}
+				<p class="form-message error" role="alert">{errorLabel(form.error)}</p>
+			{/if}
+			<form method="POST" class="material-form" aria-label="Материал занятия">
+				<label>
+					<span>Тема занятия</span>
+					<input name="topic" required value={material?.topic ?? ''} />
+				</label>
+				<label>
+					<span>Практическая работа</span>
+					<textarea name="practicalWork" required rows="3">{material?.practicalWork ?? ''}</textarea>
+				</label>
+				<label>
+					<span>Домашнее задание</span>
+					<textarea name="homework" required rows="3">{material?.homework ?? ''}</textarea>
+				</label>
+				<button type="submit">Сохранить материал</button>
+			</form>
+		</section>
+	{/if}
+
+	{#if data.canCreatePayment && payment}
+		<section class="payment-editor" aria-labelledby="payment-editor-title">
+			<div class="section-label">Финансы</div>
+			<h2 id="payment-editor-title">Внести оплату</h2>
+			<p class="editor-intro">Оплата будет зачислена выбранному ученику через финансовый ledger.</p>
+			{#if form?.paymentSuccess}
+				<p class="form-message success" role="status">Оплата внесена.</p>
+			{:else if form?.error}
+				<p class="form-message error" role="alert">{paymentErrorLabel(form.error)}</p>
+			{/if}
+			<form method="POST" class="material-form" aria-label="Оплата занятия">
+				<input type="hidden" name="action" value="createPayment" />
+				<label>
+					<span>Ученик</span>
+					<select name="studentAccountId" required>
+						{#each payment.studentAccountIds as studentAccountId}
+							<option value={studentAccountId}>{studentAccountId}</option>
+						{/each}
+					</select>
+				</label>
+				<label>
+					<span>Сумма</span>
+					<input name="amount" type="number" min="0.01" step="0.01" required />
+				</label>
+				<label>
+					<span>Фактическая дата</span>
+					<input name="factualDate" type="date" value={payment.factualDate} required />
+				</label>
+				<label>
+					<span>Подтверждение операции</span>
+					<input name="confirmation" required placeholder="Например, payment-2026-08-10" />
+				</label>
+				<button type="submit">Внести оплату</button>
+			</form>
+		</section>
+	{/if}
 </main>
 
 <style>
@@ -115,6 +197,8 @@
 	nav { display: flex; flex-wrap: wrap; gap: .65rem; }
 	nav a { padding: .65rem .85rem; border: 1px solid #d9e0d8; border-radius: .65rem; color: #25332e; font-weight: 800; text-decoration: none; }
 	.material, .personal, .shared, .empty { margin-top: 2rem; padding: 1.5rem; border: 1px solid #d9e0d8; border-radius: 1rem; background: #fffdf8; }
+	.material-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #b8c8ba; border-radius: 1rem; background: #eef6ee; }
+	.payment-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #d6bd8d; border-radius: 1rem; background: #fff6e8; }
 	h2 { margin: .4rem 0 1rem; letter-spacing: -.03em; }
 	dl { display: grid; gap: 1rem; margin: 0; }
 	dl div { display: grid; gap: .25rem; }
@@ -122,5 +206,15 @@
 	dd { margin: 0; font-size: 1.1rem; }
 	.personal { background: #e9f2e9; }
 	.shared p, .empty p { color: #6d7a73; line-height: 1.6; }
+	.editor-intro { margin: 0; color: #6d7a73; line-height: 1.5; }
+	.material-form { display: grid; gap: 1rem; }
+	.material-form label { display: grid; gap: .4rem; }
+	.material-form label span { color: #6d7a73; font-size: .78rem; font-weight: 800; }
+	.material-form input, .material-form textarea, .material-form select { width: 100%; border: 1px solid #b8c8ba; border-radius: .65rem; padding: .7rem .8rem; background: #fffdf8; color: #25332e; font: inherit; }
+	.material-form textarea { resize: vertical; }
+	.material-form button { min-height: 2.75rem; border: 1px solid #3f765d; border-radius: .65rem; background: #3f765d; color: #fffdf8; font: inherit; font-weight: 800; cursor: pointer; }
+	.form-message { margin: 0; padding: .7rem .8rem; border-radius: .6rem; font-weight: 800; }
+	.form-message.success { background: #dcebdd; color: #2f6b4f; }
+	.form-message.error { background: #f8e2dd; color: #8e3f2b; }
 	@media (max-width: 42rem) { .context-header { align-items: start; flex-direction: column; } }
 </style>

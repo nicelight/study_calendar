@@ -72,6 +72,11 @@ export type DayContextView = {
 	personal: PersonalDayProjection | null;
 };
 
+export type StudentLessonPaymentStatus = {
+	lessonId: string;
+	status: 'paid' | 'unpaid';
+};
+
 type LessonContextIdentityPort = Pick<IdentityAccessBoundary, 'resolveActor'>;
 type LessonContextCalendarPort = Pick<
 	CenterSchedulingBoundary,
@@ -252,6 +257,43 @@ export class LessonContextBoundary {
 			discussion: personalDiscussion,
 			personal
 		};
+	}
+
+	getStudentPaymentStatuses(request: {
+		sessionToken?: string;
+		classId: string;
+	}): StudentLessonPaymentStatus[] {
+		const actor = this.identityAccess.resolveActor(request.sessionToken);
+		const scope = actor
+			? this.centerScheduling.getAuthorizedClassScope(request.sessionToken, request.classId)
+			: null;
+		const lessons = scope
+			? this.centerScheduling.getLessons({ sessionToken: request.sessionToken, classId: request.classId })
+			: null;
+		if (
+			!actor ||
+			!scope ||
+			!lessons ||
+			scope.role !== 'student' ||
+			scope.accountId !== actor.accountId
+		) {
+			throw new Error('not-authorized');
+		}
+
+		const projection = this.financialLedger.getBalanceProjection({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			studentAccountId: actor.accountId
+		});
+		const paidLessons = new Set(
+			projection.charges
+				.filter((charge) => charge.state === 'paid')
+				.map((charge) => charge.lessonId)
+		);
+		return lessons.map((lesson) => ({
+			lessonId: lesson.lessonId,
+			status: paidLessons.has(lesson.lessonId) ? 'paid' : 'unpaid'
+		}));
 	}
 
 	private findLesson(

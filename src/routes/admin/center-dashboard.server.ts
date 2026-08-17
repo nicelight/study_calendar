@@ -29,7 +29,7 @@ type AdminCenterPort = Pick<
 	| 'removeCenterParticipant'
 >;
 
-type ProvisioningPort = Pick<AdminProvisioningTransport, 'provision'>;
+type ProvisioningPort = Pick<AdminProvisioningTransport, 'provision' | 'provisionPassword'>;
 
 type SuccessMessage =
 	| 'class_created'
@@ -39,6 +39,7 @@ type SuccessMessage =
 	| 'teacher_assigned'
 	| 'teacher_removed'
 	| 'teacher_membership_removed'
+	| 'participant_created'
 	| 'invitation_created';
 
 type DashboardError =
@@ -51,6 +52,10 @@ type DashboardError =
 	| 'schedule_conflict'
 	| 'invalid_teacher'
 	| 'invalid_role'
+	| 'invalid_email'
+	| 'invalid_password'
+	| 'invalid_parent_student'
+	| 'email_exists'
 	| 'conflict'
 	| 'provisioning_failed'
 	| 'operation_failed';
@@ -59,6 +64,7 @@ type DashboardSuccess = {
 	ok: true;
 	message: SuccessMessage;
 	invitationUrl?: string;
+	participantEmail?: string;
 	status?: 'pending';
 	expiresAt?: string;
 };
@@ -75,6 +81,7 @@ export type AdminDashboardActions = {
 	assignTeacher: DashboardAction;
 	removeTeacher: DashboardAction;
 	removeTeacherMembership: DashboardAction;
+	createParticipant: DashboardAction;
 	inviteParticipant: DashboardAction;
 };
 
@@ -333,6 +340,35 @@ export function createAdminDashboardActions(
 				invitationUrl: result.invitationUrl,
 				status: result.status,
 				expiresAt: result.expiresAt
+			};
+		},
+
+		createParticipant: async (event) => {
+			if (!event.locals.actor) {
+				return fail(401, { error: 'unauthorized' });
+			}
+			if (event.locals.actor.role !== 'admin') {
+				return fail(403, { error: 'forbidden' });
+			}
+			try {
+				loadAdminCenter(event, centerScheduling);
+			} catch (cause) {
+				return actionError(cause);
+			}
+			const formData = await event.request.formData();
+			const result = provisioning.provisionPassword(event, {
+				role: formData.get('role'),
+				email: formData.get('email'),
+				password: formData.get('password'),
+				studentAccountId: formData.get('studentAccountId')
+			});
+			if (!result.ok) {
+				return fail(result.status, { error: result.error });
+			}
+			return {
+				ok: true,
+				message: 'participant_created',
+				participantEmail: result.email
 			};
 		}
 	};

@@ -16,6 +16,13 @@ export type AccountProvisioning = {
 	expiresAt?: string;
 };
 
+export type PasswordAccountProvisioning = {
+	accountId: string;
+	role: Exclude<Role, 'admin'>;
+	email: string;
+	password: string;
+};
+
 export type ProviderIdentity = {
 	provider: Provider;
 	providerSubject: string;
@@ -279,6 +286,18 @@ export class IdentityAccessBoundary {
 			.get(sessionToken) as ActorRow | undefined;
 
 		return row ? { accountId: row.account_id, role: row.role } : null;
+	}
+
+	getAccountEmail(accountId: string): string | null {
+		if (typeof accountId !== 'string' || accountId.length === 0) {
+			return null;
+		}
+
+		const row = this.database.sqlite
+			.prepare('SELECT email FROM password_credentials WHERE account_id = ?')
+			.get(accountId) as { email: string } | undefined;
+
+		return row?.email ?? null;
 	}
 
 	bindProvider(binding: ProviderBinding, verifier: ProviderVerifier): void {

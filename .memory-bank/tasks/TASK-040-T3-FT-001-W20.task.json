@@ -1,0 +1,117 @@
+{
+  "id": "TASK-040-T3-FT-001-W20",
+  "title": "Create direct Admin password participants",
+  "status": "done",
+  "wave": "W20",
+  "feature": "FT-001",
+  "reqs": ["REQ-001", "REQ-014"],
+  "depends_on": ["TASK-021-T3-FT-001-W9", "TASK-030-T3-FT-001-W14"],
+  "touched_files": [
+    "src/lib/server/modules/identity-access/",
+    "src/lib/server/modules/center-scheduling/",
+    "src/routes/admin/",
+    "src/routes/calendar/+page.svelte",
+    "tests/routes/admin-center-management.test.ts",
+    "e2e/real-database-smoke.spec.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "real-db-e2e", "command": "npm run e2e", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Current implementation verification on real repository state",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-040-T3-FT-001-W20/verification.md",
+      "artifact": ".tasks/TASK-040-T3-FT-001-W20/TASK-040-T3-FT-001-W20-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Focused Admin route tests passed creation of student and parent accounts, normalized login, duplicate-email denial, invalid parent-link rollback, and non-Admin denial.",
+        "Full Vitest suite passed 32 files / 147 tests; npm run check, npm run build, npm run e2e, and git diff --check passed against the real local application database without creating a product test account."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Independent boundary review of current implementation",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-040-T3-FT-001-W20/red-verification.md",
+      "artifact": ".tasks/TASK-040-T3-FT-001-W20/TASK-040-T3-FT-001-W20-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Review confirms Admin authorization is rechecked at the Center & Scheduling boundary, Identity & Access owns account/credential writes, the parent link requires an existing same-center student, and the surrounding transaction rolls back failed writes.",
+        "Review confirms the visible Admin path uses email/password, does not echo or persist plaintext passwords, leaves provider invitation compatibility intact, and removes lesson status/IDs from visible calendar cards."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/changelog.md"
+  ],
+  "evidence_required": [
+    "FT-001-AC-013 / REQ-001 / REQ-014 RED: the protected Admin surface cannot create a teacher, student, or parent with a direct normalized email/password credential and atomic center membership/parent link; GREEN: focused route tests and the real local browser smoke prove own-center creation, existing /login authentication, duplicate-email denial, invalid parent-link rollback, non-Admin denial, and the no-status/no-ID calendar presentation."
+  ],
+  "purpose": "Allow an Admin to create teacher, student, and parent accounts directly with an email and a password, binding a parent to an existing student in the same center.",
+  "success_outcome": "The visible Admin center form creates a server-owned participant account, password credential, center membership, and optional parent-student link atomically; the participant enters through the existing /login route.",
+  "anti_goals": [
+    "Do not add OAuth, self-registration, password reset, email verification, MFA, or a second session/cookie lifecycle.",
+    "Do not trust client role, center, account, or student values for authorization; the server resolves the Admin scope and validates the selected student.",
+    "Do not create fake product accounts, seed synthetic fixtures, or reset the real local database during E2E.",
+    "Do not remove the legacy provider invitation implementation; it remains compatibility-only outside the visible direct-account Admin flow."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json",
+      ".protocols/TASK-003-T3-FT-001-W2/",
+      ".tasks/TASK-003-T3-FT-001-W2/",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if direct creation requires a new auth store, dependency, provider, session type, or public route-owned persistence.",
+      "Stop if a parent can be linked to a student outside the selected Admin center or if a failed create leaves account, credential, membership, or link state behind.",
+      "Stop if real-DB E2E requires a synthetic product account or destructive database reset."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-authentication-and-binding.md#FT-001-AC-013",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/contracts/authentication-transport.md#browser-api-path"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/features/FT-001-authentication-and-binding.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/contracts/authentication-transport.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Center & Scheduling owns Admin scope, center membership, and parent-student link validation; Identity & Access owns account and password credential persistence.",
+    "Normalize email with trim().toLowerCase(), store only a salted Node scrypt result, and never return or echo the password from the server action.",
+    "Reuse the existing /login route, session cookie, and actor resolution; the visible Admin flow has no OAuth or invitation requirement.",
+    "Calendar lesson cards expose only the minimal day/lesson action text and retain no visible status or identifier labels."
+  ],
+  "invariants": [
+    "Only an authenticated Admin in the target center can create a participant.",
+    "A parent link targets an existing student membership in the same center and is committed with the account, credential, and parent membership transaction.",
+    "Duplicate email or any invalid participant input leaves persistent state unchanged.",
+    "Password login uses the existing server-owned session lifecycle, and provider invitation code remains compatible."
+  ],
+  "verification_targets": [
+    "FT-001-AC-013 / REQ-001 / REQ-014: RED: no direct Admin email/password participant path or atomic parent link exists; GREEN: protected action tests prove teacher/student/parent creation, normalized password login, duplicate-email denial, invalid-parent rollback, and non-Admin denial.",
+    "Account Provisioning Boundary: source and focused tests prove route transport does not write account/credential state directly, Admin scope is rechecked by Center & Scheduling, and Identity & Access receives the password provisioning command.",
+    "Real database smoke: browser login reaches the Admin center, renders the new account form, follows class/calendar/lesson navigation, saves and reloads existing lesson material, and restores the exact pre-existing data without product fixture creation.",
+    "Calendar presentation: rendered lesson cards contain the lesson action but do not show the status or lesson identifier text."
+  ]
+}

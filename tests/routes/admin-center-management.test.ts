@@ -127,7 +127,7 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		expect(rendered.body).toContain('Центр Альфа');
 		expect(rendered.body).toContain('Английский A2');
 		expect(rendered.body).toContain('?/createClass');
-		expect(rendered.body).toContain('?/inviteParticipant');
+		expect(rendered.body).toContain('?/createParticipant');
 		expect(rendered.body).toContain('teacher-own');
 		expect(rendered.body).toContain('href="/center/center-own/class/class-existing"');
 		expect(rendered.body).toContain('Открыть класс');
@@ -323,6 +323,64 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 			JOIN center_memberships ON center_memberships.account_id = accounts.id
 			WHERE invitations.status = 'pending'
 		`).get()).toEqual({ role: 'teacher', center_id: 'center-own' });
+	});
+
+	it('creates password participants and atomically links a parent to a student', async () => {
+		const api = actions();
+		const student = await api.createParticipant(
+			event(root, 'center-own', 'session-admin-own', [
+				['role', 'student'],
+				['email', 'student@example.com'],
+				['password', 'student-password']
+			])
+		);
+		expect(student).toMatchObject({ ok: true, message: 'participant_created', participantEmail: 'student@example.com' });
+		const studentAccount = root.database.sqlite
+			.prepare('SELECT account_id FROM password_credentials WHERE email = ?')
+			.get('student@example.com') as { account_id: string };
+
+		const parent = await api.createParticipant(
+			event(root, 'center-own', 'session-admin-own', [
+				['role', 'parent'],
+				['email', 'parent@example.com'],
+				['password', 'parent-password'],
+				['studentAccountId', studentAccount.account_id]
+			])
+		);
+		expect(parent).toMatchObject({ ok: true, message: 'participant_created' });
+		expect(root.database.sqlite.prepare(`
+			SELECT parent_student_links.student_account_id
+			FROM parent_student_links
+			JOIN password_credentials ON password_credentials.account_id = parent_student_links.parent_account_id
+			WHERE password_credentials.email = ?
+		`).get('parent@example.com')).toEqual({ student_account_id: studentAccount.account_id });
+
+		const studentSession = root.identityAccess.authenticatePassword({
+			email: 'student@example.com',
+			password: 'student-password'
+		});
+		expect(root.identityAccess.resolveActor(studentSession)).toMatchObject({
+			accountId: studentAccount.account_id,
+			role: 'student'
+		});
+
+		const duplicate = await api.createParticipant(
+			event(root, 'center-own', 'session-admin-own', [
+				['role', 'teacher'],
+				['email', 'student@example.com'],
+				['password', 'another-password']
+			])
+		);
+		expect(duplicate).toMatchObject({ status: 409, data: { error: 'email_exists' } });
+
+		const nonAdmin = await api.createParticipant(
+			event(root, 'center-own', 'session-teacher-own', [
+				['role', 'teacher'],
+				['email', 'teacher@example.com'],
+				['password', 'teacher-password']
+			])
+		);
+		expect(nonAdmin).toMatchObject({ status: 403, data: { error: 'forbidden' } });
 	});
 
 	it('rejects a valid zero-occurrence Admin schedule before persistence', async () => {

@@ -4,6 +4,7 @@ status: active
 type: feature
 id: FT-006
 lifecycle: verified
+last_updated: 2026-08-17
 epic: EP-005
 requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015, REQ-016]
 spec_design_status: complete
@@ -93,6 +94,18 @@ spec_design_links:
   new explicit confirmation is supplied.
 - Verification: idempotency/retry scenario with payment-count assertion.
 
+### FT-006-AC-008 — Browser payment entry and personal paid state
+- REQ: REQ-013, REQ-016
+- Given an assigned teacher and a student with an active lesson charge, when
+  the teacher submits the existing lesson-context payment form, then the
+  authoritative ledger records and allocates the payment. In the student's
+  personal calendar, fully covered lesson days have the paid color/label and
+  uncovered lesson days have the unpaid color/label. Admin and teacher shared
+  calendars do not expose a guessed student payment state.
+- Verification: route authorization tests and real-DB Playwright E2E with a
+  created teacher/student, class membership, payment/allocation assertions, and
+  paid/unpaid calendar-card assertions.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -103,6 +116,7 @@ spec_design_links:
 | Teacher/admin payment permissions | FT-006-AC-005 |
 | Marker placement, date label, and marker retention | FT-006-AC-006 |
 | Duplicate command safety | FT-006-AC-007 |
+| Browser payment entry and personal paid/unpaid calendar state | FT-006-AC-008 |
 
 ## SDD Design Gate
 Global monetary source of truth, storage, decimal representation, allocation,
@@ -135,3 +149,18 @@ Feature-level contract detail remains downstream task-design work.
 - Feature document `status: draft`, feature `lifecycle: planned`, and the
   EP-005/REQ lifecycle values remain unchanged; no product promotion was
   applied by `/mb-sync`.
+
+## W21 browser payment closure — 2026-08-17
+
+TASK-041 closes the browser contour for FT-006-AC-008. The Lesson Context page
+now exposes a payment form to Admin and assigned Teacher, backed by
+`FinancialLedgerBoundary.createPayment`; students cannot submit it. The
+student-only calendar load projects `paid`/`unpaid` from the ledger's balance
+projection, while shared Admin/Teacher calendars omit payment state. The real
+database E2E created/reused the dedicated test Teacher and Student, assigned
+the student to the existing class, recorded a real payment, and asserted the
+paid and unpaid card colors/labels. The payment, allocation, accounts, and
+membership remain in the local database for manual inspection.
+
+The feature's current front matter is `status: active` / `lifecycle: verified`;
+the older W5 note above is historical and does not supersede this W21 closure.

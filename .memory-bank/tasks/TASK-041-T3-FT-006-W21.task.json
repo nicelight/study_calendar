@@ -1,0 +1,152 @@
+{
+  "id": "TASK-041-T3-FT-006-W21",
+  "title": "Expose real browser payment entry and personal paid calendar state",
+  "status": "done",
+  "wave": "W21",
+  "feature": "FT-006",
+  "reqs": ["REQ-013", "REQ-016"],
+  "depends_on": ["TASK-008-T3-FT-006-W5", "TASK-039-T3-FT-003-W10", "TASK-040-T3-FT-001-W20"],
+  "touched_files": [
+    "src/routes/lesson-context/+page.server.ts",
+    "src/routes/lesson-context/+page.svelte",
+    "src/routes/calendar/+page.server.ts",
+    "src/routes/calendar/+page.svelte",
+    "src/lib/server/modules/lesson-context/public.ts",
+    "tests/routes/calendar-navigation.test.ts",
+    "e2e/real-database-payment.spec.ts",
+    "playwright.config.ts",
+    "package.json"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "real-db-e2e-payment", "command": "npm run e2e -- e2e/real-database-payment.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    {
+      "stage": "functional",
+      "attempt": "Fresh real-database browser and route verification",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-041-T3-FT-006-W21/verification.md",
+      "artifact": ".tasks/TASK-041-T3-FT-006-W21/TASK-041-T3-FT-006-W21-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Focused route coverage passed the assigned-teacher payment action, ledger payment/allocation creation, student-only projection, paid/unpaid card rendering, and student submission denial.",
+        "Real Playwright against study-calendar.db passed 1/1: Admin created/reused the dedicated Teacher and Student, the Student was assigned to the existing class, Teacher recorded 20 for the first lesson, the database contained one recorded payment and one allocation, and Student saw paid and unpaid cards with separate labels/colors.",
+        "Full Vitest passed 32 files / 148 tests; npm run check, npm run build, git diff --check, mb-lint, and strict mb-doctor passed."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Independent adversarial role and boundary review",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-041-T3-FT-006-W21/red-verification.md",
+      "artifact": ".tasks/TASK-041-T3-FT-006-W21/TASK-041-T3-FT-006-W21-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Independent review confirms the route delegates payment creation to FinancialLedgerBoundary, rechecks assigned-class/student scope server-side, denies Student payment submission, and leaves shared Admin/Teacher calendars without per-student payment state.",
+        "Independent review confirms student calendar markers are derived from the authoritative balance projection and that the real E2E uses explicit test-account scope without resetting existing product data."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "manual_explicit_owner": "operator request to analyze and prove real payment behavior",
+      "decision": "done",
+      "accepted_evidence": "Current functional PASS, semantic-pass, real-DB E2E, and project gates are recorded in the linked artifacts.",
+      "accepted_residual_risk": "Price/charge setup remains an Admin financial configuration concern; this task adds the payment-entry and personal calendar contour without adding a separate pricing UI."
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/contracts/financial-ledger.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/changelog.md"
+  ],
+  "evidence_required": [
+    "FT-006-AC-008 / REQ-013 / REQ-016 RED: the ledger may already support payment commands, but the browser has no protected payment entry and the student calendar has no paid/unpaid projection; GREEN: a real assigned Teacher submits the lesson-context form, the authoritative database contains the recorded payment and allocation, the Student calendar shows one paid and one unpaid lesson day with distinct labels/colors, Student submission is denied, and shared role calendars omit guessed payment state."
+  ],
+  "purpose": "Connect the existing financial ledger to the simplest real browser workflow for recording a lesson payment and showing its state only in the student's personal calendar.",
+  "success_outcome": "Admin and assigned Teacher can record a payment for an assigned student through Lesson Context; the payment is allocated by the financial ledger, and the student's calendar renders paid and unpaid lesson days in distinct colors while shared calendars remain neutral.",
+  "anti_goals": [
+    "Do not add a second financial store, route-owned SQL, or a new API boundary.",
+    "Do not expose student payment state in a shared Admin/Teacher calendar or trust a client-supplied role, class, or student for authorization.",
+    "Do not reset the real database or use a temporary database; the real E2E may create/reuse only the explicitly scoped test Teacher and Student and must preserve existing product rows.",
+    "Do not add pricing configuration UI, payment editing/cancellation UI, parent payment UI, or a new personal-context route beyond this accepted contour."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/lesson-context/",
+      "src/routes/calendar/",
+      "src/lib/server/modules/lesson-context/public.ts",
+      "tests/routes/calendar-navigation.test.ts",
+      "e2e/real-database-payment.spec.ts",
+      "playwright.config.ts",
+      "package.json",
+      ".memory-bank/features/FT-006-financial-ledger.md",
+      ".memory-bank/requirements.md",
+      ".memory-bank/tasks/",
+      ".protocols/TASK-041-T3-FT-006-W21/",
+      ".tasks/TASK-041-T3-FT-006-W21/"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/financial-ledger/",
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/center-scheduling/",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if payment creation requires a direct route read/write of SQLite instead of FinancialLedgerBoundary.",
+      "Stop if a Student, an unassigned Teacher, or a cross-center actor can record a payment.",
+      "Stop if payment state is rendered to a shared role without a server-authorized student scope.",
+      "Stop if the real browser test requires resetting existing database rows or inventing a temporary product database."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-008",
+    ".memory-bank/contracts/financial-ledger.md",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/features/FT-003-calendar-and-lesson-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/contracts/financial-ledger.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "The payment form is a thin browser adapter and delegates the command to FinancialLedgerBoundary.createPayment.",
+    "Teacher payment authority is limited to the assigned class and a student in that authorized class; Admin retains own-center authority.",
+    "Student payment state is derived from getBalanceProjection and is attached only to student calendar data.",
+    "The real E2E uses the existing local login, database, class, and lesson rows; exact E2E account/session cleanup is scoped to the dedicated test accounts and tokens."
+  ],
+  "invariants": [
+    "A successful browser payment creates one authoritative financial payment and its deterministic allocation.",
+    "A fully covered lesson is paid; an uncovered lesson is unpaid in the student's calendar.",
+    "No payment status or student payment label is emitted for Admin/Teacher shared calendar data.",
+    "Existing product data is preserved; only the explicitly scoped E2E account, membership, financial fixture, and exact automation sessions are touched."
+  ],
+  "verification_targets": [
+    "FT-006-AC-008 / REQ-013 / REQ-016: exercise the real Teacher form, assert payment and allocation rows, then log in as the Student and assert paid/unpaid card attributes, labels, and CSS classes.",
+    "Authorization regression: route tests and source inspection prove Student submission is denied and direct SQLite access is absent from the Lesson Context route.",
+    "Projection privacy: route tests prove student-only paymentStatus data and shared Admin/Teacher omission.",
+    "Real database safety: E2E creates/reuses only the named test accounts, leaves the payment fixture for manual inspection, and removes only its exact automation session tokens."
+  ]
+}

@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import {
 	IdentityAccessBoundary,
-	type ActorContext,
-	type AccountProvisioning,
+	 type ActorContext,
+	 type AccountProvisioning,
+	type PasswordAccountProvisioning,
 	type Role
 } from '$lib/server/modules/identity-access/public';
 import type { SharedDatabase } from '$lib/server/platform/database';
@@ -23,6 +24,7 @@ export type CenterView = {
 export type AdminParticipantView = {
 	accountId: string;
 	role: Role;
+	email: string | null;
 };
 
 export type AdminClassView = {
@@ -96,6 +98,16 @@ export type ParticipantRequest = Omit<AccountProvisioningRequest, 'role'> & {
 	role: Exclude<Role, 'admin'>;
 };
 
+export type PasswordParticipantRequest = {
+	sessionToken?: string;
+	centerId: string;
+	accountId: string;
+	role: Exclude<Role, 'admin'>;
+	email: string;
+	password: string;
+	studentAccountId?: string;
+};
+
 type ClassRow = {
 	id: string;
 	center_id: string;
@@ -130,8 +142,9 @@ type ParticipantRow = {
 	role: Role;
 };
 
-type IdentityAccessProvisioningPort = Pick<IdentityAccessBoundary, 'resolveActor'> & {
+type IdentityAccessProvisioningPort = Pick<IdentityAccessBoundary, 'resolveActor' | 'getAccountEmail'> & {
 	provisionAccount: (provisioning: AccountProvisioning) => void;
+	provisionPasswordAccount: (provisioning: PasswordAccountProvisioning) => void;
 };
 
 type CenterSchedulingOptions = {
@@ -221,10 +234,10 @@ export class CenterSchedulingBoundary {
 		const participants = this.database.sqlite
 			.prepare(
 				`SELECT center_memberships.account_id, accounts.role
-				 FROM center_memberships
-				 JOIN accounts ON accounts.id = center_memberships.account_id
-				 WHERE center_memberships.center_id = ?
-				 ORDER BY accounts.role, center_memberships.account_id`
+					 FROM center_memberships
+					 JOIN accounts ON accounts.id = center_memberships.account_id
+					 WHERE center_memberships.center_id = ?
+					 ORDER BY accounts.role, center_memberships.account_id`
 			)
 			.all(request.centerId) as ParticipantRow[];
 		const classes = this.database.sqlite
@@ -241,7 +254,8 @@ export class CenterSchedulingBoundary {
 			name: center.name,
 			participants: participants.map((participant) => ({
 				accountId: participant.account_id,
-				role: participant.role
+				role: participant.role,
+				email: this.identityAccess.getAccountEmail(participant.account_id)
 			})),
 			classes: classes.map((classRow) => ({
 				classId: classRow.id,
@@ -288,6 +302,41 @@ export class CenterSchedulingBoundary {
 			this.database.sqlite
 				.prepare('INSERT INTO center_memberships (center_id, account_id) VALUES (?, ?)')
 				.run(request.centerId, request.accountId);
+		});
+	}
+
+	createPasswordParticipant(request: PasswordParticipantRequest): void {
+		if (!['teacher', 'student', 'parent'].includes(request.role)) {
+			throw new Error('invalid-participant-role');
+		}
+
+		const actor = this.identityAccess.resolveActor(request.sessionToken);
+		if (!this.getAuthorizedCenterAdminScope(actor, request.centerId)) {
+			throw new Error('not-authorized');
+		}
+
+		this.database.transaction(() => {
+			this.identityAccess.provisionPasswordAccount({
+				accountId: request.accountId,
+				role: request.role,
+				email: request.email,
+				password: request.password
+			});
+			this.database.sqlite
+				.prepare('INSERT INTO center_memberships (center_id, account_id) VALUES (?, ?)')
+				.run(request.centerId, request.accountId);
+
+			if (request.role === 'parent') {
+				if (!request.studentAccountId) {
+					throw new Error('invalid-parent-student');
+				}
+				this.requireCenterMemberRole(request.centerId, request.studentAccountId, 'student');
+				this.database.sqlite
+					.prepare(
+						'INSERT INTO parent_student_links (center_id, parent_account_id, student_account_id) VALUES (?, ?, ?)'
+					)
+					.run(request.centerId, request.accountId, request.studentAccountId);
+			}
 		});
 	}
 

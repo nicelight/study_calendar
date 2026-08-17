@@ -1,7 +1,7 @@
 ---
 description: Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership.
 status: active
-last_updated: 2026-08-13
+last_updated: 2026-08-17
 source_of_truth:
   - .memory-bank/contracts/boundary-map.md
 ---
@@ -64,31 +64,38 @@ remain implementation details.
 ### Account Provisioning Boundary
 
 - **Provider:** Identity & Access.
-- **Public surface:** expose one authoritative provisioning command,
-  `provisionAccount`, for the account-plus-invitation write; also expose the
-  named first-Admin password bootstrap/authentication, invitation lifecycle,
-  provider-binding, second-provider, session authentication/revocation, and
-  actor context operations. `createAccount` and `issueInvitation` are not
-  alternate public write commands.
+- **Public surface:** expose one authoritative command for each supported
+  participant-creation flow: `provisionAccount` for the account-plus-
+  invitation write and the Center & Scheduling-owned direct password flow for
+  an already authorized Admin. Also expose the named first-Admin password
+  bootstrap/authentication, invitation lifecycle, provider-binding,
+  second-provider, session authentication/revocation, and actor context
+  operations. `createAccount` and `issueInvitation` are not alternate public
+  write commands.
 - **State/data authority:** Identity & Access exclusively writes account,
   role, password-credential, invitation, external-identity, and session state.
 - **Allowed interaction:** Center & Scheduling resolves the server-side actor
-  and the actor's own-center Admin authorization before requesting
-  `provisionAccount`; Identity & Access then performs the account-plus-
-  invitation write. The command does not accept caller-trusted role or center
-  scope as authorization. Center & Scheduling receives only the resulting
-  account/invitation facts needed to continue. Provider adapters are invoked
-  through this boundary. A local server-only bootstrap command may call the
-  Identity & Access first-Admin operation, which checks the empty account set
-  and writes the account plus password credential atomically. Browser password
-  login calls Identity & Access and reuses the existing session lifecycle.
+  and the actor's own-center Admin authorization before requesting either
+  provisioning flow; Identity & Access owns the account and credential write,
+  while Center & Scheduling adds the center membership and, for a parent, the
+  selected center-student link in the same transaction. The commands do not
+  accept caller-trusted role or center scope as authorization. The direct
+  password flow normalizes a unique email and stores only the salted built-in
+  `scrypt` result. Center & Scheduling receives only the resulting account
+  facts needed to continue. Provider adapters are invoked through this
+  boundary. A local server-only bootstrap command may call the Identity &
+  Access first-Admin operation, which checks the empty account set and writes
+  the account plus password credential atomically. Browser password login
+  calls Identity & Access and reuses the existing session lifecycle.
 - **Failure/compatibility:** the account and invitation are one atomic write;
-  duplicate or failed provisioning rolls both back. Expired, revoked, reused,
-  duplicate, or failed provider operations are rejected atomically; no partial
-  account, role, membership, or binding is left behind. First-Admin bootstrap
-  fails atomically when accounts are non-empty or credentials are invalid;
-  unknown email and wrong password return the same generic denial without a
-  session.
+  duplicate or failed provisioning rolls both back. Direct password creation
+  rolls back the account, credential, membership, and parent link together;
+  duplicate email and invalid parent selection leave no partial state.
+  Expired, revoked, reused, duplicate, or failed provider operations are
+  rejected atomically; no partial account, role, membership, or binding is
+  left behind. First-Admin bootstrap fails atomically when accounts are
+  non-empty or credentials are invalid; unknown email and wrong password
+  return the same generic denial without a session.
 - **Forbidden bypasses:** no route, UI, CLI, or other slice may assign a role,
   bind an identity, write password credentials directly, or trust a provider
   response directly. No public
@@ -98,10 +105,13 @@ remain implementation details.
 - **Verification:** provider integration scenarios cover both providers,
   unauthenticated/non-Admin/cross-center denial, valid own-center Admin
   provisioning, invitation reuse/failure, duplicate identities, alternate
-  command absence, and state-before/state-after atomicity.
-  Password scenarios cover hidden local bootstrap input, normalized unique
-  email, salted `scrypt` storage, timing-safe generic failure, existing
-  session/cookie behavior, and account+credential atomicity.
+  command absence, and state-before/state-after atomicity. Direct participant
+  scenarios cover each participant role, normalized unique email, own-center
+  Admin authorization, selected center-student parent binding, rollback on
+  duplicate/invalid input, and login through the existing session. Password
+  scenarios cover hidden local bootstrap input, salted `scrypt` storage,
+  timing-safe generic failure, existing session/cookie behavior, and
+  account+credential atomicity.
 
 ### Actor Context Boundary
 

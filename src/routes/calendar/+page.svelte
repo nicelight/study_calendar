@@ -15,6 +15,13 @@
 		return grouped;
 	}
 
+	function paymentStatusForDate(date: string): 'paid' | 'unpaid' | undefined {
+		if (data.role !== 'student') return undefined;
+		const lessons = lessonsByDate.get(date) ?? [];
+		if (lessons.length === 0) return undefined;
+		return lessons.every((lesson) => lesson.paymentStatus === 'paid') ? 'paid' : 'unpaid';
+	}
+
 	function calendarHref(date: string): string {
 		const params = new URLSearchParams({ classId: data.classId, date });
 		return `/calendar?${params.toString()}`;
@@ -27,14 +34,6 @@
 			lessonId: lesson.lessonId
 		});
 		return `/lesson-context?${params.toString()}`;
-	}
-
-	function statusLabel(status: CalendarPageData['lessons'][number]['status']): string {
-		return {
-			planned: 'Запланировано',
-			completed: 'Завершено',
-			cancelled: 'Отменено'
-		}[status];
 	}
 
 	function selectDate(event: Event) {
@@ -100,7 +99,10 @@
 							<div
 								class="day"
 								class:lesson-day={day.isLesson}
+								class:paid-lesson={paymentStatusForDate(day.date) === 'paid'}
+								class:unpaid-lesson={paymentStatusForDate(day.date) === 'unpaid'}
 								class:selected-day={day.isSelected}
+								data-payment-status={paymentStatusForDate(day.date)}
 							>
 								<a
 									class="day-link"
@@ -113,18 +115,22 @@
 								{#if day.isLesson}
 									<span class="day-state"><span aria-hidden="true">✦</span> Урок</span>
 									{#each lessonsByDate.get(day.date) ?? [] as lesson (lesson.lessonId)}
-										<a class="lesson-link" href={lessonContextHref(lesson)}>
-											<span
-												class="lesson-fact"
-												data-lesson-id={lesson.lessonId}
+										<a
+											class="lesson-link"
+											href={lessonContextHref(lesson)}
+											data-lesson-id={lesson.lessonId}
 												data-lesson-date={lesson.lessonDate}
 												data-lesson-status={lesson.status}
+												data-payment-status={lesson.paymentStatus}
 											>
-												{lesson.lessonId} · {statusLabel(lesson.status)}
-											</span>
-											<span class="lesson-action">Открыть урок →</span>
-										</a>
-									{/each}
+												<span class="lesson-action">Открыть урок →</span>
+											</a>
+										{/each}
+									{#if data.role === 'student'}
+										<span class="payment-state" aria-label={paymentStatusForDate(day.date) === 'paid' ? 'Оплачено' : 'Не оплачено'}>
+											{paymentStatusForDate(day.date) === 'paid' ? 'Оплачено' : 'Не оплачено'}
+										</span>
+									{/if}
 								{:else}
 									<span class="day-state free-state">Свободно</span>
 								{/if}
@@ -157,6 +163,8 @@
 	.day { display: flex; min-width: 0; min-height: 7.2rem; flex-direction: column; gap: .38rem; padding: .7rem; border: 1px solid #d9e0d8; border-radius: .8rem; background: #fbfaf5; color: #25332e; }
 	.day:hover { border-color: #3f765d; }
 	.lesson-day { border-color: rgba(185, 104, 78, .58); background: #dcebdd; }
+	.paid-lesson { border-color: #5a9b6d; background: #dcebdd; }
+	.unpaid-lesson { border-color: #c9934d; background: #fff0d8; }
 	.selected-day { box-shadow: inset 0 0 0 3px #b9684e; }
 	.day-link { display: flex; min-width: 0; flex-direction: column; gap: .38rem; color: #25332e; text-decoration: none; }
 	.weekday { color: #6d7a73; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
@@ -165,8 +173,15 @@
 	.free-state { color: #6d7a73; font-weight: 700; }
 	.lesson-link { display: grid; gap: .25rem; padding: .42rem; border: 1px solid #d9e0d8; border-radius: .55rem; background: #fffdf8; color: #25332e; text-decoration: none; }
 	.lesson-link:hover { border-color: #3f765d; background: #f2f7f0; }
-	.lesson-fact { display: block; overflow-wrap: anywhere; font-size: .68rem; font-weight: 800; line-height: 1.25; }
 	.lesson-action { color: #3f765d; font-size: .68rem; font-weight: 900; }
+	.payment-state { font-size: .7rem; font-weight: 900; }
+	.paid-lesson .payment-state { color: #2f6b4f; }
+	.unpaid-lesson .payment-state { color: #a45b22; }
 	.date-picker input:focus-visible, .day-link:focus-visible, .lesson-link:focus-visible { outline: 3px solid #b9684e; outline-offset: 3px; }
-	@media (max-width: 42rem) { .calendar-header, .calendar-card-header { align-items: start; flex-direction: column; } .date-picker { width: 100%; } }
+	@media (max-width: 42rem) {
+		.calendar-header, .calendar-card-header { align-items: start; flex-direction: column; }
+		.date-picker { width: 100%; }
+		.week { min-width: 0; overflow-x: auto; padding-bottom: .25rem; }
+		.week-grid { min-width: 32rem; }
+	}
 </style>

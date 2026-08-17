@@ -6,7 +6,7 @@ id: FT-001
 lifecycle: planned
 epic: EP-001
 requirements: [REQ-001, REQ-002, REQ-014]
-last_updated: 2026-08-14
+last_updated: 2026-08-17
 source_of_truth:
   - .memory-bank/features/FT-001-authentication-and-binding.md
 spec_design_status: complete
@@ -32,6 +32,9 @@ spec_design_links:
 - The operator locally bootstraps the first Admin with normalized email and a
   hidden-prompt password; that Admin signs in by email/password and receives the
   same server session/cookie used by provider login.
+- Admin creates teacher, student, and parent accounts directly with email and a
+  password; a parent account is linked to a selected student before access is
+  granted.
 - Authenticated user adds the second provider from a confirmed profile.
 
 ## Edge / Failure Behavior
@@ -43,6 +46,8 @@ spec_design_links:
   actions; logout revokes the server-side session.
 - Unknown email and wrong password return the same invalid-credentials response
   without a session; bootstrap in a non-empty account set fails atomically.
+- Duplicate participant email, invalid parent link, or failed credential write
+  leaves the account, membership, credential, and parent link state unchanged.
 
 ## Acceptance Criteria
 
@@ -122,7 +127,7 @@ spec_design_links:
   success and negative authorization/state-before/state-after assertions.
 
 ### FT-001-AC-009 — Bootstrapped Admin enters center creation from the browser
-- REQ: REQ-001, REQ-003, REQ-014
+- REQ: REQ-001, REQ-014
 - Given a manually bootstrapped Admin account with an authenticated server
   session and no center membership, when the Admin opens the protected UI and
   submits the protected center form, then the server creates the center and Admin
@@ -172,6 +177,20 @@ spec_design_links:
   accessible anchor and exact `href`, while the existing login/session/provider
   tests remain green.
 
+### FT-001-AC-013 — Admin creates direct password participants
+- REQ: REQ-001, REQ-014
+- Given an authenticated own-center Admin, when the Admin submits a teacher,
+  student, or parent email/password form, then the server creates the requested
+  role, password credential, and center membership atomically. A parent form
+  must select an existing center student and creates the corresponding
+  `parent_student_links` row atomically. The user can then enter through the
+  existing `/login` route; this Admin flow does not require OAuth or an
+  invitation link.
+- Verification: protected Admin action and SSR/UI checks for each role,
+  normalized-email login, duplicate-email denial, invalid parent-link denial,
+  non-Admin/cross-center denial, and state-before/state-after equality on every
+  failed write.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -187,6 +206,7 @@ spec_design_links:
 | Safe local first-Admin password-credential bootstrap | FT-001-AC-010 |
 | Password browser login through the existing session/cookie | FT-001-AC-011 |
 | Public entry to the existing login route | FT-001-AC-012 |
+| Direct Admin email/password participant creation | FT-001-AC-013 |
 
 ## Task Coverage at W9 — TASK-019 Boundary
 
@@ -532,3 +552,12 @@ This task closes only the public login entry. FT-001, REQ-001, and EP-001 remain
 `planned` because remaining UI/product outcomes are not covered by AC-012. The
 previous AC-001..011 evidence, every prior task identity/status/dependency,
 and all existing implementation remain unchanged.
+
+## Direct participant password reconciliation — 2026-08-17
+
+The Admin participant surface now uses the existing password authentication
+path directly: the server-owned Center & Scheduling command creates the
+Identity & Access password credential, center membership, and optional
+parent-to-student link in one transaction. The prior OAuth invitation
+transport remains available only for existing provider-specific compatibility
+paths; it is no longer the Admin's visible account-creation flow.

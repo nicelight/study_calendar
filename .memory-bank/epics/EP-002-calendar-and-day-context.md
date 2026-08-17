@@ -3,7 +3,7 @@ description: Epic for elastic calendar navigation and shared/personal lesson con
 status: active
 type: epic
 id: EP-002
-lifecycle: planned
+lifecycle: verified
 ---
 # EP-002 — Calendar and Day Context
 
@@ -26,3 +26,13 @@ lifecycle: planned
 ## Source / constraints
 - [.memory-bank/prd.md](../prd.md#elastic-calendar), `FR-CAL-*`, `FR-DAY-*`,
   `NFR-UX-*`, `NFR-PRIV-*`.
+
+## FT-003 aggregate closure — 2026-08-17
+
+FT-003 now has current aggregate `semantic-pass` evidence for AC-001..AC-008,
+including the real browser authoring path and responsive free-day navigation.
+EP-002 is therefore `verified`; requirements shared with other epics retain
+their own RTM lifecycle until those other mappings close.
+
+- [FT-003 feature](../features/FT-003-calendar-and-lesson-context.md)
+- [current semantic report](../../.tasks/FT-003/FT-003-S-RED-VERIFY-final-report-docs-02.md)

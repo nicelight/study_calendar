@@ -2,7 +2,10 @@ import { createProviderAdapters, type ProviderAdapterRegistry } from '$lib/serve
 import { CenterSchedulingBoundary } from '$lib/server/modules/center-scheduling/public';
 import { CollaborationBoundary } from '$lib/server/modules/collaboration/public';
 import { FinancialLedgerBoundary } from '$lib/server/modules/financial-ledger/public';
-import { createIdentityAccessProvisioningWriter } from '$lib/server/modules/identity-access/internal';
+import {
+	createIdentityAccessPasswordProvisioningWriter,
+	createIdentityAccessProvisioningWriter
+} from '$lib/server/modules/identity-access/internal';
 import { IdentityAccessBoundary } from '$lib/server/modules/identity-access/public';
 import { LearningProgressBoundary } from '$lib/server/modules/learning-progress/public';
 import { LessonContextBoundary } from '$lib/server/modules/lesson-context/public';
@@ -30,9 +33,12 @@ export function createCompositionRoot(
 	const providers = createProviderAdapters(platformConfig.providers);
 	const identityAccess = new IdentityAccessBoundary(database);
 	const provisioningWriter = createIdentityAccessProvisioningWriter(database);
+	const passwordProvisioningWriter = createIdentityAccessPasswordProvisioningWriter(database);
 	const centerScheduling = new CenterSchedulingBoundary(database, {
 		resolveActor: identityAccess.resolveActor.bind(identityAccess),
-		provisionAccount: provisioningWriter
+		getAccountEmail: identityAccess.getAccountEmail.bind(identityAccess),
+		provisionAccount: provisioningWriter,
+		provisionPasswordAccount: passwordProvisioningWriter
 	});
 	const collaboration = new CollaborationBoundary(database, identityAccess, centerScheduling);
 	const financialLedger = new FinancialLedgerBoundary(database, identityAccess, centerScheduling);

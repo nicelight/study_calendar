@@ -8,9 +8,12 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
     "bootstrap:admin": "node --loader ./scripts/bootstrap-admin-loader.mjs scripts/bootstrap-admin.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@sveltejs/adapter-auto": "^7.0.1",
     "@sveltejs/kit": "^2.70.2",
     "@sveltejs/vite-plugin-svelte": "^7.3.0",

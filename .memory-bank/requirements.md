@@ -18,14 +18,15 @@ status: draft
 
 - **REQ-001 — Account binding and provider access:** MVP
   supports browser email/password authentication for password-credential
-  accounts and retains Telegram Login and Google OAuth. The locally bootstrapped
-  first Admin can enter the protected Admin surface without membership, while
-  invited center-created roles and memberships remain bound through one-time
-  provider invitations. No user-selected role is allowed, one external identity
-  cannot bind to multiple accounts, and password credentials use normalized
-  unique email plus salted `scrypt` verification without stored plaintext. The
-  public home route visibly links to the existing `/login` transport without
-  changing authentication or session behavior.
+  accounts and retains Telegram Login and Google OAuth for existing provider
+  flows. The locally bootstrapped first Admin can enter the protected Admin
+  surface without membership; Admin-created teacher, student, and parent
+  accounts use a normalized unique email and password, with parent access bound
+  to a selected student. No user-selected role is allowed, one external
+  identity cannot bind to multiple accounts, and password credentials use salted
+  `scrypt` verification without stored plaintext. The public home route visibly
+  links to the existing `/login` transport without changing authentication or
+  session behavior.
   (PRD FR-AUTH-001..010)
 - **REQ-002 — Provider failure safety:** expired, revoked, reused, duplicate, or
   failed provider binding attempts reject without creating an account, changing
@@ -62,7 +63,9 @@ status: draft
   topic, practical work, and homework; a personal day reuses shared material
   while isolating student-specific grades, discussions, and financial data. If
   shared material has not yet been entered, an authorized lesson still opens a
-  shared lesson shell instead of failing as an access error.
+  shared lesson shell instead of failing as an access error. Admin and assigned
+  Teacher can create or update the shared material from that lesson view;
+  Student and Parent remain read-only.
   (PRD FR-DAY-001..005; AC-DAY-001)
 - **REQ-007 — Field collaboration and reactions:** Authorized participants can
   edit one account-owned comment per field with author/time attribution and use
@@ -120,11 +123,11 @@ status: draft
 | REQ | Epic | Feature | Test | Lifecycle |
 |---|---|---|---|---|
 | REQ-000 | Foundation | FT-000 | test:foundation-baseline;test:foundation-smoke | planned |
-| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..012 | planned |
+| REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..013 | planned |
 | REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
 | REQ-003 | EP-001 | FT-002 | test:FT-002-AC-001..002;FT-002-AC-011 | verified |
 | REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..010 | verified |
-| REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004;FT-003-AC-007..008 | planned |
+| REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004;FT-003-AC-007..008 | verified |
 | REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-003-AC-008;FT-004-AC-001;FT-004-AC-005 | planned |
 | REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | verified |
 | REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | verified |
@@ -132,10 +135,10 @@ status: draft
 | REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-004 | verified |
 | REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
 | REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
-| REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006 | verified |
-| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006 | test:FT-001-AC-001;FT-001-AC-005..008;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005 | planned |
+| REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006;FT-006-AC-008 | verified |
+| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005 | planned |
 | REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
-| REQ-016 | EP-002, EP-005 | FT-003, FT-006 | test:FT-003-AC-001;FT-003-AC-007..008;FT-006-AC-002..006 | planned |
+| REQ-016 | EP-002, EP-005 | FT-003, FT-006 | test:FT-003-AC-001;FT-003-AC-007..008;FT-006-AC-002..006;FT-006-AC-008 | planned |
 
 ## W10 task evidence route
 
@@ -393,3 +396,15 @@ REQ-014 remain `planned` until the FT-003 aggregate feature gate is completed.
 - [TASK-039 card](tasks/TASK-039-T3-FT-003-W10.task.json)
 - [TASK-039 functional evidence](../.tasks/TASK-039-T3-FT-003-W10/reverification-evidence.md)
 - [TASK-039 semantic evidence](../.tasks/TASK-039-T3-FT-003-W10/TASK-039-T3-FT-003-W10-S-RED-VERIFY-final-report-docs-01.md)
+
+## FT-003 aggregate closure — 2026-08-17
+
+The aggregate FT-003 gate is now complete: AC-001..AC-008 have current
+claim-linked functional and semantic evidence, including shared-material
+authoring, real-browser save/reload, and responsive free-day navigation. The
+feature and EP-002 are `verified`; REQ-005 is `verified` because FT-003 is its
+only feature mapping. REQ-006, REQ-014, and REQ-016 remain `planned` in the RTM
+because they also depend on other not-yet-verified features.
+
+- [FT-003 feature](features/FT-003-calendar-and-lesson-context.md)
+- [FT-003 semantic evidence](../.tasks/FT-003/FT-003-S-RED-VERIFY-final-report-docs-02.md)

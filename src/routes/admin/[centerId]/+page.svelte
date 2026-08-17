@@ -4,9 +4,14 @@
 	import { onMount } from 'svelte';
 
 	let { data, form } = $props();
+	type ParticipantRole = 'teacher' | 'student' | 'parent';
+	let participantRole = $state<ParticipantRole>('teacher');
 
 	const teachers = $derived(
 		data.participants.filter((participant) => participant.role === 'teacher')
+	);
+	const students = $derived(
+		data.participants.filter((participant) => participant.role === 'student')
 	);
 	const weekdays = [
 		{ value: 1, label: 'Пн' },
@@ -195,6 +200,13 @@
 		}[role] ?? role;
 	}
 
+	function selectParticipantRole(event: Event): void {
+		const value = (event.currentTarget as HTMLSelectElement).value;
+		if (value === 'teacher' || value === 'student' || value === 'parent') {
+			participantRole = value;
+		}
+	}
+
 	function messageLabel(message: string): string {
 		return {
 			class_created: 'Класс создан.',
@@ -203,8 +215,9 @@
 			schedule_created: 'Расписание создано; пересекающиеся запланированные даты заменены.',
 			teacher_assigned: 'Учитель назначен на класс.',
 			teacher_removed: 'Доступ учителя к классу отозван.',
-			teacher_membership_removed: 'Учитель удалён из центра.',
-			invitation_created: 'Приглашение создано.'
+				teacher_membership_removed: 'Учитель удалён из центра.',
+				participant_created: 'Аккаунт создан. Передайте пользователю email и пароль.',
+				invitation_created: 'Приглашение создано.'
 		}[message] ?? 'Изменения сохранены.';
 	}
 
@@ -217,10 +230,14 @@
 			invalid_mode: 'Выберите индивидуальный или групповой режим.',
 			invalid_schedule: 'Проверьте даты и выберите хотя бы один день недели.',
 			schedule_conflict: 'Нельзя заменить завершённое или отменённое занятие.',
-			invalid_teacher: 'Выберите учителя этого центра.',
-			invalid_role: 'Выберите разрешённую роль участника.',
-			conflict: 'Операция конфликтует с текущими данными класса.',
-			provisioning_failed: 'Не удалось создать приглашение.',
+				invalid_teacher: 'Выберите учителя этого центра.',
+				invalid_role: 'Выберите разрешённую роль участника.',
+				invalid_email: 'Укажите корректный email.',
+				invalid_password: 'Укажите пароль.',
+				invalid_parent_student: 'Для родителя выберите ученика.',
+				email_exists: 'Аккаунт с таким email уже существует.',
+				conflict: 'Операция конфликтует с текущими данными класса.',
+				provisioning_failed: 'Не удалось создать аккаунт.',
 			operation_failed: 'Не удалось сохранить изменения.'
 		}[error] ?? 'Не удалось выполнить операцию.';
 	}
@@ -476,24 +493,47 @@
 				</ul>
 
 				<div class="invite-block">
-					<h3>Новое приглашение</h3>
-					<p class="muted">Аккаунт и роль фиксируются до перехода по одноразовой ссылке.</p>
-					<form method="POST" action="?/inviteParticipant" class="form-grid">
+					<h3>Новый аккаунт</h3>
+					<p class="muted">Придумайте пароль и передайте пользователю email вместе с ним.</p>
+					<form method="POST" action="?/createParticipant" class="form-grid">
 						<label>
-							<span>Роль участника</span>
-							<select name="role" required>
+							<span>Роль</span>
+							<select name="role" value={participantRole} onchange={selectParticipantRole} required>
 								<option value="teacher">Учитель</option>
 								<option value="student">Ученик</option>
 								<option value="parent">Родитель</option>
 							</select>
 						</label>
-						<button class="button primary" type="submit">Создать приглашение</button>
+						<label>
+							<span>Email</span>
+							<input name="email" type="email" autocomplete="off" required placeholder="user@example.com" />
+						</label>
+						<label>
+							<span>Пароль</span>
+							<input name="password" type="password" autocomplete="new-password" required />
+						</label>
+						{#if participantRole === 'parent'}
+							<label>
+								<span>Связать с учеником</span>
+								<select name="studentAccountId" required disabled={students.length === 0}>
+									<option value="">Выберите ученика</option>
+									{#each students as student}
+										<option value={student.accountId}>{student.email ?? student.accountId}</option>
+									{/each}
+								</select>
+								{#if students.length === 0}
+									<span class="muted">Сначала создайте аккаунт ученика.</span>
+								{/if}
+							</label>
+						{/if}
+						<button class="button primary" type="submit" disabled={participantRole === 'parent' && students.length === 0}>
+							Создать аккаунт
+						</button>
 					</form>
-					{#if form?.invitationUrl}
+					{#if form?.participantEmail}
 						<div class="invitation-result" aria-live="polite">
-							<strong>Ссылка готова</strong>
-							<a href={form.invitationUrl}>{form.invitationUrl}</a>
-							<small>Действует до {form.expiresAt}</small>
+							<strong>Аккаунт создан</strong>
+							<span>{form.participantEmail}</span>
 						</div>
 					{/if}
 				</div>
@@ -594,8 +634,7 @@
 	.invite-block { display: grid; gap: .9rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
 	.invite-block p { margin: 0; }
 	.invitation-result { display: grid; gap: .45rem; padding: .85rem; border-radius: .7rem; background: var(--accent-soft); }
-	.invitation-result a { color: var(--accent); font-weight: 800; overflow-wrap: anywhere; }
-	.invitation-result small { color: var(--muted); }
+	.invitation-result span { color: var(--accent); font-weight: 800; overflow-wrap: anywhere; }
 	.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 	@media (min-width: 42rem) {

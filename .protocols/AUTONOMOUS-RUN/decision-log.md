@@ -819,3 +819,94 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
 - Outer autonomous checkpoint is now `SUCCESS`; no non-terminal product task
   remains. This is not final human product acceptance, deployment, or a
   production-use claim.
+
+## 2026-08-17 — operator-authorized autonomous follow-up
+
+- The operator authorized autonomous completion of the remaining user-facing
+  flow under KISS: Admin/assigned Teacher must be able to fill shared lesson
+  topic, practical work, and homework from the browser, and the real local
+  Playwright smoke must cover save and reload.
+- This is an implementation gap inside the already accepted PRD/FT-003 shared
+  lesson context, not a new personal-student-context contract. No temporary
+  database, synthetic session, test account, or product fixture is permitted.
+- The previous TASK-039 closure remains historical and unchanged; the outer
+  checkpoint is reopened as `RUNNING` for this follow-up.
+
+## 2026-08-17 — autonomous follow-up closure
+
+- Implemented the minimal shared Lesson Context authoring path inside the
+  accepted FT-003 contract: Admin and assigned Teacher can save topic,
+  practical work, and homework; Student and Parent remain read-only.
+- Fresh semantic co-review surfaced three findings: incomplete real-session
+  cleanup, unasserted logout, and collapsed free-day links on mobile. All three
+  were corrected and rechecked in the real browser.
+- The real Playwright path now covers login → Admin → class → calendar → lesson
+  → save → reload → mobile free-day navigation → asserted logout. It captures
+  and deletes only its exact session token and restores the original lesson
+  material.
+- Post-run real database invariant is 0 material rows, 8 total/active sessions,
+  and 0 revoked sessions. No temporary DB, synthetic session, test account, or
+  product fixture was used.
+- Full closure gates passed: Vitest 32 files/146 tests, Svelte check, build,
+  Playwright 1/1, mb-lint, strict mb-doctor, and diff check. FT-003 and EP-002
+  are `verified`; REQ-005 is `verified`, while shared REQ-006/014/016 remain
+  governed by their other feature mappings.
+- Outer autonomous checkpoint is `SUCCESS`; prior TASK-039 and TASK-038
+  historical records remain preserved.
+
+## 2026-08-17 — user-facing identifier cleanup
+
+- The operator identified internal class and lesson UUIDs displayed in the
+  Lesson Context header and calendar lesson cards.
+- Replaced those visible values with class name and lesson status. URL/query
+  identifiers remain unchanged because they are required for server routing
+  and authorization.
+- Added render assertions for the visible text and reran the full suite,
+  check, build, real browser E2E, and database cleanup invariant successfully.
+
+## 2026-08-17 — direct Admin password participants
+
+- The operator requested direct email/password account creation for Teacher,
+  Student, and Parent, with Parent bound to a selected Student and no OAuth in
+  the visible Admin flow.
+- Decision: reuse the existing Identity & Access password verification and
+  session path; add one server-owned Center & Scheduling command that creates
+  credential, role-bearing account, center membership, and optional
+  `parent_student_links` state atomically. The Admin supplies the password and
+  passes it to the user; plaintext is never persisted or returned.
+- Existing OAuth invitation code remains only as compatibility for old/provider
+  paths. It is removed from the visible Admin account-creation surface.
+- Focused route tests prove role creation, normalized password login, parent
+  link, duplicate-email denial, and non-Admin denial. The real browser smoke
+  inspects the new form without creating a product fixture.
+
+## 2026-08-17 — direct participant closure
+
+- TASK-040-T3-FT-001-W20 records the accepted FT-001-AC-013 implementation and
+  its functional `PASS` / semantic `semantic-pass` evidence. The strict
+  acceptance trace required an indexed task link, so this single task records
+  the already implemented bounded outcome; it adds no separate product
+  behavior or user-facing workflow.
+- The direct-account follow-up is terminal. Full tests, check, build, real
+  database E2E, mb-lint, strict doctor, and diff check passed. Existing real
+  database data remains unchanged.
+
+## 2026-08-17 — payment entry and personal calendar closure
+
+- The operator requested a readiness analysis and real E2E proof for lesson
+  payment entry and paid/unpaid day cards, with a dedicated test Teacher and
+  Student on the real local database.
+- Initial review found the financial ledger core ready but no browser payment
+  form or calendar projection. The KISS implementation added the form to the
+  existing Lesson Context route and kept Financial Ledger as the sole payment
+  owner.
+- Independent review found that Calendar was interpreting Financial Ledger
+  data directly. Corrective decision: add a narrow Student-only payment-status
+  query to Lesson Context and have Calendar consume only that server-authorized
+  projection. No contract redesign or second store was needed.
+- Real E2E now submits the same payment twice, asserts one payment and one
+  allocation, and verifies paid/unpaid Student cards. It removes exact browser
+  sessions while retaining the requested test accounts and financial rows for
+  inspection. Existing product data is preserved.
+- TASK-041-T3-FT-006-W21 is `done`; functional and semantic evidence, fresh
+  project gates, and strict doctor are green. No unresolved blocker remains.

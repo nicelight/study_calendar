@@ -6,17 +6,23 @@ import type {
 	CenterSchedulingBoundary,
 	LessonView
 } from '$lib/server/modules/center-scheduling/public';
+import type { LessonContextBoundary } from '$lib/server/modules/lesson-context/public';
 import type { PageServerLoad } from './$types';
 
 type CalendarPort = Pick<CenterSchedulingBoundary, 'getAuthorizedClassScope' | 'getLessons'>;
+type CalendarLessonContextPort = Pick<LessonContextBoundary, 'getStudentPaymentStatuses'>;
+
+export type CalendarPaymentStatus = 'paid' | 'unpaid';
+export type CalendarLessonView = LessonView & { paymentStatus?: CalendarPaymentStatus };
 
 export type CalendarPageData = Pick<AuthorizedClassScope, 'classId' | 'className' | 'role'> & {
 	selectedDate: string;
-	lessons: LessonView[];
+	lessons: CalendarLessonView[];
 };
 
 export function _createCalendarPageLoad(
-	centerScheduling: CalendarPort = getCompositionRoot().centerScheduling
+	centerScheduling: CalendarPort = getCompositionRoot().centerScheduling,
+	lessonContext: CalendarLessonContextPort = getCompositionRoot().lessonContext
 ): (event: RequestEvent) => CalendarPageData {
 	return (event) => {
 		const actor = event.locals.actor;
@@ -42,13 +48,30 @@ export function _createCalendarPageLoad(
 			throw error(403, 'Forbidden');
 		}
 
+		const calendarLessons: CalendarLessonView[] =
+			scope.role === 'student'
+				? (() => {
+						const paymentStatuses = lessonContext.getStudentPaymentStatuses({
+							sessionToken,
+							classId: scope.classId
+						});
+						const paymentStatusByLesson = new Map(
+							paymentStatuses.map((paymentStatus) => [paymentStatus.lessonId, paymentStatus.status])
+						);
+						return lessons.map((lesson) => ({
+							...lesson,
+							paymentStatus: paymentStatusByLesson.get(lesson.lessonId)
+						}));
+					})()
+				: lessons;
+
 		const requestedDate = event.url.searchParams.get('date');
 		return {
 			classId: scope.classId,
 			className: scope.className,
 			role: scope.role,
 			selectedDate: isIsoDate(requestedDate) ? requestedDate : DEFAULT_SELECTED_DATE,
-			lessons
+			lessons: calendarLessons
 		};
 	};
 }

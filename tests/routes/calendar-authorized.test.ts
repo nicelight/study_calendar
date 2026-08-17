@@ -169,7 +169,7 @@ describe('FT-003-AC-007 authorized database-backed calendar', () => {
 		expect(response.body).toContain('data-lesson-id="lesson-own-planned"');
 		expect(response.body).toContain('data-lesson-date="2026-08-10"');
 		expect(response.body).toContain('data-lesson-status="completed"');
-		expect(response.body).toContain('Завершено');
+			expect(response.body).not.toContain('Завершено');
 		expect(response.body).not.toContain('lesson-other-secret');
 		expect(response.body).not.toContain('Ритм обучения');
 		expect(snapshot(root)).toEqual(before);

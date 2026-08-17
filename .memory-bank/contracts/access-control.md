@@ -44,14 +44,21 @@ every role.
 
 ## Binding and session rules
 
-- Account provisioning has one authoritative public write command:
-  `provisionAccount`. Before any Identity & Access write, Center & Scheduling
-  resolves the request's server-side actor and verifies that the actor is an
-  Admin in the target's own center. A caller-supplied role, center, or scope is
-  never an authorization input.
+- Account provisioning has one authoritative command per supported flow:
+  `provisionAccount` for invitation-based creation and the direct password
+  participant command for Admin-created teacher/student/parent accounts.
+  Before any Identity & Access write, Center & Scheduling resolves the
+  request's server-side actor and verifies that the actor is an Admin in the
+  target's own center. A caller-supplied role, center, or scope is never an
+  authorization input.
 - `createAccount` and `issueInvitation` MUST NOT be exposed as alternate public
   provisioning writes. Account and invitation creation MUST commit or roll
   back together inside the Identity & Access transaction.
+- Direct password participant creation MUST normalize and uniquely persist the
+  email, create the credential and center membership atomically, and for a
+  parent create a link only to an existing student in the same center. A
+  duplicate email or invalid student link MUST leave account, credential,
+  membership, and link state unchanged.
 - A role-bearing internal account and its permitted context exist before the
   first provider binding.
 - A password credential belongs to exactly one Identity & Access account. Its

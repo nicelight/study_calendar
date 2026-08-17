@@ -37,3 +37,42 @@ status: active
   methods in feature AC/task records. Use a subject spec only for a non-trivial
   reproducible measurement method or expert rubric; it never supplies a missing
   product target. Keep executable gates in task records.
+
+## Real-database browser smoke
+- Playwright is configured in `playwright.config.ts` and runs the real local
+  `study-calendar.db` through the existing dev server at `127.0.0.1:5173`.
+- The first smoke path uses the real password login, then follows Admin → class
+  → calendar → lesson and logs out through the real `/auth/logout` route. It
+  does not seed temporary accounts, sessions, databases, or product records.
+- Local credentials are kept only in the ignored, mode-600 `.env.e2e.local`;
+  never copy that file into task evidence, logs, or repository-authored docs.
+- Run with `npm run e2e`. The current smoke test proves real browser login,
+  Admin → class → calendar → lesson navigation, shared-material save/reload,
+  mobile free-day navigation, the Admin account form, and logout. It restores
+  the selected lesson material and removes only the exact session created by
+  the test; it does not submit or create a product account.
+
+## Direct Admin participant accounts
+- The Admin action creates a teacher, student, or parent with normalized email,
+  password credential, and center membership through Center & Scheduling.
+- Parent creation requires an existing center student; the parent link and
+  account state are committed atomically. Duplicate email, invalid role/link,
+  non-Admin, and cross-center paths must leave state unchanged.
+- Focused route coverage verifies creation, password login, parent link,
+  duplicate email, and non-Admin denial. The real browser smoke checks the
+  visible form without adding an unrequested real account to `study-calendar.db`.
+
+## Real payment browser path
+- `e2e/real-database-payment.spec.ts` runs against the same real local
+  `study-calendar.db` and existing dev server. It creates/reuses only the
+  explicitly named E2E Teacher and Student through the real Admin flow, assigns
+  the Student to an existing class, and prepares the smallest exact price/
+  charge fixture needed to make paid and unpaid days observable.
+- The test logs in as the assigned Teacher, submits the Lesson Context payment
+  form, asserts one recorded payment and one allocation in the database, then
+  logs in as the Student and asserts distinct paid/unpaid card colors, labels,
+  and lesson identities. Exact automation session tokens are removed in
+  `finally`; the requested test accounts and payment remain for inspection.
+- Shared Admin/Teacher calendar payloads and Student payment submission are
+  covered by route tests so the browser projection cannot become a shared
+  guessed status.
