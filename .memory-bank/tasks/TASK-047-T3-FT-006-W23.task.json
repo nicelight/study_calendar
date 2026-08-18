@@ -1,7 +1,7 @@
 {
   "id": "TASK-047-T3-FT-006-W23",
   "title": "Project factual payment markers without financial mutation",
-  "status": "ready",
+  "status": "done",
   "wave": "W23",
   "feature": "FT-006",
   "reqs": ["REQ-013"],
@@ -42,6 +42,18 @@
         "No material finding or operator-owned question was admitted; semantic report: .tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md."
       ],
       "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-047-T3-FT-006-W23/verification.md",
+        ".protocols/TASK-047-T3-FT-006-W23/red-verification.md",
+        ".tasks/TASK-047-T3-FT-006-W23/execution-evidence.md",
+        ".tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "lifecycle_changed": true
     }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],

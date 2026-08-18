@@ -198,3 +198,93 @@ The fresh rebuild owners for the completed W22 slices are now durable:
 Financial Ledger ownership, accepted boundaries, Planning Revision `2`, and
 the feature lifecycle remain unchanged. W23 payment allocation and later cards
 remain governed by their authoritative task records.
+
+## W23 fresh Financial Ledger closure — 2026-08-18
+
+The fresh W23 owners for payment allocation, authority, and marker projection
+are now durable:
+
+- `TASK-045-T3-FT-006-W23` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for `FT-006-AC-002` and `FT-006-AC-003` / `REQ-012`,
+  `REQ-015` (deterministic oldest-first allocation, exact partial remainder,
+  excess advance, paid/overdue states, and replay).
+- `TASK-046-T3-FT-006-W23` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for `FT-006-AC-005` / `REQ-012`, `REQ-013`, `REQ-014`,
+  `REQ-015` (role/center authority, Teacher create-only, Admin edit/cancel,
+  deterministic recomputation, and audit).
+- `TASK-047-T3-FT-006-W23` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for `FT-006-AC-006` / `REQ-013` (factual marker
+  placement, week/month boundary discovery, and read-only projection).
+
+- [TASK-045 card](../tasks/TASK-045-T3-FT-006-W23.task.json)
+- [TASK-045 functional verification](../../.tasks/TASK-045-T3-FT-006-W23/TASK-045-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md)
+- [TASK-045 semantic verification](../../.tasks/TASK-045-T3-FT-006-W23/TASK-045-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md)
+- [TASK-046 card](../tasks/TASK-046-T3-FT-006-W23.task.json)
+- [TASK-046 functional verification](../../.tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md)
+- [TASK-046 semantic verification](../../.tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md)
+- [TASK-047 card](../tasks/TASK-047-T3-FT-006-W23.task.json)
+- [TASK-047 functional verification](../../.tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md)
+- [TASK-047 semantic verification](../../.tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md)
+- [W23 boundary sync](../../.tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-MB-SYNC-final-report-docs-01.md)
+
+Financial Ledger ownership, accepted boundaries, Planning Revision `2`, and
+the feature lifecycle remain unchanged. W24 retry/idempotency and later cards
+remain governed by their authoritative task records.
+
+## W24 fresh retry closure — 2026-08-18
+
+The fresh W24 retry owner is now durable:
+
+- `TASK-048-T3-FT-006-W24` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for `FT-006-AC-007` / `REQ-012`, `REQ-015`
+  (identical-confirmation idempotency, changed-payload conflict without
+  mutation, explicit new confirmation, and deterministic replay).
+
+- [TASK-048 card](../tasks/TASK-048-T3-FT-006-W24.task.json)
+- [TASK-048 functional verification](../../.tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-VERIFY-final-report-docs-01.md)
+- [TASK-048 semantic verification](../../.tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-RED-VERIFY-final-report-docs-01.md)
+- [W24 boundary sync](../../.tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-MB-SYNC-final-report-docs-01.md)
+
+Financial Ledger ownership, accepted boundaries, Planning Revision `2`, and
+the feature lifecycle remain unchanged. W25 Lesson Context adapter and later
+cards remain governed by their authoritative task records.
+
+## W25 Lesson Context adapter closure — 2026-08-18
+
+The fresh W25 adapter prerequisite is now durable:
+
+- `TASK-049-T3-FT-006-W25` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for the protected Lesson Context payment adapter /
+  `REQ-013` boundary. Admin and assigned Teacher submissions delegate through
+  `FinancialLedgerBoundary.createPayment`; Student, unassigned Teacher,
+  cross-center, forged-scope, and malformed submissions fail before financial
+  mutation.
+- [TASK-049 card](../tasks/TASK-049-T3-FT-006-W25.task.json)
+- [TASK-049 functional verification](../../.tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-VERIFY-final-report-docs-01.md)
+- [TASK-049 semantic verification](../../.tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-RED-VERIFY-final-report-docs-01.md)
+- [W25 boundary sync](../../.tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-MB-SYNC-final-report-docs-01.md)
+
+The route and Lesson Context module do not own financial table persistence.
+TASK-050 remains the owner of the personal paid/unpaid calendar projection and
+real-database browser E2E. Financial Ledger ownership, accepted contracts,
+Planning Revision `2`, RTM lifecycle values, and FT-006 lifecycle remain
+unchanged.
+
+## W26 personal calendar projection closure — 2026-08-18
+
+The complete browser contour is now durable:
+
+- `TASK-050-T3-FT-006-W26` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for `FT-006-AC-008` / `REQ-013`. The real assigned
+  Teacher flow records one payment and allocation through the existing adapter;
+  the Student personal calendar derives `paid` and `unpaid` from the named
+  projection; shared Admin/Teacher calendars omit per-student payment state.
+- [TASK-050 card](../tasks/TASK-050-T3-FT-006-W26.task.json)
+- [TASK-050 functional verification](../../.tasks/TASK-050-T3-FT-006-W26/TASK-050-T3-FT-006-W26-S-VERIFY-final-report-docs-01.md)
+- [TASK-050 semantic verification](../../.tasks/TASK-050-T3-FT-006-W26/TASK-050-T3-FT-006-W26-S-RED-VERIFY-final-report-docs-01.md)
+- [W26 boundary sync](../../.tasks/TASK-050-T3-FT-006-W26/TASK-050-T3-FT-006-W26-S-MB-SYNC-final-report-docs-01.md)
+
+The real local database E2E preserved the dedicated Teacher/Student and
+payment/allocation fixture and removed only exact automation sessions. No
+Financial Ledger or Lesson Context ownership changed; FT-006 lifecycle remains
+`verified`, and no further indexed product task remains after W26.

@@ -4,6 +4,62 @@ status: active
 ---
 # Changelog
 
+## [2026-08-18] Wave W26 — personal paid/unpaid calendar closure
+
+- Reconciled `TASK-050-T3-FT-006-W26` as `done` with fresh functional and
+  semantic evidence for FT-006-AC-008 / REQ-013.
+- Confirmed the real assigned-Teacher payment flow, authoritative
+  payment/allocation facts, Student paid/unpaid projection, shared-calendar
+  omission, forged-scope denial, and exact session cleanup on the local DB.
+- Preserved Financial Ledger and Lesson Context ownership, accepted contracts,
+  Planning Revision `2`, existing RTM lifecycle values, and the dedicated
+  inspected local fixture. No new product or architecture decision was
+  inferred by sync.
+- W26 is the terminal indexed product wave; no dependent task remains.
+
+## [2026-08-18] Wave W25 — protected Lesson Context adapter closure
+
+- Reconciled `TASK-049-T3-FT-006-W25` as `done` with fresh functional and
+  semantic evidence for the server-authorized payment adapter boundary.
+- Confirmed Admin/assigned Teacher delegation, pre-mutation rejection for
+  unauthorized or forged scope, and no route/module ownership of financial
+  tables.
+- Preserved Financial Ledger ownership, accepted contracts, Planning Revision
+  `2`, existing RTM lifecycle values, and TASK-050 ownership of the personal
+  calendar projection and real-database browser E2E.
+- The next W26 task `TASK-050-T3-FT-006-W26` remains governed by its indexed
+  task record; promotion/selection remains scheduler-owned after post-sync
+  gates.
+
+## [2026-08-18] Wave W24 — payment retry boundary closure
+
+- Reconciled `TASK-048-T3-FT-006-W24` as `done` with fresh functional and
+  semantic evidence for idempotent confirmed retries, conflict protection, and
+  explicit new confirmation.
+- Preserved Financial Ledger ownership, accepted boundaries, Planning Revision
+  `2`, existing RTM lifecycle values, and historical task evidence. No new
+  product lifecycle or architecture decision was inferred by sync.
+- The next W25 task `TASK-049-T3-FT-006-W25` remains governed by its indexed
+  task record; promotion/selection remains scheduler-owned after post-sync
+  gates.
+
+## [2026-08-18] Wave W23 — payment allocation, authority, and marker closure
+
+- Reconciled `TASK-045-T3-FT-006-W23` as `done` with fresh functional and
+  semantic evidence for deterministic oldest-first allocation and exact
+  partial/excess states.
+- Reconciled `TASK-046-T3-FT-006-W23` as `done` with fresh authority,
+  Admin edit/cancel replay, audit, and non-mutation evidence.
+- Reconciled `TASK-047-T3-FT-006-W23` as `done` with fresh factual marker
+  projection, boundary discoverability, authorization, and no-mutation
+  evidence.
+- Preserved Financial Ledger ownership, accepted boundaries, Planning Revision
+  `2`, existing RTM lifecycle values, and historical task evidence. No new
+  product lifecycle or architecture decision was inferred by sync.
+- The next W24 task `TASK-048-T3-FT-006-W24` remains governed by its indexed
+  task record; promotion/selection remains scheduler-owned after post-sync
+  gates.
+
 ## [2026-08-18] Wave W22 — fresh attendance and financial reconciliation closure
 
 - Reconciled `TASK-042-T3-FT-005-W22` as `done` with fresh functional and

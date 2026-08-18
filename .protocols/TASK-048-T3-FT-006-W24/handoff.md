@@ -1,14 +1,14 @@
 ---
-description: Execution handoff for TASK-047-T3-FT-006-W23.
+description: Execution handoff for TASK-048-T3-FT-006-W24.
 status: active
 ---
-# Handoff — TASK-047-T3-FT-006-W23
+# Handoff — TASK-048-T3-FT-006-W24
 
 ## Summary
 
-- Task started after strict-doctor PASS and dependency/preflight checks.
-- Financial Ledger public marker projection is the bounded owner for factual
-  payment markers and read-only placement.
+- Task started after W23 boundary sync and strict-doctor PASS.
+- Financial Ledger public payment commands are the bounded owner for retry
+  identity and explicit confirmation.
 
 ## Where to look
 
@@ -20,7 +20,7 @@ status: active
 
 - gates: `npm run check`, `npm run build`, `npm run test`
 - claim-linked RED/GREEN evidence: `progress.md`, Attempt 1
-- current-attempt reuse candidate locators: `.tasks/TASK-047-T3-FT-006-W23/execution-evidence.md`
+- current-attempt reuse candidate locators: `.tasks/TASK-048-T3-FT-006-W24/execution-evidence.md`
 
 ## Known issues
 

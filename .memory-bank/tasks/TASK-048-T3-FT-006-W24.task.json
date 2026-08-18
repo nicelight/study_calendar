@@ -1,7 +1,7 @@
 {
   "id": "TASK-048-T3-FT-006-W24",
   "title": "Make repeated payment commands idempotent",
-  "status": "planned",
+  "status": "done",
   "wave": "W24",
   "feature": "FT-006",
   "reqs": ["REQ-012", "REQ-015"],
@@ -15,7 +15,46 @@
   ],
   "verify": [
     "Repeating the same confirmed payment intent creates no second Payment; a new Payment requires an explicit new confirmation.",
-    "The retry proof compares payment/allocation/balance counts and facts before/after, supports safe rerun, and does not absorb allocation or authority ownership."
+    "The retry proof compares payment/allocation/balance counts and facts before/after, supports safe rerun, and does not absorb allocation or authority ownership.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-048-T3-FT-006-W24/verification.md",
+      "artifact": ".tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned isolated probe passed identical-confirmation idempotency, changed-payload conflict without mutation, explicit-new confirmation, exact counts/facts, and second-database replay.",
+        "Fresh npm run check, npm run build, npm run test (52 files / 171 tests), and git diff --check all exited 0.",
+        "Independent functional report: .tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-048-T3-FT-006-W24/red-verification.md",
+      "artifact": ".tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh semantic probe passed normalized equivalent retry deduplication and changed-payload conflict without mutation.",
+        "Source inspection confirmed Financial Ledger ownership of retry lookup/recording and no route/consumer financial command-table bypass.",
+        "Fresh npm run check, npm run build, npm run test (53 files / 172 tests), and git diff --check all exited 0.",
+        "No material finding or operator-owned question was admitted; semantic report: .tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-048-T3-FT-006-W24/verification.md",
+        ".protocols/TASK-048-T3-FT-006-W24/red-verification.md",
+        ".tasks/TASK-048-T3-FT-006-W24/execution-evidence.md",
+        ".tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-048-T3-FT-006-W24/TASK-048-T3-FT-006-W24-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
   "evidence_required": [

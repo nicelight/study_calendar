@@ -365,3 +365,90 @@ describe('FT-003-AC-008 calendar lesson navigation', () => {
 		expect(snapshot(root)).toEqual(beforeStudentAttempt);
 	});
 });
+
+describe('TASK-050 independent personal payment projection verification', () => {
+	let root: CompositionRoot;
+
+	beforeEach(() => {
+		root = seedRoot();
+		routeRoot.current = root;
+	});
+
+	afterEach(() => {
+		routeRoot.current = undefined;
+		root.database.close();
+	});
+
+	it('derives Student status from the ledger and omits it for shared roles', async () => {
+		root.financialLedger.setClassPrice({
+			sessionToken: 'session-admin-own',
+			classId: 'class-own',
+			amount: '20',
+			effectiveFrom: '2026-01-01'
+		});
+		root.learningProgress.recordAttendance({
+			sessionToken: 'session-teacher-own',
+			classId: 'class-own',
+			lessonId: 'lesson-own',
+			studentAccountId: 'student-own',
+			attendance: 'present'
+		});
+
+		const unpaid = calendarLoad(calendarEvent(root)) as CalendarPageData;
+		expect(unpaid.lessons).toEqual(expect.arrayContaining([
+			expect.objectContaining({ lessonId: 'lesson-own', paymentStatus: 'unpaid' })
+		]));
+
+		const created = await lessonContextActions.default(
+			paymentActionEvent('session-teacher-own', {
+				action: 'createPayment',
+				studentAccountId: 'student-own',
+				amount: '20',
+				factualDate: '2026-08-10',
+				confirmation: 'task-050-verifier-payment'
+			})
+		);
+		expect(created).toEqual({ paymentSuccess: true });
+
+		const paid = calendarLoad(calendarEvent(root)) as CalendarPageData;
+		expect(paid.lessons).toEqual(expect.arrayContaining([
+			expect.objectContaining({ lessonId: 'lesson-own', paymentStatus: 'paid' })
+		]));
+
+		for (const sessionToken of ['session-admin-own', 'session-teacher-own']) {
+			const shared = calendarLoad(calendarEvent(root, sessionToken)) as CalendarPageData;
+			expect(shared.lessons.every((lesson) => lesson.paymentStatus === undefined)).toBe(true);
+		}
+
+		const calendarSource = readFileSync(resolve(process.cwd(), 'src/routes/calendar/+page.server.ts'), 'utf8');
+		expect(calendarSource).toContain('lessonContext.getStudentPaymentStatuses');
+		expect(calendarSource).not.toContain('.sqlite');
+		expect(calendarSource).not.toMatch(/financial_(?:payments|payment_allocations|payment_commands|audit_records)/);
+	});
+
+	it('rejects forged payment scope before mutation and ignores shared URL student hints', async () => {
+		const before = snapshot(root);
+		const denied = await lessonContextActions.default(
+			paymentActionEvent('session-teacher-own', {
+				action: 'createPayment',
+				studentAccountId: 'forged-student-account',
+				amount: '20',
+				factualDate: '2026-08-10',
+				confirmation: 'task-050-semantic-forged'
+			})
+		);
+		expect(denied).toMatchObject({ status: 403, data: { error: 'payment_forbidden' } });
+		expect(snapshot(root)).toEqual(before);
+
+		const forgedSharedEvent = calendarEvent(root, 'session-admin-own');
+		forgedSharedEvent.url.searchParams.set('studentAccountId', 'student-own');
+		const shared = calendarLoad(forgedSharedEvent) as CalendarPageData;
+		expect(shared.lessons.every((lesson) => lesson.paymentStatus === undefined)).toBe(true);
+
+		const calendarServerSource = readFileSync(resolve(process.cwd(), 'src/routes/calendar/+page.server.ts'), 'utf8');
+		const calendarPageSource = readFileSync(resolve(process.cwd(), 'src/routes/calendar/+page.svelte'), 'utf8');
+		expect(calendarServerSource).not.toMatch(/(?:root\.database|\.sqlite|financial_(?:payments|payment_allocations|payment_commands|audit_records))/);
+		expect(calendarServerSource).toContain("scope.role === 'student'");
+		expect(calendarPageSource).toContain("if (data.role !== 'student') return undefined");
+	});
+});

@@ -6,8 +6,8 @@ status: active
 
 ## Current status
 
-- state: executor-complete
-- last update: 2026-08-18 13:00 +0500
+- state: semantic-verified
+- last update: 2026-08-18 13:04 +0500
 
 ## What was done
 
@@ -50,11 +50,16 @@ status: active
 - `npm run build` → PASS; adapter-auto output was informational only.
 - `npm run test` → PASS; 48 files / 167 tests.
 - `git diff --check` → PASS.
+- Independent `/verify` probe → PASS; 1 file / 1 test passed.
+- Independent `/red-verify` probe → semantic-pass; 1 file / 1 test passed.
+- Semantic final gates → PASS; 50 files / 169 tests.
 
 ## Evidence links
 
 - `.tasks/TASK-047-T3-FT-006-W23/`
 - `.tasks/TASK-047-T3-FT-006-W23/execution-evidence.md`
+- `.protocols/TASK-047-T3-FT-006-W23/verification.md`
+- `.protocols/TASK-047-T3-FT-006-W23/red-verification.md`
 
 ## Open issues / risks
 
@@ -63,5 +68,5 @@ status: active
 
 ## Next step
 
-- Executor gates and evidence are complete; hand off to `/verify
-  TASK-047-T3-FT-006-W23`.
+- Functional `/verify` returned `PASS` and semantic `/red-verify` returned
+  `semantic-pass`; scheduler may close the task after strict-doctor check.

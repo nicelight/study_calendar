@@ -1,7 +1,7 @@
 {
   "id": "TASK-049-T3-FT-006-W25",
   "title": "Expose the protected Lesson Context payment adapter",
-  "status": "planned",
+  "status": "done",
   "wave": "W25",
   "feature": "FT-006",
   "reqs": ["REQ-013"],
@@ -16,6 +16,46 @@
   "verify": [
     "The Lesson Context form/action is a thin server adapter that resolves the current lesson/student scope and delegates payment creation to FinancialLedgerBoundary.",
     "Student, unassigned Teacher, cross-center, forged-scope, and direct-SQL paths fail before mutation; this task does not prove the personal calendar projection or inherit TASK-050 E2E evidence."
+    ,{
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-049-T3-FT-006-W25/verification.md",
+      "artifact": ".tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned route probe passed REQ-013 protected-adapter delegation for Admin and assigned Teacher, with Student/unassigned/cross-center/forged/malformed rejection before mutation and unchanged denied-state counts.",
+        "Source inspection confirmed financialLedger.createPayment delegation and no direct financial SQLite/table access in the route or Lesson Context module.",
+        "Fresh npm run check, npm run build, npm run test (55 files / 174 tests), and git diff --check all exited 0.",
+        "Independent functional report: .tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-049-T3-FT-006-W25/red-verification.md",
+      "artifact": ".tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial route probe passed forged student, cross-center actor, forged query, and extra-field rejection before mutation with unchanged financial counts.",
+        "Source inspection confirmed Lesson Context delegates through financialLedger.createPayment and has no financial payment/allocation/command/audit table references.",
+        "Fresh npm run check, npm run build, npm run test (56 files / 175 tests), and git diff --check all exited 0.",
+        "No co-reviewer tool was available; independent semantic report: .tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-049-T3-FT-006-W25/verification.md",
+        ".protocols/TASK-049-T3-FT-006-W25/red-verification.md",
+        ".tasks/TASK-049-T3-FT-006-W25/execution-evidence.md",
+        ".tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-049-T3-FT-006-W25/TASK-049-T3-FT-006-W25-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
   "evidence_required": [
