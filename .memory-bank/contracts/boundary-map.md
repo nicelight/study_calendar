@@ -191,7 +191,9 @@ remain implementation details.
   `getGradeForLesson({ sessionToken, classId, lessonId, studentAccountId }) -> GradeView | null`.
   The query receives the stable lesson identity plus server-resolved actor and
   scope context; the consumer does not supply a homework identity. Owner-side
-  completion, grade, and attendance commands remain on this boundary.
+  completion, grade, and attendance commands remain on this boundary. A lesson
+  attendance command may accept the server-resolved class/lesson scope plus the
+  IDs marked absent; it stores every other class student as `present` atomically.
 - **State/data authority:** Learning Progress exclusively writes homework,
   grade, and attendance state. It also owns the lesson-to-homework
   selection/relation semantics used by the lesson-scoped grade projection and
@@ -216,7 +218,8 @@ remain implementation details.
 - **Verification:** role-based grade privacy and lesson-scoped query checks
   prove selected-student isolation, provider-owned selection, no direct
   database mapping, and both individual/group attendance plus absent-to-present
-  correction scenarios.
+  correction scenarios. The attendance-list path also proves that an assigned
+  Teacher's absent subset and default-present remainder persist together.
 
 ### Day Discussion Query Boundary
 

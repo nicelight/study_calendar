@@ -1,10 +1,13 @@
 import { error, fail, type Actions, type ServerLoad } from '@sveltejs/kit';
 import { getCompositionRoot } from '$lib/server/composition-root';
-import type { LessonView } from '$lib/server/modules/center-scheduling/public';
+import type { AuthorizedClassScope, LessonView } from '$lib/server/modules/center-scheduling/public';
+import type { AttendanceView } from '$lib/server/modules/learning-progress/public';
 
 type LessonSummary = Pick<LessonView, 'lessonId' | 'classId' | 'lessonDate' | 'status'> & {
 	className: string;
 	canEditMaterial: boolean;
+	canEditAttendance: boolean;
+	attendance: AttendanceView[] | null;
 	payment: PaymentFormData | null;
 };
 
@@ -23,6 +26,17 @@ function paymentForm(
 ): PaymentFormData | null {
 	return scope && (scope.role === 'admin' || scope.role === 'teacher')
 		? { studentAccountIds: scope.studentAccountIds, factualDate: lessonDate }
+		: null;
+}
+
+function attendanceForm(
+	root: ReturnType<typeof getCompositionRoot>,
+	sessionToken: string | undefined,
+	scope: AuthorizedClassScope,
+	lessonId: string
+): AttendanceView[] | null {
+	return scope.role === 'teacher'
+		? root.learningProgress.getLessonAttendance({ sessionToken, classId: scope.classId, lessonId })
 		: null;
 }
 
@@ -47,6 +61,8 @@ function lessonSummary(
 		status: lesson.status,
 		className: scope.className,
 		canEditMaterial: canEditMaterial(scope.role),
+		canEditAttendance: scope.role === 'teacher',
+		attendance: attendanceForm(root, sessionToken, scope, lesson.lessonId),
 		payment: paymentForm(scope, lesson.lessonDate)
 	};
 }
@@ -55,7 +71,15 @@ export const load: ServerLoad = ({ cookies, url }) => {
 	const classId = url.searchParams.get('classId');
 	const lessonId = url.searchParams.get('lessonId');
 	if (!classId || !lessonId) {
-		return { dayContext: null, lesson: null, canEditMaterial: false, canCreatePayment: false, payment: null };
+		return {
+			dayContext: null,
+			lesson: null,
+			canEditMaterial: false,
+			canEditAttendance: false,
+			attendance: null,
+			canCreatePayment: false,
+			payment: null
+		};
 	}
 
 	const root = getCompositionRoot();
@@ -68,10 +92,13 @@ export const load: ServerLoad = ({ cookies, url }) => {
 			lessonId,
 			studentAccountId: url.searchParams.get('studentAccountId') ?? undefined
 		});
+		const attendance = scope ? attendanceForm(root, sessionToken, scope, dayContext.lesson.lessonId) : null;
 		return {
 			dayContext,
 			lesson: null,
 			canEditMaterial: canEditMaterial(scope?.role),
+			canEditAttendance: scope?.role === 'teacher',
+			attendance,
 			canCreatePayment: paymentForm(scope, dayContext.lesson.lessonDate) !== null,
 			payment: paymentForm(scope, dayContext.lesson.lessonDate)
 		};
@@ -82,6 +109,8 @@ export const load: ServerLoad = ({ cookies, url }) => {
 				dayContext: null,
 				lesson: summary,
 				canEditMaterial: summary.canEditMaterial,
+				canEditAttendance: summary.canEditAttendance,
+				attendance: summary.attendance,
 				canCreatePayment: summary.payment !== null,
 				payment: summary.payment
 			};
@@ -100,6 +129,32 @@ export const actions: Actions = {
 
 		const formData = await request.formData();
 		const fields = [...formData.keys()];
+		if (formData.get('action') === 'saveAttendance') {
+			const absentValues = formData.getAll('absentStudentAccountId');
+			if (
+				fields.some((field) => !['action', 'absentStudentAccountId'].includes(field)) ||
+				formData.getAll('action').length !== 1 ||
+				absentValues.some((value) => typeof value !== 'string' || !value.trim())
+			) {
+				return fail(400, { error: 'invalid_attendance_request' as const });
+			}
+
+			try {
+				getCompositionRoot().learningProgress.recordLessonAttendance({
+					sessionToken: cookies.get('foundation_session'),
+					classId,
+					lessonId,
+					absentStudentAccountIds: absentValues as string[]
+				});
+				return { attendanceSuccess: true as const };
+			} catch (cause) {
+				if (cause instanceof Error && cause.message === 'not-authorized') {
+					return fail(403, { error: 'attendance_forbidden' as const });
+				}
+				return fail(500, { error: 'attendance_operation_failed' as const });
+			}
+		}
+
 		if (formData.get('action') === 'createPayment') {
 			if (
 				fields.some((field) => !['action', 'studentAccountId', 'amount', 'factualDate', 'confirmation'].includes(field)) ||

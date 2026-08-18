@@ -1,0 +1,101 @@
+{
+  "id": "TASK-044-T3-FT-006-W22",
+  "title": "Reconcile attendance charge consequences and audit",
+  "status": "done",
+  "wave": "W22",
+  "feature": "FT-006",
+  "reqs": ["REQ-010", "REQ-012", "REQ-015"],
+  "depends_on": ["TASK-010-T3-FT-005-W6", "TASK-043-T3-FT-006-W22"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "The Financial Ledger reconciliation command handles the financial consequence of an authorized individual or group attendance transition, deterministically recomputes charge/allocation/balance, and records audit facts.",
+    "Learning Progress remains attendance owner; the task proves atomic failure, historical price use, unrelated-student isolation, safe rerun, and cleanup.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-044-T3-FT-006-W22/verification.md",
+      "artifact": ".tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned isolated probe passed individual/group correction and replay with exact allocations, balances, audit facts, deterministic second-database history, rollback, denial, and unrelated-student isolation.",
+        "Fresh npm run check, npm run build, npm run test (40 files / 159 tests), and git diff --check all exited 0.",
+        "Independent functional report: .tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-044-T3-FT-006-W22/red-verification.md",
+      "artifact": ".tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh semantic no-op/replay probe passed with unchanged allocation/audit counts and immutable applied price through correction.",
+        "Source inspection confirmed Learning Progress attendance ownership and Financial Ledger financial write ownership through the public reconciliation boundary.",
+        "Fresh final npm run check, npm run build, npm run test (41 files / 160 tests), and git diff --check all exited 0.",
+        "No material finding or operator-owned question was admitted; semantic report: .tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-044-T3-FT-006-W22/verification.md",
+        ".protocols/TASK-044-T3-FT-006-W22/red-verification.md",
+        ".tasks/TASK-044-T3-FT-006-W22/execution-evidence.md",
+        ".tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "lifecycle_changed": true
+    }
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-004 / REQ-010 / REQ-012 / REQ-015 RED: an attendance correction or charge cancellation produces nondeterministic financial state, misses audit, or partially mutates; GREEN: Financial Ledger deterministically replays the financial consequence from the historical sequence with author/time/change audit and atomic failure; artifact: .tasks/TASK-044-T3-FT-006-W22/ and .protocols/TASK-044-T3-FT-006-W22/."
+  ],
+  "purpose": "Own only the Financial Ledger consequence of attendance correction and charge replay.",
+  "success_outcome": "After Learning Progress authorizes an attendance transition, Financial Ledger deterministically creates/recalculates the charge, allocations, and balance with an audit record or leaves financial state unchanged on failure.",
+  "anti_goals": ["Do not write or own attendance state.", "Do not let Learning Progress insert or edit charge, allocation, balance, or audit rows directly."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-004",
+    ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules",
+    ".memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/features/FT-005-learning-progress.md",
+    ".memory-bank/contracts/financial-ledger.md",
+    ".memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Learning Progress owns attendance and calls the named reconciliation command.", "Financial Ledger owns charge, allocation, balance, and audit writes."],
+  "invariants": ["Absent creates no charge; absent-to-present uses the historical price.", "A failed reconciliation leaves all financial state unchanged."],
+  "verification_targets": [
+    "FT-006-AC-004: prove individual and group correction/replay, historical pricing, deterministic allocation/balance, audit author/time/change, rollback, and unrelated-student isolation.",
+    "Ownership: source/runtime proof confirms attendance remains in Learning Progress and no consumer writes financial tables."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+    "forbidden_scope": ["src/lib/server/modules/learning-progress/", "src/lib/server/modules/center-scheduling/", "src/routes/", "study-calendar.db"],
+    "stop_conditions": ["Stop if the reconciliation requires moving attendance ownership or changing the accepted cross-boundary transaction contract."]
+  }
+}

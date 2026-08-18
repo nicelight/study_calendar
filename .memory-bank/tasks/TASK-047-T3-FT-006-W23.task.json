@@ -1,0 +1,84 @@
+{
+  "id": "TASK-047-T3-FT-006-W23",
+  "title": "Project factual payment markers without financial mutation",
+  "status": "ready",
+  "wave": "W23",
+  "feature": "FT-006",
+  "reqs": ["REQ-013"],
+  "depends_on": ["TASK-045-T3-FT-006-W23"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "Payment markers are placed on the closest previous non-lesson day, retain the factual date, and keep multiple markers discoverable across week/month boundaries.",
+    "The projection is read-only: placement and ordering leave Payment, Allocation, Charge, Balance, and Audit state unchanged.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-047-T3-FT-006-W23/verification.md",
+      "artifact": ".tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned isolated probe passed previous non-lesson placement, factual-date preservation, multiple markers, boundary ranges, authorization, no mutation, and second-database equality.",
+        "Fresh npm run check, npm run build, npm run test (49 files / 168 tests), and git diff --check all exited 0.",
+        "Independent functional report: .tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-047-T3-FT-006-W23/red-verification.md",
+      "artifact": ".tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh semantic probe passed marker-only range discovery across consecutive lesson dates with unchanged financial state.",
+        "Source inspection confirmed read-only Financial Ledger projection ownership and no route/consumer financial-table bypass.",
+        "Fresh npm run check, npm run build, npm run test (50 files / 169 tests), and git diff --check all exited 0.",
+        "No material finding or operator-owned question was admitted; semantic report: .tasks/TASK-047-T3-FT-006-W23/TASK-047-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    }
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-006 / REQ-013 RED: marker placement changes financial state, loses factual date, or hides prior-week/month markers; GREEN: the non-financial projection preserves factual date and discoverability without mutation; artifact: .tasks/TASK-047-T3-FT-006-W23/ and .protocols/TASK-047-T3-FT-006-W23/."
+  ],
+  "purpose": "Own the Financial Ledger payment-marker read projection.",
+  "success_outcome": "Authorized marker projection returns factual, discoverable payment markers for the requested range without changing financial facts.",
+  "anti_goals": ["Do not write financial state from a projection query.", "Do not derive balances or payment facts from calendar presentation."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-006",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/financial-ledger.md#marker-projection",
+    ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/contracts/financial-ledger.md#marker-projection",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Financial Ledger owns marker facts and projection semantics.", "Consumers may read the named projection only."],
+  "invariants": ["Factual payment date remains visible.", "Projection reads never mutate financial state."],
+  "verification_targets": [
+    "FT-006-AC-006: test week/month boundary placement, factual date, multiple markers, authorization, and complete financial state equality before/after.",
+    "Ownership: source review confirms calendar consumers do not write or reconstruct markers."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+    "forbidden_scope": ["src/routes/calendar/", "src/lib/server/modules/lesson-context/", "study-calendar.db"],
+    "stop_conditions": ["Stop if marker projection requires financial writes or a second payment-marker store."]
+  }
+}

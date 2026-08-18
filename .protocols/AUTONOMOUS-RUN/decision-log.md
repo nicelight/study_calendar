@@ -4,6 +4,20 @@ status: active
 ---
 # Autonomous Run Decision Log
 
+## 2026-08-18 — `/autopilot` run start
+
+- The previous `/autonomous` terminal `SUCCESS` is preserved as historical
+  evidence; this invocation is a new sequential product-queue run.
+- Current input contract passes: positive Planning Revision `2`, complete
+  Backbone, done Foundation gate, resolving schema-backed product records, and
+  strict doctor `PASS`.
+- Eligible features are FT-001..FT-006. Each has no
+  `PLANNING_RECONCILIATION_REQUIRED` marker and a latest task-plan
+  `APPROVE` reviewed at Revision `2`; no product task is `in_progress`.
+- New product queue records are TASK-042 through TASK-050. Promotion and
+  selection begin with the earliest eligible wave/index order; FT-000 records
+  remain read-only.
+
 ## 2026-08-08 — Run start
 - Constitution: accepted as `ratified`; no unattended governance interview required.
 - Product input: `.memory-bank/analysis/product-brief.md` has `Decision: proceed`; `.memory-bank/prd.md` has `clarification_status: complete` and `constitution_checked: true`.
@@ -910,3 +924,30 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
   inspection. Existing product data is preserved.
 - TASK-041-T3-FT-006-W21 is `done`; functional and semantic evidence, fresh
   project gates, and strict doctor are green. No unresolved blocker remains.
+
+## 2026-08-18 — autopilot TASK-043 closure and promotion
+
+- TASK-043-T3-FT-006-W22 completed the fresh FT-006-AC-001 / REQ-011 owner
+  path. The existing Financial Ledger snapshot implementation required no
+  production rewrite; a fresh isolated task regression probe was added under
+  `tests/financial-ledger/` and passed exact default/override historical-price
+  checks, later-setting behavior, reactivation, safe rerun, and persistence.
+- Independent `/verify` returned `PASS`; adversarial `/red-verify` returned
+  `semantic-pass` with no material finding. Full executor/verifier gates passed
+  and TASK-043 lifecycle is `done` with linked evidence.
+- Post-closure strict doctor passed with 0 errors. Promotion pass moved
+  TASK-044-T3-FT-006-W22 and TASK-045-T3-FT-006-W23 from `planned` to `ready`;
+  the scheduler selected TASK-044 as the next stable-index W22 task. No
+  unrelated task or historical evidence was rewritten.
+
+## 2026-08-18 — W22 boundary sync and advisory review
+
+- After TASK-042, TASK-043, and TASK-044 closure, `/mb-sync` reconciled the
+  authoritative task evidence into FT-005/FT-006 coverage and the changelog;
+  accepted lifecycle, RTM, contracts, boundaries, and Planning Revision 2 were
+  preserved.
+- Scheduler-owned post-sync `mb-lint` and strict doctor passed. The required
+  `/tech-debt wave W22` report found no material technical debt in the explicit
+  W22 surface: `PAPERCUTS/TECHDEBTS/tech-debt-wave-W22-2026-08-18.md`.
+- A fresh strict doctor pass before selection also passed; the scheduler
+  selected TASK-045-T3-FT-006-W23 (`ready`) as the next stable queue item.

@@ -1,0 +1,57 @@
+{
+  "id": "TASK-048-T3-FT-006-W24",
+  "title": "Make repeated payment commands idempotent",
+  "status": "planned",
+  "wave": "W24",
+  "feature": "FT-006",
+  "reqs": ["REQ-012", "REQ-015"],
+  "depends_on": ["TASK-045-T3-FT-006-W23"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "Repeating the same confirmed payment intent creates no second Payment; a new Payment requires an explicit new confirmation.",
+    "The retry proof compares payment/allocation/balance counts and facts before/after, supports safe rerun, and does not absorb allocation or authority ownership."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-007 / REQ-012 / REQ-015 RED: repeated submission creates a second payment without confirmation; GREEN: the repeated confirmed intent is idempotent and only explicit new confirmation creates a new payment; artifact: .tasks/TASK-048-T3-FT-006-W24/ and .protocols/TASK-048-T3-FT-006-W24/."
+  ],
+  "purpose": "Own the payment-command retry and explicit-confirmation boundary.",
+  "success_outcome": "Financial Ledger safely retries a confirmed payment intent without duplication and distinguishes it from an explicitly new payment.",
+  "anti_goals": ["Do not change oldest-first allocation semantics owned by TASK-045.", "Do not weaken actor/center/class authorization owned by TASK-046."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-007",
+    ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
+    ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules",
+    ".memory-bank/contracts/access-control.md#authority-and-scope"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/contracts/financial-ledger.md",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Financial Ledger owns payment identity and retry semantics.", "No duplicate Payment may result from transport retry alone."],
+  "invariants": ["Same confirmed intent has one Payment.", "Explicit new confirmation is distinguishable and may create a new Payment."],
+  "verification_targets": [
+    "FT-006-AC-007: repeat the same command, assert payment count and allocation/balance equality, then submit explicit new confirmation and assert the separate accepted result.",
+    "Ownership: source review confirms retry identity is not implemented in calendar presentation or route-owned storage."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+    "forbidden_scope": ["src/routes/", "src/lib/server/modules/lesson-context/", "study-calendar.db"],
+    "stop_conditions": ["Stop if idempotency requires a new persistence owner or changes the accepted payment contract."]
+  }
+}

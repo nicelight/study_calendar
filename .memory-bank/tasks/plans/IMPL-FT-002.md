@@ -6,16 +6,18 @@ status: active
 
 ## Goal
 
-Implement center-scoped participants, class modes, assignments, recurring
-schedules, stable lesson identity, and a scoped browser draft for the class
-schedule form.
+Implement center-scoped participants, class modes, assignments, Admin-owned
+recurring schedules, Admin/assigned-Teacher single-lesson operations, stable
+lesson identity, and a scoped browser draft for the class schedule form.
 
 ## Scope / non-goals
 
 Include admin membership operations, individual/group class representation,
-schedule exceptions, transfer/cancel behavior, assignment-based history access,
-the exact client-only `{startDate,endDate,weekdays}` schedule draft, and
-server-side rejection of zero-occurrence recurring requests. Exclude
+Admin-owned schedule creation, Admin/assigned-Teacher single-lesson operations,
+schedule replacement/exception behavior, transfer/cancel behavior,
+assignment-based history access, the exact client-only
+`{startDate,endDate,weekdays}` schedule draft, and server-side rejection of
+zero-occurrence Admin recurring requests. Exclude
 authentication provider internals, financial writes, server draft persistence,
 new dependencies, and unrelated schedule validation changes.
 
@@ -37,7 +39,7 @@ sentinel because no Teacher schedule HTTP adapter exists in this scope.
 | Wave | Task | Outcome | Dependency |
 |---|---|---|---|
 | W3 | TASK-005-T3-FT-002-W3 | membership, class modes, and provider-owned authorization facts | TASK-004-T3-FT-001-W3 |
-| W4 | TASK-006-T2-FT-002-W4 | schedule lifecycle, lesson identity, assignment authorization, and financial identity integration | TASK-005-T3-FT-002-W3; TASK-007-T3-FT-006-W4 |
+| W4 | TASK-006-T2-FT-002-W4 | Admin recurring schedule creation, Admin/Teacher single-lesson operations, replacement, lesson identity, assignment authorization, and financial identity integration | TASK-005-T3-FT-002-W3; TASK-007-T3-FT-006-W4 |
 | W12 | TASK-026-T3-FT-002-W12 | protected own-center Admin class/schedule and teacher-privilege browser surface | TASK-025-T3-FT-001-W11; TASK-006-T2-FT-002-W4 |
 | W15 | TASK-031-T2-FT-002-W15 | same-center/class schedule draft save, restore, failure retention, and success cleanup | TASK-026-T3-FT-002-W12 |
 | W16 | TASK-032-T2-FT-002-W16 | reject valid zero-occurrence schedules before Schedule/Lesson mutation with existing invalid_schedule failure | TASK-026-T3-FT-002-W12; TASK-031-T2-FT-002-W15 |
@@ -48,11 +50,10 @@ sentinel because no Teacher schedule HTTP adapter exists in this scope.
 
 Run `npm run check`, `npm run build`, and `npm run test`; verify AC-001/002 on
 TASK-005, AC-003/004/005/006 on TASK-006, AC-007 on done TASK-026, AC-008
-on TASK-031, and AC-009 on TASK-032. AC-009's fresh owner-boundary probe must
-run as both an own-center Admin and an assigned Teacher, requiring exact
-state-before/state-after equality for each principal; only the Admin adapter
-maps to the existing `400 invalid_schedule` envelope, while Teacher retains
-the private owner sentinel and no Teacher HTTP transport is added. Only the
+on TASK-031, and AC-009 on TASK-032. AC-009's current product claim is the
+Admin owner-boundary probe; the preserved TASK-032 evidence is broader because
+it also covers the previously accepted assigned-Teacher owner path. Only the
+Admin adapter maps to the existing `400 invalid_schedule` envelope. Only the
 Admin protected-browser/action probe may observe AC-008 draft retention. TASK-031 adds a real-browser RED/GREEN probe for same-form
 restoration, cross-class isolation, malformed fallback, failure retention, and
 success cleanup while observing submitted weekday Form Data. AC-010 is verified

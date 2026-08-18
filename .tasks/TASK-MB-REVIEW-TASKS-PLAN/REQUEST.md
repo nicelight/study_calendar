@@ -357,3 +357,99 @@
   request append and the required fresh report were written.
 - Final report:
   `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-003-W9-W10-METADATA-R1-final-report-docs-01.md`.
+
+## Current review run — FT-006 full current-surface review
+
+- ROLE: Reviewer; fresh target: FT-006 at current Global Backbone Planning
+  Revision 2. Full review was required because no exact repair delta was
+  supplied for bounded reuse of the prior FT-006 report.
+- REVIEWED_PLANNING_REVISION: 2
+- Verdict: `REJECT`.
+- ARCHITECTURE_REVIEW: `not_required`; accepted module graph, Financial Ledger
+  ownership, route consumer boundary, and proof paths were explicit, with no
+  unresolved architecture question that could change the verdict.
+- Blocking findings: TASK-007 merges independently completable AC-001 and
+  AC-004; TASK-008 merges allocation/authority/marker/idempotency proof and
+  failure boundaries; TASK-041 merges browser payment entry with Student
+  calendar projection; TASK-041's required real-DB gate mutates
+  `study-calendar.db` while its `forbidden_scope` denies that mutation; and
+  IMPL-FT-006 wording gives TASK-007 attendance ownership that canonical
+  contracts reserve for Learning Progress.
+- Structural evidence: current read-only schema/index/ID/tier/feature/wave/
+  dependency/DAG/AC-owner probe passed; `node scripts/mb-lint.mjs` passed for
+  72 files with advisory warnings only; Foundation gate TASK-002 is done and
+  reachable. All eight FT-006 ACs have one exact owning task locator.
+- Semantic pack: two fresh `Codex Luna` co-reviewers at `xhigh` were launched
+  with independent focuses for (1) acceptance/REQ closure plus cohesion and
+  (2) design/boundary/proof plus hard scope. Both returned `REJECT`; their
+  candidate findings were independently adjudicated against current canonical
+  sources and admitted where material.
+- Read-only integrity: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+  Only this request entry, the required fresh report, and the session papercut
+  log were written.
+- Repair owner: `/feature-to-tasks FT-006`; after repair rerun
+  `/review-tasks-plan FT-006`.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-006-R3-final-report-docs-01.md`.
+
+## Current review run — FT-006 final bounded rerun after TASK-050 repair
+
+- ROLE: Reviewer; bounded rerun at Planning Revision 2 after the operator
+  repaired both remaining TASK-050 findings and then removed the duplicate
+  E2E submit.
+- REVIEWED_PLANNING_REVISION: 2
+- Verdict: `APPROVE`.
+- ARCHITECTURE_REVIEW: `not_required`; no unresolved material architecture,
+  ownership, dependency, or boundary question remains.
+- Closed findings: TASK-050 now performs one payment intent/POST and verifies
+  only AC-008; retry/idempotency remains owned by TASK-048. Real-DB cleanup is
+  explicit: dedicated accounts, membership and financial fixture plus
+  unrelated rows persist; only exact test-created session tokens are removed.
+- Direct checks: 47 indexed cards, resolving acyclic DAG, active unique AC
+  ownership, Foundation gate, current TASK-050/E2E one-intent proof,
+  `node scripts/mb-lint.mjs` passed for 72 files with previous advisory
+  warnings, and `git diff --check` passed. Operator-provided schema, index,
+  DAG, Foundation and `mb-doctor --strict` (0 errors, 2 prior warnings) were
+  accepted; doctor was not rerun by this semantic review.
+- The operator requested direct adjudication without co-review reliance. Both
+  focus areas were refreshed in the main context; one already-started fresh
+  focus returned `APPROVE` before shutdown, and its result was not used as a
+  vote. No reviewed product/spec/plan/task/index/code/protocol, lifecycle,
+  status, dependency, evidence, or scheduler state was changed. Only this
+  request append and the replacement report were written.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-006-R3-final-report-docs-01.md`.
+
+## Current review run — FT-006 bounded rerun after rejected-plan rebuild
+
+- ROLE: Reviewer; bounded rerun of FT-006 at Planning Revision 2 after the
+  operator supplied the exact `rebuild_required` delta.
+- REVIEWED_PLANNING_REVISION: 2
+- Verdict: `REJECT`.
+- ARCHITECTURE_REVIEW: `not_required`; accepted module ownership and contracts
+  are explicit and no unresolved architecture question changes the verdict.
+- Repair checked: fresh planned TASK-043..050 decomposition, active exact
+  AC ownership, TASK-049 adapter without product AC ownership, preserved
+  historical TASK-007/008/041 records, Learning Progress attendance ownership,
+  and literal `study-calendar.db` in the real-DB write boundary.
+- Remaining findings: TASK-050 repeats the same confirmed payment intent and
+  therefore adopts TASK-048/AC-007 idempotency proof without that dependency;
+  TASK-050 also uses ambiguous `exact fixture cleanup` wording although the
+  accepted real-DB policy preserves dedicated accounts/financial fixture and
+  removes only exact session tokens.
+- Validation: read-only identity/schema-shaped index/DAG/active-AC-owner probe
+  passed; `node scripts/mb-lint.mjs` passed for 72 files with existing
+  advisory warnings; `git diff --check` passed. Caller-provided
+  `mb-doctor --strict` and other structural checks were accepted; doctor was
+  not rerun by this semantic review.
+- Two fresh `Codex Luna` / `xhigh` co-reviewers returned `REJECT` with
+  independent findings; both prior repair groups were otherwise adjudicated
+  as fixed. No reviewed product/spec/plan/task/index/code/protocol, lifecycle,
+  status, dependency, evidence, or scheduler state was changed. Only this
+  request append and the fresh report were written.
+- Repair owner: `/feature-to-tasks FT-006`; rerun
+  `/review-tasks-plan FT-006` after repair. Do not execute or schedule under
+  this `REJECT`.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-006-R3-final-report-docs-01.md`.

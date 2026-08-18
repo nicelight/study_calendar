@@ -16,3 +16,12 @@ TASK-009 and TASK-010 records remain untouched with their historical evidence,
 statuses, dependencies, and retry history preserved. The minimum new provider
 task is `TASK-018-T3-FT-005-W8`; it is planned and must pass fresh task-plan
 review before execution.
+
+## 2026-08-18 — Teacher lesson-day attendance entry
+
+FT-005-AC-005 is a new material outcome: an assigned Teacher records an absent
+subset from the lesson-day student list, with every unmarked student persisted
+as present. Existing TASK-010 attendance/reconciliation evidence is unchanged.
+Create `TASK-042-T3-FT-005-W22` with a Learning Progress batch command and a
+thin lesson-context adapter, depending on TASK-010 and TASK-041; no global
+architecture or Planning Revision change.

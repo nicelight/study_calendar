@@ -3,6 +3,7 @@
 	let context = $derived(data.dayContext);
 	let lesson = $derived(data.lesson);
 	let material = $derived(context?.material ?? null);
+	let attendance = $derived(data.attendance ?? lesson?.attendance ?? null);
 	let payment = $derived(data.payment ?? null);
 
 	function contextHref(
@@ -44,6 +45,14 @@
 			payment_forbidden: 'У вас нет права внести эту оплату.',
 			payment_operation_failed: 'Не удалось внести оплату.'
 		}[error] ?? 'Не удалось внести оплату.';
+	}
+
+	function attendanceErrorLabel(error: string): string {
+		return {
+			invalid_attendance_request: 'Проверьте список отсутствующих учеников.',
+			attendance_forbidden: 'У вас нет права отмечать посещаемость этого урока.',
+			attendance_operation_failed: 'Не удалось сохранить посещаемость.'
+		}[error] ?? 'Не удалось сохранить посещаемость.';
 	}
 </script>
 
@@ -117,6 +126,35 @@
 			<p class="eyebrow">Lesson Context</p>
 			<h1 id="empty-title">Выберите занятие</h1>
 			<p>Передайте дату, класс и lesson identity через URL календаря.</p>
+		</section>
+		{/if}
+
+	{#if data.canEditAttendance && attendance}
+		<section class="attendance-editor" aria-labelledby="attendance-editor-title">
+			<div class="section-label">Посещаемость</div>
+			<h2 id="attendance-editor-title">Отметить отсутствующих</h2>
+			<p class="editor-intro">Поставьте минус отсутствующим. Все остальные ученики будут сохранены как присутствующие.</p>
+			{#if form?.attendanceSuccess}
+				<p class="form-message success" role="status">Посещаемость сохранена.</p>
+			{:else if form?.error}
+				<p class="form-message error" role="alert">{attendanceErrorLabel(form.error)}</p>
+			{/if}
+			<form method="POST" class="attendance-form" aria-label="Посещаемость урока">
+				<input type="hidden" name="action" value="saveAttendance" />
+				{#each attendance as entry}
+					<label class="attendance-row">
+						<input
+							type="checkbox"
+							name="absentStudentAccountId"
+							value={entry.studentAccountId}
+							checked={entry.attendance === 'absent' && entry.recordedAt !== null}
+						/>
+						<span>{entry.studentAccountId}</span>
+						<span class="attendance-hint">минус</span>
+					</label>
+				{/each}
+				<button type="submit">Сохранить посещаемость</button>
+			</form>
 		</section>
 	{/if}
 
@@ -198,6 +236,7 @@
 	nav a { padding: .65rem .85rem; border: 1px solid #d9e0d8; border-radius: .65rem; color: #25332e; font-weight: 800; text-decoration: none; }
 	.material, .personal, .shared, .empty { margin-top: 2rem; padding: 1.5rem; border: 1px solid #d9e0d8; border-radius: 1rem; background: #fffdf8; }
 	.material-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #b8c8ba; border-radius: 1rem; background: #eef6ee; }
+	.attendance-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #b8c8ba; border-radius: 1rem; background: #f0f5ed; }
 	.payment-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #d6bd8d; border-radius: 1rem; background: #fff6e8; }
 	h2 { margin: .4rem 0 1rem; letter-spacing: -.03em; }
 	dl { display: grid; gap: 1rem; margin: 0; }
@@ -212,7 +251,12 @@
 	.material-form label span { color: #6d7a73; font-size: .78rem; font-weight: 800; }
 	.material-form input, .material-form textarea, .material-form select { width: 100%; border: 1px solid #b8c8ba; border-radius: .65rem; padding: .7rem .8rem; background: #fffdf8; color: #25332e; font: inherit; }
 	.material-form textarea { resize: vertical; }
+	.attendance-form { display: grid; gap: .7rem; }
+	.attendance-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .7rem; padding: .7rem .8rem; border: 1px solid #d9e0d8; border-radius: .65rem; background: #fffdf8; }
+	.attendance-row input { width: 1.1rem; height: 1.1rem; accent-color: #3f765d; }
+	.attendance-hint { color: #6d7a73; font-size: .78rem; }
 	.material-form button { min-height: 2.75rem; border: 1px solid #3f765d; border-radius: .65rem; background: #3f765d; color: #fffdf8; font: inherit; font-weight: 800; cursor: pointer; }
+	.attendance-form button { min-height: 2.75rem; border: 1px solid #3f765d; border-radius: .65rem; background: #3f765d; color: #fffdf8; font: inherit; font-weight: 800; cursor: pointer; }
 	.form-message { margin: 0; padding: .7rem .8rem; border-radius: .6rem; font-weight: 800; }
 	.form-message.success { background: #dcebdd; color: #2f6b4f; }
 	.form-message.error { background: #f8e2dd; color: #8e3f2b; }

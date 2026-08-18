@@ -6,7 +6,9 @@ status: active
 
 ## Outcome and scope
 
-Deliver center-bounded membership/class management and recurring lesson scheduling with independent lesson exceptions and preserved identity.
+Deliver center-bounded membership/class management, Admin-owned recurring lesson
+scheduling, Admin/assigned-Teacher single-lesson operations, independent lesson
+exceptions, and preserved identity.
 
 ## Canonical inputs and ownership
 
@@ -19,7 +21,10 @@ Deliver center-bounded membership/class management and recurring lesson scheduli
 ## Boundary and waves
 
 1. `TASK-005-T3-FT-002-W3` owns center membership, class modes, and provider-owned authorization facts (AC-001, AC-002).
-2. `TASK-006-T2-FT-002-W4` owns recurrence, per-lesson operations, transfer identity, assignment authorization, and the Financial Ledger identity integration (AC-003, AC-004, AC-005, AC-006), after membership and the charge foundation.
+2. `TASK-006-T2-FT-002-W4` owns Admin recurring creation, Admin/assigned-Teacher
+   per-lesson operations, replacement, transfer identity, assignment
+   authorization, and the Financial Ledger identity integration (AC-003,
+   AC-004, AC-005, AC-006), after membership and the charge foundation.
 3. `TASK-026-T3-FT-002-W12` remains the completed owner of the protected
    own-center Admin class/schedule surface (AC-007).
 4. The new unmerged unit is the schedule form's browser-only draft lifecycle:
@@ -32,18 +37,13 @@ Deliver center-bounded membership/class management and recurring lesson scheduli
    The resulting `TASK-031-T2-FT-002-W15` depended directly on done TASK-026,
    was the next sequential ready queue item, and is now closed `done` with
    independent functional `PASS`.
-5. Operator decision `2` resolves the feature-level semantic concern as a
-   separate server-owned outcome: a valid ISO date range and valid weekday
-   selection that yields no actual dates in the inclusive range MUST be
-   rejected before the schedule or lesson write path for both authorized
-   principals. The existing Admin adapter maps that owner rejection to
-   `400 { error: 'invalid_schedule' }`; the assigned Teacher has no schedule
-   HTTP adapter in the current scope, so verification retains the private
-   `invalid-schedule-occurrences` owner sentinel and adds no Teacher transport.
-   This is a fresh T2 unit, not a repair or scope expansion of TASK-031:
-   `TASK-032-T2-FT-002-W16` owns AC-009 and the no-mutation proof, with direct
-   prerequisites TASK-026 and TASK-031 for the protected form/adapter and its
-   already-closed draft lifecycle.
+5. The current AC-009 is the Admin recurring-form outcome: a valid ISO date
+   range and weekday selection with no occurrence MUST be rejected before the
+   schedule or lesson write path. The existing Admin adapter maps that owner
+   rejection to `400 { error: 'invalid_schedule' }`; preserved TASK-032 evidence
+   also covers the previously accepted Teacher owner probe and is not discarded.
+   `TASK-032-T2-FT-002-W16` remains the existing AC-009 owner with direct
+   prerequisites TASK-026 and TASK-031.
 
 Consumers query the named public boundary; they do not write scheduling state. Lesson Context composes downstream views, Collaboration and Learning Progress own their data, and Financial Ledger owns charge facts; adding dependencies on those downstream consumers would create cycles, so only TASK-007 is a prerequisite for TASK-006's charge-identity integration.
 

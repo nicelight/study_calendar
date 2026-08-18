@@ -4,7 +4,7 @@
   "status": "done",
   "wave": "W5",
   "feature": "FT-006",
-  "reqs": ["REQ-010", "REQ-012", "REQ-013", "REQ-014", "REQ-015", "REQ-016"],
+  "reqs": ["REQ-010", "REQ-012", "REQ-013", "REQ-014", "REQ-015"],
   "depends_on": ["TASK-007-T3-FT-006-W4"],
   "touched_files": ["src/lib/server/modules/financial-ledger/", "src/lib/server/modules/lesson-context/", "tests/financial-ledger/"],
   "tier": "T3",

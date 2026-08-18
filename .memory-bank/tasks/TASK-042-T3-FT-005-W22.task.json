@@ -1,0 +1,139 @@
+{
+  "id": "TASK-042-T3-FT-005-W22",
+  "title": "Expose Teacher attendance entry from the lesson day",
+  "status": "done",
+  "wave": "W22",
+  "feature": "FT-005",
+  "reqs": ["REQ-010", "REQ-014"],
+  "depends_on": ["TASK-010-T3-FT-005-W6", "TASK-041-T3-FT-006-W21"],
+  "touched_files": [
+    "src/lib/server/modules/learning-progress/",
+    "src/routes/lesson-context/",
+    "tests/learning-progress/",
+    "tests/lesson-context/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "Teacher lesson-day flow reads the authorized class student list, marks the submitted absent subset, and persists every unmarked student as present.",
+    "Learning Progress owns the batch attendance command and attendance/charge semantics; Lesson Context remains a thin adapter.",
+    "T3 proof covers individual and group classes, assigned Teacher success, anonymous/unassigned/cross-center denial, forged scope fields, state-before/state-after on failure, and no direct financial or scheduling writes.",
+    "Independent /verify PASS: verifier-owned two-center individual/group probe passed; fresh check/build/test (35 files / 154 tests) and diff check passed; evidence: .tasks/TASK-042-T3-FT-005-W22/TASK-042-T3-FT-005-W22-S-VERIFY-final-report-docs-01.md.",
+    {
+      "stage": "functional",
+      "attempt": "Fresh independent verifier-owned outcome probe",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-042-T3-FT-005-W22/verification.md",
+      "artifact": ".tasks/TASK-042-T3-FT-005-W22/TASK-042-T3-FT-005-W22-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Distinct two-center individual/group fixture proved absent-subset/default-present persistence, assigned Teacher success, denial/no-mutation for missing, unassigned, cross-center, and forged scope, and Student route denial.",
+        "Fresh npm run check, npm run build, npm run test (35 files / 154 tests), and git diff --check passed; route source delegates to Learning Progress without direct SQLite access."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Independent adversarial boundary and ownership review",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-042-T3-FT-005-W22/red-verification.md",
+      "artifact": ".tasks/TASK-042-T3-FT-005-W22/TASK-042-T3-FT-005-W22-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "No material authority, privacy, persistence, ownership, source-of-truth, or accepted-outcome break was found across supported individual/group, authorization, forged-scope, and route-adapter paths.",
+        "No operator question was required; lifecycle_changed is false."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": "Functional PASS, semantic-pass, executor RED/GREEN, fresh verifier probe, and project gates are recorded in the linked artifacts.",
+      "lifecycle_changed": true
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-005.md",
+    ".protocols/FT-005/plan.md"
+  ],
+  "evidence_required": [
+    "FT-005-AC-005 / REQ-010 / REQ-014 RED: no lesson-day attendance list exists, unmarked students are not persisted as present, or an unauthorized Teacher can submit; GREEN: an assigned Teacher in both individual and group classes saves the absent subset and default-present remainder through Learning Progress, while unauthorized/cross-center submissions fail before mutation; artifact: .tasks/TASK-042-T3-FT-005-W22/ and .protocols/TASK-042-T3-FT-005-W22/."
+  ],
+  "purpose": "Provide the protected lesson-day attendance entry required by FT-005-AC-005.",
+  "success_outcome": "An assigned Teacher opens an authorized lesson day, marks absent students, and saves one atomic attendance result where every unmarked class student is present; attendance remains the source for existing charge eligibility and correction.",
+  "anti_goals": [
+    "Do not let the route write learning or financial tables directly.",
+    "Do not add a third attendance state or change charge/reconciliation ownership.",
+    "Do not add Admin payment/schedule behavior, student/parent attendance editing, or a new route."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-005",
+    ".memory-bank/requirements.md#req-010--attendance-and-charge-eligibility",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-005-learning-progress.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Learning Progress owns the batch attendance command and may call Financial Ledger only through Attendance Charge Reconciliation.",
+    "The server resolves actor, class, lesson, assignment, and student scope; submitted IDs cannot widen it.",
+    "The lesson-context route adapts the form only; it does not own attendance semantics or direct persistence."
+  ],
+  "invariants": [
+    "Only an assigned Teacher can affect the target class lesson through this visible flow.",
+    "IDs marked absent are absent and every other student in the authorized class is present after a successful save.",
+    "Failed or unauthorized submission leaves attendance and financial state unchanged.",
+    "Attendance uses only present/absent and remains the source for existing charge eligibility/correction."
+  ],
+  "verification_targets": [
+    "FT-005-AC-005: fresh browser/HTTP or route-boundary probe for an assigned Teacher in individual and group classes; list all authorized students, submit an absent subset, and assert persisted absent/present rows.",
+    "Authorization: anonymous, unassigned Teacher, cross-center Teacher, and forged student/lesson/class fields fail before mutation with state-before/state-after equality.",
+    "Ownership: source/runtime probe confirms the route calls the Learning Progress public command, no route direct learning/financial/scheduling table access exists, and existing TASK-010 charge/reconciliation behavior remains green.",
+    "Run npm run check, npm run build, npm run test, focused attendance/lesson-context tests, and diff hygiene."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/modules/learning-progress/",
+      "src/routes/lesson-context/",
+      "tests/learning-progress/",
+      "tests/lesson-context/"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/financial-ledger/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/routes/calendar/",
+      "src/routes/center/",
+      ".memory-bank/tasks/TASK-010-T3-FT-005-W6.task.json",
+      ".protocols/TASK-010-T3-FT-005-W6/",
+      ".tasks/TASK-010-T3-FT-005-W6/",
+      ".memory-bank/tasks/TASK-041-T3-FT-006-W21.task.json",
+      ".protocols/TASK-041-T3-FT-006-W21/",
+      ".tasks/TASK-041-T3-FT-006-W21/"
+    ],
+    "stop_conditions": [
+      "Stop if the attendance-list command requires a new module, event bus, persistence owner, or accepted cross-slice edge.",
+      "Stop if the route would need direct database writes or client-owned authorization.",
+      "Stop if the existing present/absent or Financial Ledger reconciliation contract must change."
+    ]
+  }
+}

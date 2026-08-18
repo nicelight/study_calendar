@@ -157,3 +157,21 @@ not persist or resolve a competing `lessonId -> homeworkId` mapping.
 - Feature document `status: draft`, feature `lifecycle: planned`, EP-004
   lifecycle, and REQ-009/REQ-014 RTM lifecycle values remain unchanged. No
   feature-level semantic verdict or product promotion was inferred.
+
+## W22 fresh attendance-entry closure — 2026-08-18
+
+`TASK-042-T3-FT-005-W22` is now `done` with fresh functional `PASS` and
+semantic `semantic-pass` evidence for `FT-005-AC-005` / `REQ-010` / `REQ-014`.
+The assigned-Teacher lesson-day flow persists the submitted absent subset and
+defaults every other authorized student to present through Learning Progress;
+Lesson Context remains an adapter and Financial Ledger remains the charge
+consequence owner.
+
+- [TASK-042 card](../tasks/TASK-042-T3-FT-005-W22.task.json)
+- [functional verification](../../.tasks/TASK-042-T3-FT-005-W22/TASK-042-T3-FT-005-W22-S-VERIFY-final-report-docs-01.md)
+- [semantic verification](../../.tasks/TASK-042-T3-FT-005-W22/TASK-042-T3-FT-005-W22-S-RED-VERIFY-final-report-docs-01.md)
+- [W22 boundary sync](../../.tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-MB-SYNC-final-report-docs-01.md)
+
+The accepted feature and EP-004 lifecycle values remain unchanged by this
+sync; the fresh task closure adds evidence and does not infer a new product
+promotion.

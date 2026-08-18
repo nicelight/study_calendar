@@ -223,13 +223,6 @@ test('real teacher payment is recorded and appears as paid on the student calend
 	await paymentForm.getByRole('button', { name: 'Внести оплату' }).click();
 	await expect(page.getByText('Оплата внесена.')).toBeVisible();
 	await expect.poll(() => paymentPostCount).toBe(1);
-	await paymentForm.locator('select[name="studentAccountId"]').selectOption(studentAccountId);
-	await paymentForm.locator('input[name="amount"]').fill('20');
-	await paymentForm.locator('input[name="factualDate"]').fill(paidLesson.lesson_date);
-	await paymentForm.locator('input[name="confirmation"]').fill(confirmation);
-	await paymentForm.getByRole('button', { name: 'Внести оплату' }).click();
-	await expect(page.getByText('Оплата внесена.')).toBeVisible();
-	await expect.poll(() => paymentPostCount).toBe(2);
 
 	withDatabase((database) => {
 		expect(

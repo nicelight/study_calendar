@@ -6,19 +6,18 @@ status: active
 
 ## Checkpoint
 
-- STATE: `SUCCESS`
-- command: `/autonomous`
+- STATE: `RUNNING`
+- command: `/autopilot`
 - role: `ORCHESTRATOR/SCHEDULER`
 - planning revision: `2`
-- current phase: `product execution follow-up`
-- current task: none
-- current stage: payment browser follow-up closed
-- last durable child verdict/handoff: TASK-041 functional `PASS` and semantic
-  `semantic-pass`; full gates and strict doctor — `PASS`
-- next action: none
-- terminal reason: payment entry and personal paid/unpaid calendar state are
-  implemented and reconciled; prior closures remain preserved below
-- reconciled at: `2026-08-17`
+- current phase: `product queue execution`
+- current task: `TASK-047-T3-FT-006-W23`
+- current stage: `verify`
+- last durable child verdict/handoff: `/exe TASK-047-T3-FT-006-W23` — gates
+  `PASS`; executor evidence complete
+- next action: `/verify TASK-047-T3-FT-006-W23`
+- terminal reason: none; prior `/autonomous` closure remains historical below
+- reconciled at: `2026-08-18 13:01 +0500`
 
 ## Review and readiness gates
 
@@ -192,3 +191,41 @@ status: active
 - The architectural review finding was corrected: Calendar asks the existing
   Lesson Context boundary for the server-authorized student projection; it no
   longer imports or interprets Financial Ledger directly.
+
+## Current `/autopilot` run — 2026-08-18
+
+- STATE: `RUNNING`; scheduler mode: sequential; command: `/autopilot`.
+- Global Backbone: `complete`; Planning Revision: `2`; Foundation gate
+  `TASK-002-T3-FT-000-W1`: `done`; no unresolved FT-000 record.
+- Eligibility: FT-001..FT-006 have no planning-reconciliation marker and each
+  has a latest current-revision task-plan `APPROVE`. Strict doctor: `PASS`
+  (0 errors, 2 warnings, 2 info); lint: `PASS` with existing advisory
+  frontmatter warnings.
+- Queue at run start: 38 historical/indexed records plus 9 new product cards;
+  product lifecycle counts are `33 done`, `3 failed`, `9 planned`, `0 ready`,
+  `0 in_progress`, `0 blocked`.
+- Planned selection order: `TASK-042` (W22), then `TASK-043`/`TASK-044`
+  (W22), followed by W23–W26 tasks in stable index order; FT-000 remains
+  read-only.
+- Failure budget: `max_retries_per_task: 2`,
+  `max_consecutive_failures: 3`, `max_open_blockers: 3`; retries used: `0`,
+  consecutive failures: `0`, open blockers: `0`.
+- Current durable checkpoint action: promotion pass; no task has been selected
+  or promoted by this run yet.
+
+## Current `/autopilot` W22 boundary completion — 2026-08-18
+
+- W22 TASK-042, TASK-043, and TASK-044 are `done`; each retains functional
+  `PASS`, semantic `semantic-pass`, closure evidence, and current task-scoped
+  artifacts.
+- `/mb-sync` completed with local link/RTM/lifecycle validation. Scheduler-owned
+  post-sync `mb-lint` passed with the existing advisory metadata warnings;
+  strict doctor passed with 0 errors and 0 warnings.
+- `/tech-debt wave W22` completed at
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W22-2026-08-18.md`; no material debt was
+  confirmed and no workflow state changed.
+- Current product queue: `36 done`, `3 terminal failed`, `1 ready`, `5
+  planned`, `0 in_progress`, `0 blocked`. Next stable selection is
+  `TASK-045-T3-FT-006-W23`; the remaining W23–W26 cards stay planned.
+- Failure budgets remain: retries used `0`, consecutive failures `0`, open
+  blockers `0`.

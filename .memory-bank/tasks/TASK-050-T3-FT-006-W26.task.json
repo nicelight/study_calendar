@@ -1,0 +1,68 @@
+{
+  "id": "TASK-050-T3-FT-006-W26",
+  "title": "Project personal paid and unpaid lesson days",
+  "status": "planned",
+  "wave": "W26",
+  "feature": "FT-006",
+  "reqs": ["REQ-013"],
+  "depends_on": ["TASK-045-T3-FT-006-W23", "TASK-049-T3-FT-006-W25", "TASK-039-T3-FT-003-W10", "TASK-040-T3-FT-001-W20"],
+  "touched_files": ["src/routes/calendar/", "tests/routes/calendar-navigation.test.ts", "e2e/real-database-payment.spec.ts", "playwright.config.ts", "study-calendar.db"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "real-db-e2e-payment", "command": "npm run e2e -- e2e/real-database-payment.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "The Student personal calendar derives paid/unpaid lesson-day state from the authoritative balance projection: fully covered lessons are paid and uncovered lessons are unpaid.",
+    "A real browser E2E submits one payment intent and proves the complete AC-008 flow through the existing payment adapter, authoritative payment/allocation rows, student-only projection, shared-calendar omission, and authorization denial; retry/idempotency is verified only by TASK-048."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-008 / REQ-013 RED: the protected browser payment path or personal calendar paid/unpaid projection is absent, exposes guessed shared-role state, or does not match authoritative payment/allocation facts; GREEN: the real assigned-Teacher flow records one payment, the Student sees paid and unpaid lesson cards, shared Admin/Teacher calendars omit student payment state, and unauthorized submission fails; artifact: .tasks/TASK-050-T3-FT-006-W26/ and .protocols/TASK-050-T3-FT-006-W26/."
+  ],
+  "purpose": "Own the full FT-006-AC-008 browser and personal payment-state outcome after the adapter boundary exists.",
+  "success_outcome": "The Student personal calendar renders paid/unpaid lesson days from Financial Ledger facts, while the complete real-browser flow remains authorized, non-guessing, and safe on the scoped local database.",
+  "anti_goals": ["Do not modify Financial Ledger ownership or write financial tables from Calendar.", "Do not reset the real database, use a temporary database, expose payment state in shared calendars, or broaden fixture/account scope."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-008",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/financial-ledger.md#marker-projection",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/runbooks/mvp-verification.md#required-pre-real-data-checks"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-008",
+    ".memory-bank/features/FT-003-calendar-and-lesson-context.md#FT-003-AC-008",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/runbooks/mvp-verification.md#required-pre-real-data-checks",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Calendar consumes named Financial Ledger projection only; it never writes or reconstructs financial facts.", "Real-DB E2E may create/reuse only the dedicated test Teacher/Student, their exact class membership, price/charge/payment/allocation fixture, and automation sessions; dedicated accounts and financial fixture remain for inspection, unrelated product rows remain untouched, and only exact test-created session tokens are removed."],
+  "invariants": ["A fully covered lesson is paid and an uncovered lesson is unpaid in Student data.", "Admin/Teacher shared calendar data contains no guessed per-student payment state.", "The real-DB run has no reset/temp database; dedicated accounts, membership, price/charge/payment/allocation fixture, and unrelated rows persist, and cleanup removes only exact test-created session tokens."],
+  "verification_targets": [
+    "FT-006-AC-008: fresh route and real-DB browser probe covers assigned Teacher success, Student denial, payment/allocation rows, paid/unpaid card labels/classes, and shared-role omission; it does not re-prove AC-007 retry/idempotency.",
+    "Ownership: source review confirms Calendar reads named projection, Lesson Context adapter remains separate, and no route direct SQLite or Financial Ledger write exists.",
+    "Run required project gates and diff hygiene; cleanup evidence confirms dedicated accounts and financial fixture remain, unrelated rows remain untouched, and only exact test-created session tokens are removed."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/routes/calendar/", "tests/routes/calendar-navigation.test.ts", "e2e/real-database-payment.spec.ts", "playwright.config.ts", "study-calendar.db"],
+    "forbidden_scope": ["src/lib/server/modules/financial-ledger/", "src/lib/server/modules/lesson-context/", "src/routes/lesson-context/", "src/lib/server/modules/identity-access/", "src/lib/server/modules/center-scheduling/", "src/routes/+page.svelte"],
+    "stop_conditions": ["Stop if the projection requires direct financial writes, a new route/API boundary, or a second payment-state source.", "Stop if the E2E requires resetting unrelated rows, using a temporary database, or widening the dedicated fixture scope."]
+  }
+}

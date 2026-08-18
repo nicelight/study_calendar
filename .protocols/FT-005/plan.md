@@ -7,8 +7,9 @@ status: active
 ## Outcome and scope
 
 Deliver class-visible homework completion, private accepted-scale grades, the
-authorized lesson-scoped personal grade query, and attendance with financially
-correct absent-to-present reconciliation.
+authorized lesson-scoped personal grade query, attendance with financially
+correct absent-to-present reconciliation, and assigned-Teacher lesson-day
+attendance entry.
 
 ## Canonical inputs and ownership
 
@@ -25,6 +26,9 @@ correct absent-to-present reconciliation.
 3. `TASK-018-T3-FT-005-W8` owns the authorized lesson-scoped personal grade
    query, provider-owned homework selection, and privacy proof under AD-007,
    after TASK-009 and TASK-006.
+4. `TASK-042-T3-FT-005-W22` owns the assigned-Teacher lesson-day attendance
+   list and atomic absent-subset/default-present save, after TASK-010 and
+   TASK-041.
 
 Learning Progress owns attendance; Financial Ledger owns charge, allocation, balance, and audit writes.
 
@@ -32,9 +36,11 @@ Learning Progress owns attendance; Financial Ledger owns charge, allocation, bal
 
 Run native gates with claim-linked paths: AC-001 class-visible completion,
 AC-002 accepted grade scale/privacy, AD-007 lesson-scoped provider query,
-AC-003 both-mode charge eligibility, and AC-004 atomic historical-price
-reconciliation/audit/isolation. TASK-009 and TASK-010 evidence remains
-evidence for their original outcomes only.
+AC-003 both-mode charge eligibility, AC-004 atomic historical-price
+reconciliation/audit/isolation, and AC-005 assigned-Teacher lesson-day
+attendance entry for individual and group classes. TASK-009 and TASK-010
+evidence remains evidence for their original outcomes only; TASK-042 owns the
+new browser/integration contour.
 
 ## W8 card completeness correction
 

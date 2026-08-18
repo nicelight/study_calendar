@@ -7,16 +7,16 @@ status: active
 ## Goal
 
 Implement homework completion, private grades, the authorized lesson-scoped
-personal grade query, attendance state, and the authorized financial
-reconciliation command.
+personal grade query, attendance state, the authorized financial
+reconciliation command, and the assigned-Teacher lesson-day attendance entry.
 
 ## Scope / non-goals
 
 Include accepted grade values/privacy, provider-owned lesson-to-homework
 selection for the lesson-scoped grade projection, present/absent state, charge
-eligibility, absent-to-present correction, audit, and isolation. Exclude direct
-financial-table writes, consumer-owned homework mapping, and late/partial
-attendance states.
+eligibility, absent-to-present correction, audit, isolation, and the
+lesson-day absent-subset/default-present save. Exclude direct financial-table
+writes, consumer-owned homework mapping, and late/partial attendance states.
 
 ## Strategy and ownership
 
@@ -32,6 +32,7 @@ Financial Ledger ownership.
 | W5 | TASK-009-T3-FT-005-W5 | homework and grades | TASK-005-T3-FT-002-W3 |
 | W6 | TASK-010-T3-FT-005-W6 | attendance and charge reconciliation | TASK-006-T2-FT-002-W4, TASK-007-T3-FT-006-W4 |
 | W8 | TASK-018-T3-FT-005-W8 | provider-owned authorized lesson-scoped grade query | TASK-009-T3-FT-005-W5, TASK-006-T2-FT-002-W4 |
+| W22 | TASK-042-T3-FT-005-W22 | assigned-Teacher lesson-day attendance list with absent-subset/default-present save | TASK-010-T3-FT-005-W6, TASK-041-T3-FT-006-W21 |
 
 ## Gates and verification
 
@@ -39,7 +40,9 @@ Run `npm run check`, `npm run build`, and `npm run test`; verify AC-001/002 on
 TASK-009, the AD-007 provider query on TASK-018, and AC-003/004 on TASK-010.
 Each card uses its own RED/GREEN role/privacy, lesson-scoped projection,
 attendance, historical replay, audit, atomicity, and isolation evidence path;
-TASK-009 evidence is not broadened retroactively.
+TASK-009 and TASK-010 evidence is not broadened retroactively; TASK-042 owns
+the new FT-005-AC-005 lesson-day browser/integration contour and reuses the
+existing attendance and lesson-context contracts.
 
 ## TASK-018-T3-FT-005-W8 single-card handoff
 

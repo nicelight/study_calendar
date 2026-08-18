@@ -104,6 +104,92 @@ export class LearningProgressBoundary {
 		this.now = options.now ?? (() => new Date());
 	}
 
+	getLessonAttendance(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+	}): AttendanceView[] {
+		const { scope } = this.requireAssignedTeacherClassScope(request.sessionToken, request.classId);
+		this.requireAttendanceEntryLesson(request.sessionToken, scope, request.lessonId);
+		return scope.studentAccountIds.map((studentAccountId) => {
+			const row = this.getAttendanceRow(request.lessonId, studentAccountId);
+			return row
+				? this.toAttendanceView(row)
+				: {
+					lessonId: request.lessonId,
+					classId: scope.classId,
+					studentAccountId,
+					attendance: 'absent' as const,
+					recordedByAccountId: null,
+					recordedAt: null
+				};
+		});
+	}
+
+	recordLessonAttendance(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+		absentStudentAccountIds: string[];
+	}): AttendanceView[] {
+		return this.database.transaction(() => {
+			const { actor, scope } = this.requireAssignedTeacherClassScope(
+				request.sessionToken,
+				request.classId
+			);
+			this.requireAttendanceEntryLesson(request.sessionToken, scope, request.lessonId);
+			const absentStudentAccountIds = new Set(request.absentStudentAccountIds);
+			for (const studentAccountId of absentStudentAccountIds) {
+				this.requireClassStudent(scope, studentAccountId);
+			}
+
+			const recordedAt = this.now().toISOString();
+			for (const studentAccountId of scope.studentAccountIds) {
+				const attendance = absentStudentAccountIds.has(studentAccountId) ? 'absent' : 'present';
+				const before = this.getAttendanceRow(request.lessonId, studentAccountId);
+				const from = before?.attendance ?? 'absent';
+				if (from !== attendance) {
+					this.financialLedger.reconcileLessonCharge({
+						sessionToken: request.sessionToken,
+						lessonId: request.lessonId,
+						studentAccountId,
+						attendanceTransition: { from, to: attendance }
+					});
+				}
+
+				this.database.sqlite
+					.prepare(
+						`INSERT INTO learning_attendance (
+							center_id,
+							class_id,
+							lesson_id,
+							student_account_id,
+							attendance,
+							recorded_by_account_id,
+							recorded_at
+						) VALUES (?, ?, ?, ?, ?, ?, ?)
+						 ON CONFLICT (lesson_id, student_account_id) DO UPDATE SET
+							attendance = excluded.attendance,
+							recorded_by_account_id = excluded.recorded_by_account_id,
+							recorded_at = excluded.recorded_at`
+					)
+					.run(
+						scope.centerId,
+						scope.classId,
+						request.lessonId,
+						studentAccountId,
+						attendance,
+						actor.accountId,
+						recordedAt
+					);
+			}
+
+			return scope.studentAccountIds.map((studentAccountId) =>
+				this.requireAttendanceView(request.lessonId, scope.classId, studentAccountId)
+			);
+		});
+	}
+
 	recordAttendance(request: {
 		sessionToken?: string;
 		classId: string;
@@ -397,6 +483,32 @@ export class LearningProgressBoundary {
 			throw new Error('not-authorized');
 		}
 		return result;
+	}
+
+	private requireAssignedTeacherClassScope(
+		sessionToken: string | undefined,
+		classId: string
+	): { actor: ActorContext; scope: AuthorizedClassScope } {
+		const result = this.requireClassScope(sessionToken, classId);
+		if (result.actor.role !== 'teacher') {
+			throw new Error('not-authorized');
+		}
+		return result;
+	}
+
+	private requireAttendanceEntryLesson(
+		sessionToken: string | undefined,
+		scope: AuthorizedClassScope,
+		lessonId: string
+	): LessonView {
+		try {
+			return this.requireLesson(sessionToken, scope, lessonId);
+		} catch (cause) {
+			if (cause instanceof Error && cause.message === 'lesson-not-found') {
+				throw new Error('not-authorized');
+			}
+			throw cause;
+		}
 	}
 
 	private requireHomework(homeworkId: string, classId: string): HomeworkRow {

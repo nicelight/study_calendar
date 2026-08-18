@@ -13,12 +13,12 @@ outcome and the minimum real SvelteKit browser/API path defined by FT-001.
 
 Scope is role-bearing internal accounts, local first-Admin password bootstrap,
 email/password login, one-time invitation lifecycle, Telegram/Google binding,
-server-issued sessions, login/logout transport, invite acceptance, and a
-protected Admin participant/invitation form. The W9 Admin
-form uses the existing `createParticipant` contract for teacher/student/parent
-participants. Do not introduce a second service, client-trusted roles, a
-dev-login bypass, self-registration/recovery/MFA, multi-Admin bootstrap, new
-authentication dependency, or consumer-owned identity writes.
+server-issued sessions, login/logout transport, invite acceptance, and
+center-scoped Admin participant creation. The W9 Admin form uses the existing
+`createParticipant` contract for invitation-based participants; W20 covers the
+direct email/password path. Do not introduce a second service, client-trusted
+roles, a dev-login bypass, self-registration/recovery/MFA, multi-Admin
+bootstrap, new authentication dependency, or consumer-owned identity writes.
 
 ## Strategy and ownership
 
@@ -47,16 +47,18 @@ transport adapters.
 | W11 | TASK-025-T3-FT-001-W11 | allow the authenticated bootstrap Admin to create the first center in the browser | TASK-024-T3-FT-001-W10; TASK-005-T3-FT-002-W3 |
 | W13 | TASK-029-T3-FT-001-W13 | atomically bootstrap the empty-database first Admin password credential through a local hidden-input CLI | TASK-025-T3-FT-001-W11 |
 | W14 | TASK-030-T3-FT-001-W14 | verify password credentials and expose browser login through the existing session/cookie | TASK-029-T3-FT-001-W13 |
+| W17 | TASK-033-T1-FT-001-W17 | expose the public `/login` entry without changing auth state | TASK-030-T3-FT-001-W14 |
+| W20 | TASK-040-T3-FT-001-W20 | create teacher/student/parent accounts directly with email/password and same-center parent link | TASK-021-T3-FT-001-W9; TASK-030-T3-FT-001-W14 |
 
 ## Gates and verification
 
 Use `npm run check`, `npm run build`, and `npm run test`; verify AC-003/005 on
 TASK-015, AC-001/002/004 on TASK-004, AC-006/007 on TASK-020, and AC-008 on
-TASK-021. Verify AC-010 on TASK-029 and AC-011 on TASK-030; AC-009 remains
-historically owned by done TASK-025. W9 HTTP/SSR checks use disposable fixtures, server-issued sessions,
-state-before/state-after comparisons for failures, and one running local
-SvelteKit process. Each new task has a claim-linked RED/GREEN contract and
-direct canonical links.
+TASK-021. Verify AC-009 on TASK-025, AC-010 on TASK-029, AC-011 on TASK-030,
+AC-012 on TASK-033, and AC-013 on TASK-040. W9/W20 HTTP/SSR checks use
+disposable fixtures, server-issued sessions, state-before/state-after
+comparisons for failures, and one running local SvelteKit process. Each task
+has a claim-linked RED/GREEN contract and direct canonical links.
 
 ## W13 email/password rebuild
 

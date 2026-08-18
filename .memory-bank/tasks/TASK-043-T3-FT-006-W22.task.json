@@ -1,0 +1,97 @@
+{
+  "id": "TASK-043-T3-FT-006-W22",
+  "title": "Persist historical applied prices for charges",
+  "status": "done",
+  "wave": "W22",
+  "feature": "FT-006",
+  "reqs": ["REQ-011"],
+  "depends_on": ["TASK-005-T3-FT-002-W3"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "A charge stores the exact applicable default or student-specific price at charge time and later price changes affect only future charges.",
+    "T3 proof uses isolated disposable financial state, exact-value comparison, safe rerun, cleanup, and source ownership checks.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-043-T3-FT-006-W22/verification.md",
+      "artifact": ".tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned isolated probe passed FT-006-AC-001 / REQ-011 with exact persisted default and override snapshots before and after later settings.",
+        "Earlier charges retained their historical values through cancellation/reactivation; same-state rerun and cleanup checks passed.",
+        "Fresh npm run check, npm run build, npm run test (37 files / 156 tests), and git diff --check all exited 0.",
+        "Independent functional report: .tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-043-T3-FT-006-W22/red-verification.md",
+      "artifact": ".tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial probe passed temporal effective-date/override and unauthorized/out-of-scope mutation checks in isolated disposable SQLite state.",
+        "Source inspection confirmed Financial Ledger ownership of price/charge writes and no route or consumer financial-table bypass.",
+        "No material finding or operator-owned question was admitted; semantic report: .tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-043-T3-FT-006-W22/verification.md",
+        ".protocols/TASK-043-T3-FT-006-W22/red-verification.md",
+        ".tasks/TASK-043-T3-FT-006-W22/execution-evidence.md",
+        ".tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "lifecycle_changed": true
+    }
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-001 / REQ-011 RED: a charge loses its applied default/student price or changes after a later price setting; GREEN: each charge persists the exact historical price and later settings affect only future charges; artifact: .tasks/TASK-043-T3-FT-006-W22/ and .protocols/TASK-043-T3-FT-006-W22/."
+  ],
+  "purpose": "Own the historical price snapshot result required by Financial Ledger charges.",
+  "success_outcome": "Financial Ledger persists an exact immutable applied price for every charge while later settings affect only future charges.",
+  "anti_goals": ["Do not rewrite historical charges after a price setting changes.", "Do not let Center & Scheduling or routes write financial tables."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-001",
+    ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Financial Ledger exclusively writes price and charge state.", "Use the accepted exact decimal-safe representation."],
+  "invariants": ["Historical charge price is immutable.", "A later setting cannot rewrite an existing charge."],
+  "verification_targets": [
+    "FT-006-AC-001: create default-priced and override-priced charges, change settings, create future charges, and compare exact stored prices.",
+    "Ownership: source/runtime proof confirms no consumer or route direct financial persistence bypass."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+    "forbidden_scope": ["src/lib/server/modules/center-scheduling/", "src/routes/", "study-calendar.db"],
+    "stop_conditions": ["Stop if historical pricing requires a new global storage or ownership contract."]
+  }
+}

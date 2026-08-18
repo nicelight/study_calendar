@@ -6,13 +6,13 @@ status: active
 
 ## Outcome and scope
 
-Deliver first-Admin email/password bootstrap/login, center-created role-bearing
+Deliver first-Admin email/password bootstrap/login, own-center role-bearing
 accounts, one-time invitations, safe Telegram/Google identity binding, server
 sessions, and the minimum working browser/API path for login, invite acceptance,
-logout, and protected Admin participant provisioning. Out of scope: UI polish,
-a dev-login bypass, self-registration/recovery/MFA, multi-Admin bootstrap, a new
-authentication dependency, provider SDK selection, and unrelated scheduling or
-membership behavior.
+logout, and direct/invitation-based Admin participant provisioning. Out of
+scope: UI polish, a dev-login bypass, self-registration/recovery/MFA,
+multi-Admin bootstrap, a new authentication dependency, provider SDK selection,
+and unrelated scheduling or membership behavior.
 
 ## Canonical inputs and ownership
 
@@ -60,6 +60,9 @@ membership behavior.
    index. Fresh TASK-029 owns AC-010 local password-credential bootstrap;
    sequential TASK-030 owns AC-011 browser password login/session. This is a
    `rebuild_required` replacement, not a repair.
+9. Done `TASK-033-T1-FT-001-W17` owns AC-012. Done
+   `TASK-040-T3-FT-001-W20` owns AC-013 direct participant password creation;
+   both remain unchanged in identity, status, evidence, and dependencies.
 
 The product tasks use the existing Identity & Access owner and do not write
 membership state owned by Center & Scheduling. Center & Scheduling remains the
@@ -91,7 +94,8 @@ No new module, provider, session type, cookie, service, dependency, or
 registration/recovery lifecycle is introduced. Existing Telegram/Google flows
 stay compatible. TASK-025 and TASK-026 remain unchanged.
 
-The current task queue implements AC-001..AC-011. The fresh 2026-08-14
+The current task queue implements AC-001..AC-013. TASK-033 owns AC-012 and
+TASK-040 owns AC-013. The fresh 2026-08-14
 [feature semantic report](../../.tasks/FT-001/FT-001-S-RED-VERIFY-final-report-docs-01.md)
 returned `semantic-pass` over the complete surface, and the explicit lifecycle
 owner closed FT-001 and REQ-001 as `verified`. The

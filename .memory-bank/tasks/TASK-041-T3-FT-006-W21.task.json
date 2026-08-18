@@ -4,7 +4,7 @@
   "status": "done",
   "wave": "W21",
   "feature": "FT-006",
-  "reqs": ["REQ-013", "REQ-016"],
+  "reqs": ["REQ-013"],
   "depends_on": ["TASK-008-T3-FT-006-W5", "TASK-039-T3-FT-003-W10", "TASK-040-T3-FT-001-W20"],
   "touched_files": [
     "src/routes/lesson-context/+page.server.ts",
@@ -71,7 +71,7 @@
     ".memory-bank/changelog.md"
   ],
   "evidence_required": [
-    "FT-006-AC-008 / REQ-013 / REQ-016 RED: the ledger may already support payment commands, but the browser has no protected payment entry and the student calendar has no paid/unpaid projection; GREEN: a real assigned Teacher submits the lesson-context form, the authoritative database contains the recorded payment and allocation, the Student calendar shows one paid and one unpaid lesson day with distinct labels/colors, Student submission is denied, and shared role calendars omit guessed payment state."
+    "FT-006-AC-008 / REQ-013 RED: the ledger may already support payment commands, but the browser has no protected payment entry and the student calendar has no paid/unpaid projection; GREEN: a real assigned Teacher submits the lesson-context form, the authoritative database contains the recorded payment and allocation, the Student calendar shows one paid and one unpaid lesson day with distinct labels/colors, Student submission is denied, and shared role calendars omit guessed payment state."
   ],
   "purpose": "Connect the existing financial ledger to the simplest real browser workflow for recording a lesson payment and showing its state only in the student's personal calendar.",
   "success_outcome": "Admin and assigned Teacher can record a payment for an assigned student through Lesson Context; the payment is allocated by the financial ledger, and the student's calendar renders paid and unpaid lesson days in distinct colors while shared calendars remain neutral.",
@@ -90,6 +90,7 @@
       "e2e/real-database-payment.spec.ts",
       "playwright.config.ts",
       "package.json",
+      "study-calendar.db",
       ".memory-bank/features/FT-006-financial-ledger.md",
       ".memory-bank/requirements.md",
       ".memory-bank/tasks/",
@@ -99,8 +100,7 @@
     "forbidden_scope": [
       "src/lib/server/modules/financial-ledger/",
       "src/lib/server/modules/identity-access/",
-      "src/lib/server/modules/center-scheduling/",
-      "study-calendar.db"
+      "src/lib/server/modules/center-scheduling/"
     ],
     "stop_conditions": [
       "Stop if payment creation requires a direct route read/write of SQLite instead of FinancialLedgerBoundary.",
@@ -144,7 +144,7 @@
     "Existing product data is preserved; only the explicitly scoped E2E account, membership, financial fixture, and exact automation sessions are touched."
   ],
   "verification_targets": [
-    "FT-006-AC-008 / REQ-013 / REQ-016: exercise the real Teacher form, assert payment and allocation rows, then log in as the Student and assert paid/unpaid card attributes, labels, and CSS classes.",
+    "FT-006-AC-008 / REQ-013: exercise the real Teacher form, assert payment and allocation rows, then log in as the Student and assert paid/unpaid card attributes, labels, and CSS classes.",
     "Authorization regression: route tests and source inspection prove Student submission is denied and direct SQLite access is absent from the Lesson Context route.",
     "Projection privacy: route tests prove student-only paymentStatus data and shared Admin/Teacher omission.",
     "Real database safety: E2E creates/reuses only the named test accounts, leaves the payment fixture for manual inspection, and removes only its exact automation session tokens."

@@ -1,0 +1,60 @@
+{
+  "id": "TASK-049-T3-FT-006-W25",
+  "title": "Expose the protected Lesson Context payment adapter",
+  "status": "planned",
+  "wave": "W25",
+  "feature": "FT-006",
+  "reqs": ["REQ-013"],
+  "depends_on": ["TASK-046-T3-FT-006-W23", "TASK-039-T3-FT-003-W10", "TASK-040-T3-FT-001-W20"],
+  "touched_files": ["src/routes/lesson-context/", "src/lib/server/modules/lesson-context/", "tests/routes/", "tests/lesson-context/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "The Lesson Context form/action is a thin server adapter that resolves the current lesson/student scope and delegates payment creation to FinancialLedgerBoundary.",
+    "Student, unassigned Teacher, cross-center, forged-scope, and direct-SQL paths fail before mutation; this task does not prove the personal calendar projection or inherit TASK-050 E2E evidence."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "Financial Ledger public-boundary adapter / REQ-013 RED: Lesson Context writes SQLite directly, trusts client scope, or cannot delegate to the named createPayment command; GREEN: the protected adapter rechecks server scope and delegates without owning financial persistence; artifact: .tasks/TASK-049-T3-FT-006-W25/ and .protocols/TASK-049-T3-FT-006-W25/."
+  ],
+  "purpose": "Own the Lesson Context transport boundary that invokes the accepted payment command.",
+  "success_outcome": "An authorized Admin or assigned Teacher can submit the existing Lesson Context payment form through a thin adapter, while unauthorized actors are rejected before financial mutation.",
+  "anti_goals": ["Do not write financial tables from the route or lesson-context module.", "Do not implement the student paid/unpaid calendar projection or a real-DB E2E gate."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Lesson Context is an adapter only; Financial Ledger owns payment writes.", "Server resolves actor, center, class, lesson, and student scope; client values cannot widen it."],
+  "invariants": ["No route-owned SQL or second financial store exists.", "Unauthorized submission leaves financial state unchanged."],
+  "verification_targets": [
+    "Boundary probe: assigned Teacher/Admin delegation, Student/unassigned/cross-center denial, forged fields, state-before/state-after, and source proof of no direct SQLite access.",
+    "Run project check/build/test; do not run or require the real-DB payment E2E here."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/routes/lesson-context/", "src/lib/server/modules/lesson-context/", "tests/routes/", "tests/lesson-context/"],
+    "forbidden_scope": ["src/lib/server/modules/financial-ledger/", "src/routes/calendar/", "e2e/real-database-payment.spec.ts", "study-calendar.db"],
+    "stop_conditions": ["Stop if the adapter requires direct financial persistence, a new API boundary, or client-owned authorization."]
+  }
+}

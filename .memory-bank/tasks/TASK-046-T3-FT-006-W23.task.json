@@ -1,0 +1,99 @@
+{
+  "id": "TASK-046-T3-FT-006-W23",
+  "title": "Enforce payment authority and Admin edit/cancel replay",
+  "status": "done",
+  "wave": "W23",
+  "feature": "FT-006",
+  "reqs": ["REQ-012", "REQ-013", "REQ-014", "REQ-015"],
+  "depends_on": ["TASK-005-T3-FT-002-W3", "TASK-006-T2-FT-002-W4", "TASK-045-T3-FT-006-W23"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true}
+  ],
+  "verify": [
+    "Admin can create/edit/cancel payments only for students/classes in the own center; an assigned Teacher can create only for the assigned class and cannot edit/cancel.",
+    "Edit/cancel recomputes allocations and balances deterministically with audit; anonymous, Student, cross-center, unassigned, and forged-scope calls fail before mutation.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-046-T3-FT-006-W23/verification.md",
+      "artifact": ".tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned isolated probe passed the role/center/class authority matrix, non-mutation denial checks, exact Admin edit/cancel replay, audit facts, and second-database equality.",
+        "Fresh npm run check, npm run build, npm run test (46 files / 165 tests), and git diff --check all exited 0.",
+        "Independent functional report: .tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-046-T3-FT-006-W23/red-verification.md",
+      "artifact": ".tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh semantic probe passed non-mutating outsider/Teacher edit-cancel attempts and exact Admin audit before/after checks.",
+        "Source inspection confirmed actor/scope checks at public command boundaries and no route/consumer financial-table bypass.",
+        "Fresh npm run check, npm run build, npm run test (47 files / 166 tests), and git diff --check all exited 0.",
+        "No material finding or operator-owned question was admitted; semantic report: .tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-046-T3-FT-006-W23/verification.md",
+        ".protocols/TASK-046-T3-FT-006-W23/red-verification.md",
+        ".tasks/TASK-046-T3-FT-006-W23/execution-evidence.md",
+        ".tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-046-T3-FT-006-W23/TASK-046-T3-FT-006-W23-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "lifecycle_changed": true
+    }
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-005 / REQ-012 / REQ-013 / REQ-014 / REQ-015 RED: a role can create/edit/cancel outside its center or assigned class, or recomputation/audit is incomplete; GREEN: Admin own-center authority and assigned-Teacher create-only authority are enforced with deterministic edit/cancel replay and audit; artifact: .tasks/TASK-046-T3-FT-006-W23/ and .protocols/TASK-046-T3-FT-006-W23/."
+  ],
+  "purpose": "Own payment command authorization and Admin correction/cancellation replay.",
+  "success_outcome": "Financial Ledger rechecks actor and center/class scope for every payment command, permits only accepted Admin/Teacher operations, and deterministically audits edit/cancel consequences.",
+  "anti_goals": ["Do not trust client role, center, class, or student values.", "Do not grant Teachers edit/cancel or let routes bypass Financial Ledger."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-005",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md",
+    ".memory-bank/contracts/financial-ledger.md",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Admin authority is own-center; Teacher authority is assigned-class and create-only.", "Financial Ledger remains the only financial writer."],
+  "invariants": ["Denied commands leave financial state unchanged.", "Every accepted edit/cancel records deterministic before/after audit facts."],
+  "verification_targets": [
+    "FT-006-AC-005: execute the complete role, center, class, edit/cancel, forged-scope, and audit matrix with state-before/state-after comparisons.",
+    "Ownership: source/runtime review confirms actor/scope facts come through named boundaries and no route or neighbor writes financial persistence."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+    "forbidden_scope": ["src/routes/", "src/lib/server/modules/center-scheduling/", "study-calendar.db"],
+    "stop_conditions": ["Stop if authorization requires caller-trusted scope or a new cross-slice command contract."]
+  }
+}

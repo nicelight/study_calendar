@@ -4,6 +4,27 @@ status: active
 ---
 # Changelog
 
+## [2026-08-18] Wave W22 — fresh attendance and financial reconciliation closure
+
+- Reconciled `TASK-042-T3-FT-005-W22` as `done` with fresh functional and
+  semantic evidence for the protected Teacher attendance-entry flow.
+- Reconciled `TASK-043-T3-FT-006-W22` as `done` with fresh historical applied
+  price evidence and `TASK-044-T3-FT-006-W22` as `done` with fresh attendance
+  charge correction/replay/audit evidence.
+- Preserved the accepted Learning Progress → Financial Ledger boundary,
+  Financial Ledger write ownership, Planning Revision `2`, existing RTM
+  lifecycle values, and historical task evidence. No new product lifecycle or
+  architecture decision was inferred by sync.
+- The next W23 task `TASK-045-T3-FT-006-W23` remains governed by its indexed
+  task record; promotion/selection remains scheduler-owned after post-sync
+  gates.
+
+## [2026-08-18] FT-006 real-payment E2E repair
+
+- Removed the duplicate submission of the same confirmation from
+  `e2e/real-database-payment.spec.ts`; the AC-008 browser path now sends one
+  payment intent and asserts one `/lesson-context` POST.
+
 ## [2026-08-17] Real payment entry and personal paid/unpaid calendar state
 
 - Added the protected Lesson Context payment form. Admin and assigned Teacher

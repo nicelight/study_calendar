@@ -4,7 +4,7 @@ status: active
 type: feature
 id: FT-006
 lifecycle: verified
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 epic: EP-005
 requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015]
 spec_design_status: complete
@@ -164,3 +164,37 @@ membership remain in the local database for manual inspection.
 
 The feature's current front matter is `status: active` / `lifecycle: verified`;
 the older W5 note above is historical and does not supersede this W21 closure.
+
+## Current task coverage after rejected-plan rebuild — 2026-08-18
+
+The FT-006 task-plan review rejected the composite W4/W5/W21 slicing. Fresh
+current owners are `TASK-043` (AC-001), `TASK-044` (AC-004), `TASK-045`
+(AC-002/003), `TASK-046` (AC-005), `TASK-047` (AC-006), `TASK-048` (AC-007),
+and `TASK-050` (AC-008). `TASK-049` is the separate Lesson Context adapter
+prerequisite for AC-008 and does not own the product AC. Historical done
+TASK-007, TASK-008, and TASK-041 retain their status and evidence and are not
+reused as fresh proof. Planning Revision remains `2`; no canonical ownership
+or contract changed.
+
+## W22 fresh Financial Ledger closure — 2026-08-18
+
+The fresh rebuild owners for the completed W22 slices are now durable:
+
+- `TASK-043-T3-FT-006-W22` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for `FT-006-AC-001` / `REQ-011` (historical applied
+  default and student-specific price snapshots).
+- `TASK-044-T3-FT-006-W22` is `done` with fresh functional `PASS` and semantic
+  `semantic-pass` evidence for `FT-006-AC-004` / `REQ-010`, `REQ-012`, and
+  `REQ-015` (attendance charge correction, deterministic replay, and audit).
+
+- [TASK-043 card](../tasks/TASK-043-T3-FT-006-W22.task.json)
+- [TASK-043 functional verification](../../.tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md)
+- [TASK-043 semantic verification](../../.tasks/TASK-043-T3-FT-006-W22/TASK-043-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md)
+- [TASK-044 card](../tasks/TASK-044-T3-FT-006-W22.task.json)
+- [TASK-044 functional verification](../../.tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-VERIFY-final-report-docs-01.md)
+- [TASK-044 semantic verification](../../.tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-RED-VERIFY-final-report-docs-01.md)
+- [W22 boundary sync](../../.tasks/TASK-044-T3-FT-006-W22/TASK-044-T3-FT-006-W22-S-MB-SYNC-final-report-docs-01.md)
+
+Financial Ledger ownership, accepted boundaries, Planning Revision `2`, and
+the feature lifecycle remain unchanged. W23 payment allocation and later cards
+remain governed by their authoritative task records.
