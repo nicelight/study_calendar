@@ -1,7 +1,7 @@
 ---
 description: Global domain model, persistence ownership, and cross-slice data-flow rules.
 status: active
-last_updated: 2026-08-13
+last_updated: 2026-08-18
 source_of_truth:
   - .memory-bank/domains/core-domain.md
 ---
@@ -18,9 +18,9 @@ mutable invariant and transition has one capability owner as listed below.
 
 | Capability slice | Owned entities/state | Must not own |
 |---|---|---|
-| Identity & Access | Internal Account, role, Password Credential, External Identity, Invitation, Session | Class/student membership, lesson schedule, grades, payment facts |
+| Identity & Access | Internal Account, role, full name, registration timestamp, Password Credential, External Identity, Invitation, Session | Class/student membership, lesson schedule, grades, payment facts |
 | Center & Scheduling | Center, Class, Student Membership, Parent Link, Teacher Assignment, Schedule, Lesson identity/date/status | Provider binding, grades/attendance, discussion, charges/payments |
-| Lesson Context | Shared lesson material and authorized calendar/personal-day composition | Personal grade/attendance records, discussion objects, financial facts |
+| Lesson Context | Shared lesson material, authorized calendar/personal-day composition, and read-only statistics composition | Personal grade/attendance records, discussion objects, financial facts, participant profile facts |
 | Collaboration | Field Comment, Reaction, Message, Reply relationship, branch activity/visibility | Lesson ownership, grade/attendance, payment or balance state |
 | Learning Progress | Homework completion, Grade, Attendance, lesson-scoped homework selection/relation semantics, and its transition workflow | Charge/allocation/balance rows; it calls Financial Ledger |
 | Financial Ledger | Pricing settings, Lesson Charge, Payment, Payment Allocation, Balance, Payment Marker, Financial Audit Record | Center/class membership, lesson identity/date, grade/attendance state |
@@ -43,6 +43,9 @@ second Payment.
 - A Personal Lesson Context is addressed by one Lesson and one Student; it
   composes Learning Progress, Collaboration scope, and Financial Ledger
   projections without owning those records.
+- The FT-007 Statistics Projection is a read-only Lesson Context composition of
+  authorized Center & Scheduling, Learning Progress, and Financial Ledger
+  queries. It is not persisted and does not become a source of truth.
 - A Charge belongs to one Student/Lesson and snapshots the applied price.
 - A Payment belongs to one Student and has an exact amount and factual date.
   Allocations connect the Payment to the oldest uncovered Charges; an advance

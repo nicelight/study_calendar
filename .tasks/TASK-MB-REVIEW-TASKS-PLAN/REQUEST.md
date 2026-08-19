@@ -393,6 +393,30 @@
 - Final report:
   `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-006-R3-final-report-docs-01.md`.
 
+## Current review run — FT-007 full current-surface review
+
+- ROLE: Reviewer; fresh target: FT-007; full review at current Global Backbone
+  Planning Revision 2.
+- Required semantic pack: two fresh `Codex Luna` / `xhigh` co-review focuses
+  were launched independently for claims/cohesion and boundary/execution.
+- Required architecture subreview: current accepted evidence exposed a
+  material I&A profile public-boundary gap; bounded architecture review returned
+  `REQUEST_CHANGES`.
+- Validation: task schema 7/7 valid; 54 indexed IDs unique; FT-007 IDs,
+  tiers, features, waves, dependencies and DAG passed; Foundation gate
+  `TASK-002-T3-FT-000-W1` is reachable and `done`; `node scripts/mb-lint.mjs`
+  passed with only existing advisory metadata warnings.
+- Verdict: `REJECT`.
+- Blocking repair routes: `/spec-redesign` for the missing accepted profile
+  query boundary; `/feature-doctor FT-007` for existing-account profile
+  migration behavior; then `/feature-to-tasks FT-007` for E2E hard-scope,
+  claim mapping, cohesion and plan-proof repairs. Rerun
+  `/review-tasks-plan FT-007` after repair.
+- Read-only integrity: no reviewed product/spec/plan/task/index/code/protocol,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-007-final-report-docs-01.md`.
+
 ## Current review run — FT-006 final bounded rerun after TASK-050 repair
 
 - ROLE: Reviewer; bounded rerun at Planning Revision 2 after the operator
@@ -453,3 +477,36 @@
   this `REJECT`.
 - Final report:
   `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-006-R3-final-report-docs-01.md`.
+
+## Current review run — FT-007 fresh rerun after TASK-058..069 rebuild
+
+- ROLE: Reviewer; full fresh semantic review of the current FT-007 queue at
+  Planning Revision 2.
+- The operator decisions are applied: Lesson Context may obtain
+  `fullName`/`registeredAt` from Identity & Access through the accepted Actor
+  Context Boundary; new accounts require surname and given name, so no legacy
+  migration/backfill path exists.
+- Current surface: fresh TASK-058..069 cards replaced the retired TASK-051..057
+  queue. Structural checks passed for 12 indexed cards, resolving dependencies,
+  acyclic DAG, Foundation reachability, `node scripts/mb-lint.mjs` (74 files,
+  existing advisory warnings only), and `git diff --check`.
+- Verdict: `REJECT`.
+- ARCHITECTURE_REVIEW: `REQUEST_CHANGES`.
+- Blocking findings: TASK-066 assigns the I&A profile projection and complete
+  AC-003 to Center & Scheduling even though the accepted graph makes Lesson
+  Context the profile/composition consumer; TASK-069 owns only AC-004, leaving
+  no legal composition owner for full AC-003. The focused E2E commands use
+  `tmp/ft-007-*.db`, but Playwright `reuseExistingServer: true` can reuse a
+  server connected to `study-calendar.db`, and the database adapter does not
+  create the missing `tmp/` parent directory.
+- The former profile-boundary and legacy-account findings are closed by the
+  operator decisions and current canonical docs. Former cohesion/proof-transfer
+  findings are also addressed by the rebuilt task split.
+- Two fresh `Codex Luna` / `xhigh` co-review focuses and one fresh bounded
+  architecture review returned `REQUEST_CHANGES` with the same material
+  ownership/runtime findings. No reviewed product/spec/plan/task/index/code,
+  lifecycle, status, dependency, evidence, or scheduler state was changed.
+- Repair owner: `/feature-to-tasks FT-007`; after repair rerun
+  `/review-tasks-plan FT-007`. `/spec-redesign` is not required.
+- Final report:
+  `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-007-final-report-docs-01.md`.

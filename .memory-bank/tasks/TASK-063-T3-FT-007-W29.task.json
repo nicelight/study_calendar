@@ -1,0 +1,57 @@
+{
+  "id": "TASK-063-T3-FT-007-W29",
+  "title": "Implement the role-oriented Home destination",
+  "status": "planned",
+  "wave": "W29",
+  "feature": "FT-007",
+  "reqs": ["REQ-017"],
+  "depends_on": ["TASK-060-T3-FT-007-W28", "TASK-035-T3-FT-002-W19", "TASK-026-T3-FT-002-W12"],
+  "touched_files": ["src/routes/", "tests/routes/", "tests/center-scheduling/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "Home delegates destination resolution to the server actor and accepted Center & Scheduling query without adding a route-side role or center-scope rule.",
+    "The feature-level role/scope outcome is owned by TASK-065; this card proves only the adapter call and response mapping."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    "boundary-map.md#calendar-and-membership-query-boundary RED: Home bypasses the named provider query or reconstructs provider facts in the route; GREEN: focused route tests prove the adapter call/response mapping and preserve provider ownership, with no independent privacy claim; artifact: .tasks/TASK-063-T3-FT-007-W29/ and .protocols/TASK-063-T3-FT-007-W29/."
+  ],
+  "purpose": "Implement the Home adapter as an independently verifiable role-oriented destination surface.",
+  "success_outcome": "Home delegates role and scope resolution to accepted server boundaries and exposes only the resulting permitted destinations.",
+  "anti_goals": ["Do not implement Classes or the combined AC-002 browser proof.", "Do not read Center & Scheduling tables directly from a route.", "Do not add a new role, membership, assignment, or authorization contract."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["The route is a thin adapter over server-resolved actor and Center & Scheduling scope.", "TASK-065 owns the combined role/scope acceptance and its REQ-014 proof.", "No provider table or persistent database direct access."],
+  "invariants": ["Home adds no role, center, class, or student authority.", "Home is read-only.", "Provider ownership and failure semantics remain unchanged."],
+  "verification_targets": ["boundary-map.md#calendar-and-membership-query-boundary: Home adapter call/response mapping.", "system-architecture.md#composition-and-request-data-flow: route remains an adapter and does not own provider rules."],
+  "runtime_context": {
+    "write_boundary": ["src/routes/", "tests/routes/", "tests/center-scheduling/"],
+    "forbidden_scope": ["src/lib/server/modules/identity-access/", "src/lib/server/modules/center-scheduling/", "src/lib/server/modules/learning-progress/", "src/lib/server/modules/financial-ledger/", "study-calendar.db"],
+    "stop_conditions": ["Stop if Home requires a new role, membership, assignment, or public boundary.", "Stop if the route must read provider tables or implement Classes behavior."]
+  }
+}

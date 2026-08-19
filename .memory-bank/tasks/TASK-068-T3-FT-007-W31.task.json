@@ -1,0 +1,63 @@
+{
+  "id": "TASK-068-T3-FT-007-W31",
+  "title": "Expose the factual payment capability projection",
+  "status": "planned",
+  "wave": "W31",
+  "feature": "FT-007",
+  "reqs": ["REQ-014", "REQ-017"],
+  "depends_on": ["TASK-066-T3-FT-007-W30", "TASK-045-T3-FT-006-W23", "TASK-046-T3-FT-006-W23"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-007-AC-005: payment capability counts only counted Payment Allocations whose factual payment date is strictly earlier than the actual lesson date.",
+    "No counted allocations returns 0%; all on-time returns 100%; mixed, overdue, equal-date, advance, and unallocated cases follow the Financial Ledger contract.",
+    "The projection is read-only, scope-authorized, and does not reconstruct or mutate payment, allocation, charge, balance, or audit facts."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    "FT-007-AC-005 / REQ-014 / REQ-017 RED: capability counts advances/unallocated amounts, uses a non-factual date, mishandles strict boundary/no-payment/mixed cases, leaks scope, or mutates ledger facts; GREEN: isolated provider tests prove 0/100/mixed/overdue/equal-date behavior and state preservation; artifact: .tasks/TASK-068-T3-FT-007-W31/ and .protocols/TASK-068-T3-FT-007-W31/."
+  ],
+  "purpose": "Own the Financial Ledger payment-capability query consumed by Statistics.",
+  "success_outcome": "Financial Ledger returns the factual numeric payment capability for an authorized student without changing financial state.",
+  "anti_goals": ["Do not implement Statistics route composition or sorting.", "Do not count advances or unallocated amounts.", "Do not inherit or re-prove the registry provider's AC-003 evidence."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-005",
+    ".memory-bank/contracts/statistics-projection.md#payment-capability-query",
+    ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-005",
+    ".memory-bank/contracts/statistics-projection.md#payment-capability-query",
+    ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
+    ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Financial Ledger owns payment/allocation facts and the payment capability projection.", "Use factual payment date < actual lesson date; do not alter allocation semantics or exact-money representation.", "Tests use isolated disposable state and do not touch study-calendar.db."],
+  "invariants": ["No counted allocations returns 0% and every counted on-time allocation returns 100%.", "Advance and unallocated amounts are excluded.", "Projection reads leave all financial source facts unchanged and enforce current server-side scope."],
+  "verification_targets": ["FT-007-AC-005: no-payment/on-time/overdue/mixed/equal-date/advance/unallocated matrix.", "statistics-projection.md#payment-capability-query: factual formula and non-mutation.", "boundary-map.md#financial-projection-query-boundary: Financial Ledger remains the sole payment projection owner."],
+  "runtime_context": {
+    "write_boundary": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+    "forbidden_scope": ["src/lib/server/modules/identity-access/", "src/lib/server/modules/center-scheduling/", "src/lib/server/modules/lesson-context/", "src/routes/", "study-calendar.db"],
+    "stop_conditions": ["Stop if payment capability requires changing source-of-truth, allocation semantics, or exact-money representation.", "Stop if authorization cannot use the accepted server-resolved financial scope."]
+  }
+}

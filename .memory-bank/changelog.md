@@ -4,6 +4,21 @@ status: active
 ---
 # Changelog
 
+## [2026-08-18] FT-007 task-planning reconciliation
+
+- Accepted the feature-local profile decision: participant `fullName` is
+  required and `registeredAt` is generated immutably by the server; Teacher
+  attendance is the present-slot aggregate across assigned conducted lessons.
+- Added the canonical Statistics Projection contract and extended the accepted
+  provider/orchestration boundaries without changing module identity or
+  Planning Revision `2`.
+- Created the initial FT-007 implementation plan and seven schema-backed
+  `planned` T3 cards for W27–W31. That unexecuted surface was later rejected
+  and replaced under `rebuild_required` by fresh TASK-058..069 cards with
+  single-owner AC claims, focused disposable-DB browser gates, and no legacy
+  migration path. No implementation, verification, promotion, or closure was
+  performed; Foundation gate `TASK-002` remains the transitive prerequisite.
+
 ## [2026-08-18] Wave W26 — personal paid/unpaid calendar closure
 
 - Reconciled `TASK-050-T3-FT-006-W26` as `done` with fresh functional and

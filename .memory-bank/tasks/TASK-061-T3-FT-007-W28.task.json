@@ -1,0 +1,55 @@
+{
+  "id": "TASK-061-T3-FT-007-W28",
+  "title": "Implement server-session logout",
+  "status": "planned",
+  "wave": "W28",
+  "feature": "FT-007",
+  "reqs": ["REQ-017"],
+  "depends_on": ["TASK-020-T3-FT-001-W9"],
+  "touched_files": ["src/routes/auth/logout/", "tests/routes/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "Logout revokes the server session, clears the session cookie, redirects to /login, and denies reuse of the captured session token.",
+    "Logout reuses the accepted Authentication Transport boundary and does not own navigation shell rendering."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    "authentication-transport.md#session-issuance-and-revocation RED: logout only clears browser state or leaves the server session usable; GREEN: isolated route tests prove revocation, cookie clearing, redirect, and old-session denial without changing unrelated sessions; artifact: .tasks/TASK-061-T3-FT-007-W28/ and .protocols/TASK-061-T3-FT-007-W28/."
+  ],
+  "purpose": "Keep logout server-authoritative and independently verifiable from the navigation shell.",
+  "success_outcome": "A logout request invalidates the server session and returns the browser to login without changing unrelated account data.",
+  "anti_goals": ["Do not implement the common navigation shell.", "Do not add a client-only logout path or new session authority.", "Do not use study-calendar.db in tests."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/access-control.md#binding-and-session-rules",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Identity & Access owns session revocation and cookie semantics.", "The focused integration proof is owned by TASK-062; this task proves only the logout unit.", "Tests use isolated disposable state and never the shared real database."],
+  "invariants": ["The captured session cannot authorize a protected request after logout.", "Unrelated sessions and account/profile facts are unchanged.", "No client-supplied actor or role controls revocation."],
+  "verification_targets": ["authentication-transport.md#session-issuance-and-revocation: server-session, cookie, redirect, and old-token matrix.", "access-control.md#binding-and-session-rules: session authority remains in Identity & Access."],
+  "runtime_context": {
+    "write_boundary": ["src/routes/auth/logout/", "tests/routes/"],
+    "forbidden_scope": ["src/routes/+layout.server.ts", "src/routes/+layout.svelte", "src/lib/server/modules/center-scheduling/", "src/lib/server/modules/learning-progress/", "src/lib/server/modules/financial-ledger/", "study-calendar.db"],
+    "stop_conditions": ["Stop if logout requires a new session lifecycle or client-only authority.", "Stop if proving logout requires changing the common shell or unrelated provider modules."]
+  }
+}

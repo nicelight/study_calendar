@@ -148,9 +148,11 @@ hamburger-кнопкой в правом верхнем углу. Через н�
   MUST давать один generic invalid-credentials результат без сессии и без
   раскрытия существования аккаунта.
 - **FR-AUTH-011:** Admin MUST иметь возможность атомарно создать teacher,
-  student или parent с normalized email/password и membership собственного
-  Center; parent требует существующего student link. Такой аккаунт входит через
-  существующий `/login`; invite/provider flow сохраняется.
+  student или parent с required full name, normalized email/password и
+  membership собственного Center; server MUST generate and retain the
+  immutable registration timestamp; parent требует существующего student link.
+  Такой аккаунт входит через существующий `/login`; invite/provider flow
+  сохраняется.
 
 ### Global Navigation and Statistics
 
@@ -173,7 +175,9 @@ hamburger-кнопкой в правом верхнем углу. Через н�
   процентах и учебное заведение.
 - **FR-STAT-002:** Таблица «Учителя» MUST поддерживать столбцы: ФИО, дата
   регистрации, класс, посещаемость в процентах, учебное заведение и количество
-  учеников среди всех классов учителя.
+  учеников среди всех классов учителя. Посещаемость учителя — это aggregate
+  `present` student attendance по всем conducted student/lesson slots его
+  назначенных классов; без conducted slots значение равно `0%`.
 - **FR-STAT-003:** В ячейке классов учителя несколько классов MUST показываться
   с новой строки; при сортировке по этому столбцу MUST учитываться первый класс
   из списка.
@@ -194,7 +198,9 @@ hamburger-кнопкой в правом верхнем углу. Через н�
 - **FR-STAT-007:** Посещаемость ученика MUST строиться по отметкам `present` и
   `absent`, внесённым teacher в день урока через список учеников класса, и
   рассчитываться по всем проведённым урокам, а не только по урокам с отдельной
-  отметкой.
+  отметкой. Незамеченный студент после сохранения class-day формы считается
+  `present`; явный `absent` и последующая коррекция учитываются в следующем
+  чтении.
 
 ### Center, Classes, and Scheduling
 
@@ -377,7 +383,9 @@ hamburger-кнопкой в правом верхнем углу. Через н�
   Center. Отдельное управление филиалами и несколькими центрами не входит в
   MVP.
 - **Internal Account:** учётная запись приложения с назначенными ролями и
-  membership.
+  membership, required full name, and immutable server-generated registration
+  timestamp. Identity & Access owns these profile facts; the UI never supplies
+  role or scope authority.
 - **External Identity:** уникальная Telegram или Google identity, привязанная к
   одному Internal Account.
 - **Invitation:** одноразовое, ограниченное по времени право привязать provider
@@ -667,6 +675,14 @@ hamburger-кнопкой в правом верхнем углу. Через н�
   the list of assigned classes, Student and Parent open the class calendar.
 - When a student has no counted payments, the payment capability column shows
   `0%`; `100%` means every counted payment was made on time.
+
+### 2026-08-18 — FT-007 profile and teacher-attendance clarification
+
+- Accepted feature-local clarification: participant full name is required for
+  registry rows and registration time is generated immutably by the server.
+- Teacher attendance is the aggregate present-student ratio over all conducted
+  student/lesson slots in the teacher's assigned classes; it does not create a
+  separate teacher attendance fact.
 
 ### 2026-08-18 — Decomposition repair
 

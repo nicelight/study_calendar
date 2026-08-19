@@ -1,7 +1,7 @@
 ---
 description: Pure SDD spec registry and planned-spec index.
 status: active
-last_updated: 2026-08-11
+last_updated: 2026-08-18
 source_of_truth:
   - .memory-bank/spec-index.md
 ---
@@ -25,6 +25,7 @@ source_of_truth:
 | contract | [.memory-bank/contracts/authentication-transport.md](contracts/authentication-transport.md) | active | Minimal SvelteKit browser/HTTP path for authentication, sessions, protected Admin provisioning, and scoped schedule-form drafts. | /feature-to-tasks |
 | contract | [.memory-bank/contracts/financial-ledger.md](contracts/financial-ledger.md) | active | Financial ownership, exactness, allocation, audit, projection, and replay contract. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/provider-adapters.md](contracts/provider-adapters.md) | active | Server-only normalized verification boundary for Telegram Login and Google OAuth adapters. | /feature-to-tasks |
+| contract | [.memory-bank/contracts/statistics-projection.md](contracts/statistics-projection.md) | active | Read-only role-scoped registry shape, attendance/payment metric formulas, sorting, and composition rules for FT-007. | /feature-to-tasks |
 | domain | [.memory-bank/domains/core-domain.md](domains/core-domain.md) | active | Global entity model, persisted source of truth, ownership, and storage/data flow. | /spec-design or /feature-to-tasks |
 | state | [.memory-bank/states/lifecycle-map.md](states/lifecycle-map.md) | active | Access, lesson, collaboration, learning, and financial lifecycle transitions. | /spec-design or /feature-to-tasks |
 | runbook | [.memory-bank/runbooks/mvp-verification.md](runbooks/mvp-verification.md) | active | Foundation smoke, pre-real-data checks, deployment smoke, and evidence routing. | /spec-design or /foundation-to-tasks |

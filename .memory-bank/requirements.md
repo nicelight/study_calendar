@@ -33,8 +33,10 @@ status: draft
   role/membership, or creating a partial binding. (PRD Integrations; Edge Cases)
 - **REQ-003 — Center and class administration:** Bootstrap Admin creates exactly
   one center from the browser and receives its membership atomically, then
-  manages teachers, classes, students, parents, and links inside that center; a
-  class is individual or group. Cross-center administration is out of scope.
+  manages teachers, classes, students, parents, participant full names, and
+  links inside that center; participant registration time is generated and
+  retained by the server. A class is individual or group. Cross-center
+  administration is out of scope.
   The browser exposes a role-scoped class entry shell for permitted Admin,
   Teacher, Student, and Parent members without replacing the existing Admin
   management surface. (PRD FR-ORG-001..002, FR-ORG-006)
@@ -118,12 +120,14 @@ status: draft
   navigation shell with Home, Classes, Statistics, Profile, and Logout. Home,
   Classes, and Statistics are server-scoped: Admin sees its own Center, Teacher
   assigned classes, Student/Parent an accessible class calendar and no
-  center-wide registry. The three read-only registries use the PRD columns and
-  typed bidirectional sorting; teacher classes render one per line and sort by
-  the first class. Payment capability uses `payment date < actual lesson date`
-  for each counted Payment Allocation (`0%` with none, `100%` when all are on
-  time; advances and unallocated amounts are excluded); attendance uses
-  all conducted lessons. This is a projection and does not mutate source facts.
+  center-wide registry. The three read-only registries use the PRD columns,
+  server-owned participant full name/registration date, and typed bidirectional
+  sorting; teacher classes render one per line and sort by the first class.
+  Payment capability uses `payment date < actual lesson date` for each counted
+  Payment Allocation (`0%` with none, `100%` when all are on time; advances and
+  unallocated amounts are excluded); attendance uses all conducted lessons.
+  Teacher attendance is the same present-slot ratio aggregated across assigned
+  classes. This is a projection and does not mutate source facts.
   (PRD FR-NAV-001..005, FR-STAT-001..007, NFR-PRIV-005, AC-HOME-001)
 
 ## Out of scope

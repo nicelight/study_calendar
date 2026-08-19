@@ -1,7 +1,7 @@
 ---
 description: Global system architecture, runtime shape, composition root, and Architecture Spine.
 status: active
-last_updated: 2026-08-10
+last_updated: 2026-08-18
 source_of_truth:
   - .memory-bank/architecture/system-architecture.md
 ---
@@ -108,8 +108,8 @@ subject specifications.
   [.memory-bank/contracts/access-control.md](../contracts/access-control.md).
 
 #### AD-005 — Cross-slice orchestration stays with a capability owner
-- Binds: attendance-to-charge correction, personal-day composition, payment
-  entry, and other multi-slice use cases.
+- Binds: attendance-to-charge correction, personal-day composition, scoped
+  statistics composition, payment entry, and other multi-slice use cases.
 - Prevents: business workflows in route handlers, generic utilities, the
   composition root, or direct neighbor-table writes.
 - Rule: every cross-slice use case names one orchestration owner. The owner
@@ -199,6 +199,9 @@ owning module's commands.
    For a personal day, Lesson Context passes `lessonId` and the selected
    student/server-resolved actor context to Learning Progress's lesson-scoped
    query; it does not construct a `homeworkId` or persist a mapping.
+   For scoped statistics, Lesson Context composes provider-owned registry,
+   attendance, and payment-capability queries without persisting a statistics
+   source or writing provider state.
 5. The owning modules persist to the shared database or read through their
    public queries. Projections are read models; they never become a second
    source of truth.
@@ -229,6 +232,10 @@ owning module's commands.
 - The lesson-scoped grade projection is owned by Learning Progress through the
   [Personal Progress Query Boundary](../contracts/boundary-map.md#personal-progress-query-boundary);
   Lesson Context is only its authorized composition consumer.
+- The FT-007 read-only statistics composition is owned by Lesson Context
+  through the accepted provider boundaries and
+  [.memory-bank/contracts/statistics-projection.md](../contracts/statistics-projection.md);
+  routes remain transport/presentation adapters.
 - Financial command, state, projection, and replay rules are in
   [.memory-bank/contracts/financial-ledger.md](../contracts/financial-ledger.md).
 - Detailed domain ownership and lifecycles are in

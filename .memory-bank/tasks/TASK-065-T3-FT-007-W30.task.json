@@ -1,0 +1,62 @@
+{
+  "id": "TASK-065-T3-FT-007-W30",
+  "title": "Integrate Home and Classes destinations",
+  "status": "planned",
+  "wave": "W30",
+  "feature": "FT-007",
+  "reqs": ["REQ-014", "REQ-017"],
+  "depends_on": ["TASK-062-T3-FT-007-W29", "TASK-063-T3-FT-007-W29", "TASK-064-T3-FT-007-W29"],
+  "touched_files": ["tests/routes/", "e2e/ft-007-home-classes.spec.ts", "tmp/ft-007-home-classes.db"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-home-classes", "command": "DATABASE_URL=tmp/ft-007-home-classes.db npm run e2e -- e2e/ft-007-home-classes.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-007-AC-002: the disposable-DB browser flow proves Admin own-center destinations, Teacher assigned classes, and Student/Parent accessible class calendar destinations, with cross-center, cross-class, and removed-assignment negatives.",
+    "The focused E2E writes only tmp/ft-007-home-classes.db and does not use study-calendar.db or reset unrelated product state.",
+    "Home and Classes implementation evidence remains owned by TASK-063 and TASK-064; this card owns only their feature-level integration."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    "FT-007-AC-002 / REQ-014 / REQ-017 RED: a role receives an unauthorized Home/Classes destination, removed assignment remains usable, or cross-center/class data leaks; GREEN: focused disposable-DB browser flow proves the complete role/scope matrix with safe denial and no persistent real-database mutation; artifact: .tasks/TASK-065-T3-FT-007-W30/ and .protocols/TASK-065-T3-FT-007-W30/."
+  ],
+  "purpose": "Prove the complete role- and scope-oriented Home/Classes acceptance after its two adapters are independently implemented.",
+  "success_outcome": "Each supported role sees only its permitted Home and Classes destinations and can reach only its allowed class calendar.",
+  "anti_goals": ["Do not re-prove profile, payment, attendance, or statistics claims.", "Do not run against study-calendar.db or reset persistent product data.", "Do not add a new role or scope owner."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/testing/strategy.md#risk-based-checks"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Use a focused disposable DATABASE_URL under tmp/ft-007-home-classes.db; never use study-calendar.db.", "Fixture roles, memberships, assignments, and class data are newly created and removed with the disposable database.", "Dependency evidence is supporting input only; Home and Classes unit claims remain with TASK-063 and TASK-064."],
+  "invariants": ["Server-resolved actor, center, membership, and assignment scope is decisive.", "Cross-scope denial does not reveal unrelated row existence.", "The flow is read-only."],
+  "verification_targets": ["FT-007-AC-002: focused browser role/scope RED/GREEN matrix including assignment removal and guessed route.", "boundary-map.md#calendar-and-membership-query-boundary: integration uses the accepted provider query and does not bypass ownership."],
+  "runtime_context": {
+    "write_boundary": ["tests/routes/", "e2e/ft-007-home-classes.spec.ts", "tmp/ft-007-home-classes.db"],
+    "forbidden_scope": ["src/lib/server/modules/identity-access/", "src/lib/server/modules/center-scheduling/", "src/lib/server/modules/learning-progress/", "src/lib/server/modules/financial-ledger/", "study-calendar.db"],
+    "stop_conditions": ["Stop if the browser proof requires persistent study-calendar.db, destructive reset, or a new role/scope contract.", "Stop if routes read provider tables directly or expose removed assignments."]
+  }
+}

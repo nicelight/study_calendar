@@ -1,7 +1,7 @@
 ---
 description: Server-side authentication, authorization scope, and privacy contract.
 status: active
-last_updated: 2026-08-13
+last_updated: 2026-08-18
 source_of_truth:
   - .memory-bank/contracts/access-control.md
 ---
@@ -10,7 +10,8 @@ source_of_truth:
 ## Authority and scope
 
 Identity & Access authenticates the actor and owns the role-bearing account,
-external identity, invitation, and session facts. The capability that owns a
+participant full name, immutable registration timestamp, external identity,
+invitation, and session facts. The capability that owns a
 requested resource owns the final authorization decision for that resource,
 using the actor plus server-resolved center, class, and student scope from its
 public boundaries.
@@ -61,6 +62,9 @@ every role.
   membership, and link state unchanged.
 - A role-bearing internal account and its permitted context exist before the
   first provider binding.
+- A participant full name is required at Admin-created account creation and an
+  immutable registration timestamp is generated server-side; these profile
+  facts do not grant role, center, class, or student scope.
 - A password credential belongs to exactly one Identity & Access account. Its
   email is normalized with `trim().toLowerCase()` before lookup/storage and is
   database-unique; its password is represented only by a cryptographically

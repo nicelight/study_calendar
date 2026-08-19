@@ -6,7 +6,13 @@ id: FT-007
 lifecycle: planned
 epic: EP-006
 requirements: [REQ-014, REQ-017]
-last_updated: 2026-08-17
+spec_design_status: complete
+spec_design_links:
+  - .memory-bank/contracts/access-control.md
+  - .memory-bank/contracts/boundary-map.md
+  - .memory-bank/contracts/statistics-projection.md
+  - .memory-bank/domains/core-domain.md
+last_updated: 2026-08-19
 ---
 # FT-007 — Navigation and Scoped Statistics
 
@@ -45,8 +51,10 @@ last_updated: 2026-08-17
   регистрации, класс, родитель, teacher, payment capability, attendance %,
   institution; Teachers — ФИО, дата регистрации, классы, attendance %,
   institution, число students; Classes — название, institution, число students,
-  teacher. Admin получает свой Center, Teacher — assigned classes; Student/Parent
-  не получают center-wide registry или private fields.
+  teacher. ФИО и дата регистрации принадлежат server-owned participant profile;
+  Teacher attendance % — aggregate present-student ratio по conducted lessons в
+  assigned classes. Admin получает свой Center, Teacher — assigned classes;
+  Student/Parent не получают center-wide registry или private fields.
 - Verification: server-side role/scope matrix и guessed-route negative cases.
 
 ### FT-007-AC-004 — Registry sorting is typed
@@ -68,7 +76,8 @@ last_updated: 2026-08-17
 ### FT-007-AC-006 — Attendance percentage uses conducted lessons
 - REQ: REQ-017
 - Attendance percentage считается по `present`/`absent` для всех conducted
-  lessons, включая записи из Teacher class-day attendance form.
+  lessons, включая записи из Teacher class-day attendance form; unmarked
+  students after the class-day save follow the accepted default-present rule.
 - Verification: education/statistics scenario с explicit absence, default
   present и correction.
 
@@ -90,7 +99,18 @@ or statistics source of truth.
 - [.memory-bank/contracts/access-control.md](../contracts/access-control.md)
 - [.memory-bank/contracts/boundary-map.md](../contracts/boundary-map.md#calendar-and-membership-query-boundary)
 - [.memory-bank/contracts/boundary-map.md](../contracts/boundary-map.md#financial-projection-query-boundary)
+- [.memory-bank/contracts/statistics-projection.md](../contracts/statistics-projection.md)
 - [.memory-bank/domains/core-domain.md](../domains/core-domain.md#read-and-write-data-flow)
 
 Feature-level composition and verification remain downstream `/feature-to-tasks`
 work.
+
+## Clarifications
+
+### 2026-08-19 — Account profile boundary and population
+
+Statistics receives `fullName` and immutable `registeredAt` from Identity &
+Access through the accepted Actor Context Boundary; direct account-table access
+is forbidden. New participant creation requires both surname and given name.
+Accounts without a name are outside the target population, so FT-007 adds no
+migration, backfill, or legacy-account handling.

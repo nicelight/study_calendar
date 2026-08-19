@@ -1,0 +1,58 @@
+{
+  "id": "TASK-060-T3-FT-007-W28",
+  "title": "Implement the protected navigation shell",
+  "status": "planned",
+  "wave": "W28",
+  "feature": "FT-007",
+  "reqs": ["REQ-017"],
+  "depends_on": ["TASK-020-T3-FT-001-W9", "TASK-035-T3-FT-002-W19"],
+  "touched_files": ["src/routes/+layout.server.ts", "src/routes/+layout.svelte", "tests/routes/"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "Every protected page renders one shell with Home, Classes, Statistics, Profile, and Logout destinations from the server-resolved actor context.",
+    "Unauthenticated and revoked sessions remain denied; the shell does not implement logout or broaden role/scope behavior."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    "authentication-transport.md#browserapi-path RED: a protected page has no common navigation shell or trusts client role state; GREEN: route tests prove the shell is rendered only for the server-authenticated protected context with the five named destinations; artifact: .tasks/TASK-060-T3-FT-007-W28/ and .protocols/TASK-060-T3-FT-007-W28/."
+  ],
+  "purpose": "Provide the reusable protected navigation shell without taking ownership of logout or role destinations.",
+  "success_outcome": "Protected pages share one server-aware shell exposing the required navigation destinations while unauthenticated pages remain unchanged.",
+  "anti_goals": ["Do not implement session revocation or logout proof.", "Do not read provider tables or decide Home/Classes scope in the layout.", "Do not use study-calendar.db in tests."],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/architecture/system-architecture.md#1-sveltekit-application-shell"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["Layout is a transport/presentation adapter over server-resolved actor context.", "Logout behavior is verified by TASK-062, not inherited here.", "Provider modules and the shared real database remain outside this task."],
+  "invariants": ["No client-supplied role or scope controls shell visibility.", "The shell does not mutate account, session, class, attendance, or financial state.", "Unauthenticated requests do not receive protected shell data."],
+  "verification_targets": ["authentication-transport.md#browserapi-path: protected shell route and actor-context matrix.", "access-control.md#authority-and-scope: no client role/scope authority and no provider-table bypass."],
+  "runtime_context": {
+    "write_boundary": ["src/routes/+layout.server.ts", "src/routes/+layout.svelte", "tests/routes/"],
+    "forbidden_scope": ["src/lib/server/modules/identity-access/", "src/lib/server/modules/center-scheduling/", "src/lib/server/modules/learning-progress/", "src/lib/server/modules/financial-ledger/", "study-calendar.db"],
+    "stop_conditions": ["Stop if the shell requires a new session, role, or authorization contract.", "Stop if layout code must read provider tables or implement Home/Classes business rules."]
+  }
+}

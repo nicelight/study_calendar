@@ -1,7 +1,7 @@
 ---
 description: Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership.
 status: active
-last_updated: 2026-08-17
+last_updated: 2026-08-19
 source_of_truth:
   - .memory-bank/contracts/boundary-map.md
 ---
@@ -118,17 +118,28 @@ remain implementation details.
 - **Provider:** Identity & Access.
 - **Public surface:** resolve the authenticated actor and stable role-bearing
   account context for a request; reject absent, invalid, or revoked sessions.
-- **State/data authority:** Identity & Access owns authentication facts; it does
-  not own class/student membership facts.
+  The trusted server-side statistics composition may also resolve
+  `{accountId, fullName, registeredAt}` for account IDs already selected by
+  Center & Scheduling. This profile query returns fields only and never
+  exposes Identity & Access tables.
+- **State/data authority:** Identity & Access owns authentication facts and
+  participant profile metadata; it does not own class/student membership facts
+  or registry scope.
 - **Allowed interaction:** every protected slice may consume actor identity and
   role facts, then must combine them with its own resource-scope facts before
-  authorizing an operation.
+  authorizing an operation. Lesson Context may call the profile query only
+  after Center & Scheduling has resolved the authorized registry account IDs;
+  routes and components cannot call it or read account tables directly.
 - **Failure/compatibility:** an invalid or unauthenticated actor cannot reach a
-  protected command or receive protected data.
+  protected command or receive protected data. A profile lookup never broadens
+  the caller's scope and returns no raw account rows.
 - **Forbidden bypasses:** no client-supplied role, center, class, or student ID
-  is trusted as authorization; no module caches request/user state globally.
+  is trusted as authorization; no module caches request/user state globally;
+  no consumer reads Identity & Access persistence directly.
 - **Verification:** negative unauthenticated, revoked-session, and role/context
-  mismatch scenarios at each protected public boundary.
+  mismatch scenarios at each protected public boundary, plus a statistics
+  profile-query probe proving only the requested `fullName`/`registeredAt`
+  projection crosses the boundary.
 
 ### Provider Verification Boundary
 
@@ -154,8 +165,10 @@ remain implementation details.
 - **Provider:** Center & Scheduling.
 - **Public surface:** return authorized center/class membership, teacher
   assignment, student/parent links, lesson identity/date/status, schedule facts,
-  and the class context needed by a consumer; accept owner-side center,
-  membership, assignment, and schedule commands.
+  and the class context needed by a consumer; expose the authorized accessible
+  class list and read-only Students/Teachers/Classes registry facts required by
+  the Statistics Projection; accept owner-side center, membership, assignment,
+  and schedule commands.
 - **Role-scoped class entry:** the protected
   `/center/{centerId}/class/{classId}` route consumes this boundary with the
   server-resolved actor. Admin, Teacher, Student, and Parent receive a class
@@ -180,14 +193,17 @@ remain implementation details.
 - **Verification:** individual/group scheduling lifecycle, transfer identity,
   cross-center membership, assignment removal, and historical access scenarios;
   a no-occurrence rejection probe compares schedule/Lesson state before and
-  after the failed command and observes the exact `invalid_schedule` response.
+  after the failed command and observes the exact `invalid_schedule` response;
+  registry probes compare Admin own-center and Teacher assigned-class rows,
+  including cross-center and removed-assignment denial without source mutation.
 
 ### Personal Progress Query Boundary
 
 - **Provider:** Learning Progress.
 - **Public surface:** return authorized homework completion, attendance, and
-  personal grade facts for a selected student/lesson; expose a lesson-scoped
-  grade query such as
+  personal grade facts for a selected student/lesson; expose authorized
+  student/teacher attendance percentage aggregates over conducted lessons; and
+  expose a lesson-scoped grade query such as
   `getGradeForLesson({ sessionToken, classId, lessonId, studentAccountId }) -> GradeView | null`.
   The query receives the stable lesson identity plus server-resolved actor and
   scope context; the consumer does not supply a homework identity. Owner-side
@@ -220,6 +236,9 @@ remain implementation details.
   database mapping, and both individual/group attendance plus absent-to-present
   correction scenarios. The attendance-list path also proves that an assigned
   Teacher's absent subset and default-present remainder persist together.
+  Statistics probes additionally prove no conducted slots, explicit absence,
+  default-present attendance, correction, assigned-class aggregation, and
+  non-mutation.
 
 ### Day Discussion Query Boundary
 
@@ -242,8 +261,9 @@ remain implementation details.
 
 - **Provider:** Financial Ledger.
 - **Public surface:** return an authorized balance, charge/payment/allocation
-  status, and payment-marker projection for a student and date range; accept
-  owner-side payment and financial correction commands.
+  status, payment-marker projection, and student payment-capability percentage
+  for a student/class scope; accept owner-side payment and financial correction
+  commands.
 - **State/data authority:** Financial Ledger exclusively writes price settings,
   charges, payments, allocations, balances, payment markers, and financial
   audit records.
@@ -255,7 +275,9 @@ remain implementation details.
 - **Forbidden bypasses:** no UI or neighbor module writes financial tables or
   derives a balance from presentation data.
 - **Verification:** financial contract replay, marker projection, and
-  cross-student/cross-center read denial.
+  cross-student/cross-center read denial. Statistics probes additionally prove
+  no counted allocations, on-time/overdue/mixed allocations, strict
+  payment-date boundary, advance/unallocated exclusion, and non-mutation.
 
 ### Attendance Charge Reconciliation Boundary
 
@@ -302,6 +324,7 @@ The following accepted workflows make the owner and legal interaction explicit:
 |---|---|---|---|
 | Create a center participant and class membership | Center & Scheduling | Identity & Access account provisioning; own membership commands | Identity & Access for account/invitation; Center & Scheduling for center/member/class state |
 | Open an authorized personal day | Lesson Context | Identity & Access actor; Center & Scheduling lesson/scope; Learning Progress lesson-scoped grade/progress query, Collaboration, and Financial Ledger scoped queries | Lesson Context passes `lessonId` and selected actor/student context; no homework mapping, neighbor writes, or direct table reads |
+| Open scoped statistics registries | Lesson Context | Identity & Access actor/profile; Center & Scheduling accessible-class and registry facts; Learning Progress attendance aggregates; Financial Ledger payment-capability projection | Read-only composition only; provider slices retain all profile, membership, attendance, payment, allocation, charge, balance, and audit write ownership |
 | Correct `absent` to `present` | Learning Progress | Identity & Access actor; Center & Scheduling lesson/scope; Financial Ledger attendance reconciliation | Learning Progress for attendance; Financial Ledger for charge/allocation/balance/audit |
 | Record, edit, or cancel a payment | Financial Ledger | Identity & Access actor; Center & Scheduling financial scope/lesson facts | Financial Ledger only |
 | Add a comment/reply/reaction | Collaboration | Identity & Access actor; Center & Scheduling scope facts | Collaboration only |
