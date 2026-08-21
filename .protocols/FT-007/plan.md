@@ -27,12 +27,16 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
   accepted default-present attendance workflow.
 - The feature remains read-only: no statistics projection may mutate account,
   center, class, lesson, attendance, payment, allocation, or balance facts.
+- Protected destinations use `/home`, `/classes`, `/statistics`, and `/profile`;
+  Profile is read-only over `fullName`, `role`, and `registeredAt`, and logout
+  keeps the existing `POST /auth/logout` transport.
 
 ## Canonical inputs and ownership
 
 - Feature: [.memory-bank/features/FT-007-navigation-and-statistics.md](../../.memory-bank/features/FT-007-navigation-and-statistics.md)
 - Epic: [.memory-bank/epics/EP-006-navigation-and-statistics.md](../../.memory-bank/epics/EP-006-navigation-and-statistics.md)
-- Governing requirements: REQ-014 and REQ-017.
+- Governing requirements: REQ-014 and REQ-017; REQ-001 and REQ-003 govern the
+  supporting all-path Internal Account profile correction.
 - Primary composition owner: Lesson Context for the cross-slice read-only
   statistics projection; SvelteKit routes remain transport/presentation
   adapters only.
@@ -42,49 +46,48 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
   owns payment/allocation facts and payment capability aggregation.
 - Canonical contract:
   [.memory-bank/contracts/statistics-projection.md](../../.memory-bank/contracts/statistics-projection.md)
+- Canonical account profile contract:
+  [.memory-bank/contracts/access-control.md#account-profile-facts](../../.memory-bank/contracts/access-control.md#account-profile-facts)
 - Accepted graph and provider contracts:
   [.memory-bank/contracts/boundary-map.md](../../.memory-bank/contracts/boundary-map.md)
 
-## Rejected-plan rebuild and boundary outline
+## Rebuilt queue and boundary outline
 
-Queue action remains `rebuild_required`. Fresh TASK-058..069 first replaced the
-unexecuted TASK-051..057 surface. The subsequent fresh review accepted
-TASK-058..061 and TASK-063..064 but rejected TASK-062 and TASK-065..069 because
-AC-003 crossed the accepted composition direction and the declared disposable
-browser path could reuse a real-database server. Fresh TASK-070..077 replace
-only that rejected subset:
+Queue action is `rebuild_required`. The unexecuted TASK-058..061, TASK-063/064,
+and TASK-070..077 surface is retired because the accepted routes, AC ownership,
+dependencies, and material task boundaries changed. Fresh TASK-078..086 replace
+it without inheriting proof:
 
-1. TASK-058/059 separately implement direct-password and invitation profile
-   provisioning.
-2. TASK-060/061 separately implement shell and server logout; TASK-071 owns
-   their AC-001 integration proof.
-3. TASK-063/064 separately implement Home and Classes adapters; TASK-072 owns
-   their AC-002 integration proof.
-4. TASK-070 owns the shared fail-closed disposable browser runner contract.
-5. TASK-073 owns only Center & Scheduling scoped registry facts and never calls
-   Identity & Access or claims AC-003.
-6. TASK-074 owns Learning Progress attendance and AC-006.
-7. TASK-075 owns Financial Ledger payment capability and AC-005.
-8. TASK-076 owns Lesson Context profile enrichment, provider composition, and
-   the complete AC-003 integration proof.
-9. TASK-077 owns typed sorting and AC-004 after the composed projection exists.
+1. TASK-078 owns one complete Identity & Access profile result across bootstrap
+   Admin, invitation, and direct-password creation plus the two accepted profile
+   queries.
+2. TASK-079 implements the protected shell and keeps existing logout integration,
+   disposable-runner implementation, and AC-001 RED/GREEN proof together.
+3. TASK-080 implements both `/home` and `/classes` as one role/scope-oriented
+   AC-002 result.
+4. TASK-081 owns only Center & Scheduling scoped registry facts.
+5. TASK-082 and TASK-083 separately own attendance and payment projections.
+6. TASK-084 owns Lesson Context composition and the `/statistics` AC-003 route.
+7. TASK-085 owns typed Statistics sorting under AC-004.
+8. TASK-086 implements `/profile` and owns the canonical protected-route AC-007
+   result after the other destinations exist.
 
-Every feature AC has one owner and dependency proof is never inherited. The
-three browser cards call the TASK-070 runner with distinct `tmp/ft-007-*.db`
-paths; it starts a new server, prepares and cleans the exact database, and
-fails before using `study-calendar.db` or an existing server.
+Every feature AC has one owner. Exact canonical technical claims are unique:
+TASK-078 owns Access Control `Account profile facts`, and TASK-081 owns the
+Statistics Projection C&S facts query. Dependency outcomes remain prerequisites
+whose proof is not adopted by consumers.
 
 ### Boundary pass
 
-Unmerged units and independent proof paths are: direct-password provisioning,
-invitation provisioning, shell implementation, logout implementation,
-fail-closed disposable runner, Home adapter, Classes adapter, shell/logout
-acceptance, Home/Classes acceptance, C&S registry facts, attendance provider,
-payment provider, profile-enriched Statistics composition, and typed sorting.
-No provider unit is merged with composition. The only justified integration
-cards combine already completed inputs into one feature acceptance outcome:
-TASK-071 for AC-001, TASK-072 for AC-002, and TASK-076 for AC-003. TASK-077
-keeps the independently completable AC-004 presentation result separate.
+Unmerged material outcomes are account profile facts, protected navigation,
+role-oriented Home/Classes, C&S registry facts, attendance projection, payment
+projection, Statistics composition, typed sorting, and bounded Profile. The
+account paths merge because one schema and profile boundary are incomplete until
+all supported creation paths satisfy them. Home and Classes merge because the
+accepted AC-002 result and one server-resolved destination projection govern
+both adapters. Existing logout and the disposable runner are supporting inputs
+and proof mechanics inside TASK-079, not standalone outcomes. Provider units,
+composition, sorting, and Profile remain independently completable.
 
 ## Non-goals
 
@@ -99,8 +102,9 @@ keeps the independently completable AC-004 presentation result separate.
 ## Verification and gates
 
 Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
-gates, and only its owned proof. TASK-070 proves the reusable disposable runner;
-TASK-071, TASK-072, and TASK-077 use it for focused browser gates. Provider and
+gates, and only its owned proof. TASK-079 establishes the fail-closed disposable
+runner while proving AC-001; TASK-080, TASK-085, and TASK-086 reuse the runner
+for their own claims without inheriting TASK-079 evidence. Provider and
 composition cards use isolated database/route tests. Feature completion remains
 subject to `/red-verify --feature FT-007` and the normal review/sync boundary.
 

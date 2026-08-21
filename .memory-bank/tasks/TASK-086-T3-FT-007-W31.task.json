@@ -1,0 +1,95 @@
+{
+  "id": "TASK-086-T3-FT-007-W31",
+  "title": "Implement the bounded Profile destination and canonical-route proof",
+  "status": "planned",
+  "wave": "W31",
+  "feature": "FT-007",
+  "reqs": ["REQ-014", "REQ-017"],
+  "depends_on": [
+    "TASK-078-T3-FT-007-W27",
+    "TASK-079-T3-FT-007-W28",
+    "TASK-080-T3-FT-007-W29",
+    "TASK-084-T3-FT-007-W30"
+  ],
+  "touched_files": ["src/routes/+layout.svelte", "src/routes/profile/", "tests/routes/ft-007-profile-routes.test.ts", "e2e/ft-007-profile-routes.spec.ts"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-profile-routes", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-007-profile-routes.db --spec e2e/ft-007-profile-routes.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-007-AC-007: shell links resolve exactly to protected /home, /classes, /statistics, and /profile, while Logout continues to submit to existing POST /auth/logout.",
+    "/profile displays only server-owned fullName, role, and immutable registeredAt from the current-actor profile query and exposes no editing, password/provider management, membership management, or writes.",
+    "Authenticated canonical-route navigation succeeds; anonymous and revoked requests fail closed; logout revokes the session and returns to /login under disposable browser proof."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md", ".protocols/FT-007/clarification.md"],
+  "evidence_required": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007 / REQ-014 / REQ-017 RED: any shell href is non-canonical, a protected route exposes anonymous/revoked data, Profile omits or exceeds its three fields, mutation controls appear, or logout leaves the session valid; GREEN: focused route and owned-server disposable browser tests prove exact hrefs, all four destinations, exact read-only Profile fields, denial matrix, logout revocation/redirect, cleanup, and unchanged study-calendar.db; artifact: .tasks/TASK-086-T3-FT-007-W31/ and .protocols/TASK-086-T3-FT-007-W31/."
+  ],
+  "purpose": "Complete the accepted Profile user outcome and prove that the entire navigation shell targets the canonical protected routes.",
+  "success_outcome": "An authenticated actor can navigate the exact four canonical destinations and view a bounded read-only Profile, while anonymous and revoked actors receive no protected data.",
+  "anti_goals": [
+    "Do not add Profile editing, password/provider management, membership management, or persistence.",
+    "Do not change Home, Classes, Statistics, logout, or profile-query behavior already owned by dependency tasks beyond wiring the shell's canonical hrefs.",
+    "Do not introduce aliases, redirects, alternate route identities, or a new logout endpoint."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007",
+    ".protocols/FT-007/clarification.md",
+    ".memory-bank/contracts/access-control.md#account-profile-facts",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007",
+    ".protocols/FT-007/clarification.md",
+    ".memory-bank/contracts/access-control.md#account-profile-facts",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Profile consumes only the current-actor Identity & Access query; it never reads account persistence directly.",
+    "Canonical navigation identities are exactly /home, /classes, /statistics, and /profile; logout remains POST /auth/logout.",
+    "This task proves dependency outcomes only as route integration and adopts no provider-internal claim."
+  ],
+  "invariants": [
+    "Profile displays exactly fullName, role, and registeredAt and performs no write.",
+    "All four canonical pages are protected by server actor context.",
+    "Revoked/logout sessions cannot recover protected data on a subsequent request."
+  ],
+  "verification_targets": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007: exact href/destination matrix, exact Profile fields, absent mutation controls, anonymous/revoked denial, logout closure, and disposable-state isolation."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/routes/+layout.svelte", "src/routes/profile/", "tests/routes/ft-007-profile-routes.test.ts", "e2e/ft-007-profile-routes.spec.ts", "tmp/ft-007-profile-routes.db"],
+    "forbidden_scope": [
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      "playwright.config.ts",
+      "scripts/run-disposable-e2e.mjs",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if Profile requires a new field, mutation, account recovery rule, or direct persistence access.",
+      "Stop if canonical navigation requires an alias, redirect policy, new logout path, or non-disposable browser state."
+    ]
+  }
+}

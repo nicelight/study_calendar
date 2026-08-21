@@ -53,3 +53,18 @@ server. The ordinary real-database Playwright smoke remains unchanged.
 Because AC ownership, dependencies, and hard runtime scope change, the rejected
 subset is rebuilt as TASK-070..077. Unaffected TASK-058..061 and TASK-063..064
 retain their identities and material boundaries. Planning Revision remains `2`.
+
+## 2026-08-21 — Canonical routes and cohesive queue boundary
+
+The operator accepted `/home`, `/classes`, `/statistics`, and `/profile` as the
+protected route identities. Profile is read-only over Identity & Access-owned
+`fullName`, `role`, and immutable `registeredAt`; logout keeps the existing
+`POST /auth/logout` contract.
+
+The operator then accepted the replacement task boundary: account profile facts
+are one complete Identity & Access outcome across every supported new-account
+path; shell/logout proof and the disposable runner remain with the shell
+implementation; Home and Classes are one AC-002 implementation result; provider
+queries, statistics composition, sorting, and Profile remain separate outcomes.
+The unexecuted TASK-058..061, TASK-063/064, and TASK-070..077 queue is rebuilt
+with fresh identities. Planning Revision remains `2`.

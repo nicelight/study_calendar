@@ -1,5 +1,5 @@
 ---
-description: Fresh semantic task-plan review of FT-007 Navigation and Statistics after the TASK-058..069 rebuild.
+description: Fresh full semantic task-plan review of the current FT-007 Navigation and Statistics queue.
 status: final
 ---
 # Review FT-007 — Navigation and Statistics
@@ -8,162 +8,202 @@ VERDICT: REJECT
 
 REVIEWED_PLANNING_REVISION: 2
 
-ARCHITECTURE_REVIEW: REQUEST_CHANGES
+ARCHITECTURE_REVIEW: not_required
 
-BLOCKING_FINDINGS: 2
+BLOCKING_FINDINGS: 3
 
-## Review mode and disposition
+## Review mode and prior-finding disposition
 
-This is a full fresh review of the current indexed FT-007 surface. The former
-TASK-051..057 queue has been replaced by TASK-058..069, so the prior report was
-not treated as authoritative cache.
+This is a full current-surface review, not a bounded rerun. No exact repair
+delta was supplied, and the prior report is non-authoritative cache.
 
-The operator's two decisions are applied and are no longer findings:
-
-- The Identity & Access Actor Context Boundary may return `fullName` and
-  `registeredAt` to the statistics flow; direct account-table reads remain
-  forbidden.
-- New accounts require surname and given name. FT-007 adds no migration,
-  backfill, or legacy-account path.
-
-The rebuild also resolves the former task cohesion and proof-transfer findings:
-implementation units have sibling cards, focused integration cards own the
-feature-level navigation outcomes, and the old real-database command was
-replaced with focused disposable-DB commands. The disposable-DB replacement is
-still not fail-closed under the current Playwright runtime; see Finding 2.
+The previous ownership-direction finding is substantively repaired:
+TASK-073 limits Center & Scheduling to scoped structural facts, TASK-074 and
+TASK-075 own provider projections, and TASK-076 gives Lesson Context the legal
+four-boundary AC-003 composition
+([TASK-073](../../.memory-bank/tasks/TASK-073-T3-FT-007-W30.task.json),
+[TASK-076](../../.memory-bank/tasks/TASK-076-T3-FT-007-W32.task.json)). The
+previous disposable-runtime concern is also represented by a fail-closed owned
+server/path/cleanup contract in TASK-070
+([TASK-070](../../.memory-bank/tasks/TASK-070-T3-FT-007-W29.task.json)). Those
+repairs do not close the new current-surface findings below.
 
 ## Blocking findings
 
-### 1. TASK-066 crosses the accepted ownership direction and leaves AC-003 without a legal composition owner
+### 1. AC-001 and AC-002 are assigned to proof-only sibling tasks
 
-The accepted Actor Context Boundary says that Lesson Context may call the I&A
-profile query only after Center & Scheduling has resolved the authorized account
-IDs ([Boundary Map](../../.memory-bank/contracts/boundary-map.md:119)). The
-accepted orchestration owner for scoped statistics is Lesson Context, which
-calls I&A actor/profile and the provider registry/metric queries
-([Boundary Map](../../.memory-bank/contracts/boundary-map.md:323)).
+The execution-cohesive boundary requires one material implementation/change
+result per task and says that proof, tests, and probes remain with that result;
+they do not create a task boundary
+([Execute Loop](../../.memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary)).
 
-TASK-066 instead assigns the complete FT-007-AC-003 result, including the I&A
-profile projection, to the Center & Scheduling query
-([TASK-066](../../.memory-bank/tasks/TASK-066-T3-FT-007-W30.task.json:20)); its
-hard runtime scope forbids both Identity & Access and Lesson Context
-([TASK-066 boundary](../../.memory-bank/tasks/TASK-066-T3-FT-007-W30.task.json:57)).
-This cannot legally obtain the required profile fields under the accepted
-graph. TASK-069 owns Lesson Context composition but only claims FT-007-AC-004
-([TASK-069](../../.memory-bank/tasks/TASK-069-T3-FT-007-W32.task.json:20)); no
-task therefore owns the runnable cross-slice composition/integration proof for
-the complete AC-003 result.
+TASK-071 touches only route tests, one E2E spec, and a disposable DB path. Its
+card explicitly says shell/logout implementation remains with TASK-060 and
+TASK-061 and that TASK-071 "proves only" their feature-level integration, while
+TASK-071 is the exact owner of FT-007-AC-001
+([TASK-071](../../.memory-bank/tasks/TASK-071-T3-FT-007-W30.task.json)). TASK-072
+has the same shape for Home/Classes: only tests/E2E/disposable state, explicit
+proof-only wording, and exact FT-007-AC-002 ownership after TASK-063/TASK-064
+implementation
+([TASK-072](../../.memory-bank/tasks/TASK-072-T3-FT-007-W31.task.json)).
 
-TASK-069 also links only the C&S and I&A boundaries for this composition
-([TASK-069 source artifacts](../../.memory-bank/tasks/TASK-069-T3-FT-007-W32.task.json:32));
-its direct Learning Progress and Financial Ledger provider edges must be
-discoverable after the ownership split.
+These are proof-only siblings, not independently completable implementation
+results. Their presence also makes later product work depend on proof packaging:
+TASK-072 depends on TASK-071, and TASK-076 depends on TASK-071. Complete AC
+coverage and an end-to-end path do not make those boundaries cohesive.
 
-Effect: execution would have to either introduce an unauthorized C&S → I&A
-profile call, bypass the accepted boundary, or implement the missing
-composition/AC ownership implicitly.
+Repair owner: `/feature-to-tasks FT-007`. Rebuild AC-001/AC-002 ownership so
+each runnable card owns a material implementation/change result and keeps its
+claim-equivalent RED/GREEN proof with that result. Retire proof-only siblings;
+do not transfer dependency proof or duplicate an exact AC merely to preserve
+the current task count.
 
-Repair owner: `/feature-to-tasks FT-007`. Keep TASK-066 limited to
-C&S-owned registry/scope facts; move profile enrichment and composition-level
-AC-003 proof to Lesson Context/TASK-069 or create the minimum required
-integration card, with exact direct boundary links and no duplicated provider
-formula proof.
+### 2. Several prospective cards have duplicated or over-broad exact-claim locators
 
-### 2. Disposable E2E isolation is declared but not enforceable
+The tier policy makes an exact AC or canonical proof-obligation locator the
+owner of that claim. A section locator is valid only when the whole section is
+one obligation; dependency and context links do not narrow or transfer it
+([Task Claim and Dependency Ownership](../../.memory-bank/workflows/tier-policy.md#task-claim-and-dependency-ownership)).
 
-TASK-062, TASK-065, and TASK-069 pass an explicit `DATABASE_URL=tmp/...db`
-([TASK-062 gate](../../.memory-bank/tasks/TASK-062-T3-FT-007-W29.task.json:15),
-[TASK-065 gate](../../.memory-bank/tasks/TASK-065-T3-FT-007-W30.task.json:15),
-[TASK-069 gate](../../.memory-bank/tasks/TASK-069-T3-FT-007-W32.task.json:15)).
-However, Playwright is configured with `reuseExistingServer: true`, so an
-already-running server may be reused instead of starting with that task's
-database environment ([playwright.config.ts](../../playwright.config.ts:32)).
-That server can still be connected to the default `study-calendar.db`.
+Current cards conflict with that rule:
 
-The required parent directory is also not prepared by the current database
-adapter: `new Database(this.filename)` is called directly
-([database.ts](../../src/lib/server/platform/database.ts:11)), while the
-workspace currently has no `tmp/` directory. A fresh run with a nested
-`tmp/ft-007-*.db` path can therefore fail before the claimed disposable proof
-starts. The task hard boundaries forbid `study-calendar.db`, but the current
-runtime path cannot guarantee that boundary.
+- TASK-058 and TASK-059 both assign
+  `statistics-projection.md#participant-profile-metadata` to themselves while
+  proving different provisioning subsets. Neither card proves the whole
+  section, and the same exact locator is duplicated
+  ([TASK-058](../../.memory-bank/tasks/TASK-058-T3-FT-007-W27.task.json),
+  [TASK-059](../../.memory-bank/tasks/TASK-059-T3-FT-007-W28.task.json)).
+- TASK-063 and TASK-064 both assign the much broader
+  `boundary-map.md#calendar-and-membership-query-boundary` while claiming only
+  separate Home and Classes adapter mappings
+  ([TASK-063](../../.memory-bank/tasks/TASK-063-T3-FT-007-W29.task.json),
+  [TASK-064](../../.memory-bank/tasks/TASK-064-T3-FT-007-W29.task.json)).
+- TASK-060 assigns the multi-path Authentication Transport `#browserapi-path`
+  section to a shell-only result, and TASK-061 assigns only the logout subset
+  of the broader session issuance/revocation section
+  ([TASK-060](../../.memory-bank/tasks/TASK-060-T3-FT-007-W28.task.json),
+  [TASK-061](../../.memory-bank/tasks/TASK-061-T3-FT-007-W28.task.json)).
+- TASK-070 maps its material fail-closed proof obligation to REQ-014/REQ-017
+  but has no exact FT-007 AC locator. If this is a task-owned material NFR, the
+  prospective NFR rule requires the exact AC; if it is only the shared proof
+  method, it cannot authorize a separate product claim by itself
+  ([TASK-070](../../.memory-bank/tasks/TASK-070-T3-FT-007-W29.task.json),
+  [Task-scoped evidence](../../.memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence)).
 
-Effect: the required RED/GREEN browser evidence is not reliably runnable and
-may violate the task's hard database boundary when an existing dev server is
-present.
+Execution would therefore have to decide which subset of each broad section a
+card really owns, or would close duplicated claims from two cards. Card prose
+cannot authorize that choice.
 
-Repair owner: `/feature-to-tasks FT-007`. Make the focused E2E path fail closed
-and reproducible: guarantee a newly started server uses the disposable DB,
-prepare the disposable path, and record cleanup without broadening any task's
-write boundary or touching `study-calendar.db`.
+Repair owner: `/feature-to-tasks FT-007`. Give every retained card one exact,
+resolving, non-duplicated task-owned claim locator grounded in accepted
+REQ/spec evidence. Feature-to-tasks may add feature-local ACs only where the
+accepted REQ/spec already grounds a distinct implementation outcome; otherwise
+merge the proof into the cohesive owner. Keep dependency proof with its owner.
+
+### 3. The Profile destination and canonical FT-007 endpoint identities are unresolved
+
+The accepted architecture explicitly defers concrete HTTP route names and
+payload schemas to downstream feature design
+([System Architecture](../../.memory-bank/architecture/system-architecture.md#deferred-decisions)).
+FT-007 requires Home, Classes, Statistics, Profile, and Logout destinations
+([FT-007-AC-001](../../.memory-bank/features/FT-007-navigation-and-statistics.md#ft-007-ac-001--protected-pages-expose-one-navigation-shell-and-logout)),
+but the feature, Statistics contract, implementation plan, and cards register
+no canonical Home/Classes/Statistics/Profile route identities or page contract.
+
+The repository currently has no Profile route. TASK-060's hard write boundary
+contains only the root layout and route tests, so it cannot create one; its
+proof checks only that the five named destinations render. TASK-063,
+TASK-064, TASK-076, and TASK-077 instead use broad `src/routes/` boundaries
+without naming the endpoint they are meant to create
+([TASK-060](../../.memory-bank/tasks/TASK-060-T3-FT-007-W28.task.json),
+[TASK-063](../../.memory-bank/tasks/TASK-063-T3-FT-007-W29.task.json),
+[TASK-064](../../.memory-bank/tasks/TASK-064-T3-FT-007-W29.task.json),
+[TASK-076](../../.memory-bank/tasks/TASK-076-T3-FT-007-W32.task.json),
+[TASK-077](../../.memory-bank/tasks/TASK-077-T3-FT-007-W33.task.json)). No card
+owns a working Profile destination. Execution must either invent public route
+identities and a Profile behavior or render a broken destination.
+
+Operator question: What is the minimum accepted Profile destination for
+FT-007, and what canonical SvelteKit route identities should Home, Classes,
+Statistics, and Profile use?
+
+Repair owner: `/feature-doctor FT-007` for the missing Profile/public-path
+decision, followed by `/feature-to-tasks FT-007` to apply the accepted answer
+to the feature plan, exact task ownership, hard boundaries, and endpoint proof.
+`/spec-redesign` is not required unless the accepted answer changes the shared
+application-shell or capability-boundary contract.
 
 ## Coverage results
 
-### Structural integrity — PASS
+### Structural integrity — satisfied
 
-The current index contains 12 unique FT-007 records, all identity-matching
-T3/W27–W32 cards. Dependencies resolve and the graph is acyclic. All cards are
-`planned`, which is legal because their prerequisites are planned or not yet
-complete. Planning Revision is the positive current Revision 2; the Foundation
-gate `TASK-002-T3-FT-000-W1` is `done` and every FT-007 card reaches it
-transitively. `node scripts/mb-lint.mjs` passed for 74 files with only existing
-advisory metadata warnings, and `git diff --check` passed.
+Global Backbone is complete at positive Planning Revision 2, and FT-007 has no
+`PLANNING_RECONCILIATION_REQUIRED` marker. The index contains 14 unique current
+FT-007 records from W27 through W33; ID/tier/feature/wave values match, every
+dependency resolves, and the graph is acyclic. All cards are T3 and `planned`.
+That status is legal while dependencies, the review rejection, and future waves
+remain unresolved. The Foundation gate TASK-002 is `done`, and all external
+direct dependencies inspected for this queue are `done`.
 
-### Coverage and slicing — REJECT
+`node scripts/mb-lint.mjs` completed successfully for 74 Memory Bank files;
+only pre-existing advisory frontmatter warnings were emitted.
 
-All six FT-007 acceptance criteria have one current exact task locator:
-AC-001 → TASK-062, AC-002 → TASK-065, AC-003 → TASK-066, AC-004 → TASK-069,
-AC-005 → TASK-068, and AC-006 → TASK-067. The implementation/integration split
-is otherwise materially clearer than the former queue. The AC-003 assignment
-is rejected because the assigned card cannot legally perform the full
-cross-slice outcome; this is Finding 1.
+### Coverage and slicing — rejected
 
-### Design readiness — REJECT
+The six accepted feature ACs each have one current exact task locator:
+AC-001 -> TASK-071, AC-002 -> TASK-072, AC-003 -> TASK-076, AC-004 -> TASK-077,
+AC-005 -> TASK-075, and AC-006 -> TASK-074. Provider/composition ownership for
+AC-003/005/006 and presentation ownership for AC-004 are coherent with the
+accepted graph. Findings 1 and 2 reject the proof-only AC-001/002 boundaries
+and ambiguous canonical subset claims; Finding 3 identifies the unowned Profile
+destination.
 
-The feature design is complete, the profile and no-legacy decisions are now
-explicit, and the global backbone remains complete at Revision 2. The accepted
-architecture subreview returned `REQUEST_CHANGES` because TASK-066 contradicts
-the registered consumer/provider interaction and AC-003 composition ownership;
-this is Finding 1. The direct provider-boundary links for the repaired
-composition must be added in the same feature-local reconciliation.
+### Design readiness — rejected
 
-### Execution readiness — REJECT
+The statistics row shape, formulas, role scope, read-only behavior, provider
+ownership, and Lesson Context orchestration are sufficiently defined by the
+Statistics Projection, Boundary Map, Access Control, and Core Domain contracts.
+No current accepted-boundary question remains, so a separate architecture
+review would add no verdict-changing information. Finding 3 nevertheless makes
+the feature's `spec_design_status: complete` untruthful for the runnable route
+surface: feature-owned endpoint identities and Profile behavior remain open.
 
-T3 tiering, planned statuses, Foundation reachability, task-local proof
-contracts, and the focused E2E command separation are otherwise coherent. The
-browser proof still has the hard runtime contradiction described in Finding 2.
-No task was promoted, normalized, started, closed, blocked, or otherwise
-mutated by this review.
+### Execution readiness — rejected
+
+T3 classification, Foundation reachability, planned lifecycle state, provider
+hard boundaries, and the isolated-state intent are otherwise consistent. The
+queue is not executable because Findings 1 and 2 leave task/claim ownership
+invalid and Finding 3 would force execution to choose a public route/profile
+contract. No reviewed lifecycle or durable planning state was normalized or
+mutated.
 
 ## Fresh semantic focuses
 
-1. Hard runtime boundaries, task claim ownership, AC/REQ locators, RED/GREEN
-   evidence, cohesion, and disposable E2E scope: `REQUEST_CHANGES`; confirmed
-   Findings 1–2 and the current traceability risk.
-2. C4 architecture, dependency direction, public boundaries, orchestration,
-   canonical contract sufficiency, and wave rationale: `REQUEST_CHANGES`;
-   confirmed the TASK-066/AC-003 ownership defect and disposable runtime risk.
+1. Acceptance closure, eligible exact claims, dependency ownership, and
+   execution cohesion. Evidence: the AC map is complete, but TASK-071/TASK-072
+   are proof-only and TASK-058/059 plus TASK-063/064 duplicate broad canonical
+   locators. This focus produced Findings 1 and 2.
+2. Design/execution readiness, endpoint registration, capability ownership,
+   hard scope, and claim-linked T3 proof. Evidence: provider ownership and the
+   AC-003 composition now match accepted contracts, while endpoint/Profile
+   ownership is absent and TASK-060/061/070 proof mapping is insufficient.
+   This focus produced Findings 2 and 3.
 
-The required bounded architecture review independently returned
-`REQUEST_CHANGES` with the same two material findings. No separate architecture
-artifact was created.
-
-## Additional traceability note
-
-TASK-058 and TASK-059 use `REQ-003`, while FT-007/EP-006 and the RTM list
-FT-007's direct requirements as REQ-014 and REQ-017. The plan lists REQ-003 as
-a supporting input, so this is not treated as a third blocker in this verdict;
-the feature-tasking repair should make that supporting cross-feature role
-explicit or remove the unnecessary mapping.
+For each focus the required `Codex Luna` fresh co-review launch was attempted
+and retried once. The runtime rejected all attempts because that model is not
+available; the semantic pack forbids substituting another model, so the caller
+completed the inspected focus locally under its fallback. No co-review artifact
+or vote was created.
 
 ## Handoff
 
-NEXT_ROUTE: `/feature-to-tasks FT-007` to repair the two findings above, then
-rerun `/review-tasks-plan FT-007`. `/spec-redesign` is not required: the
-operator's profile-boundary decision is accepted and the remaining defects are
-feature-local task ownership and execution-boundary problems. Do not promote or
-execute the FT-007 queue while this verdict is `REJECT`.
+NEXT_ROUTE: `/feature-doctor FT-007` to resolve the exact operator question in
+Finding 3, then `/feature-to-tasks FT-007` to repair all three findings, then
+rerun `/review-tasks-plan FT-007`. Do not promote or execute the FT-007 queue
+while this report remains `REJECT`.
 
-Review integrity: no reviewed feature, contract, plan, task card, index,
-lifecycle, status, dependency, code, protocol, or scheduler state was changed.
-Only this required report and request entry were written.
+Review integrity: no reviewed product, requirement, canonical spec, feature,
+plan, task card, index, lifecycle, status, dependency, code, protocol,
+evidence, or scheduler state was changed. The required REQUEST and this current
+report were replaced; the mandatory session papercut log records unrelated tool
+friction outside reviewed state.

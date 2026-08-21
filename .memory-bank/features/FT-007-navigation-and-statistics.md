@@ -9,18 +9,26 @@ requirements: [REQ-014, REQ-017]
 spec_design_status: complete
 spec_design_links:
   - .memory-bank/contracts/access-control.md
+  - .memory-bank/contracts/authentication-transport.md
   - .memory-bank/contracts/boundary-map.md
   - .memory-bank/contracts/statistics-projection.md
   - .memory-bank/domains/core-domain.md
-last_updated: 2026-08-19
+clarification_status: complete
+last_clarified: 2026-08-21
+clarification_questions: 1
+last_updated: 2026-08-21
 ---
 # FT-007 — Navigation and Scoped Statistics
 
 ## Use Cases
-- Авторизованный пользователь открывает из protected page Home, Classes,
-  Statistics, Profile или Logout.
+- Авторизованный пользователь открывает из protected page Home (`/home`),
+  Classes (`/classes`), Statistics (`/statistics`), Profile (`/profile`) или
+  завершает сессию через существующий `POST /auth/logout`.
 - Admin/Teacher просматривают разрешённые registry; Student/Parent переходят
   в доступный календарь класса.
+- В Profile пользователь видит только server-owned `fullName`, `role` и
+  immutable `registeredAt`; editing, password/provider management и membership
+  controls не входят в FT-007.
 
 ## Edge / Failure Behavior
 - UI visibility не заменяет server-side scope: прямой запрос вне доступа даёт
@@ -29,6 +37,8 @@ last_updated: 2026-08-19
   Parent не получают center-wide registry или private fields.
 - Registry read-only и не изменяют account, center, lesson, attendance, payment,
   allocation или balance facts.
+- `/home`, `/classes`, `/statistics` и `/profile` являются protected routes;
+  anonymous или revoked session не получает их данные.
 
 ## Acceptance Criteria
 
@@ -81,6 +91,18 @@ last_updated: 2026-08-19
 - Verification: education/statistics scenario с explicit absence, default
   present и correction.
 
+### FT-007-AC-007 — Canonical navigation routes and Profile are bounded
+- REQ: REQ-014, REQ-017
+- Home, Classes, Statistics и Profile используют canonical protected routes
+  `/home`, `/classes`, `/statistics` и `/profile`; Logout сохраняет существующий
+  server-owned `POST /auth/logout`. `/profile` read-only показывает только
+  `fullName`, `role` и immutable `registeredAt` из server-resolved Identity &
+  Access actor/profile facts и не содержит editing, password/provider
+  management, membership controls или новой persistence.
+- Verification: protected SSR/browser flow проверяет exact href/routes,
+  authenticated Profile fields, anonymous/revoked denial, logout revocation и
+  отсутствие profile mutation controls/commands.
+
 ## Acceptance Closure
 | Outcome | Coverage |
 |---|---|
@@ -90,13 +112,15 @@ last_updated: 2026-08-19
 | Typed sorting | FT-007-AC-004 |
 | Payment capability | FT-007-AC-005 |
 | Attendance percentage | FT-007-AC-006 |
+| Canonical routes and bounded Profile | FT-007-AC-007 |
 
 ## SDD Design Gate
 Feature composes existing access, Center/class, lesson, and financial query
 boundaries. It does not introduce a global Admin role, cross-center boundary,
 or statistics source of truth.
 
-- [.memory-bank/contracts/access-control.md](../contracts/access-control.md)
+- [.memory-bank/contracts/access-control.md](../contracts/access-control.md#account-profile-facts)
+- [.memory-bank/contracts/authentication-transport.md](../contracts/authentication-transport.md#session-issuance-and-revocation)
 - [.memory-bank/contracts/boundary-map.md](../contracts/boundary-map.md#calendar-and-membership-query-boundary)
 - [.memory-bank/contracts/boundary-map.md](../contracts/boundary-map.md#financial-projection-query-boundary)
 - [.memory-bank/contracts/statistics-projection.md](../contracts/statistics-projection.md)
@@ -111,6 +135,18 @@ work.
 
 Statistics receives `fullName` and immutable `registeredAt` from Identity &
 Access through the accepted Actor Context Boundary; direct account-table access
-is forbidden. New participant creation requires both surname and given name.
-Accounts without a name are outside the target population, so FT-007 adds no
-migration, backfill, or legacy-account handling.
+is forbidden. Every supported new target-account path — first bootstrap Admin,
+invitation participant, and direct-password participant — requires surname and
+given name and records the server timestamp. Accounts without these facts are
+outside the target population, so FT-007 adds no migration, backfill, fallback
+name, or legacy-account handling.
+
+### 2026-08-21 — Canonical routes and bounded Profile
+
+The operator selected dedicated protected routes `/home`, `/classes`,
+`/statistics`, and `/profile`. Profile is a read-only projection of existing
+Identity & Access `fullName`, `role`, and immutable `registeredAt`; it adds no
+editing, password/provider management, membership controls, or persistence.
+Logout continues to use the existing server-owned `POST /auth/logout` contract.
+This is a feature-local clarification under REQ-014/REQ-017 and does not change
+the shared architecture or Planning Revision.

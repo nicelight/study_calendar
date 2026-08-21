@@ -1,0 +1,108 @@
+{
+  "id": "TASK-079-T3-FT-007-W28",
+  "title": "Implement the protected navigation shell with fail-closed browser proof",
+  "status": "planned",
+  "wave": "W28",
+  "feature": "FT-007",
+  "reqs": ["REQ-014", "REQ-017"],
+  "depends_on": ["TASK-002-T3-FT-000-W1", "TASK-020-T3-FT-001-W9", "TASK-035-T3-FT-002-W19"],
+  "touched_files": [
+    "src/routes/+layout.server.ts",
+    "src/routes/+layout.svelte",
+    "playwright.config.ts",
+    "scripts/run-disposable-e2e.mjs",
+    "tests/routes/ft-007-navigation-shell.test.ts",
+    "tests/scripts/run-disposable-e2e.test.ts",
+    "e2e/ft-007-navigation.spec.ts",
+    "tmp/.gitkeep"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-navigation", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-007-navigation.db --spec e2e/ft-007-navigation.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-007-AC-001: every protected page receives one server-aware hamburger shell with exact Home, Classes, Statistics, Profile, and Logout controls; public and unauthenticated pages receive no protected actor data.",
+    "The Logout control submits to the existing POST /auth/logout path, which revokes the server session, clears the cookie, redirects to /login, and denies the captured old token.",
+    "The task-owned disposable runner accepts only project tmp/*.db, starts an owned server with explicit DATABASE_URL, rejects server reuse and study-calendar.db, prepares the parent, and cleans the exact database after success or failure."
+  ],
+  "docs": [".memory-bank/testing/strategy.md", ".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-001 / REQ-014 / REQ-017 RED: protected pages lack the common shell or a required control, client state determines visibility, logout leaves the session usable, or focused browser proof can reuse a server/real database; GREEN: route and owned-server disposable browser tests prove the five controls, server logout, old-token denial, path rejection/preparation, and success/failure cleanup; artifact: .tasks/TASK-079-T3-FT-007-W28/ and .protocols/TASK-079-T3-FT-007-W28/."
+  ],
+  "purpose": "Create the reusable protected shell and keep all runner/E2E proof needed for its complete navigation/logout outcome with that implementation.",
+  "success_outcome": "Protected pages share one server-authoritative navigation shell whose logout closes the session and whose browser proof cannot touch the real database.",
+  "anti_goals": [
+    "Do not reimplement the existing logout route or session lifecycle.",
+    "Do not implement Home, Classes, Statistics, or Profile page behavior in the layout.",
+    "Do not change the ordinary real-database Playwright smoke."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-001",
+    ".protocols/FT-007/clarification.md",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-001",
+    ".memory-bank/contracts/authentication-transport.md#session-issuance-and-revocation",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "The layout is a transport/presentation adapter over request-local server actor context.",
+    "Logout behavior stays on the existing POST /auth/logout owner and is proved as integration delta, not reimplemented.",
+    "Focused browser state is disposable and ordinary npm run e2e behavior remains unchanged."
+  ],
+  "invariants": [
+    "No client-supplied role or scope controls shell visibility.",
+    "The old session cannot authorize a protected request after logout.",
+    "A focused browser gate owns one server and one tmp database and never opens or removes study-calendar.db."
+  ],
+  "verification_targets": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-001: protected-page shell/control matrix, server-resolved visibility, logout closure, and task-local disposable proof."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/+layout.server.ts",
+      "src/routes/+layout.svelte",
+      "playwright.config.ts",
+      "scripts/run-disposable-e2e.mjs",
+      "tests/routes/ft-007-navigation-shell.test.ts",
+      "tests/scripts/run-disposable-e2e.test.ts",
+      "e2e/ft-007-navigation.spec.ts",
+      "tmp/.gitkeep",
+      "tmp/ft-007-navigation.db"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      "src/routes/home/",
+      "src/routes/classes/",
+      "src/routes/statistics/",
+      "src/routes/profile/",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if shell or logout requires a new session, role, authorization, or route contract.",
+      "Stop if focused proof cannot guarantee owned-server isolation and exact disposable cleanup."
+    ]
+  }
+}

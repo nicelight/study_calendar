@@ -1,0 +1,98 @@
+{
+  "id": "TASK-080-T3-FT-007-W29",
+  "title": "Implement role-oriented Home and Classes destinations",
+  "status": "planned",
+  "wave": "W29",
+  "feature": "FT-007",
+  "reqs": ["REQ-014", "REQ-017"],
+  "depends_on": ["TASK-079-T3-FT-007-W28", "TASK-035-T3-FT-002-W19", "TASK-026-T3-FT-002-W12"],
+  "touched_files": [
+    "src/routes/home/",
+    "src/routes/classes/",
+    "tests/routes/ft-007-home-classes.test.ts",
+    "e2e/ft-007-home-classes.spec.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-home-classes", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-007-home-classes.db --spec e2e/ft-007-home-classes.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-007-AC-002: /home and /classes consume server-resolved actor and Center & Scheduling scope to present Admin own-center, Teacher assigned-class, and Student/Parent accessible-calendar destinations.",
+    "Unauthenticated, revoked, cross-center, cross-class, non-member, and removed-assignment requests fail before protected destination data renders.",
+    "Both routes are read-only adapters, never reconstruct provider scope, and pass their own disposable browser role/scope matrix."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002 / REQ-014 / REQ-017 RED: /home or /classes trusts client scope, omits an allowed destination, exposes unauthorized center/class data, or permits removed assignment; GREEN: focused route and owned-server browser tests prove both canonical routes, the full role/scope matrix, safe denial, and non-mutation; artifact: .tasks/TASK-080-T3-FT-007-W29/ and .protocols/TASK-080-T3-FT-007-W29/."
+  ],
+  "purpose": "Deliver the accepted Home/Classes role-oriented navigation outcome as one server-scoped implementation result.",
+  "success_outcome": "Each supported role can open /home and /classes and see only the center/class destinations currently authorized by server boundaries.",
+  "anti_goals": [
+    "Do not implement Statistics, Profile, or provider formulas.",
+    "Do not read Center & Scheduling tables directly from routes.",
+    "Do not add a role, membership, assignment, or client authority."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002",
+    ".protocols/FT-007/clarification.md",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Both pages are thin adapters over the same server-resolved destination scope and together own AC-002.",
+    "The existing class calendar and class-entry routes remain destination owners.",
+    "Browser proof reuses TASK-079's executable runner but proves only this task's role/scope result."
+  ],
+  "invariants": [
+    "Server actor, center membership, class membership, and assignment are decisive.",
+    "Removed assignment is denied at the next request without unrelated data disclosure.",
+    "Home and Classes add no writes or provider-table access."
+  ],
+  "verification_targets": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002: Admin/Teacher/Student/Parent positive destinations plus cross-center/class, non-member, revoked, and removed-assignment negatives on both routes."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/home/",
+      "src/routes/classes/",
+      "tests/routes/ft-007-home-classes.test.ts",
+      "e2e/ft-007-home-classes.spec.ts",
+      "tmp/ft-007-home-classes.db"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      "src/routes/statistics/",
+      "src/routes/profile/",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if either route requires a new public query, role, membership, assignment, or authorization contract.",
+      "Stop if route code must read provider tables or browser proof cannot remain disposable."
+    ]
+  }
+}

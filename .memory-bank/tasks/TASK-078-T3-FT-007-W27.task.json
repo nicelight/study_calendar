@@ -1,0 +1,103 @@
+{
+  "id": "TASK-078-T3-FT-007-W27",
+  "title": "Establish Internal Account profile facts and profile queries",
+  "status": "planned",
+  "wave": "W27",
+  "feature": "FT-007",
+  "reqs": ["REQ-001", "REQ-003", "REQ-014", "REQ-017"],
+  "depends_on": ["TASK-015-T3-FT-001-W2", "TASK-029-T3-FT-001-W13", "TASK-040-T3-FT-001-W20"],
+  "touched_files": [
+    "src/lib/server/platform/database.ts",
+    "src/lib/server/modules/identity-access/",
+    "src/lib/server/composition-root.ts",
+    "src/routes/admin/",
+    "scripts/bootstrap-admin.mjs",
+    "tests/identity-access/",
+    "tests/routes/admin-provisioning.test.ts",
+    "tests/scripts/bootstrap-admin.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "Every supported new target-account path — first bootstrap Admin, invitation participant, and direct-password participant — requires surname and given name and atomically stores trimmed fullName plus immutable server-generated registeredAt.",
+    "The current-actor profile query returns only accountId, fullName, role, and registeredAt for a valid session; the statistics profile query returns only accountId, fullName, and registeredAt for requested account IDs.",
+    "Invalid, duplicate, revoked, or failed paths leave account, credential/invitation, profile, membership, and session state unchanged; no migration, backfill, fallback name, or consumer table read is introduced."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    ".memory-bank/contracts/access-control.md#account-profile-facts / REQ-001 / REQ-003 / REQ-014 / REQ-017 RED: any supported creation path accepts incomplete names, omits or mutates registeredAt, partially commits profile state, a revoked actor receives Profile facts, or a consumer reads account tables directly; GREEN: isolated creation/query tests prove all three paths, atomic failures, immutable timestamp, exact projections, revoked denial, and no migration/backfill/fallback; artifact: .tasks/TASK-078-T3-FT-007-W27/ and .protocols/TASK-078-T3-FT-007-W27/."
+  ],
+  "purpose": "Make the Identity & Access account profile contract complete across every supported new-account path and both accepted profile queries.",
+  "success_outcome": "Every target Internal Account has authoritative fullName and registeredAt facts that cross only the accepted current-actor or scoped statistics query.",
+  "anti_goals": [
+    "Do not migrate, backfill, infer, or substitute profile data for an existing unnamed account.",
+    "Do not let profile facts grant role, center, class, membership, assignment, or session authority.",
+    "Do not expose Identity & Access persistence to routes or provider consumers."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
+    ".memory-bank/contracts/access-control.md#account-profile-facts",
+    ".memory-bank/contracts/statistics-projection.md#participant-profile-metadata",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/domains/core-domain.md#ownership-map",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/contracts/access-control.md#account-profile-facts",
+    ".memory-bank/contracts/statistics-projection.md#participant-profile-metadata",
+    ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Identity & Access exclusively owns account/profile persistence and profile queries; creation adapters remain thin.",
+    "The three supported creation paths use one account profile schema and commit their existing credential or invitation state atomically.",
+    "Accounts without profile facts remain outside the accepted target population."
+  ],
+  "invariants": [
+    "fullName is trimmed required surname plus given name and registeredAt is generated once by the server.",
+    "Profile facts never alter authorization or session behavior.",
+    "Only the named Identity & Access queries return profile fields; raw account rows never cross a capability boundary."
+  ],
+  "verification_targets": [
+    ".memory-bank/contracts/access-control.md#account-profile-facts: all-path creation, exact current-actor/scoped projections, immutable timestamp, rollback, revoked denial, and no-legacy matrix."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/platform/database.ts",
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/composition-root.ts",
+      "src/routes/admin/",
+      "scripts/bootstrap-admin.mjs",
+      "tests/identity-access/",
+      "tests/routes/admin-provisioning.test.ts",
+      "tests/scripts/bootstrap-admin.test.ts"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      "src/routes/profile/",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if implementation requires migration, backfill, fallback names, or legacy-account compatibility.",
+      "Stop if a consumer requires direct Identity & Access table access or a new public owner/edge."
+    ]
+  }
+}

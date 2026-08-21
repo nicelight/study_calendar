@@ -1,7 +1,7 @@
 ---
 description: Server-side authentication, authorization scope, and privacy contract.
 status: active
-last_updated: 2026-08-18
+last_updated: 2026-08-21
 source_of_truth:
   - .memory-bank/contracts/access-control.md
 ---
@@ -89,6 +89,29 @@ every role.
   center through the protected Admin command. The command creates the center and
   Admin membership atomically; after membership exists it is denied. Client
   center, role, and membership values are never trusted.
+
+## Account profile facts
+
+- Every newly created target Internal Account, including the first bootstrap
+  Admin, invitation-created participants, and direct-password participants,
+  MUST receive a trimmed required `fullName` from surname and given name plus an
+  immutable server-generated `registeredAt` timestamp.
+- Identity & Access owns these fields. Account, credential or invitation, and
+  profile facts commit atomically for the selected creation flow; invalid or
+  duplicate input and failed writes leave all involved state unchanged.
+- The current-actor profile query returns only `{ accountId, fullName, role,
+  registeredAt }` after resolving a valid non-revoked session. The statistics
+  profile query returns only `{ accountId, fullName, registeredAt }` for account
+  IDs already authorized by Center & Scheduling.
+- Profile facts never grant role, center, class, membership, assignment, or
+  session authority. Routes and other consumers MUST NOT read the `accounts`
+  table directly or use profile fields as authorization input.
+- Accounts without the required profile facts are outside the accepted target
+  population. FT-007 adds no migration, backfill, inferred/fallback name, or
+  legacy-account compatibility path.
+- Verification covers all three creation paths, immutable timestamp generation,
+  atomic failure state, current-actor and scoped statistics projections,
+  revoked-session denial, and absence of direct consumer table reads.
 
 ## Data minimization and failure behavior
 
