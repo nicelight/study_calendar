@@ -1,0 +1,86 @@
+{
+  "id": "TASK-097-T3-FT-007-W31",
+  "title": "Implement typed sorting for Statistics registries",
+  "status": "planned",
+  "wave": "W31",
+  "feature": "FT-007",
+  "reqs": ["REQ-017"],
+  "depends_on": ["TASK-079-T3-FT-007-W28", "TASK-096-T3-FT-007-W30"],
+  "touched_files": ["src/routes/statistics/", "tests/routes/ft-007-statistics-sorting.test.ts", "e2e/ft-007-statistics.spec.ts"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-statistics", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-007-statistics.db --spec e2e/ft-007-statistics.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-007-AC-004: each registry column exposes visible ascending/descending state; text, dates, percentages, and counts sort by typed values, and Teacher classes sort by the first rendered class.",
+    "Sorting operates only on the authorized serializable TASK-096 result and does not change scope, provider query semantics, or source facts.",
+    "Focused browser proof starts a new server on tmp/ft-007-statistics.db, removes it after the run, and never opens study-calendar.db."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004 / REQ-017 RED: a registry column lacks a direction, active direction is invisible, values sort lexically/wrongly, or Teacher classes sort by the wrong first class; GREEN: focused owned-server disposable-DB browser and route tests prove all column types, both directions, active indicators, first-class Teacher sorting, cleanup, and non-mutation; artifact: .tasks/TASK-097-T3-FT-007-W31/ and .protocols/TASK-097-T3-FT-007-W31/."
+  ],
+  "purpose": "Own the independently completable typed-sorting presentation result after authorized registry composition exists.",
+  "success_outcome": "Statistics displays every authorized registry column with correct typed bidirectional sorting and visible active direction.",
+  "anti_goals": [
+    "Do not implement or re-prove AC-003 composition, provider privacy, payment, or attendance claims.",
+    "Do not change Lesson Context or provider modules.",
+    "Do not run against study-calendar.db or reuse a pre-existing server."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004",
+    ".memory-bank/contracts/statistics-projection.md#sorting-and-presentation",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004",
+    ".memory-bank/contracts/statistics-projection.md#sorting-and-presentation",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Sorting is presentation over TASK-096's authorized serializable projection and adopts no provider claim.",
+    "Use TASK-079's runner with tmp/ft-007-statistics.db; never use study-calendar.db or an existing server.",
+    "No sorting operation may alter server-side scope or provider query semantics."
+  ],
+  "invariants": [
+    "Both directions are visible and deterministic for every column type.",
+    "Teacher multi-class rendering sorts by the first rendered ordered class.",
+    "No product or provider state changes during sorting proof."
+  ],
+  "verification_targets": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004: full typed sorting matrix for all three registries and both directions under disposable browser proof."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/routes/statistics/", "tests/routes/ft-007-statistics-sorting.test.ts", "e2e/ft-007-statistics.spec.ts", "tmp/ft-007-statistics.db"],
+    "forbidden_scope": [
+      "playwright.config.ts",
+      "scripts/run-disposable-e2e.mjs",
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if sorting requires provider or Lesson Context changes, a new scope rule, or provider claim inheritance.",
+      "Stop if browser proof requires the persistent database, server reuse, or destructive reset."
+    ]
+  }
+}

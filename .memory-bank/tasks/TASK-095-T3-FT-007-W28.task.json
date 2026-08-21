@@ -1,0 +1,83 @@
+{
+  "id": "TASK-095-T3-FT-007-W28",
+  "title": "Expose scoped Center and Scheduling registry facts",
+  "status": "planned",
+  "wave": "W28",
+  "feature": "FT-007",
+  "reqs": ["REQ-014", "REQ-017"],
+  "depends_on": ["TASK-006-T2-FT-002-W4"],
+  "touched_files": ["src/lib/server/modules/center-scheduling/public.ts"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "The Center & Scheduling query returns authorized account IDs plus its own institution, class, membership, parent-link, assignment, and count facts for Students, Teachers, and Classes.",
+    "Admin receives own-center facts, Teacher receives assigned-class facts, and Student/Parent center-wide requests are denied without unrelated row disclosure.",
+    "The query is read-only and neither calls Identity & Access nor returns profile fields, attendance percentages, payment capability, or a composed registry payload."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-009 / REQ-014 / REQ-017 RED: the query broadens scope, omits required C&S facts, calls a neighbor, returns profile/metric fields, or mutates state; GREEN: isolated provider tests prove own-center/assigned-class facts, Student/Parent and removed-assignment denial, no neighbor call, and state-before/state-after equality; artifact: .tasks/TASK-095-T3-FT-007-W28/ and .protocols/TASK-095-T3-FT-007-W28/."
+  ],
+  "purpose": "Expose the scoped Center & Scheduling structural input needed by the Lesson Context statistics composition.",
+  "success_outcome": "One public Center & Scheduling query returns only authorized owner-held registry facts and account IDs without crossing into profile or metric ownership.",
+  "anti_goals": [
+    "Do not claim FT-007-AC-003 or compose a final registry result; this task owns only FT-007-AC-009 provider scope.",
+    "Do not call Identity & Access or return fullName/registeredAt.",
+    "Do not compute attendance, payment capability, sorting, or route presentation."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-009",
+    ".memory-bank/contracts/statistics-projection.md#center-and-scheduling-registry-facts-query",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/domains/core-domain.md#ownership-map"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/contracts/statistics-projection.md#center-and-scheduling-registry-facts-query",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Center & Scheduling owns only registry scope and center/class/membership/assignment facts.",
+    "Lesson Context performs profile enrichment and final composition.",
+    "Tests use isolated disposable state and never study-calendar.db."
+  ],
+  "invariants": [
+    "Admin scope is own Center and Teacher scope is assigned classes.",
+    "Student/Parent cannot obtain center-wide registry facts.",
+    "The query writes no source facts, calls no neighbor, and never broadens client-supplied scope."
+  ],
+  "verification_targets": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-009: exact field ownership, role/scope matrix, no-neighbor-call proof, and non-mutation."
+  ],
+  "runtime_context": {
+    "write_boundary": ["src/lib/server/modules/center-scheduling/public.ts", "tests/center-scheduling/ft-007-registry-facts.test.ts"],
+    "forbidden_scope": [
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      "src/routes/",
+      "study-calendar.db"
+    ],
+    "stop_conditions": [
+      "Stop if registry facts require a new source-of-truth owner or public edge.",
+      "Stop if C&S would need profile fields, a neighbor call, direct neighbor-table access, or client scope authority."
+    ]
+  }
+}
