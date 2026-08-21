@@ -1,7 +1,7 @@
 ---
 description: Server-side authentication, authorization scope, and privacy contract.
 status: active
-last_updated: 2026-08-21
+last_updated: 2026-08-22
 source_of_truth:
   - .memory-bank/contracts/access-control.md
 ---
@@ -92,6 +92,8 @@ every role.
 
 ## Account profile facts
 
+### Profile creation and query obligation
+
 - Every newly created target Internal Account, including the first bootstrap
   Admin, invitation-created participants, and direct-password participants,
   MUST receive a trimmed required `fullName` from surname and given name plus an
@@ -103,15 +105,21 @@ every role.
   registeredAt }` after resolving a valid non-revoked session. The statistics
   profile query returns only `{ accountId, fullName, registeredAt }` for account
   IDs already authorized by Center & Scheduling.
-- Profile facts never grant role, center, class, membership, assignment, or
-  session authority. Routes and other consumers MUST NOT read the `accounts`
-  table directly or use profile fields as authorization input.
 - Accounts without the required profile facts are outside the accepted target
   population. FT-007 adds no migration, backfill, inferred/fallback name, or
   legacy-account compatibility path.
 - Verification covers all three creation paths, immutable timestamp generation,
-  atomic failure state, current-actor and scoped statistics projections,
-  revoked-session denial, and absence of direct consumer table reads.
+  atomic failure state, exact current-actor and scoped statistics projections,
+  and revoked-session denial.
+
+### Profile consumer boundary
+
+- Profile facts never grant role, center, class, membership, assignment, or
+  session authority or serve as authorization input.
+- Routes and other consumers MUST NOT read the `accounts` table directly; they
+  consume only the named current-actor or scoped statistics query.
+- Verification belongs to each consuming composition/route outcome and proves
+  that no direct account-table read bypasses its accepted profile query.
 
 ## Data minimization and failure behavior
 

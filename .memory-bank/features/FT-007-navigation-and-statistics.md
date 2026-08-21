@@ -16,7 +16,7 @@ spec_design_links:
 clarification_status: complete
 last_clarified: 2026-08-21
 clarification_questions: 1
-last_updated: 2026-08-21
+last_updated: 2026-08-22
 ---
 # FT-007 — Navigation and Scoped Statistics
 
@@ -103,6 +103,30 @@ last_updated: 2026-08-21
   authenticated Profile fields, anonymous/revoked denial, logout revocation и
   отсутствие profile mutation controls/commands.
 
+### FT-007-AC-008 — Account profile facts and queries are bounded
+- REQ: REQ-014, REQ-017
+- Каждый новый target Internal Account из bootstrap Admin, invitation и
+  direct-password paths атомарно получает обязательные `fullName` и immutable
+  server-generated `registeredAt`. Current-actor query возвращает только
+  `accountId`, `fullName`, `role`, `registeredAt` для valid session, а scoped
+  statistics query — только `accountId`, `fullName`, `registeredAt` для
+  запрошенных account IDs; revoked actor и failed creation не раскрывают и не
+  оставляют partial profile state. Migration, backfill и fallback name не
+  добавляются.
+- Verification: isolated all-path creation/query matrix с exact projections,
+  revoked denial, rollback, immutable timestamp и no-legacy proof.
+
+### FT-007-AC-009 — Registry source facts preserve provider scope
+- REQ: REQ-014, REQ-017
+- Center & Scheduling public query возвращает только owner-held institution,
+  class, membership, parent-link, assignment/count facts и account IDs:
+  Admin — для собственного Center, Teacher — для assigned classes.
+  Student/Parent center-wide requests и removed assignment не раскрывают rows;
+  query не вызывает соседний capability, не возвращает profile/metric fields и
+  не изменяет source state.
+- Verification: isolated provider role/scope matrix, removed-assignment
+  negative, exact fields, no-neighbor-call и state-before/state-after equality.
+
 ## Acceptance Closure
 | Outcome | Coverage |
 |---|---|
@@ -113,13 +137,15 @@ last_updated: 2026-08-21
 | Payment capability | FT-007-AC-005 |
 | Attendance percentage | FT-007-AC-006 |
 | Canonical routes and bounded Profile | FT-007-AC-007 |
+| Bounded account profile facts and queries | FT-007-AC-008 |
+| Provider-scoped registry source facts | FT-007-AC-009 |
 
 ## SDD Design Gate
 Feature composes existing access, Center/class, lesson, and financial query
 boundaries. It does not introduce a global Admin role, cross-center boundary,
 or statistics source of truth.
 
-- [.memory-bank/contracts/access-control.md](../contracts/access-control.md#account-profile-facts)
+- [.memory-bank/contracts/access-control.md](../contracts/access-control.md#profile-creation-and-query-obligation)
 - [.memory-bank/contracts/authentication-transport.md](../contracts/authentication-transport.md#session-issuance-and-revocation)
 - [.memory-bank/contracts/boundary-map.md](../contracts/boundary-map.md#calendar-and-membership-query-boundary)
 - [.memory-bank/contracts/boundary-map.md](../contracts/boundary-map.md#financial-projection-query-boundary)

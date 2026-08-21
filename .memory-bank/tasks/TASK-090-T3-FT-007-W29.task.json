@@ -1,12 +1,12 @@
 {
-  "id": "TASK-083-T3-FT-007-W29",
+  "id": "TASK-090-T3-FT-007-W29",
   "title": "Expose the factual payment capability projection",
   "status": "planned",
   "wave": "W29",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
   "depends_on": ["TASK-045-T3-FT-006-W23", "TASK-046-T3-FT-006-W23"],
-  "touched_files": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+  "touched_files": ["src/lib/server/modules/financial-ledger/public.ts"],
   "tier": "T3",
   "gates": [
     {"name": "check", "command": "npm run check", "required": true},
@@ -23,7 +23,7 @@
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-005 / REQ-014 / REQ-017 RED: capability counts advances/unallocated amounts, uses a non-factual date, mishandles strict boundary/no-payment/mixed cases, leaks scope, or mutates ledger facts; GREEN: isolated provider tests prove 0/100/mixed/overdue/equal-date behavior and state preservation; artifact: .tasks/TASK-083-T3-FT-007-W29/ and .protocols/TASK-083-T3-FT-007-W29/."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-005 / REQ-014 / REQ-017 RED: capability counts advances/unallocated amounts, uses a date not supplied through the accepted C&S financial lesson-fact seam, mishandles strict boundary/no-payment/mixed cases, accepts unauthorized scope, or mutates ledger facts; GREEN: isolated provider tests through Actor Context and Financial Scope and Lesson Fact ports prove 0/100/mixed/overdue/equal-date behavior, Admin/Teacher/current-assignment scope, no direct C&S-table read, and state preservation; artifact: .tasks/TASK-090-T3-FT-007-W29/ and .protocols/TASK-090-T3-FT-007-W29/."
   ],
   "purpose": "Own the Financial Ledger payment-capability query consumed by Statistics.",
   "success_outcome": "Financial Ledger returns the factual numeric payment capability for an authorized student without changing financial state.",
@@ -37,6 +37,8 @@
     ".memory-bank/contracts/statistics-projection.md#payment-capability-query",
     ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
     ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
     ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
     ".memory-bank/contracts/access-control.md#authority-and-scope"
   ],
@@ -48,6 +50,8 @@
     ".memory-bank/contracts/statistics-projection.md#payment-capability-query",
     ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
     ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
     ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
     ".memory-bank/contracts/access-control.md#authority-and-scope",
     ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
@@ -57,8 +61,9 @@
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
   "constraints": [
-    "Financial Ledger owns payment/allocation facts and the payment capability projection.",
-    "Use factual payment date < actual lesson date; do not alter allocation semantics or exact-money representation.",
+    "Financial Ledger owns payment/allocation facts and the payment capability projection; Lesson Context consumes only its Financial Projection query.",
+    "Financial Ledger resolves the actor through Actor Context and obtains current financial scope plus lesson identity/date/status only through the Financial Scope and Lesson Fact Boundary; it does not read C&S tables.",
+    "Use factual payment date < the C&S-owned actual lesson date associated with each counted allocation; do not alter allocation semantics or exact-money representation.",
     "Tests use isolated disposable state and do not touch study-calendar.db."
   ],
   "invariants": [
@@ -67,10 +72,10 @@
     "Projection reads leave all financial source facts unchanged and enforce current server-side scope."
   ],
   "verification_targets": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-005: no-payment/on-time/overdue/mixed/equal-date/advance/unallocated matrix."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-005: no-payment/on-time/overdue/mixed/equal-date/advance/unallocated and authorization matrix through the exact Actor Context and Financial Scope and Lesson Fact provider seams."
   ],
   "runtime_context": {
-    "write_boundary": ["src/lib/server/modules/financial-ledger/", "tests/financial-ledger/"],
+    "write_boundary": ["src/lib/server/modules/financial-ledger/public.ts", "tests/financial-ledger/ft-007-payment-capability.test.ts"],
     "forbidden_scope": [
       "src/lib/server/modules/identity-access/",
       "src/lib/server/modules/center-scheduling/",
@@ -80,7 +85,7 @@
     ],
     "stop_conditions": [
       "Stop if payment capability requires changing source-of-truth, allocation semantics, or exact-money representation.",
-      "Stop if authorization cannot use the accepted server-resolved financial scope."
+      "Stop if authorization or lesson dates require a new cross-slice edge, direct C&S persistence access, or caller-supplied scope/facts."
     ]
   }
 }

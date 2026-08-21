@@ -1,12 +1,12 @@
 {
-  "id": "TASK-082-T3-FT-007-W29",
+  "id": "TASK-089-T3-FT-007-W29",
   "title": "Expose the conducted-lesson attendance projection",
   "status": "planned",
   "wave": "W29",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
   "depends_on": ["TASK-042-T3-FT-005-W22", "TASK-006-T2-FT-002-W4"],
-  "touched_files": ["src/lib/server/modules/learning-progress/", "tests/learning-progress/"],
+  "touched_files": ["src/lib/server/modules/learning-progress/public.ts"],
   "tier": "T3",
   "gates": [
     {"name": "check", "command": "npm run check", "required": true},
@@ -23,7 +23,7 @@
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-006 / REQ-014 / REQ-017 RED: the aggregate omits conducted slots, mishandles default-present/absence/correction, leaks another scope, or mutates facts; GREEN: isolated provider tests prove student/Teacher ratios, no-slot 0%, correction, scope denial, and state-before/state-after equality; artifact: .tasks/TASK-082-T3-FT-007-W29/ and .protocols/TASK-082-T3-FT-007-W29/."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-006 / REQ-014 / REQ-017 RED: the aggregate omits C&S-supplied conducted slots, mishandles default-present/absence/correction, accepts stale or unauthorized assignment scope, leaks another scope, or mutates facts; GREEN: isolated provider tests through the Actor Context and Calendar and Membership ports prove student/Teacher ratios, no-slot 0%, correction, removed-assignment/cross-center denial, no direct C&S-table read, and state-before/state-after equality; artifact: .tasks/TASK-089-T3-FT-007-W29/ and .protocols/TASK-089-T3-FT-007-W29/."
   ],
   "purpose": "Own the Learning Progress attendance query consumed by the statistics projection.",
   "success_outcome": "Learning Progress returns authorized numeric attendance percentages over conducted lessons without changing attendance state.",
@@ -35,6 +35,8 @@
   "source_artifacts": [
     ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-006",
     ".memory-bank/contracts/statistics-projection.md#attendance-percentage-query",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
     ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
     ".memory-bank/contracts/access-control.md#authority-and-scope",
     ".memory-bank/states/lifecycle-map.md#learning-and-finance"
@@ -45,6 +47,8 @@
     ".memory-bank/spec-index.md#spec-registry",
     ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-006",
     ".memory-bank/contracts/statistics-projection.md#attendance-percentage-query",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
     ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
     ".memory-bank/contracts/access-control.md#authority-and-scope",
     ".memory-bank/states/lifecycle-map.md#learning-and-finance",
@@ -55,8 +59,9 @@
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
   "constraints": [
-    "Learning Progress owns attendance facts and the attendance aggregate; Lesson Context only consumes it.",
-    "The denominator includes every conducted student/lesson slot and uses the accepted default-present workflow.",
+    "Learning Progress owns attendance facts and the attendance aggregate; Lesson Context only consumes the resulting Personal Progress query.",
+    "Learning Progress obtains actor identity through Actor Context and lesson identity/status plus current class/assignment scope only through the Calendar and Membership Query Boundary; it does not read C&S tables.",
+    "The denominator includes every C&S-supplied conducted student/lesson slot and uses the accepted default-present workflow.",
     "Tests use isolated disposable state and do not touch study-calendar.db."
   ],
   "invariants": [
@@ -65,10 +70,10 @@
     "Unassigned and cross-center requests are denied without unrelated data leakage."
   ],
   "verification_targets": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-006: conducted/no-slot/default-present/absence/correction and student/Teacher scope matrix."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-006: conducted/no-slot/default-present/absence/correction and student/Teacher scope matrix through the exact Actor Context and Calendar and Membership provider seams."
   ],
   "runtime_context": {
-    "write_boundary": ["src/lib/server/modules/learning-progress/", "tests/learning-progress/"],
+    "write_boundary": ["src/lib/server/modules/learning-progress/public.ts", "tests/learning-progress/ft-007-attendance-projection.test.ts"],
     "forbidden_scope": [
       "src/lib/server/modules/financial-ledger/",
       "src/lib/server/modules/center-scheduling/",
@@ -78,7 +83,7 @@
     ],
     "stop_conditions": [
       "Stop if the aggregate requires a new attendance source of truth or changes the accepted attendance transition.",
-      "Stop if a caller can request an aggregate outside server-resolved assignment scope."
+      "Stop if the aggregate needs a new cross-slice edge, direct C&S persistence access, or caller-supplied assignment scope."
     ]
   }
 }

@@ -47,35 +47,39 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
 - Canonical contract:
   [.memory-bank/contracts/statistics-projection.md](../../.memory-bank/contracts/statistics-projection.md)
 - Canonical account profile contract:
-  [.memory-bank/contracts/access-control.md#account-profile-facts](../../.memory-bank/contracts/access-control.md#account-profile-facts)
+  [.memory-bank/contracts/access-control.md#profile-creation-and-query-obligation](../../.memory-bank/contracts/access-control.md#profile-creation-and-query-obligation)
 - Accepted graph and provider contracts:
   [.memory-bank/contracts/boundary-map.md](../../.memory-bank/contracts/boundary-map.md)
 
 ## Rebuilt queue and boundary outline
 
-Queue action is `rebuild_required`. The unexecuted TASK-058..061, TASK-063/064,
-and TASK-070..077 surface is retired because the accepted routes, AC ownership,
-dependencies, and material task boundaries changed. Fresh TASK-078..086 replace
-it without inheriting proof:
+Queue action is `rebuild_required`. The accepted nine-outcome slicing remains
+unchanged. TASK-079, TASK-080, TASK-089, and TASK-090 retain identity; the
+planned profile/provider cards and their dependent cards are replaced by
+TASK-094..098 because exact AC or dependency mapping changed. No replacement
+inherits proof:
 
-1. TASK-078 owns one complete Identity & Access profile result across bootstrap
+1. TASK-094 owns one complete Identity & Access profile result under AC-008 across bootstrap
    Admin, invitation, and direct-password creation plus the two accepted profile
-   queries.
+   queries. Its file-level hard scope includes the C&S `public.ts` adapter and
+   exact Admin/bootstrap seams; consumer table-bypass proof is excluded.
 2. TASK-079 implements the protected shell and keeps existing logout integration,
    disposable-runner implementation, and AC-001 RED/GREEN proof together.
 3. TASK-080 implements both `/home` and `/classes` as one role/scope-oriented
    AC-002 result.
-4. TASK-081 owns only Center & Scheduling scoped registry facts.
-5. TASK-082 and TASK-083 separately own attendance and payment projections.
-6. TASK-084 owns Lesson Context composition and the `/statistics` AC-003 route.
-7. TASK-085 owns typed Statistics sorting under AC-004.
-8. TASK-086 implements `/profile` and owns the canonical protected-route AC-007
+4. TASK-095 owns only Center & Scheduling scoped registry facts under AC-009.
+5. TASK-089 and TASK-090 separately own attendance and payment projections;
+   each links its exact actor and C&S source/authorization boundary.
+6. TASK-096 owns Lesson Context composition and the `/statistics` AC-003 route.
+7. TASK-097 owns typed Statistics sorting under AC-004.
+8. TASK-098 implements `/profile` and owns the canonical protected-route AC-007
    result after the other destinations exist.
 
-Every feature AC has one owner. Exact canonical technical claims are unique:
-TASK-078 owns Access Control `Account profile facts`, and TASK-081 owns the
-Statistics Projection C&S facts query. Dependency outcomes remain prerequisites
-whose proof is not adopted by consumers.
+Every feature AC has one owner. AC-008 maps the profile-provider result and
+AC-009 maps the C&S provider result; composite AC-003 and AC-007 remain owned
+only by TASK-096 and TASK-098. Exact canonical technical claims stay unique,
+and dependency outcomes remain prerequisites whose proof is not adopted by
+consumers.
 
 ### Boundary pass
 
@@ -103,7 +107,7 @@ composition, sorting, and Profile remain independently completable.
 
 Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
 gates, and only its owned proof. TASK-079 establishes the fail-closed disposable
-runner while proving AC-001; TASK-080, TASK-085, and TASK-086 reuse the runner
+runner while proving AC-001; TASK-080, TASK-097, and TASK-098 reuse the runner
 for their own claims without inheriting TASK-079 evidence. Provider and
 composition cards use isolated database/route tests. Feature completion remains
 subject to `/red-verify --feature FT-007` and the normal review/sync boundary.

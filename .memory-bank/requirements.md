@@ -159,10 +159,10 @@ status: draft
 | REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
 | REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
 | REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006;FT-006-AC-008 | verified |
-| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-007-AC-002..003;FT-007-AC-007 | planned |
+| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-007-AC-002..003;FT-007-AC-007..009 | planned |
 | REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
 | REQ-016 | Product release gate | — | test:product-release-acceptance after mapped feature checks | planned |
-| REQ-017 | EP-006 | FT-007 | test:FT-007-AC-001..007 | planned |
+| REQ-017 | EP-006 | FT-007 | test:FT-007-AC-001..009 | planned |
 
 `REQ-016` release-gate verification runs after mapped feature acceptance
 checks and before operator acceptance: `test:product-release-acceptance`.
