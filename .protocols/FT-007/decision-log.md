@@ -36,3 +36,20 @@ The rejected unexecuted TASK-051..057 surface is rebuilt with fresh identities
 because its task boundaries, dependency claims, E2E hard scope, and AC ownership
 change. The active replacement uses focused disposable databases for browser
 proof and assigns AC-001..006 exactly once.
+
+## 2026-08-20 — Fresh-review blocker repair
+
+The fresh review rejected the unexecuted TASK-062 and TASK-065..069 subset.
+AC-003 belongs to Lesson Context because only the accepted statistics
+composition owner may sequence scoped Center & Scheduling account IDs through
+the Identity & Access profile query and the two metric-provider boundaries.
+Center & Scheduling remains limited to its own scoped registry facts.
+
+Disposable browser evidence uses one shared fail-closed runner contract. It
+starts an owned server with the explicit `tmp/*.db` `DATABASE_URL`, prepares and
+cleans the exact path, rejects the real database, and never reuses an existing
+server. The ordinary real-database Playwright smoke remains unchanged.
+
+Because AC ownership, dependencies, and hard runtime scope change, the rejected
+subset is rebuilt as TASK-070..077. Unaffected TASK-058..061 and TASK-063..064
+retain their identities and material boundaries. Planning Revision remains `2`.

@@ -1,0 +1,57 @@
+{
+  "id": "TASK-070-T3-FT-007-W29",
+  "title": "Establish fail-closed disposable browser proof",
+  "status": "planned",
+  "wave": "W29",
+  "feature": "FT-007",
+  "reqs": ["REQ-014", "REQ-017"],
+  "depends_on": ["TASK-002-T3-FT-000-W1"],
+  "touched_files": ["playwright.config.ts", "scripts/run-disposable-e2e.mjs", "tests/scripts/run-disposable-e2e.test.ts", "tmp/.gitkeep"],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "A tracked tmp/.gitkeep prepares the parent on a fresh checkout; the disposable runner accepts only a project tmp/*.db target, verifies/prepares that parent, removes stale state, and removes the exact database after both successful and failed runs.",
+    "Disposable Playwright mode starts its own SvelteKit server with the supplied DATABASE_URL and fails on a port/startup conflict instead of reusing an existing server.",
+    "The runner rejects study-calendar.db and paths outside tmp/ before startup, while ordinary npm run e2e keeps its existing real-database behavior."
+  ],
+  "docs": [".memory-bank/testing/strategy.md", ".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
+  "evidence_required": [
+    "testing/strategy.md#disposable-browser-proof / REQ-014 / REQ-017 RED: focused E2E can reuse an existing server, accept study-calendar.db, fail on a missing tmp directory, or leave its database after success/failure; GREEN: runner/config tests prove owned-server startup, path rejection/preparation, exact cleanup in both outcomes, and unchanged ordinary real-database mode; artifact: .tasks/TASK-070-T3-FT-007-W29/ and .protocols/TASK-070-T3-FT-007-W29/."
+  ],
+  "purpose": "Provide one reusable fail-closed browser-test boundary for FT-007 without changing the existing real-database smoke.",
+  "success_outcome": "Every focused FT-007 browser gate can start an owned server on an explicit disposable database and clean it reliably without exposing study-calendar.db.",
+  "anti_goals": ["Do not implement any FT-007 product acceptance criterion.", "Do not change the ordinary real-database smoke semantics or credentials path.", "Do not delete or reset study-calendar.db or unrelated tmp files."],
+  "source_artifacts": [
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/testing/strategy.md#real-database-browser-smoke",
+    ".memory-bank/architecture/system-architecture.md#ad-006--one-server-and-one-durable-data-path"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/testing/strategy.md#real-database-browser-smoke",
+    ".memory-bank/architecture/system-architecture.md#ad-006--one-server-and-one-durable-data-path",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": ["The runner interface is node scripts/run-disposable-e2e.mjs --database <tmp/*.db> --spec <spec>.", "Disposable mode never falls back to the default database or an existing server.", "Cleanup targets only the exact approved disposable database and runs after success and failure."],
+  "invariants": ["study-calendar.db is never opened, modified, or removed by the runner.", "A focused gate has one owned server process and one explicit disposable DATABASE_URL.", "The normal real-database Playwright command remains compatible."],
+  "verification_targets": ["testing/strategy.md#disposable-browser-proof: accepted/rejected path matrix, owned-server configuration, missing-parent preparation, stale-file removal, and success/failure cleanup.", "playwright.config.ts: disposable mode disables reuseExistingServer while ordinary mode preserves current behavior."],
+  "runtime_context": {
+    "write_boundary": ["playwright.config.ts", "scripts/run-disposable-e2e.mjs", "tests/scripts/run-disposable-e2e.test.ts", "tmp/.gitkeep"],
+    "forbidden_scope": ["e2e/", "src/lib/server/modules/", "src/routes/", "study-calendar.db"],
+    "stop_conditions": ["Stop if isolation requires deleting or resetting the real database.", "Stop if the runner cannot prove cleanup after both child-process success and failure."]
+  }
+}

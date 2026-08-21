@@ -44,7 +44,7 @@
     ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
-  "constraints": ["Identity & Access owns session revocation and cookie semantics.", "The focused integration proof is owned by TASK-062; this task proves only the logout unit.", "Tests use isolated disposable state and never the shared real database."],
+  "constraints": ["Identity & Access owns session revocation and cookie semantics.", "The focused integration proof is owned by TASK-071; this task proves only the logout unit.", "Tests use isolated disposable state and never the shared real database."],
   "invariants": ["The captured session cannot authorize a protected request after logout.", "Unrelated sessions and account/profile facts are unchanged.", "No client-supplied actor or role controls revocation."],
   "verification_targets": ["authentication-transport.md#session-issuance-and-revocation: server-session, cookie, redirect, and old-token matrix.", "access-control.md#binding-and-session-rules: session authority remains in Identity & Access."],
   "runtime_context": {

@@ -47,36 +47,44 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
 
 ## Rejected-plan rebuild and boundary outline
 
-Queue action is `rebuild_required`: fresh TASK-058..069 cards replace the
-unexecuted TASK-051..057 cards because identity, dependency, E2E scope, and
-claim ownership changed. The fresh boundary is:
+Queue action remains `rebuild_required`. Fresh TASK-058..069 first replaced the
+unexecuted TASK-051..057 surface. The subsequent fresh review accepted
+TASK-058..061 and TASK-063..064 but rejected TASK-062 and TASK-065..069 because
+AC-003 crossed the accepted composition direction and the declared disposable
+browser path could reuse a real-database server. Fresh TASK-070..077 replace
+only that rejected subset:
 
 1. TASK-058/059 separately implement direct-password and invitation profile
    provisioning.
-2. TASK-060/061 separately implement shell and server logout; TASK-062 owns
+2. TASK-060/061 separately implement shell and server logout; TASK-071 owns
    their AC-001 integration proof.
-3. TASK-063/064 separately implement Home and Classes adapters; TASK-065 owns
+3. TASK-063/064 separately implement Home and Classes adapters; TASK-072 owns
    their AC-002 integration proof.
-4. TASK-066 owns the Center & Scheduling registry payload, scope, and AC-003.
-5. TASK-067 owns Learning Progress attendance and AC-006.
-6. TASK-068 owns Financial Ledger payment capability and AC-005.
-7. TASK-069 owns Lesson Context composition and typed sorting AC-004 only.
+4. TASK-070 owns the shared fail-closed disposable browser runner contract.
+5. TASK-073 owns only Center & Scheduling scoped registry facts and never calls
+   Identity & Access or claims AC-003.
+6. TASK-074 owns Learning Progress attendance and AC-006.
+7. TASK-075 owns Financial Ledger payment capability and AC-005.
+8. TASK-076 owns Lesson Context profile enrichment, provider composition, and
+   the complete AC-003 integration proof.
+9. TASK-077 owns typed sorting and AC-004 after the composed projection exists.
 
-The provider and integration cards use exact single-task AC ownership. A
-dependency's proof is never inherited. Browser gates use focused disposable
-`tmp/ft-007-*.db` databases; `study-calendar.db` is forbidden for every FT-007
-card.
+Every feature AC has one owner and dependency proof is never inherited. The
+three browser cards call the TASK-070 runner with distinct `tmp/ft-007-*.db`
+paths; it starts a new server, prepares and cleans the exact database, and
+fails before using `study-calendar.db` or an existing server.
 
 ### Boundary pass
 
 Unmerged units and independent proof paths are: direct-password provisioning,
-invitation provisioning, shell implementation, logout implementation, Home
-adapter, Classes adapter, shell/logout acceptance, Home/Classes acceptance,
-registry provider, attendance provider, payment provider, and Statistics typed
-sorting. No implementation units are merged. The only justified merges are the
-three feature-level integration cards: each combines already-completed sibling
-adapters into one indivisible browser acceptance outcome (AC-001, AC-002, or
-AC-004), with no dependency proof transfer.
+invitation provisioning, shell implementation, logout implementation,
+fail-closed disposable runner, Home adapter, Classes adapter, shell/logout
+acceptance, Home/Classes acceptance, C&S registry facts, attendance provider,
+payment provider, profile-enriched Statistics composition, and typed sorting.
+No provider unit is merged with composition. The only justified integration
+cards combine already completed inputs into one feature acceptance outcome:
+TASK-071 for AC-001, TASK-072 for AC-002, and TASK-076 for AC-003. TASK-077
+keeps the independently completable AC-004 presentation result separate.
 
 ## Non-goals
 
@@ -91,10 +99,10 @@ AC-004), with no dependency proof transfer.
 ## Verification and gates
 
 Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
-gates, and only its owned proof. TASK-062, TASK-065, and TASK-069 own focused
-disposable-DB browser gates; provider cards use isolated database tests.
-Feature completion remains subject to `/red-verify --feature FT-007` and the
-normal review/sync boundary.
+gates, and only its owned proof. TASK-070 proves the reusable disposable runner;
+TASK-071, TASK-072, and TASK-077 use it for focused browser gates. Provider and
+composition cards use isolated database/route tests. Feature completion remains
+subject to `/red-verify --feature FT-007` and the normal review/sync boundary.
 
 ## Planning revision
 

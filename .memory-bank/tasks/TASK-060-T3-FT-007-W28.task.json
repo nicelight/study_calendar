@@ -47,7 +47,7 @@
     ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
-  "constraints": ["Layout is a transport/presentation adapter over server-resolved actor context.", "Logout behavior is verified by TASK-062, not inherited here.", "Provider modules and the shared real database remain outside this task."],
+  "constraints": ["Layout is a transport/presentation adapter over server-resolved actor context.", "Logout behavior is verified by TASK-071, not inherited here.", "Provider modules and the shared real database remain outside this task."],
   "invariants": ["No client-supplied role or scope controls shell visibility.", "The shell does not mutate account, session, class, attendance, or financial state.", "Unauthenticated requests do not receive protected shell data."],
   "verification_targets": ["authentication-transport.md#browserapi-path: protected shell route and actor-context matrix.", "access-control.md#authority-and-scope: no client role/scope authority and no provider-table bypass."],
   "runtime_context": {

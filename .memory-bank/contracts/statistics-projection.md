@@ -1,7 +1,7 @@
 ---
 description: Read-only scoped registry shape, metric formulas, and composition contract for FT-007 statistics.
 status: active
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 source_of_truth:
   - .memory-bank/contracts/statistics-projection.md
 ---
@@ -60,6 +60,21 @@ private fields.
 The result MUST be read-only and MUST NOT mutate account, Center, Class,
 membership, assignment, lesson, attendance, payment, allocation, balance, or
 audit facts.
+
+## Center and Scheduling registry facts query
+
+Center & Scheduling exposes the scoped structural input to the registry
+projection. For a server-resolved Admin it returns only own-Center rows; for a
+Teacher it returns only assigned-class rows; Student and Parent requests are
+denied without revealing row existence. The result contains authorized account
+IDs plus Center & Scheduling-owned institution, class, membership, parent-link,
+teacher-assignment, and count facts.
+
+This query MUST NOT call Identity & Access, return `fullName` or `registeredAt`,
+compute attendance or payment metrics, or compose the final registry payload.
+Lesson Context first obtains these scoped facts, then calls the accepted Actor
+Context, Personal Progress, and Financial Projection boundaries. Repeated
+queries are read-only and leave Center & Scheduling state unchanged.
 
 ## Attendance percentage query
 

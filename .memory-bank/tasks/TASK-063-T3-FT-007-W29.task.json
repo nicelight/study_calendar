@@ -18,7 +18,7 @@
   ],
   "verify": [
     "Home delegates destination resolution to the server actor and accepted Center & Scheduling query without adding a route-side role or center-scope rule.",
-    "The feature-level role/scope outcome is owned by TASK-065; this card proves only the adapter call and response mapping."
+    "The feature-level role/scope outcome is owned by TASK-072; this card proves only the adapter call and response mapping."
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [
@@ -46,7 +46,7 @@
     ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
-  "constraints": ["The route is a thin adapter over server-resolved actor and Center & Scheduling scope.", "TASK-065 owns the combined role/scope acceptance and its REQ-014 proof.", "No provider table or persistent database direct access."],
+  "constraints": ["The route is a thin adapter over server-resolved actor and Center & Scheduling scope.", "TASK-072 owns the combined role/scope acceptance and its REQ-014 proof.", "No provider table or persistent database direct access."],
   "invariants": ["Home adds no role, center, class, or student authority.", "Home is read-only.", "Provider ownership and failure semantics remain unchanged."],
   "verification_targets": ["boundary-map.md#calendar-and-membership-query-boundary: Home adapter call/response mapping.", "system-architecture.md#composition-and-request-data-flow: route remains an adapter and does not own provider rules."],
   "runtime_context": {

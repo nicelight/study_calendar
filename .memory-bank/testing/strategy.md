@@ -52,6 +52,23 @@ status: active
   the selected lesson material and removes only the exact session created by
   the test; it does not submit or create a product account.
 
+## Disposable browser proof
+
+- A focused disposable Playwright run uses the project runner
+  `node scripts/run-disposable-e2e.mjs --database <tmp/*.db> --spec <spec>`.
+  The runner MUST reject `study-calendar.db` and every database path outside
+  project `tmp/`, create the parent directory, remove a stale target before the
+  run, and remove the exact disposable database in a `finally` path. A tracked
+  `tmp/.gitkeep` also guarantees that a fresh checkout has the parent before
+  SQLite opens the task database.
+- Disposable mode MUST start its own SvelteKit server with the supplied
+  `DATABASE_URL`; it MUST NOT reuse a server already listening for the normal
+  real-database smoke. Port collision or inability to start the owned server is
+  a failing gate, never permission to reuse another process.
+- The ordinary `npm run e2e` real-database path remains unchanged. Focused task
+  evidence records the disposable path, owned-server startup, cleanup on both
+  success and forced failure, and unchanged `study-calendar.db` metadata.
+
 ## Direct Admin participant accounts
 - The Admin action creates a teacher, student, or parent with normalized email,
   password credential, and center membership through Center & Scheduling.

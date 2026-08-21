@@ -39,6 +39,7 @@
     "Do not expose account tables to Statistics, routes, or components."
   ],
   "source_artifacts": [
+    ".memory-bank/features/FT-007-navigation-and-statistics.md",
     ".memory-bank/contracts/statistics-projection.md#participant-profile-metadata",
     ".memory-bank/contracts/boundary-map.md#account-provisioning-boundary",
     ".memory-bank/contracts/boundary-map.md#actor-context-boundary",

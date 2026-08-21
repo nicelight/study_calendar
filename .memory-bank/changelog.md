@@ -4,6 +4,20 @@ status: active
 ---
 # Changelog
 
+## [2026-08-20] FT-007 fresh-review blocker rebuild
+
+- Rebuilt the rejected unexecuted TASK-062 and TASK-065..069 subset as
+  TASK-070..077 while preserving unaffected TASK-058..061 and TASK-063..064.
+- Limited Center & Scheduling to scoped registry facts and moved complete
+  profile-enriched AC-003 composition ownership to Lesson Context; AC-004 typed
+  sorting remains independently owned.
+- Added a fail-closed disposable Playwright runner contract that prepares and
+  cleans `tmp/*.db`, starts an owned server, rejects `study-calendar.db`, and
+  leaves the existing real-database smoke behavior unchanged.
+- Preserved all task lifecycles as `planned`, Foundation reachability, and
+  Planning Revision `2`; no implementation, verification, promotion, closure,
+  or task-plan approval was performed.
+
 ## [2026-08-18] FT-007 task-planning reconciliation
 
 - Accepted the feature-local profile decision: participant `fullName` is
