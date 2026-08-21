@@ -210,6 +210,7 @@ Maintenance commands:
 
 
 
+
 ## SvelteKit / Svelte 5
 
 * MUST use runes mode and current non-legacy Svelte 5 APIs in new Svelte components/reactive modules; preserve existing legacy mode unless migration is task-required.
@@ -222,5 +223,6 @@ Maintenance commands:
 * SHOULD use form actions for browser form submissions and `+server` for HTTP APIs/non-page clients; use remote functions only when the project has explicitly opted in.
 * MUST keep components and universal modules SSR-safe; isolate browser-only execution/imports and NEVER disable SSR merely to bypass browser-only code.
 * SHOULD use `<a>`/`<form>` declaratively, `$app/navigation` for imperative internal navigation/history, and `$app/state` in runes code; use `window.location` for external URLs and `$app/stores` only for legacy compatibility.
+
 
 
