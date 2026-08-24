@@ -1963,3 +1963,126 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
   `execute` to `verify`; exact next action is a separate fresh
   `/verify TASK-098-T3-FT-007-W31`. Semantic review and all closure actions
   remain deferred.
+
+## 2026-08-24 — TASK-098 fresh functional PASS reconciled
+
+- Separate fresh fixed-role Reviewer `/verify TASK-098-T3-FT-007-W31`
+  returned exactly `VERDICT: PASS` without lifecycle change. Durable current
+  report is
+  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-02.md`;
+  historical docs-01 `NEEDS-CLARIFICATION` remains preserved and is not current
+  proof.
+- Verifier-owned focused `3/3`, disposable browser `1/1`, full test `68/228`,
+  check `0/0`, build, diff, mb-lint `74`, and strict doctor `0/0/2` passed.
+  The final owned-server browser run observed exact hydrated-shell href/form
+  attributes, exercised all four links and visible Logout, rejected the old
+  token, left exact temporary DB/sidecars absent, and preserved real-DB
+  size/mtime/inode before/after.
+- TASK-098 remains `in_progress`: T3 functional PASS is not closure. Scheduler
+  checkpoint advances immediately from `verify` to `red-verify`; exact next
+  action is a separate fresh `/red-verify TASK-098-T3-FT-007-W31`. W31 sync,
+  tech debt, wave Judge, and lifecycle closure remain deferred.
+
+## 2026-08-24 — TASK-098 semantic PASS and scheduler closure reconciled
+
+- Separate fresh fixed-role Reviewer `/red-verify TASK-098-T3-FT-007-W31`
+  returned exactly `SEMANTIC_VERDICT: semantic-pass`, with no admitted finding
+  or operator question. Durable report is
+  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-RED-VERIFY-final-report-docs-01.md`.
+- Reviewer-owned focused route proof passed `3/3`; the disposable owned-server
+  browser path passed `1/1`, observed the hydrated shell's exact four hrefs and
+  actual `POST /auth/logout` form, exercised all destinations and visible
+  Logout, rejected anonymous/pre-revoked/post-logout sessions, removed exact
+  temporary DB/sidecars, and preserved real-DB size/mtime/inode.
+- Two fresh Codex Luna/xhigh focuses admitted no material finding or operator
+  question. This is current Attempt 1 without retry, competing route,
+  contradictory evidence, semantic concern, or escalation trigger; per-task
+  Judge overlay is not required.
+- Scheduler appended semantic and closure evidence and changed TASK-098
+  `in_progress -> done`. Product queue is now `51 done / 3 failed / 0 planned /
+  0 ready / 0 in_progress / 0 blocked`. Exact next action is W31 `/mb-sync`;
+  terminal state is not inferred before boundary gates, advisory tech debt, and
+  complete-wave Judge.
+
+## 2026-08-24 — W31 sync and post-sync gates reconciled
+
+- Fresh fixed-role Implementer `/mb-sync` returned `PASS` at
+  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-MB-SYNC-final-report-docs-01.md`.
+  It reconciled already-decided TASK-097/TASK-098 completion into FT-007,
+  EP-006, requirements, implementation plan, protocol plan, and changelog
+  evidence without editing task lifecycle or scheduler-owned state.
+- FT-007 and EP-006 are now `implemented`; sole-mapped REQ-017 is
+  `implemented`; shared REQ-014 remains `planned`. No feature-level semantic
+  verdict or owner acceptance exists, so no `verified` lifecycle was inferred.
+- Caller-owned `node scripts/mb-lint.mjs` passed `74 files` with pre-existing
+  metadata advisories; `node scripts/mb-doctor.mjs --strict` passed with
+  `0 errors / 0 warnings / 2 info`; `git diff --check` passed.
+- No fresh task-plan review is triggered: the sync changed only lifecycle,
+  evidence, locator, RTM, plan, and changelog state, not verdict-relevant
+  specs, claims, slicing, proof obligations, dependencies, tier, hard scope,
+  or plan assumptions. FT-007 `APPROVE` at Planning Revision `2` survives.
+- Checkpoint is now the W31 `wave-boundary`. Exact next action is fresh
+  advisory `/tech-debt wave W31`, followed by complete-wave Judge and final
+  authoritative queue audit; terminal success is not inferred early.
+
+## 2026-08-24 — W31 advisory technical-debt boundary reconciled
+
+- Fresh fixed-role Reviewer `/tech-debt wave W31` created the single permitted
+  advisory report at
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W31-2026-08-24.md` and returned
+  `APPROVE` for terminal-routing consideration.
+- `TD-W31-01` (`MEDIUM`) records confirmed repeated proof cost: both W31 cards
+  needed a bounded executor evidence-completion cycle after an initial
+  verifier `NEEDS-CLARIFICATION`. Current strengthened browser matrices and
+  fresh functional/semantic passes close the behavior claims; no current
+  production defect is asserted.
+- `TD-W31-02` (`LOW`) records stale point-in-time `/red-verify` and
+  `in_progress` prose inside TASK-098 `verification_targets`, while the
+  authoritative top-level status and later ordered closure evidence are
+  `done`. It is maintenance debt, not current routing authority or a blocker;
+  the advisory contract authorized no task-card repair.
+- The report changed no implementation, test, task/lifecycle, verification,
+  Memory Bank, checkpoint, or decision state. Exact next action is the fresh
+  complete-wave Judge overlay, followed by a final authoritative queue audit.
+
+## 2026-08-24 — W31 complete-wave Judge supports terminal route
+
+- Fresh fixed-role `gpt-5.6-sol/xhigh` Judge returned
+  `JUDGE_ASSESSMENT: SUPPORT` with `trajectory_signal: repeated_pattern` after
+  independently checking the authoritative queue, W31 functional and semantic
+  evidence, boundary sync/gates, planning review, and advisory report.
+- Judge confirms `51 done / 3 historical failed` product cards with no active
+  status or blocker; current TASK-096/097/098 functional `PASS` and T3
+  `semantic-pass`; completed sync, lint, strict doctor, diff, review-trigger,
+  and tech-debt boundary actions; and no competing current verdict or halt.
+- Mandatory terminal conditions: perform one final authoritative queue/protocol
+  audit; preserve Planning Revision `2`, current FT-007 `APPROVE`, historical
+  failures/verdicts and W31 debt; do not raise FT-007/EP-006/REQ-017 above
+  `implemented`; keep shared REQ-014 `planned`; make no feature-level
+  verification, human acceptance, deployment, or production-use claim.
+- Supported next route: if the final audit is unchanged, scheduler records
+  terminal `STATE: SUCCESS`, then returns control to `/autonomous` for its
+  owning final end-to-end validation.
+
+## 2026-08-24 — Final authoritative audit and terminal scheduler success
+
+- Recovery-first final audit resolved all `56` indexed cards: `53 done / 3
+  historical failed`; the product subset is `51 done / 3 historical failed`
+  with no `planned`, `ready`, `in_progress`, or `blocked` record. Historical
+  TASK-003, TASK-012, and TASK-038 remain failed; their reviewed replacement
+  outcomes TASK-015, TASK-016/TASK-017, and TASK-039 are `done`.
+- Foundation TASK-002 and current TASK-096/TASK-097/TASK-098 are `done`.
+  TASK-097 and TASK-098 current functional and semantic report markers each
+  occur exactly once. Global Backbone remains complete at Planning Revision
+  `2`; the current FT-007 task-plan report remains `APPROVE` with no blocking
+  finding.
+- Lifecycle invariants remain unchanged: FT-007 and EP-006 are `implemented`,
+  sole-mapped REQ-017 is `implemented`, and shared REQ-014 is `planned`.
+  Historical verdicts and W31 `MEDIUM`/`LOW` advisory findings are preserved.
+- Final `node scripts/mb-lint.mjs` passed `74 files` with existing advisory
+  metadata only; `node scripts/mb-doctor.mjs --strict` passed with
+  `0 errors / 0 warnings / 2 info`; `git diff --check` passed.
+- Scheduler records terminal `STATE: SUCCESS`, `current task: none`,
+  `current stage: wave-boundary`, and `next action: none`. This is exhausted
+  reviewed product-task queue closure, not feature-level `verified`, human
+  acceptance, deployment, or production-use approval.

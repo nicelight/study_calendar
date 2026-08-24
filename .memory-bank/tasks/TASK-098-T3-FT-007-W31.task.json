@@ -1,7 +1,7 @@
 {
   "id": "TASK-098-T3-FT-007-W31",
   "title": "Implement the bounded Profile destination and canonical-route proof",
-  "status": "in_progress",
+  "status": "done",
   "wave": "W31",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -68,6 +68,39 @@
       "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; complete W30, promote both eligible W31 cards, and select TASK-097 first",
       "execution_deferred_until": "TASK-097-T3-FT-007-W31 reaches scheduler closure",
       "lifecycle_changed": true
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-098-T3-FT-007-W31/red-verification.md",
+      "artifact": ".tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial review independently passed focused route proof 3/3 and the owned-server disposable hydrated-shell browser path 1/1.",
+        "The browser observed all four exact hrefs and the actual POST /auth/logout form, exercised every destination and visible Logout, rejected anonymous/pre-revoked/post-logout sessions, removed exact temporary state, and preserved study-calendar.db metadata.",
+        "Two fresh Codex Luna xhigh focus reviews admitted no material finding or operator question; the protocol contains exactly one SEMANTIC_VERDICT: semantic-pass."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 1",
+      "cause": "current functional PASS and required T3 semantic-pass satisfy FT-007-AC-007 / REQ-014 / REQ-017",
+      "evidence": [
+        ".tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-EXE-final-report-code-02.md",
+        ".protocols/TASK-098-T3-FT-007-W31/verification.md",
+        ".tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-02.md",
+        ".protocols/TASK-098-T3-FT-007-W31/red-verification.md",
+        ".tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "historical_evidence_only": [
+        ".tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-01.md",
+        "the initial static-only browser evidence state preserved in the earlier NEEDS-CLARIFICATION verify entry"
+      ],
+      "judge": "not_required: current Attempt 1 closed without retry, competing route, admitted semantic concern, contradictory evidence, or escalation trigger",
+      "next_action": "/mb-sync at W31 boundary",
+      "lifecycle_changed": true
     }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md", ".protocols/FT-007/clarification.md"],
@@ -119,7 +152,8 @@
     "Revoked/logout sessions cannot recover protected data on a subsequent request."
   ],
   "verification_targets": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007: exact href/destination matrix, exact Profile fields, absent mutation controls, anonymous/revoked denial, logout closure, and disposable-state isolation."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007: exact href/destination matrix, exact Profile fields, absent mutation controls, anonymous/revoked denial, logout closure, and disposable-state isolation.",
+    "Attempt 1 fresh independent functional result: VERDICT: PASS. Verifier-owned focused proof and final card-owned disposable browser proof freshly observed the hydrated shell's exact /home, /classes, /statistics, /profile hrefs, the actual POST /auth/logout form without a form-nesting assumption, every link activation, visible Logout submission, and revoked old-token denial; Profile's query-only exact read-only fields and denial matrix; all required gates; exact real-DB metadata preservation; and temporary DB/WAL/SHM/JOURNAL absence. Evidence: .protocols/TASK-098-T3-FT-007-W31/verification.md and .tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-02.md. Required next route: separate fresh /red-verify TASK-098-T3-FT-007-W31; status remains in_progress."
   ],
   "runtime_context": {
     "write_boundary": ["src/routes/+layout.svelte", "src/routes/profile/", "tests/routes/ft-007-profile-routes.test.ts", "e2e/ft-007-profile-routes.spec.ts", "tmp/ft-007-profile-routes.db"],

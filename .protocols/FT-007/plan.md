@@ -62,9 +62,9 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
 Queue action is `reconciled` after the fresh feature-doctor completion. The
 accepted nine-outcome slicing remains unchanged. Every existing FT-007 task
 identity, tier, wave, lifecycle, and evidence route is retained; TASK-079,
-TASK-080, TASK-089, TASK-090, TASK-094, and TASK-095 remain `done`, while
-TASK-096, TASK-097, and TASK-098 retain their existing `blocked` status. The
-reconciled queue does not inherit another task's proof:
+TASK-080, TASK-089, TASK-090, TASK-094, TASK-095, TASK-096, TASK-097, and
+TASK-098 are `done`. The reconciled queue does not inherit another task's
+proof:
 
 1. TASK-094 owns one complete Identity & Access profile result under AC-008 across bootstrap
    Admin, invitation, and direct-password creation plus the two accepted profile
@@ -125,16 +125,19 @@ Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
 gates, and only its owned proof. TASK-079 establishes the fail-closed
 disposable runner while proving AC-001; TASK-080 adds an isolated C&S
 accessible-list provider probe and reuses the runner for its own route claim;
-TASK-096's next applicable proof must exercise the accepted registry
-cardinality/viewer rules, while TASK-097 consumes that shape only for sorting.
-TASK-098 continues to check route integration without adopting AC-003 proof.
-Provider and composition cards use isolated database/route tests.
-Feature completion remains subject to `/red-verify --feature FT-007` and the
-normal review/sync boundary.
+TASK-096's completed proof exercises the accepted registry cardinality/viewer
+rules, while TASK-097 consumed that shape only for sorting. TASK-098 proved
+route integration without adopting AC-003 proof. Provider and composition cards
+use isolated database/route tests. The complete implementation coverage is
+reconciled at the W31 sync boundary; it does not itself create a feature-level
+`verified` decision.
 
 ## Planning revision
 
 Global Backbone remains `complete` at Planning Revision `2`. This feature
 extends the accepted Statistics Projection leaf contract and downstream proof
 mapping without changing module identity, the global architecture target, or
-the Foundation decision. Immediate next route: `/review-tasks-plan FT-007`.
+the Foundation decision. The current Revision-2 task-plan `APPROVE` remains
+authoritative. W31 changes no verdict-relevant planning semantics, so no fresh
+task-plan review trigger is introduced; the caller evaluates that trigger after
+post-sync gates.

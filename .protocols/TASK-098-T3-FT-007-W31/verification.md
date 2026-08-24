@@ -4,96 +4,52 @@ status: active
 ---
 # Verification — TASK-098-T3-FT-007-W31
 
-## What was verified
-
-- Current task/card identity is `T3 / FT-007 / W31`, `in_progress`, with the
-  task-owned `FT-007-AC-007 / REQ-014 / REQ-017` outcome, valid gates and
-  Attempt 1 protocol/handoff/evidence.
-- `/profile` is a protected, read-only route adapter: it calls only
-  `getCurrentActorProfile`, returns only `fullName`, `role`, and
-  `registeredAt`, redirects anonymous actors, and rejects a missing/revoked
-  profile result. The page has no form, input, button, or mutation path.
-- The current static shell has the four literal canonical href values and the
-  existing `POST /auth/logout` form. Browser evidence directly reaches all four
-  destinations, proves the Profile display/denial matrix, and proves logout
-  revocation and redirect.
-
 ## Verification basis
 
-- Direct task-linked canonical rules: `FT-007-AC-007`, Access Control
-  `#profile-consumer-boundary` and `#profile-creation-and-query-obligation`,
-  Authentication Transport `#session-issuance-and-revocation`, Boundary Map
-  `#actor-context-boundary`, and Testing Strategy `#disposable-browser-proof`.
-- Task purpose, constraints, anti-goals, invariants, hard write boundary,
-  verification target, evidence requirement, T3 RED/GREEN path, tier
-  obligations, and closure authority from the indexed card and tier policy.
+- Indexed card: `T3 / FT-007 / W31`, `in_progress`, Attempt 1; all four dependencies are indexed `done`. The task owns only `FT-007-AC-007 / REQ-014 / REQ-017` and its canonical-route/Profile integration delta.
+- Applied direct task-linked authority: FT-007 `#FT-007-AC-007`; Access Control `#profile-creation-and-query-obligation` and `#profile-consumer-boundary`; Authentication Transport `#session-issuance-and-revocation`; Boundary Map `#actor-context-boundary`; Testing Strategy `#disposable-browser-proof`; and Tier Policy T3, hard-boundary, evidence, RED/GREEN, and closure sections.
+- The earlier `docs-01` `NEEDS-CLARIFICATION` is historical only. Its missing runtime-menu proof is not used as current evidence and is preserved rather than overwritten.
 
 ## Executor claim path
 
-- Attempt 1 RED is the honest absence of the task-owned Profile server route;
-  Attempt 1 GREEN is recorded in `attempt-1-red.md`, `attempt-1-green.md`,
-  and `execution-evidence-attempt-1.md`. It is supporting evidence only.
+- Supporting only: Attempt 1 has an honest pre-change RED for the absent task-owned `/profile` server route in `.tasks/TASK-098-T3-FT-007-W31/attempt-1-red.md`, followed by claim-linked GREEN in `attempt-1-green.md` and `execution-evidence-attempt-1.md`.
+- The bounded executor resume evidence in `attempt-1-hydrated-shell-browser-evidence.md` is supporting only; no executor claim is treated as an independent verifier observation.
 
 ## Reused execute evidence
 
-- None. The executor supplied no eligible bounded-input receipt, and no
-  executor result is used as independent proof.
+- None. All gates and functional evidence below were freshly observed by this verifier; no receipt is relied on for the verdict.
 
 ## Repeated checks
 
-- `npx vitest run tests/routes/ft-007-profile-routes.test.ts` — PASS, 3 tests.
-- `node scripts/run-disposable-e2e.mjs --database tmp/ft-007-profile-routes.db --spec e2e/ft-007-profile-routes.spec.ts` — PASS twice, 1 Playwright test each time. The final rerun removed the exact DB/WAL/SHM/JOURNAL files and preserved `study-calendar.db` size, inode, and mtime (`356352`, `265994`, `1787569249`) before/after.
-- `npm run check` — PASS, 0 errors and 0 warnings.
-- `npm run test` — PASS, 68 files / 228 tests.
-- `npm run build` — PASS.
-- `git diff --check` — PASS.
-- `node scripts/mb-lint.mjs` — PASS, only existing advisory metadata warnings.
-- `node scripts/mb-doctor.mjs --strict` — PASS, 0 errors, 0 warnings, 2 info.
+| Command | Fresh result | Claim/evidence use |
+| --- | --- | --- |
+| `npx vitest run tests/routes/ft-007-profile-routes.test.ts` | PASS — 1 file, 3 tests | Focused server/rendering and direct boundary proof. |
+| `npm run check` | PASS — 0 errors, 0 warnings | Required type/Svelte gate. |
+| `npm run test` | PASS — 68 files, 228 tests | Required regression gate. |
+| `npm run build` | PASS | Required production build gate. |
+| `git diff --check` | PASS | Required whitespace/diff gate. |
+| `node scripts/mb-lint.mjs` | PASS — 74 files; only pre-existing advisory metadata warnings | Required Memory Bank gate. |
+| `node scripts/mb-doctor.mjs --strict` | PASS — 0 errors, 0 warnings, 2 info | Required strict-doctor gate. |
 
 ## New targeted probes
 
-- Verifier source inspection and the fresh focused test independently observed
-  the direct `getCurrentActorProfile` path, exact three-field serialization and
-  SSR rendering, no mutation controls, anonymous redirect, and revoked `403`.
-- The fresh owned-server browser run observed anonymous/revoked `303 -> /login`
-  for all four routes; authenticated navigation to `/home`, `/classes`,
-  `/statistics`, and `/profile`; Profile's exact displayed fields and absent
-  controls; logout to `/login`; and rejection of the old session token.
-- This browser test navigates directly to each route. It does not open the
-  hydrated shell menu or observe its `<a href>` attributes / logout form at
-  runtime. The exact shell values are therefore only static focused-test/source
-  proof. A bounded verifier-owned menu DOM probe was attempted against the
-  card-authorized disposable state but could not obtain a hydrated menu
-  observation; it is not evidence.
+- The focused verifier run observed that `/profile` calls only `getCurrentActorProfile` with the request session token; serializes exactly `fullName`, `role`, and `registeredAt`; renders no form/input/button; sends anonymous access to `/login`; and returns `403 Forbidden` when the current actor query rejects the revoked token.
+- Final card-owned browser proof ran on its own disposable server: `node scripts/run-disposable-e2e.mjs --database tmp/ft-007-profile-routes.db --spec e2e/ft-007-profile-routes.spec.ts`. It passed 1 Playwright test. At runtime the browser opened the hydrated protected shell, observed the exact `href` values `/home`, `/classes`, `/statistics`, and `/profile`, and observed the shell-owned form itself (located from `[data-protected-shell]`, not assumed nested in `nav`) with `method="POST"` and `action="/auth/logout"`. It exercised each displayed link, submitted the visible `Выйти` Logout control through that form, reached `/login`, and observed the old token denied on `/profile` by `303 -> /login`.
+- The same browser flow proved anonymous and already-revoked denial for every canonical route, authenticated destinations, Profile's exact three displayed values and no controls, and unchanged profile rows through navigation.
+- Before and after this final E2E, `study-calendar.db` matched exactly: `size=356352; mtime=2026-08-24 16:17:41.936247476 +0500; inode=265994`. `tmp/ft-007-profile-routes.db` and its `-wal`, `-shm`, and `-journal` sidecars were absent both before and after. This final bracket controls for possible broad-test state mutation.
 
-## Architecture, scope, and finding adjudication
+## Scope, architecture, and adjudication
 
-- Actual TASK-098 implementation/probe files are inside the literal hard
-  boundary. No forbidden provider root, `playwright.config.ts`, new endpoint,
-  route alias/redirect, Profile persistence, or direct profile-table read was
-  observed. The disposable E2E result proved cleanup and real-DB metadata
-  preservation for the required browser proof.
-- Fresh Codex Luna xhigh focus reviews covered (1) runtime shell/link/logout
-  evidence and (2) Profile data, denial, revocation, cleanup, and boundary
-  behavior. The first found the runtime-shell evidence gap; the second found no
-  functional security/data violation. Their findings informed this verdict but
-  do not replace verifier-owned checks.
+- Current source inspection confirms the Profile route stays a composition adapter over the named Identity & Access current-actor query, with no direct account persistence, provider/slice bypass, write path, alias, redirect, or new logout endpoint. The task-attributable Profile and probe surface is within the card's hard boundary; unrelated dirty work was neither modified nor used as proof.
+- Fresh finding adjudication used two independent `Codex Luna` / `xhigh` co-reviews: (1) hydrated-shell DOM/link/logout/revocation evidence, and (2) Profile query/fields/denial/cleanup/scope. The first found only the historical stale `docs-01` statement; the present record corrects it. The second found no candidate functional or boundary violation. These findings informed, but did not replace, the verifier-owned observations above.
 
 ## Verdict
 
-VERDICT: NEEDS-CLARIFICATION
+VERDICT: PASS
 
-The implementation is not disproved. However, the literal task evidence
-requirement calls for focused-route and owned-server disposable browser proof
-of the exact href/logout integration. Current browser evidence proves direct
-destinations and logout, while exact shell href/form integration is static-only;
-the bounded runtime observation could not be reproduced because of hydration.
+Every task-owned T3 claim, verification target, required gate, isolation condition, and literal browser requirement is freshly reproducible from the commands and flow above. No higher-tier trigger or unresolved product/design branch was observed.
 
 ## Handoff
 
-- Recommended scheduler action: retain `in_progress`; route TASK-098 to its
-  executor for a task-boundary, card-authorized disposable browser replacement
-  probe that observes the hydrated shell's four hrefs and `POST /auth/logout`,
-  then run a fresh `/verify TASK-098-T3-FT-007-W31`.
-- Do not run `/red-verify`, `/mb-sync`, a Judge action, or any lifecycle change
-  from this verification.
+- Keep `TASK-098-T3-FT-007-W31` `in_progress`; `/verify` does not close it.
+- Required next route: a separate fresh `/red-verify TASK-098-T3-FT-007-W31`. Only the lifecycle owner may make a later T3 closure decision.

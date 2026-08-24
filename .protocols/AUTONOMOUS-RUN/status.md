@@ -6,25 +6,22 @@ status: active
 
 ## Checkpoint
 
-- STATE: `RUNNING`
+- STATE: `SUCCESS`
 - command: `/autopilot`
 - role: `ORCHESTRATOR/SCHEDULER`
 - planning revision: `2`
-- current phase: `product queue execution`
-- current task: `TASK-098-T3-FT-007-W31`
-- current stage: `verify`
-- last durable child verdict/handoff: fresh fixed-role Implementer `/exe
-  TASK-098-T3-FT-007-W31` completed bounded evidence recovery in the existing
-  Attempt 1 at
-  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-EXE-final-report-code-02.md`.
-  The task-owned browser probe now opens the hydrated shell, observes exact
-  `/home`, `/classes`, `/statistics`, `/profile` hrefs and the existing
-  `POST /auth/logout` form, exercises each menu link, and submits visible
-  Logout. Final focused `3/3`, disposable browser `1/1`, full test `68/228`,
-  check `0/0`, build, diff, mb-lint, and strict doctor `0/0/2` passed; exact
-  temporary DB/sidecars are absent and the final E2E preserved
-  `study-calendar.db` size/mtime/inode. No production file, lifecycle, retry
-  counter, or Attempt identity changed; TASK-098 remains `in_progress`.
+- current phase: `terminal product queue`
+- current task: `none`
+- current stage: `wave-boundary`
+- last durable child verdict/handoff: fresh fixed-role complete-wave Judge
+  returned `JUDGE_ASSESSMENT: SUPPORT` with
+  `trajectory_signal: repeated_pattern`. The evidence supports terminal
+  scheduler `SUCCESS` after one final authoritative queue/protocol audit. Its
+  conditions preserve Planning Revision `2`, FT-007 `APPROVE`, historical
+  failures/verdicts, W31 advisory findings, FT-007/EP-006/REQ-017 at no higher
+  than `implemented`, shared REQ-014 at `planned`, and the boundary from
+  feature-level verification, human acceptance, deployment, or production-use
+  approval.
 - verifier recovery evidence: two fresh `/verify TASK-089-T3-FT-007-W29`
   contexts independently produced focused probe evidence and gate results. The
   first recorded a verifier-owned probe plus full suite `63 files / 208 tests`
@@ -55,6 +52,11 @@ status: active
   RTM/changelog, and mechanically stale queue wording. No verdict-relevant
   claim, slicing, proof obligation, dependency, tier, scope, or plan assumption
   changed; FT-007 `APPROVE` at Planning Revision `2` survives.
+- W31 planning review trigger: none; sync changed only already-decided
+  lifecycle, evidence, locator, RTM, plan, and changelog state. It changed no
+  verdict-relevant spec, claim, slicing, proof obligation, dependency, tier,
+  hard scope, or plan assumption; FT-007 `APPROVE` at Planning Revision `2`
+  survives.
 - advisory tech debt: one report completed at
   `PAPERCUTS/TECHDEBTS/tech-debt-wave-W29-2026-08-22.md`; it confirms two MEDIUM
   recurrence signals (late bare-route semantic detection and verifier
@@ -63,6 +65,13 @@ status: active
   `PAPERCUTS/TECHDEBTS/tech-debt-wave-W30-2026-08-24.md` confirms no material
   finding in the bounded TASK-096/W30 change surface; its focused suite rerun
   passed `14/14`. The report is advisory and changes no workflow state.
+- W31 advisory tech debt: fresh report
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W31-2026-08-24.md` records one `MEDIUM`
+  recurrence signal because both W31 browser claims required a bounded
+  post-verifier evidence-completion cycle, and one `LOW` stale point-in-time
+  route phrase inside TASK-098 `verification_targets`. Neither is a current
+  production defect or scheduler blocker; no repair is authorized at this
+  boundary.
 - W29 boundary Judge: fresh `gpt-5.6-sol/xhigh` returned `SUPPORT` with
   `trajectory_signal: progress`; W29 gates are complete and advisory findings
   are not blockers. Conditions preserve Planning Revision `2`, current FT-007
@@ -79,14 +88,26 @@ status: active
   `trajectory_signal: progress`; W30 is complete, both W31 cards may be
   promoted, and stable sequential selection must start with TASK-097 while
   TASK-098 stays ready and unexecuted.
+- W31 complete-wave Judge: fresh `gpt-5.6-sol/xhigh` returned `SUPPORT` with
+  `trajectory_signal: repeated_pattern`; queue exhaustion and all W31 boundary
+  actions support terminal scheduler success after a final authoritative
+  queue/protocol audit. The repeated browser-proof completion cost remains
+  advisory and does not create a competing verdict or halt.
+- final scheduler audit: `PASS`; the authoritative index resolves `56` cards
+  as `53 done / 3 historical failed`, including `54` product cards as
+  `51 done / 3 historical failed`, with no `planned|ready|in_progress|blocked`
+  product record. Foundation and the reviewed replacement outcomes are `done`;
+  each current TASK-097/TASK-098 functional and semantic report contains its
+  exact marker once; Global Backbone Planning Revision `2`, FT-007 `APPROVE`,
+  and lifecycle invariants agree. Final `mb-lint` passed `74 files`, strict
+  doctor passed `0 errors / 0 warnings / 2 info`, and `git diff --check` passed.
 - post-promotion gate: strict doctor passed with `0 errors / 0 warnings / 2
   info`; both ready cards are structurally valid.
-- next action: separate fresh `/verify TASK-098-T3-FT-007-W31` in a fixed-role
-  Reviewer child using current Attempt 1 evidence, independently reproducing
-  the hydrated shell/browser outcome; only functional PASS routes to required
-  T3 `/red-verify`.
-- terminal reason: none; scheduler recovery is active.
-- reconciled at: `2026-08-24 16:14 +0500`
+- next action: `none`.
+- terminal reason: reviewed product queue exhausted after sequential task
+  closure, W31 semantic/sync/gate/tech-debt completion, complete-wave Judge
+  `SUPPORT`, and an unchanged final authoritative queue/protocol audit.
+- reconciled at: `2026-08-24 16:51 +0500`
 
 ## Review and readiness gates
 
@@ -105,10 +126,10 @@ status: active
 ## Queue state
 
 - Authoritative index: [.memory-bank/tasks/index.json](../../.memory-bank/tasks/index.json).
-- Product queue: `50 done`, `3 terminal failed`, `0 planned`, `0 ready`,
-  `1 in_progress`, `0 blocked`; W30 is complete. TASK-097 is done; TASK-098 is
-  the sole active card at fresh functional verification after bounded
-  execution-evidence completion.
+- Product queue: `51 done`, `3 terminal failed`, `0 planned`, `0 ready`,
+  `0 in_progress`, `0 blocked`; W31 implementation and boundary actions are
+  complete. The entire index is `53 done / 3 historical failed`; no product
+  scheduler action remains.
 - Current planning record: `TASK-039-T3-FT-003-W10` is `done` with done
   TASK-014 and TASK-037 dependencies. TASK-038 is terminal `failed` with
   explicit `superseded_by: TASK-039` evidence.
@@ -184,12 +205,18 @@ status: active
 
 ## Terminal handoff
 
-- STATE: `SUCCESS`; TASK-050 is durably `done` after fresh functional `PASS`,
-  semantic `semantic-pass`, W26 reconciliation, and caller-owned quality
-  gates.
-- Next route: none. This is task-queue closure, not final human product
-  acceptance, deployment, or a production-use claim.
-- This is not final product acceptance, deployment, or a production-use claim.
+- STATE: `SUCCESS`; TASK-096, TASK-097, and TASK-098 are durably `done` from
+  their current functional `PASS` and required T3 `semantic-pass` evidence.
+  W31 sync, post-sync gates, advisory technical debt, complete-wave Judge, and
+  final authoritative audit are complete.
+- Queue: `51 done / 3 historical failed / 0 planned / 0 ready /
+  0 in_progress / 0 blocked` product cards; the full index is
+  `53 done / 3 historical failed`.
+- Lifecycle boundary: FT-007 and EP-006 are `implemented`, sole-mapped REQ-017
+  is `implemented`, and shared REQ-014 remains `planned`; no `verified`
+  lifecycle is inferred.
+- Next route: none for the product scheduler. This is task-queue closure, not
+  final human product acceptance, deployment, or a production-use claim.
 
 ## Current operator-authorized follow-up — 2026-08-17
 

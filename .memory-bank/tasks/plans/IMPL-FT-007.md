@@ -51,8 +51,8 @@ attendance transition or financial allocation semantics.
 Queue action is `reconciled` after the fresh feature-doctor completion. The
 accepted nine-outcome slicing is unchanged. All existing FT-007 task identities,
 tiers, waves, lifecycles, and evidence routes remain in place. TASK-079,
-TASK-080, TASK-089, TASK-090, TASK-094, TASK-095, and TASK-096 retain `done`;
-TASK-097 and TASK-098 remain `planned`. No task inherits another task's proof.
+TASK-080, TASK-089, TASK-090, TASK-094, TASK-095, TASK-096, TASK-097, and
+TASK-098 are `done`. No task inherits another task's proof.
 The existing TASK-080 accessible-class query and TASK-095 prerequisite remain
 unchanged.
 
@@ -127,5 +127,7 @@ Global Backbone is `complete` at Planning Revision `2`. Foundation is required
 and its final gate `TASK-002-T3-FT-000-W1` is `done`; every FT-007 task depends
 on that gate directly or transitively through the existing product queue.
 This reconciliation extends accepted leaf contracts only and does not change
-the global architecture target or Foundation decision. Immediate next route:
-`/review-tasks-plan FT-007`.
+the global architecture target or Foundation decision. Planning Revision `2`
+and the current FT-007 task-plan `APPROVE` remain authoritative. The W31
+status/evidence reconciliation introduces no fresh task-plan review trigger;
+the caller evaluates the normal review trigger after post-sync gates.

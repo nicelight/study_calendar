@@ -4,6 +4,29 @@ status: active
 ---
 # Changelog
 
+## [2026-08-24] Wave W31 — FT-007 complete implementation coverage
+
+- Reconciled indexed `TASK-097-T3-FT-007-W31` and
+  `TASK-098-T3-FT-007-W31` as `done` from their current Attempt 1 functional
+  `PASS` and required T3 `semantic-pass` evidence.
+- Updated FT-007 acceptance/evidence routes, EP-006, the REQ-014/REQ-017 RTM
+  route, and FT-007 implementation-plan/checklist wording. FT-007, EP-006,
+  and sole-mapped REQ-017 move from `planned` to `implemented`; shared REQ-014
+  remains `planned` because its complete shared-feature coverage is not
+  established by this boundary.
+- Preserved TASK-097's initial `NEEDS-CLARIFICATION` and TASK-098's initial
+  VERIFY docs-01 `NEEDS-CLARIFICATION` as historical-only; task cards, their
+  status/verify arrays, Planning Revision `2`, current FT-007 task-plan
+  `APPROVE`, retry budgets, review artifacts, AUTONOMOUS-RUN status, and
+  decision log are unchanged.
+- Confirmed this status/evidence reconciliation introduces no fresh task-plan
+  review trigger. No specification, claim, task slicing, dependency, tier,
+  scope, or lifecycle decision beyond the mechanically covered implementation
+  transitions was created.
+- Handoff: the caller owns `mb-lint`, strict `mb-doctor`, review-trigger
+  evaluation, one W31 `/tech-debt` report, and complete-wave Judge before
+  terminal scheduler action.
+
 ## [2026-08-24] Wave W30 — TASK-096 statistics composition closure
 
 - Reconciled indexed `TASK-096-T3-FT-007-W30` as `done` from current Attempt 2

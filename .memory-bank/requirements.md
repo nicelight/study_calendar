@@ -162,7 +162,7 @@ status: draft
 | REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-007-AC-002..003;FT-007-AC-007..009 | planned |
 | REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
 | REQ-016 | Product release gate | — | test:product-release-acceptance after mapped feature checks | planned |
-| REQ-017 | EP-006 | FT-007 | test:FT-007-AC-001..009 | planned |
+| REQ-017 | EP-006 | FT-007 | test:FT-007-AC-001..009 | implemented |
 
 `REQ-016` release-gate verification runs after mapped feature acceptance
 checks and before operator acceptance: `test:product-release-acceptance`.
@@ -511,3 +511,27 @@ executor/functional/semantic report-01 artifacts remain historical-only.
 `TASK-097-T3-FT-007-W31` and `TASK-098-T3-FT-007-W31` remain `planned`.
 REQ-014 and REQ-017 remain `planned` in the RTM because FT-007 is not complete;
 this task closure does not decide a requirement lifecycle transition.
+
+## FT-007 W31 implementation-coverage route — 2026-08-24
+
+`TASK-097-T3-FT-007-W31` is `done` with current Attempt 1 functional `PASS`
+and T3 `semantic-pass` for `FT-007-AC-004 / REQ-017`; its initial
+`NEEDS-CLARIFICATION` remains historical-only. `TASK-098-T3-FT-007-W31` is
+`done` with current Attempt 1 functional `PASS` in VERIFY docs-02 and T3
+`semantic-pass` in RED-VERIFY docs-01 for
+`FT-007-AC-007 / REQ-014 / REQ-017`; its initial VERIFY docs-01
+`NEEDS-CLARIFICATION` remains historical-only.
+
+- [TASK-097 card](tasks/TASK-097-T3-FT-007-W31.task.json),
+  [functional evidence](../.protocols/TASK-097-T3-FT-007-W31/verification.md),
+  and [semantic evidence](../.protocols/TASK-097-T3-FT-007-W31/red-verification.md)
+- [TASK-098 card](tasks/TASK-098-T3-FT-007-W31.task.json),
+  [current functional evidence](../.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-02.md),
+  and [semantic evidence](../.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-RED-VERIFY-final-report-docs-01.md)
+- [W31 boundary sync](../.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-MB-SYNC-final-report-docs-01.md)
+
+All FT-007 acceptance outcomes are now implemented. Sole-mapped REQ-017 is
+therefore mechanically reconciled from `planned` to `implemented`. Shared
+REQ-014 remains `planned`: its RTM maps FT-001 through FT-007, and this W31
+boundary does not establish complete shared-feature coverage or a `verified`
+owner decision.

@@ -3,7 +3,7 @@ description: Product feature for protected navigation and center-scoped read-onl
 status: draft
 type: feature
 id: FT-007
-lifecycle: planned
+lifecycle: implemented
 epic: EP-006
 requirements: [REQ-014, REQ-017]
 spec_design_status: complete
@@ -333,3 +333,38 @@ FT-007, EP-006, and RTM `REQ-014` / `REQ-017` remain `planned` because the
 feature is incomplete. This sync applies no feature/epic/requirement lifecycle
 transition, dependency change, promotion, retry-budget change, or scheduler
 status decision.
+
+## W31 implementation-coverage reconciliation — 2026-08-24
+
+All nine accepted FT-007 outcomes now have their completed task-owned evidence:
+AC-001 `TASK-079`, AC-002 `TASK-080`, AC-003 `TASK-096`, AC-004 `TASK-097`,
+AC-005 `TASK-090`, AC-006 `TASK-089`, AC-007 `TASK-098`, AC-008 `TASK-094`,
+and AC-009 `TASK-095`. Each authoritative indexed card is `done` with its
+current task-level functional and required T3 semantic evidence; no task adopts
+another card's proof.
+
+`TASK-097-T3-FT-007-W31` closes AC-004 / REQ-017 from its current Attempt 1
+functional `PASS` and `semantic-pass`. The earlier 12-click
+`NEEDS-CLARIFICATION` is preserved as historical evidence only.
+
+- [TASK-097 card](../tasks/TASK-097-T3-FT-007-W31.task.json)
+- [current functional verification](../../.protocols/TASK-097-T3-FT-007-W31/verification.md)
+- [current semantic verification](../../.protocols/TASK-097-T3-FT-007-W31/red-verification.md)
+
+`TASK-098-T3-FT-007-W31` closes AC-007 / REQ-014 / REQ-017 from its current
+Attempt 1 functional `PASS` and `semantic-pass`. Its initial static-only
+`NEEDS-CLARIFICATION` / VERIFY docs-01 remains historical-only.
+
+- [TASK-098 card](../tasks/TASK-098-T3-FT-007-W31.task.json)
+- [current functional verification](../../.protocols/TASK-098-T3-FT-007-W31/verification.md)
+- [current functional report](../../.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-02.md)
+- [current semantic verification](../../.protocols/TASK-098-T3-FT-007-W31/red-verification.md)
+- [W31 boundary sync](../../.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-MB-SYNC-final-report-docs-01.md)
+
+The scheduler-decided complete implementation coverage mechanically reconciles
+FT-007 from `planned` to `implemented`; document `status: draft` is unchanged.
+No feature-level semantic verdict or owner decision supports `verified` at this
+boundary. Planning Revision `2` and the current FT-007 task-plan `APPROVE`
+remain authoritative. This status/evidence reconciliation changes no claim,
+task slicing, proof obligation, dependency, tier, scope, or unresolved planning
+assumption, so it introduces no fresh task-plan review trigger.
