@@ -1,7 +1,7 @@
 {
   "id": "TASK-095-T3-FT-007-W28",
   "title": "Expose scoped Center and Scheduling registry facts",
-  "status": "planned",
+  "status": "done",
   "wave": "W28",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -19,7 +19,99 @@
   "verify": [
     "The Center & Scheduling query returns authorized account IDs plus its own institution, class, membership, parent-link, assignment, and count facts for Students, Teachers, and Classes.",
     "Admin receives own-center facts, Teacher receives assigned-class facts, and Student/Parent center-wide requests are denied without unrelated row disclosure.",
-    "The query is read-only and neither calls Identity & Access nor returns profile fields, attendance percentages, payment capability, or a composed registry payload."
+    "The query is read-only and neither calls Identity & Access nor returns profile fields, attendance percentages, payment capability, or a composed registry payload.",
+    {
+      "stage": "functional",
+      "attempt": "Independent verification",
+      "verdict": "FAIL",
+      "report": ".protocols/TASK-095-T3-FT-007-W28/verification.md",
+      "artifact": ".tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh isolated verifier probe and all required project-native gates passed the observable role/scope, exact-field, denial, and non-mutation checks.",
+        "The current implementation violates the direct task contract by resolving the actor through Identity & Access inside getRegistryFacts and by directly joining the Identity & Access accounts table in getRegistryMemberships.",
+        "Independent verification report: .protocols/TASK-095-T3-FT-007-W28/verification.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "diagnose",
+      "attempt": "Judge consultation before retry 1 of 2",
+      "verdict": "JUDGE_ASSESSMENT: REDIRECT",
+      "judge": "gpt-5.6-sol/xhigh",
+      "recommended_route": "scheduler-owned bounded /exe TASK-095-T3-FT-007-W28 Attempt 2 / retry 1 of 2",
+      "evidence": [
+        "Both HIGH findings are confirmed by the direct canonical contracts and current source: Identity & Access actor resolution and direct accounts.role access.",
+        "The findings are implementation-only within the current task identity and hard boundary; /feature-doctor is not required.",
+        "Correction must accept server-resolved actor context, avoid Identity & Access calls, avoid accounts reads, and avoid returning Identity & Access-owned role/profile facts."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "functional",
+      "attempt": "Independent verification Attempt 2 / Focus A",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-095-T3-FT-007-W28/verification.md",
+      "artifact": ".tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh Focus A verifier probe passed 1 file / 2 tests in disposable :memory: SQLite state.",
+        "The corrected provider accepts server-resolved ActorContext, makes no provider-time Identity & Access call, performs no direct accounts read/join, and returns exact C&S-owned structural fields only.",
+        "Required focused and project-native gates passed: focused test, check, full test, build, diff, mb-lint, and strict doctor."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "functional",
+      "attempt": "Independent verification Attempt 2 / retry 1 of 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-095-T3-FT-007-W28/verification.md",
+      "artifact": ".tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-VERIFY-RETRY-final-report-docs-03.md",
+      "evidence": [
+        "Fresh verifier-owned disposable probe passed the corrected server-resolved actor boundary, exact C&S-owned fields, role/scope denials, no Identity & Access call, no accounts read/join, and state-before/state-after equality.",
+        "Fresh Focus A and Focus B Codex Luna xhigh co-reviews returned no evidence-backed candidate findings.",
+        "All required task gates passed: focused test, check, full test, build, diff, mb-lint, and strict doctor."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "red-verify",
+      "attempt": "Semantic verification Attempt 2 / retry 1",
+      "verdict": "SEMANTIC_VERDICT: semantic-pass",
+      "report": ".protocols/TASK-095-T3-FT-007-W28/red-verification.md",
+      "artifact": ".tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh hostile semantic review found no material ownership, authorization, scope, privacy, non-mutation, or regression finding.",
+        "Fresh Focus A and Focus B Codex Luna xhigh co-reviews returned no evidence-backed material finding.",
+        "The semantic report contains exactly one SEMANTIC_VERDICT: semantic-pass; prior Attempt 1 FAIL, Judge REDIRECT, and retry evidence remain preserved."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "diagnose",
+      "attempt": "Judge consultation before closure after retry 1",
+      "verdict": "JUDGE_ASSESSMENT: SUPPORT",
+      "judge": "gpt-5.6-sol/xhigh",
+      "recommended_route": "scheduler-owned closure TASK-095-T3-FT-007-W28",
+      "evidence": [
+        "Attempt 2 corrected both prior HIGH boundary defects; fresh functional verification is PASS and fresh T3 semantic verification is semantic-pass.",
+        "All T3 closure gates are satisfied and no material finding, blocker, or operator decision remains.",
+        "Attempt 1 FAIL, Judge REDIRECT, and retry accounting remain preserved."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-095-T3-FT-007-W28/verification.md",
+        ".protocols/TASK-095-T3-FT-007-W28/red-verification.md",
+        ".tasks/TASK-095-T3-FT-007-W28/attempt-2-green.md",
+        ".tasks/TASK-095-T3-FT-007-W28/execution-evidence.md",
+        ".tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-VERIFY-RETRY-final-report-docs-03.md",
+        ".tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; scheduler-owned closure authorized after functional PASS and semantic-pass",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [

@@ -49,6 +49,13 @@ export type AttendanceView = {
 	recordedAt: string | null;
 };
 
+export type AttendancePercentageRequest = {
+	sessionToken?: string;
+	classId?: string;
+	studentAccountId?: string;
+	teacherAccountId?: string;
+};
+
 type HomeworkRow = {
 	id: string;
 	center_id: string;
@@ -96,7 +103,7 @@ export class LearningProgressBoundary {
 		private readonly identityAccess: Pick<IdentityAccessBoundary, 'resolveActor'>,
 		private readonly centerScheduling: Pick<
 			CenterSchedulingBoundary,
-			'getAuthorizedClassScope' | 'getLessons'
+			'getAuthorizedClassScope' | 'getLessons' | 'getRegistryFacts'
 		>,
 		private readonly financialLedger: Pick<FinancialLedgerBoundary, 'reconcileLessonCharge'>,
 		options: LearningProgressOptions = {}
@@ -267,6 +274,74 @@ export class LearningProgressBoundary {
 				recordedByAccountId: null,
 				recordedAt: null
 			};
+	}
+
+	getAttendancePercentage(request: AttendancePercentageRequest): number {
+		const actor = this.identityAccess.resolveActor(request.sessionToken);
+		if (!actor || (request.studentAccountId && request.teacherAccountId)) {
+			throw new Error('not-authorized');
+		}
+
+		if (request.studentAccountId) {
+			if (!request.classId) {
+				throw new Error('not-authorized');
+			}
+
+			const scope = this.centerScheduling.getAuthorizedClassScope(
+				request.sessionToken,
+				request.classId
+			);
+			if (!scope) {
+				throw new Error('not-authorized');
+			}
+			this.requireClassStudent(scope, request.studentAccountId);
+
+			return this.calculateAttendancePercentage([
+				{
+					scope,
+					lessons: this.requireConductedLessons(request.sessionToken, scope.classId),
+					studentAccountIds: [request.studentAccountId]
+				}
+			]);
+		}
+
+		const teacherAccountId = request.teacherAccountId ??
+			(actor.role === 'teacher' ? actor.accountId : undefined);
+		if (!teacherAccountId || request.classId ||
+			(actor.role !== 'admin' && actor.role !== 'teacher') ||
+			(actor.role === 'teacher' && teacherAccountId !== actor.accountId)) {
+			throw new Error('not-authorized');
+		}
+
+		const registryFacts = this.centerScheduling.getRegistryFacts({ actor });
+		if (!registryFacts) {
+			throw new Error('not-authorized');
+		}
+
+		const assignedClassIds = registryFacts.assignments
+			.filter((assignment) => assignment.teacherAccountId === teacherAccountId)
+			.map((assignment) => assignment.classId);
+		if (assignedClassIds.length === 0) {
+			throw new Error('not-authorized');
+		}
+
+		const scopes = assignedClassIds.map((classId) => {
+			const scope = this.centerScheduling.getAuthorizedClassScope(
+				request.sessionToken,
+				classId
+			);
+			if (!scope) {
+				throw new Error('not-authorized');
+			}
+
+			return {
+				scope,
+				lessons: this.requireConductedLessons(request.sessionToken, classId),
+				studentAccountIds: scope.studentAccountIds
+			};
+		});
+
+		return this.calculateAttendancePercentage(scopes);
 	}
 
 	createHomework(request: {
@@ -537,6 +612,46 @@ export class LearningProgressBoundary {
 			throw new Error('lesson-not-found');
 		}
 		return lesson;
+	}
+
+	private requireConductedLessons(
+		sessionToken: string | undefined,
+		classId: string
+	): LessonView[] {
+		const lessons = this.centerScheduling.getLessons({ sessionToken, classId });
+		if (!lessons) {
+			throw new Error('not-authorized');
+		}
+		return lessons.filter((lesson) => lesson.status === 'completed');
+	}
+
+	private calculateAttendancePercentage(
+		scopes: Array<{
+			scope: AuthorizedClassScope;
+			lessons: LessonView[];
+			studentAccountIds: string[];
+		}>
+	): number {
+		let conductedSlots = 0;
+		let presentSlots = 0;
+
+		for (const { scope, lessons, studentAccountIds } of scopes) {
+			for (const lesson of lessons) {
+				for (const studentAccountId of studentAccountIds) {
+					conductedSlots += 1;
+					const attendance = this.getAttendanceRow(lesson.lessonId, studentAccountId);
+					if (
+						attendance?.center_id === scope.centerId &&
+						attendance.class_id === scope.classId &&
+						attendance.attendance === 'present'
+					) {
+						presentSlots += 1;
+					}
+				}
+			}
+		}
+
+		return conductedSlots === 0 ? 0 : (presentSlots / conductedSlots) * 100;
 	}
 
 	private requireClassStudent(scope: AuthorizedClassScope, studentAccountId: string): void {

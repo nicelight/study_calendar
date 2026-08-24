@@ -6,16 +6,16 @@ id: FT-007
 lifecycle: planned
 epic: EP-006
 requirements: [REQ-014, REQ-017]
-spec_design_status: complete
+spec_design_status: blocked
 spec_design_links:
   - .memory-bank/contracts/access-control.md
   - .memory-bank/contracts/authentication-transport.md
   - .memory-bank/contracts/boundary-map.md
   - .memory-bank/contracts/statistics-projection.md
   - .memory-bank/domains/core-domain.md
-clarification_status: complete
+clarification_status: blocked
 last_clarified: 2026-08-21
-clarification_questions: 1
+clarification_questions: 4
 last_updated: 2026-08-22
 ---
 # FT-007 — Navigation and Scoped Statistics
@@ -176,3 +176,108 @@ editing, password/provider management, membership controls, or persistence.
 Logout continues to use the existing server-owned `POST /auth/logout` contract.
 This is a feature-local clarification under REQ-014/REQ-017 and does not change
 the shared architecture or Planning Revision.
+
+## W27 account profile closure — 2026-08-22
+
+`TASK-094-T3-FT-007-W27` is durably `done` with fresh functional `PASS` and
+semantic `semantic-pass` evidence for `FT-007-AC-008 / REQ-014 / REQ-017`.
+The task evidence covers all supported account-creation paths, exact profile
+queries, atomic failure behavior, immutable registration time, revoked-session
+denial, and the accepted no-migration/no-backfill/no-fallback boundary.
+
+- [TASK-094 card](../tasks/TASK-094-T3-FT-007-W27.task.json)
+- [functional verification](../../.protocols/TASK-094-T3-FT-007-W27/verification.md)
+- [semantic verification](../../.protocols/TASK-094-T3-FT-007-W27/red-verification.md)
+- [W27 boundary sync](../../.tasks/TASK-094-T3-FT-007-W27/TASK-094-T3-FT-007-W27-S-MB-SYNC-final-report-docs-01.md)
+
+Identity & Access ownership, accepted canonical contracts, Planning Revision `2`,
+and FT-007/EP-006/RTM lifecycle values remain unchanged; no promotion,
+dependent transition, product, design, or lifecycle decision was applied by
+`/mb-sync`.
+
+## W28 navigation and registry-facts closure — 2026-08-22
+
+`TASK-079-T3-FT-007-W28` is durably `done` with current functional `PASS` and
+T3 semantic `semantic-pass` evidence for `FT-007-AC-001 / REQ-014 / REQ-017`.
+Its current evidence covers the server-authoritative protected shell, existing
+logout/session revocation, fail-closed disposable browser execution, ordinary
+real-database smoke separation, and exact success/failure cleanup. Historical
+Attempt 1/2 functional failures remain preserved as supporting correction
+history.
+
+- [TASK-079 card](../tasks/TASK-079-T3-FT-007-W28.task.json)
+- [functional verification](../../.protocols/TASK-079-T3-FT-007-W28/verification.md)
+- [semantic verification](../../.protocols/TASK-079-T3-FT-007-W28/red-verification.md)
+
+`TASK-095-T3-FT-007-W28` is durably `done` with current functional `PASS`, T3
+semantic `semantic-pass`, and Judge `SUPPORT` evidence for
+`FT-007-AC-009 / REQ-014 / REQ-017`. Its current evidence covers the
+server-resolved actor boundary, C&S-owned structural projection, role/scope
+denials, no-neighbor access, and read-only state preservation. The Attempt 1
+functional failure, Judge `REDIRECT`, retry evidence, and correction history
+remain preserved.
+
+- [TASK-095 card](../tasks/TASK-095-T3-FT-007-W28.task.json)
+- [functional verification](../../.protocols/TASK-095-T3-FT-007-W28/verification.md)
+- [semantic verification](../../.protocols/TASK-095-T3-FT-007-W28/red-verification.md)
+- [W28 boundary sync](../../.tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-MB-SYNC-final-report-docs-01.md)
+
+The W27 `TASK-094-T3-FT-007-W27` evidence route remains intact. Accepted
+canonical ownership, Planning Revision `2`, FT-007/EP-006/RTM lifecycle values,
+task dependencies, and scheduler checkpoint remain unchanged; no promotion,
+dependent transition, product, design, or lifecycle decision was applied by
+`/mb-sync`.
+
+## W29 Home/Classes and metric-provider closure — 2026-08-22
+
+`TASK-080-T3-FT-007-W29`, `TASK-089-T3-FT-007-W29`, and
+`TASK-090-T3-FT-007-W29` are durably `done` with current functional `PASS` and
+T3 semantic `semantic-pass` evidence for `FT-007-AC-002`, `FT-007-AC-006`, and
+`FT-007-AC-005` respectively, all under `REQ-014 / REQ-017`.
+
+- [TASK-080 card](../tasks/TASK-080-T3-FT-007-W29.task.json),
+  [functional verification](../../.protocols/TASK-080-T3-FT-007-W29/verification.md),
+  and [semantic verification](../../.protocols/TASK-080-T3-FT-007-W29/red-verification.md)
+  cover the corrected C&S-owned accessible-class query and role-scoped bare
+  Home/Classes destinations. Attempt 1 functional evidence, semantic failure,
+  Judge `REDIRECT`, and Attempt 2 correction evidence remain preserved as
+  history.
+- [TASK-089 card](../tasks/TASK-089-T3-FT-007-W29.task.json),
+  [functional verification](../../.protocols/TASK-089-T3-FT-007-W29/verification.md),
+  and [semantic verification](../../.protocols/TASK-089-T3-FT-007-W29/red-verification.md)
+  cover the Learning Progress conducted-lesson attendance projection. The
+  stalled verifier probes and recovery-first Judge `REDIRECT` remain preserved
+  as supporting history.
+- [TASK-090 card](../tasks/TASK-090-T3-FT-007-W29.task.json),
+  [functional verification](../../.protocols/TASK-090-T3-FT-007-W29/verification.md),
+  and [semantic verification](../../.protocols/TASK-090-T3-FT-007-W29/red-verification.md)
+  cover the Financial Ledger factual payment-capability projection. The initial
+  verifier-fixture failure remains preserved and is not task-outcome evidence.
+- [W29 boundary sync](../../.tasks/TASK-090-T3-FT-007-W29/TASK-090-T3-FT-007-W29-S-MB-SYNC-final-report-docs-01.md)
+
+The accepted Calendar and Membership, Personal Progress, Financial Projection,
+and Statistics Projection ownership remains unchanged. Planning Revision `2`
+and the current task-plan `APPROVE` remain authoritative. FT-007, EP-006,
+REQ-014, and REQ-017 remain `planned` because TASK-096 in W30 and TASK-097/098
+in W31 remain planned; no feature, epic, requirement, dependency, promotion,
+or scheduler transition was applied by `/mb-sync`.
+
+## Blocking registry clarification — 2026-08-22
+
+`FT-007-AC-003 / REQ-014 / REQ-017` still governs the complete scoped
+Students/Teachers/Classes projection, but accepted authority does not choose:
+
+- whether a Student with several class memberships appears once per
+  participant or once per student/class relation;
+- whether Teacher `studentCount` counts distinct student accounts or class
+  memberships;
+- whether a Teacher's Teachers registry contains only the current Teacher or
+  also co-teachers assigned to the returned classes.
+
+The questions are durably routed in
+[.protocols/FT-007/clarification.md](../../.protocols/FT-007/clarification.md).
+No answer is accepted by this unattended triage. Until the operator answers
+and `/feature-doctor FT-007` applies the result, `clarification_status` and
+`spec_design_status` remain `blocked`; all existing `FT-007-AC-*` IDs and REQ
+links, Planning Revision `2`, the current task-plan `APPROVE`, and task
+lifecycle state remain unchanged.

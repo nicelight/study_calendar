@@ -166,9 +166,11 @@ remain implementation details.
 - **Public surface:** return authorized center/class membership, teacher
   assignment, student/parent links, lesson identity/date/status, schedule facts,
   and the class context needed by a consumer; expose the authorized accessible
-  class list and read-only Students/Teachers/Classes registry facts required by
-  the Statistics Projection; accept owner-side center, membership, assignment,
-  and schedule commands.
+  class list (including the server-resolved class identity, center, name, and
+  mode needed to choose a permitted calendar destination) and read-only
+  Students/Teachers/Classes registry facts required by the Statistics
+  Projection; accept owner-side center, membership, assignment, and schedule
+  commands.
 - **Role-scoped class entry:** the protected
   `/center/{centerId}/class/{classId}` route consumes this boundary with the
   server-resolved actor. Admin, Teacher, Student, and Parent receive a class
@@ -181,17 +183,25 @@ remain implementation details.
   Class, membership, parent-link, assignment, schedule, and Lesson state.
 - **Allowed interaction:** consumers use scoped queries and named commands; the
   slice may call Identity & Access for account/invitation provisioning during
-  an admin-owned membership workflow.
-- **Failure/compatibility:** moved lessons retain identity and context; removed
-  assignments are denied at the next authorization check; unrelated recurring
-  lessons remain unchanged. A valid ISO date range and valid weekday selection
-  whose inclusive range yields zero recurring dates is rejected before any
-  Schedule or Lesson write, using the existing Admin transport failure
-  envelope `400 { error: 'invalid_schedule' }`.
+  an admin-owned membership workflow. A protected Home/Classes adapter may ask
+  for the complete accessible class list with the server-resolved actor and
+  then map each returned class to the existing canonical calendar route; the
+  adapter does not choose an arbitrary class or derive eligibility locally.
+- **Failure/compatibility:** an absent, invalid, revoked, cross-center, or
+  out-of-scope actor receives no accessible class list; removed assignments or
+  memberships are excluded at the next authorization check without revealing
+  unrelated class existence. Moved lessons retain identity and context;
+  unrelated recurring lessons remain unchanged. A valid ISO date range and
+  valid weekday selection whose inclusive range yields zero recurring dates is
+  rejected before any Schedule or Lesson write, using the existing Admin
+  transport failure envelope `400 { error: 'invalid_schedule' }`.
 - **Forbidden bypasses:** no consumer writes membership, assignment, lesson,
-  or schedule tables or reconstructs class authorization from a UI route.
+  or schedule tables, reconstructs class authorization from a UI route, or
+  turns a caller-supplied `classId` into authorization for a bare canonical
+  destination.
 - **Verification:** individual/group scheduling lifecycle, transfer identity,
-  cross-center membership, assignment removal, and historical access scenarios;
+  cross-center membership, assignment removal, historical access, and bare
+  Home/Classes accessible-list scenarios;
   a no-occurrence rejection probe compares schedule/Lesson state before and
   after the failed command and observes the exact `invalid_schedule` response;
   registry probes compare Admin own-center and Teacher assigned-class rows,

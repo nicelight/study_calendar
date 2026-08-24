@@ -9,14 +9,31 @@ export type ActorContext = {
 	role: Role;
 };
 
+export type AccountProfileInput = {
+	surname: string;
+	givenName: string;
+};
+
+export type AccountProfile = {
+	accountId: string;
+	fullName: string;
+	registeredAt: string;
+};
+
+export type CurrentActorProfile = AccountProfile & {
+	role: Role;
+};
+
 export type AccountProvisioning = {
 	accountId: string;
 	role: Role;
 	invitationToken: string;
+	surname: string;
+	givenName: string;
 	expiresAt?: string;
 };
 
-export type PasswordAccountProvisioning = {
+export type PasswordAccountProvisioning = AccountProfileInput & {
 	accountId: string;
 	role: Exclude<Role, 'admin'>;
 	email: string;
@@ -50,7 +67,7 @@ export type ProviderBindingSessionConfirmation = ProviderIdentity & {
 	sessionToken?: string;
 };
 
-export type FirstAdminBootstrap = {
+export type FirstAdminBootstrap = AccountProfileInput & {
 	email: string;
 	password: string;
 };
@@ -78,6 +95,19 @@ type InvitationRow = {
 type ActorRow = {
 	account_id: string;
 	role: Role;
+};
+
+type CurrentActorProfileRow = {
+	account_id: string;
+	full_name: string;
+	role: Role;
+	registered_at: string;
+};
+
+type AccountProfileRow = {
+	account_id: string;
+	full_name: string;
+	registered_at: string;
 };
 
 type ExternalIdentityRow = {
@@ -115,6 +145,7 @@ export class IdentityAccessBoundary {
 		if (typeof request?.password !== 'string' || request.password.length === 0) {
 			throw new Error('invalid-password');
 		}
+		const profile = this.createProfileFacts(request);
 
 		const salt = randomBytes(32);
 		const passwordHash = this.derivePasswordCredential(request.password, salt);
@@ -134,6 +165,7 @@ export class IdentityAccessBoundary {
 			this.database.sqlite
 				.prepare("INSERT INTO accounts (id, role) VALUES (?, 'admin')")
 				.run(accountId);
+			this.insertProfile(accountId, profile);
 			this.database.sqlite
 				.prepare(
 					'INSERT INTO password_credentials (account_id, email, salt, password_hash) VALUES (?, ?, ?, ?)'
@@ -288,6 +320,56 @@ export class IdentityAccessBoundary {
 		return row ? { accountId: row.account_id, role: row.role } : null;
 	}
 
+	getCurrentActorProfile(sessionToken: string | undefined): CurrentActorProfile | null {
+		if (!sessionToken) {
+			return null;
+		}
+
+		const row = this.database.sqlite
+			.prepare(`
+				SELECT accounts.id AS account_id, accounts.role AS role,
+					account_profiles.full_name AS full_name,
+					account_profiles.registered_at AS registered_at
+				FROM sessions
+				JOIN accounts ON accounts.id = sessions.account_id
+				JOIN account_profiles ON account_profiles.account_id = accounts.id
+				WHERE sessions.token = ? AND sessions.revoked_at IS NULL
+			`)
+			.get(sessionToken) as CurrentActorProfileRow | undefined;
+
+		return row
+			? {
+					accountId: row.account_id,
+					fullName: row.full_name,
+					role: row.role,
+					registeredAt: row.registered_at
+				}
+			: null;
+	}
+
+	getStatisticsProfiles(accountIds: string[]): AccountProfile[] {
+		const requestedAccountIds = [...new Set(accountIds.filter((accountId) => typeof accountId === 'string' && accountId))];
+		if (requestedAccountIds.length === 0) {
+			return [];
+		}
+
+		const placeholders = requestedAccountIds.map(() => '?').join(', ');
+		const rows = this.database.sqlite
+			.prepare(`
+				SELECT account_id, full_name, registered_at
+				FROM account_profiles
+				WHERE account_id IN (${placeholders})
+				ORDER BY account_id
+			`)
+			.all(...requestedAccountIds) as AccountProfileRow[];
+
+		return rows.map((row) => ({
+			accountId: row.account_id,
+			fullName: row.full_name,
+			registeredAt: row.registered_at
+		}));
+	}
+
 	getAccountEmail(accountId: string): string | null {
 		if (typeof accountId !== 'string' || accountId.length === 0) {
 			return null;
@@ -416,6 +498,24 @@ export class IdentityAccessBoundary {
 		}
 
 		return normalized;
+	}
+
+	private createProfileFacts(request: AccountProfileInput): { fullName: string; registeredAt: string } {
+		const surname = typeof request?.surname === 'string' ? request.surname.trim() : '';
+		const givenName = typeof request?.givenName === 'string' ? request.givenName.trim() : '';
+		if (!surname || !givenName) {
+			throw new Error('invalid-name');
+		}
+
+		return { fullName: `${surname} ${givenName}`, registeredAt: this.now().toISOString() };
+	}
+
+	private insertProfile(accountId: string, profile: { fullName: string; registeredAt: string }): void {
+		this.database.sqlite
+			.prepare(
+				'INSERT INTO account_profiles (account_id, full_name, registered_at) VALUES (?, ?, ?)'
+			)
+			.run(accountId, profile.fullName, profile.registeredAt);
 	}
 
 	private normalizePasswordEmailForAuthentication(email: unknown): string {

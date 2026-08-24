@@ -1,6 +1,7 @@
 import type {
 	CenterSchedulingBoundary,
 	AuthorizedClassScope,
+	CenterSchedulingRegistryFacts,
 	LessonView
 } from '$lib/server/modules/center-scheduling/public';
 import type {
@@ -14,7 +15,8 @@ import type {
 } from '$lib/server/modules/financial-ledger/public';
 import type {
 	IdentityAccessBoundary,
-	ActorContext
+	ActorContext,
+	AccountProfile
 } from '$lib/server/modules/identity-access/public';
 import type {
 	AttendanceView,
@@ -77,14 +79,50 @@ export type StudentLessonPaymentStatus = {
 	status: 'paid' | 'unpaid';
 };
 
-type LessonContextIdentityPort = Pick<IdentityAccessBoundary, 'resolveActor'>;
+export type StatisticsStudentRow = {
+	fullName: string;
+	registeredAt: string;
+	className: string;
+	parentNames: string[];
+	teacherNames: string[];
+	paymentCapabilityPercentage: number;
+	attendancePercentage: number;
+	institutionName: string;
+};
+
+export type StatisticsTeacherRow = {
+	fullName: string;
+	registeredAt: string;
+	classNames: string[];
+	attendancePercentage: number;
+	institutionName: string;
+	studentCount: number;
+};
+
+export type StatisticsClassRow = {
+	className: string;
+	institutionName: string;
+	studentCount: number;
+	teacherNames: string[];
+};
+
+export type StatisticsRegistryView = {
+	students: StatisticsStudentRow[];
+	teachers: StatisticsTeacherRow[];
+	classes: StatisticsClassRow[];
+};
+
+type LessonContextIdentityPort = Pick<
+	IdentityAccessBoundary,
+	'resolveActor' | 'getStatisticsProfiles'
+>;
 type LessonContextCalendarPort = Pick<
 	CenterSchedulingBoundary,
-	'getAuthorizedClassScope' | 'getLessons'
+	'getAuthorizedClassScope' | 'getLessons' | 'getRegistryFacts'
 >;
 type LessonContextProgressPort = Pick<
 	LearningProgressBoundary,
-	'getAttendance' | 'getGradeForLesson'
+	'getAttendance' | 'getGradeForLesson' | 'getAttendancePercentage'
 >;
 type LessonContextDiscussionPort = Pick<
 	CollaborationBoundary,
@@ -92,7 +130,7 @@ type LessonContextDiscussionPort = Pick<
 >;
 type LessonContextFinancialPort = Pick<
 	FinancialLedgerBoundary,
-	'getBalanceProjection' | 'getPaymentMarkers'
+	'getBalanceProjection' | 'getPaymentMarkers' | 'getPaymentCapability'
 >;
 
 type MaterialRow = {
@@ -294,6 +332,110 @@ export class LessonContextBoundary {
 			lessonId: lesson.lessonId,
 			status: paidLessons.has(lesson.lessonId) ? 'paid' : 'unpaid'
 		}));
+	}
+
+	getStatisticsRegistry(request: {
+		actor: ActorContext | null;
+		sessionToken?: string;
+	}): StatisticsRegistryView {
+		const facts = this.centerScheduling.getRegistryFacts({ actor: request.actor });
+		if (!facts) {
+			throw new Error('not-authorized');
+		}
+
+		const relevantAccountIds = this.getStatisticsAccountIds(facts);
+		const profiles = this.identityAccess.getStatisticsProfiles(relevantAccountIds);
+		const profilesByAccountId = new Map(
+			profiles.map((profile) => [profile.accountId, profile] as const)
+		);
+		if (profilesByAccountId.size !== relevantAccountIds.length) {
+			throw new Error('not-authorized');
+		}
+
+		const requireProfile = (accountId: string): AccountProfile => {
+			const profile = profilesByAccountId.get(accountId);
+			if (!profile) {
+				throw new Error('not-authorized');
+			}
+			return profile;
+		};
+		const institutionName = facts.institution.name;
+		const students = facts.classes.flatMap((classView) =>
+			classView.studentAccountIds.map((studentAccountId) => {
+				const profile = requireProfile(studentAccountId);
+				return {
+					fullName: profile.fullName,
+					registeredAt: profile.registeredAt,
+					className: classView.name,
+					parentNames: facts.parentLinks
+						.filter((link) => link.studentAccountId === studentAccountId)
+						.map((link) => requireProfile(link.parentAccountId).fullName),
+					teacherNames: classView.teacherAccountIds.map(
+						(teacherAccountId) => requireProfile(teacherAccountId).fullName
+					),
+					paymentCapabilityPercentage: this.financialLedger.getPaymentCapability({
+						sessionToken: request.sessionToken,
+						classId: classView.classId,
+						studentAccountId
+					}),
+					attendancePercentage: this.learningProgress.getAttendancePercentage({
+						sessionToken: request.sessionToken,
+						classId: classView.classId,
+						studentAccountId
+					}),
+					institutionName
+				};
+			})
+		);
+		const teacherAccountIds = [
+			...new Set(facts.classes.flatMap((classView) => classView.teacherAccountIds))
+		].filter(
+			(teacherAccountId) =>
+				request.actor?.role !== 'teacher' || teacherAccountId === request.actor.accountId
+		);
+		const teachers = teacherAccountIds.map((teacherAccountId) => {
+			const profile = requireProfile(teacherAccountId);
+			const assignedClasses = facts.classes.filter((classView) =>
+				classView.teacherAccountIds.includes(teacherAccountId)
+			);
+			return {
+				fullName: profile.fullName,
+				registeredAt: profile.registeredAt,
+				classNames: assignedClasses.map((classView) => classView.name),
+				attendancePercentage: this.learningProgress.getAttendancePercentage({
+					sessionToken: request.sessionToken,
+					teacherAccountId
+				}),
+				institutionName,
+				studentCount: assignedClasses.reduce(
+					(count, classView) => count + classView.studentCount,
+					0
+				)
+			};
+		});
+		const classes = facts.classes.map((classView) => ({
+			className: classView.name,
+			institutionName,
+			studentCount: classView.studentCount,
+			teacherNames: classView.teacherAccountIds.map(
+				(teacherAccountId) => requireProfile(teacherAccountId).fullName
+			)
+		}));
+
+		return { students, teachers, classes };
+	}
+
+	private getStatisticsAccountIds(facts: CenterSchedulingRegistryFacts): string[] {
+		const relevant = new Set([
+			...facts.classes.flatMap((classView) => classView.studentAccountIds),
+			...facts.classes.flatMap((classView) => classView.teacherAccountIds),
+			...facts.parentLinks.map((link) => link.parentAccountId)
+		]);
+		const scoped = facts.accountIds.filter((accountId) => relevant.has(accountId));
+		if (scoped.length !== relevant.size) {
+			throw new Error('not-authorized');
+		}
+		return scoped;
 	}
 
 	private findLesson(

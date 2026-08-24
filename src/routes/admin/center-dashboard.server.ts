@@ -47,6 +47,7 @@ type DashboardError =
 	| 'forbidden'
 	| 'invalid_request'
 	| 'invalid_name'
+	| 'invalid_profile_name'
 	| 'invalid_mode'
 	| 'invalid_schedule'
 	| 'schedule_conflict'
@@ -109,6 +110,9 @@ function actionError(cause: unknown): DashboardFailure {
 	}
 	if (message === 'invalid-class-name') {
 		return fail(400, { error: 'invalid_name' });
+	}
+	if (message === 'invalid-name') {
+		return fail(400, { error: 'invalid_profile_name' });
 	}
 	if (message === 'invalid-class-mode') {
 		return fail(400, { error: 'invalid_mode' });
@@ -330,7 +334,10 @@ export function createAdminDashboardActions(
 				return actionError(cause);
 			}
 			const formData = await event.request.formData();
-			const result = provisioning.provision(event, formData.get('role'));
+			const result = provisioning.provision(event, formData.get('role'), {
+				surname: formData.get('surname'),
+				givenName: formData.get('givenName')
+			});
 			if (!result.ok) {
 				return fail(result.status, { error: result.error });
 			}
@@ -358,6 +365,8 @@ export function createAdminDashboardActions(
 			const formData = await event.request.formData();
 			const result = provisioning.provisionPassword(event, {
 				role: formData.get('role'),
+				surname: formData.get('surname'),
+				givenName: formData.get('givenName'),
 				email: formData.get('email'),
 				password: formData.get('password'),
 				studentAccountId: formData.get('studentAccountId')

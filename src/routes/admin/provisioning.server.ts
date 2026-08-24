@@ -34,6 +34,7 @@ export type AdminProvisioningFailure = {
 	status: FailureStatus;
 	error:
 		| 'invalid_role'
+		| 'invalid_profile_name'
 		| 'invalid_email'
 		| 'invalid_password'
 		| 'invalid_parent_student'
@@ -61,6 +62,10 @@ type AdminProvisioningOptions = {
 
 function isParticipantRole(value: unknown): value is ParticipantRole {
 	return value === 'teacher' || value === 'student' || value === 'parent';
+}
+
+function profileName(value: unknown): string | null {
+	return typeof value === 'string' && value.trim() ? value : null;
 }
 
 function failure(
@@ -101,7 +106,11 @@ export class AdminProvisioningTransport {
 		return { centerId };
 	}
 
-	provision(event: AdminEvent, roleValue: unknown): AdminProvisioningResult {
+	provision(
+		event: AdminEvent,
+		roleValue: unknown,
+		profileFields: { surname?: unknown; givenName?: unknown } = {}
+	): AdminProvisioningResult {
 		const centerId = event.params.centerId;
 		if (!centerId) {
 			return failure(400, 'forbidden');
@@ -118,6 +127,11 @@ export class AdminProvisioningTransport {
 		if (!isParticipantRole(roleValue)) {
 			return failure(400, 'invalid_role');
 		}
+		const surname = profileName(profileFields.surname);
+		const givenName = profileName(profileFields.givenName);
+		if (!surname || !givenName) {
+			return failure(400, 'invalid_profile_name');
+		}
 
 		const accountId = `account_${randomBytes(16).toString('hex')}`;
 		const invitationToken = randomBytes(32).toString('base64url');
@@ -129,6 +143,8 @@ export class AdminProvisioningTransport {
 				centerId,
 				accountId,
 				role: roleValue,
+				surname,
+				givenName,
 				invitationToken,
 				expiresAt
 			});
@@ -153,6 +169,8 @@ export class AdminProvisioningTransport {
 		event: AdminEvent,
 		fields: {
 			role: unknown;
+			surname: unknown;
+			givenName: unknown;
 			email: unknown;
 			password: unknown;
 			studentAccountId?: unknown;
@@ -171,6 +189,9 @@ export class AdminProvisioningTransport {
 		if (!isParticipantRole(fields.role)) {
 			return failure(400, 'invalid_role');
 		}
+		const surname = profileName(fields.surname);
+		const givenName = profileName(fields.givenName);
+		if (!surname || !givenName) return failure(400, 'invalid_profile_name');
 
 		const email = typeof fields.email === 'string' ? fields.email.trim().toLowerCase() : '';
 		const password = typeof fields.password === 'string' ? fields.password : '';
@@ -191,6 +212,8 @@ export class AdminProvisioningTransport {
 				centerId,
 				accountId,
 				role: fields.role,
+				surname,
+				givenName,
 				email,
 				password,
 				studentAccountId

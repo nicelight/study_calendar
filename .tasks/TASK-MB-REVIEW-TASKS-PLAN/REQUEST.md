@@ -1,26 +1,25 @@
 # /review-tasks-plan FT-007
 
-- Роль: `GENERAL`; bounded rerun после предыдущего `REJECT`.
-- Текущий Global Backbone Planning Revision: `2`; revision совпадает с
-  предыдущим report.
-- Проверенный repair delta: добавлены атомарные `FT-007-AC-008` и
-  `FT-007-AC-009`, обновлены feature/RTM, сохранены TASK-079/080/089/090,
-  активная очередь заменена на TASK-094..098 для профильных/provider и
-  зависимых результатов, старые TASK-087/088/091..093 исключены из active
-  index.
-- Проверяемая surface: текущие 9 indexed FT-007 cards, feature, RTM,
-  implementation/protocol plans, direct canonical contracts, task schema,
-  Foundation dependencies и tier/execution-cohesion policies.
-- Co-review focus 1 refreshed: acceptance closure, exact claims, ownership,
-  dependency ownership и slicing; fresh `Codex Luna`/`xhigh` вернул candidate
-  `PASS`.
-- Co-review focus 2 refreshed: design/execution readiness, cross-slice edges,
-  hard write boundaries и T3 RED/GREEN proof scope; fresh reviewer был
-  запущен, но compact result не вернулся в bounded wait, поэтому focus
-  завершён локальной проверкой по тому же evidence.
-- `mb-doctor` не запускался: это semantic review, а не deterministic doctor.
-- Только этот REQUEST и итоговый report являются изменениями review; reviewed
-  feature, plan, task cards/index, specs, requirements, dependencies, statuses,
-  lifecycle и code review не изменяет.
-- Required final report:
+- Роль: `REVIEWER`; fresh replacement после зависшего предыдущего reviewer.
+- Режим: полный read-only review текущей post-reconciliation surface, Planning
+  Revision `2`.
+- Проверяемая delta: C&S accessible-class boundary extension; reconciliation
+  `TASK-080` и `TASK-098`; сохранение текущих done evidence для `TASK-079`,
+  `TASK-094`, `TASK-095`; полный набор 9 AC/REQ mappings.
+- Нормативная база: `AGENTS.md`, Reviewer role, полный `/review-tasks-plan`,
+  `references/finding-adjudication.md`, Constitution, MBB, spec backbone/index,
+  RTM, task schema, Foundation, execute-loop, tier policy, FT-007 feature,
+  implementation/protocol plans, all indexed FT-007 cards, dependency records,
+  direct canonical contracts and current task evidence.
+- Co-review focus A: acceptance closure, exact claims, AC/REQ ownership,
+  dependency ownership and execution cohesion/slicing.
+- Co-review focus B: design/execution readiness, C&S boundary extension,
+  `TASK-080`/`TASK-098` integration, hard scopes and T3 proof obligations.
+- Оба focus были запущены на `Codex Luna`/`xhigh`; после bounded 10-second wait
+  compact results не вернулись. Оба эквивалентных focus завершены локально по
+  тем же раздельным evidence scopes; дальнейшего ожидания не было.
+- Запрещённые действия не выполнялись: `mb-doctor`, execution, verification,
+  `red-verify`, `mb-sync`, lifecycle/promotion/selection и AUTONOMOUS-RUN не
+  изменялись.
+- Единственные допустимые review-записи: этот REQUEST и
   `TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-007-final-report-docs-01.md`.

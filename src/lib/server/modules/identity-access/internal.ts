@@ -12,11 +12,23 @@ export function createIdentityAccessProvisioningWriter(
 	now: () => Date = () => new Date()
 ): IdentityAccessProvisioningWriter {
 	return (provisioning) => {
+		const surname = typeof provisioning.surname === 'string' ? provisioning.surname.trim() : '';
+		const givenName = typeof provisioning.givenName === 'string' ? provisioning.givenName.trim() : '';
+		if (!surname || !givenName) {
+			throw new Error('invalid-name');
+		}
+		const fullName = `${surname} ${givenName}`;
+		const registeredAt = now().toISOString();
 		const expiresAt = provisioning.expiresAt ?? new Date(now().getTime() + 24 * 60 * 60 * 1000).toISOString();
 		database.transaction(() => {
 			database.sqlite
 				.prepare('INSERT INTO accounts (id, role) VALUES (?, ?)')
 				.run(provisioning.accountId, provisioning.role);
+			database.sqlite
+				.prepare(
+					'INSERT INTO account_profiles (account_id, full_name, registered_at) VALUES (?, ?, ?)'
+				)
+				.run(provisioning.accountId, fullName, registeredAt);
 			database.sqlite
 				.prepare(
 					"INSERT INTO invitations (token, account_id, status, expires_at) VALUES (?, ?, 'pending', ?)"
@@ -27,9 +39,15 @@ export function createIdentityAccessProvisioningWriter(
 }
 
 export function createIdentityAccessPasswordProvisioningWriter(
-	database: SharedDatabase
+	database: SharedDatabase,
+	now: () => Date = () => new Date()
 ): IdentityAccessPasswordProvisioningWriter {
 	return (provisioning) => {
+		const surname = typeof provisioning.surname === 'string' ? provisioning.surname.trim() : '';
+		const givenName = typeof provisioning.givenName === 'string' ? provisioning.givenName.trim() : '';
+		if (!surname || !givenName) {
+			throw new Error('invalid-name');
+		}
 		const email = typeof provisioning.email === 'string' ? provisioning.email.trim().toLowerCase() : '';
 		if (!email || !email.includes('@')) {
 			throw new Error('invalid-email');
@@ -40,13 +58,20 @@ export function createIdentityAccessPasswordProvisioningWriter(
 
 		const salt = randomBytes(32);
 		const passwordHash = scryptSync(provisioning.password, salt, 64);
-		database.sqlite
-			.prepare('INSERT INTO accounts (id, role) VALUES (?, ?)')
-			.run(provisioning.accountId, provisioning.role);
-		database.sqlite
-			.prepare(
-				'INSERT INTO password_credentials (account_id, email, salt, password_hash) VALUES (?, ?, ?, ?)'
-			)
-			.run(provisioning.accountId, email, salt, passwordHash);
+		database.transaction(() => {
+			database.sqlite
+				.prepare('INSERT INTO accounts (id, role) VALUES (?, ?)')
+				.run(provisioning.accountId, provisioning.role);
+			database.sqlite
+				.prepare(
+					'INSERT INTO account_profiles (account_id, full_name, registered_at) VALUES (?, ?, ?)'
+				)
+				.run(provisioning.accountId, `${surname} ${givenName}`, now().toISOString());
+			database.sqlite
+				.prepare(
+					'INSERT INTO password_credentials (account_id, email, salt, password_hash) VALUES (?, ?, ?, ?)'
+				)
+				.run(provisioning.accountId, email, salt, passwordHash);
+		});
 	};
 }

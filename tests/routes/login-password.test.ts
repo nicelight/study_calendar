@@ -66,6 +66,8 @@ describe('password login route', () => {
 		root = createCompositionRoot({ databaseFilename: ':memory:' });
 		root.identityAccess.bootstrapFirstAdmin({
 			email: 'admin@example.com',
+			surname: 'Admin',
+			givenName: 'First',
 			password: 'task-030-test-password'
 		});
 		const jar = cookieJar();
@@ -108,6 +110,8 @@ describe('password login route', () => {
 		root = createCompositionRoot({ databaseFilename: ':memory:' });
 		root.identityAccess.bootstrapFirstAdmin({
 			email: 'admin@example.com',
+			surname: 'Admin',
+			givenName: 'First',
 			password: 'task-030-test-password'
 		});
 		const action = createPasswordLoginActions(root.identityAccess).default;

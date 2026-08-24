@@ -1,7 +1,7 @@
 {
   "id": "TASK-090-T3-FT-007-W29",
   "title": "Expose the factual payment capability projection",
-  "status": "planned",
+  "status": "done",
   "wave": "W29",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -19,7 +19,36 @@
   "verify": [
     "FT-007-AC-005: payment capability counts only counted Payment Allocations whose factual payment date is strictly earlier than the actual lesson date.",
     "No counted allocations returns 0%; all on-time returns 100%; mixed, overdue, equal-date, advance, and unallocated cases follow the Financial Ledger contract.",
-    "The projection is read-only, scope-authorized, and does not reconstruct or mutate payment, allocation, charge, balance, or audit facts."
+    "The projection is read-only, scope-authorized, and does not reconstruct or mutate payment, allocation, charge, balance, or audit facts.",
+    "Independent functional /verify PASS: fresh disposable verifier probe passed 2/2 for the complete factual-date/formula, exclusion, authorization, accepted-provider-path, and non-mutation claim; all required current-state gates passed. Evidence: .protocols/TASK-090-T3-FT-007-W29/verification.md and .tasks/TASK-090-T3-FT-007-W29/TASK-090-T3-FT-007-W29-S-VERIFY-final-report-docs-01.md.",
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-090-T3-FT-007-W29/red-verification.md",
+      "artifact": ".tasks/TASK-090-T3-FT-007-W29/TASK-090-T3-FT-007-W29-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh separate adversarial review found no admitted material finding or operator question across allocation counting, strict current actual-date comparison, exclusions and cancellation, access scope, provider ownership, dependency direction, and source-state preservation.",
+        "Fresh bounded semantic subset passed 4 files / 10 tests in disposable state, and current implementation/test hashes matched functional evidence.",
+        "The current red-verification protocol contains exactly one SEMANTIC_VERDICT: semantic-pass."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-090-T3-FT-007-W29/handoff.md",
+        ".protocols/TASK-090-T3-FT-007-W29/verification.md",
+        ".protocols/TASK-090-T3-FT-007-W29/red-verification.md",
+        ".tasks/TASK-090-T3-FT-007-W29/execution-evidence.md",
+        ".tasks/TASK-090-T3-FT-007-W29/TASK-090-T3-FT-007-W29-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-090-T3-FT-007-W29/TASK-090-T3-FT-007-W29-S-RED-VERIFY-final-report-docs-01.md",
+        ".protocols/AUTONOMOUS-RUN/decision-log.md"
+      ],
+      "judge": "not_due: initial Attempt 1 verification path passed without retry; next Judge is the required complete W29 boundary consultation",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [

@@ -1,7 +1,7 @@
 {
   "id": "TASK-079-T3-FT-007-W28",
   "title": "Implement the protected navigation shell with fail-closed browser proof",
-  "status": "planned",
+  "status": "done",
   "wave": "W28",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -29,7 +29,49 @@
   "verify": [
     "FT-007-AC-001: every protected page receives one server-aware hamburger shell with exact Home, Classes, Statistics, Profile, and Logout controls; public and unauthenticated pages receive no protected actor data.",
     "The Logout control submits to the existing POST /auth/logout path, which revokes the server session, clears the cookie, redirects to /login, and denies the captured old token.",
-    "The task-owned disposable runner accepts only project tmp/*.db, starts an owned server with explicit DATABASE_URL, rejects server reuse and study-calendar.db, prepares the parent, and cleans the exact database after success or failure."
+    "The task-owned disposable runner accepts only project tmp/*.db, starts an owned server with explicit DATABASE_URL, rejects server reuse and study-calendar.db, prepares the parent, and cleans the exact database after success or failure.",
+    "Independent verification evidence: .protocols/TASK-079-T3-FT-007-W28/verification.md and .tasks/TASK-079-T3-FT-007-W28/TASK-079-T3-FT-007-W28-S-VERIFY-final-report-docs-01.md; shell/logout evidence is complete, while the failure cleanup probe observed a leftover SQLite -journal sidecar. Task lifecycle/status was not changed by /verify.",
+    "Current fresh retry verification: .protocols/TASK-079-T3-FT-007-W28/verification.md and .tasks/TASK-079-T3-FT-007-W28/TASK-079-T3-FT-007-W28-S-VERIFY-RETRY-final-report-docs-02.md. Shell, logout, path rejection, owned-server isolation, real-DB fingerprint, and all-four-sidecar success/failure cleanup probes passed; npm run e2e -- --list also selected the disposable-only spec, violating the unchanged ordinary real-database smoke anti-goal. VERDICT: FAIL. Lifecycle/status remains in_progress.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 3",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-079-T3-FT-007-W28/verification.md",
+      "artifact": ".tasks/TASK-079-T3-FT-007-W28/TASK-079-T3-FT-007-W28-S-VERIFY-final-report-docs-03.md",
+      "evidence": [
+        "Fresh verifier-owned SSR/layout, runner path/parent/stale-target, forced-failure four-sidecar cleanup, logout cookie/revocation, and owned-server browser probes passed.",
+        "Ordinary Playwright selection is exactly the two real-database specs; explicit DISPOSABLE_E2E selection is exactly ft-007-navigation.spec.ts; four serial owned runner invocations passed 1/1 and the real-database fingerprint was unchanged.",
+        "npm run check, npm run test (59 files / 189 tests), npm run build, git diff --check, mb-lint, and strict doctor passed. Attempt 1 and prior retry FAIL artifacts remain historical; lifecycle remains in_progress and T3 /red-verify is the next owner."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 3",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-079-T3-FT-007-W28/red-verification.md",
+      "artifact": ".tasks/TASK-079-T3-FT-007-W28/TASK-079-T3-FT-007-W28-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial server-boundary and runtime-isolation reviews found no material semantic finding; request-local actor projection, existing logout ownership/revocation, ordinary/disposable selection, unsafe path rejection, and four-sidecar exception cleanup were independently checked.",
+        "Historical Attempt 1/2 functional FAIL artifacts remain unchanged and historical; current Attempt 3 functional PASS and all required gates remain linked.",
+        "Independent semantic report: .tasks/TASK-079-T3-FT-007-W28/TASK-079-T3-FT-007-W28-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-079-T3-FT-007-W28/verification.md",
+        ".protocols/TASK-079-T3-FT-007-W28/red-verification.md",
+        ".tasks/TASK-079-T3-FT-007-W28/attempt-3-green.md",
+        ".tasks/TASK-079-T3-FT-007-W28/execution-evidence.md",
+        ".tasks/TASK-079-T3-FT-007-W28/TASK-079-T3-FT-007-W28-S-VERIFY-final-report-docs-03.md",
+        ".tasks/TASK-079-T3-FT-007-W28/TASK-079-T3-FT-007-W28-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: REDIRECT; closure authorized before completing remaining W28 task TASK-095",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/testing/strategy.md", ".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [

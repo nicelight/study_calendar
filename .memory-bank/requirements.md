@@ -435,3 +435,62 @@ because they also depend on other not-yet-verified features.
 
 - [FT-003 feature](features/FT-003-calendar-and-lesson-context.md)
 - [FT-003 semantic evidence](../.tasks/FT-003/FT-003-S-RED-VERIFY-final-report-docs-02.md)
+
+## FT-007 W27 task evidence route — 2026-08-22
+
+`TASK-094-T3-FT-007-W27` is durably `done` with independent functional `PASS`
+and semantic `semantic-pass` evidence for `FT-007-AC-008 / REQ-014 / REQ-017`.
+The card's supporting `REQ-001` and `REQ-003` references remain traceable, but
+no RTM lifecycle transition is inferred from this task boundary.
+
+- [TASK-094 card](tasks/TASK-094-T3-FT-007-W27.task.json)
+- [functional evidence](../.protocols/TASK-094-T3-FT-007-W27/verification.md)
+- [semantic evidence](../.protocols/TASK-094-T3-FT-007-W27/red-verification.md)
+- [sync evidence](../.tasks/TASK-094-T3-FT-007-W27/TASK-094-T3-FT-007-W27-S-MB-SYNC-final-report-docs-01.md)
+
+The RTM mappings, requirement lifecycles, feature/epic state, and historical
+task evidence remain unchanged.
+
+## FT-007 W28 task evidence route — 2026-08-22
+
+`TASK-079-T3-FT-007-W28` and `TASK-095-T3-FT-007-W28` are durably `done` with
+current functional `PASS` and T3 semantic `semantic-pass` evidence for
+`FT-007-AC-001` and `FT-007-AC-009` respectively. The W28 route preserves the
+task-specific correction history and the W27 `TASK-094` route above; no
+requirement lifecycle transition is inferred from these task boundaries.
+
+- [TASK-079 card](tasks/TASK-079-T3-FT-007-W28.task.json)
+- [TASK-079 functional evidence](../.protocols/TASK-079-T3-FT-007-W28/verification.md)
+- [TASK-079 semantic evidence](../.protocols/TASK-079-T3-FT-007-W28/red-verification.md)
+- [TASK-095 card](tasks/TASK-095-T3-FT-007-W28.task.json)
+- [TASK-095 functional evidence](../.protocols/TASK-095-T3-FT-007-W28/verification.md)
+- [TASK-095 semantic evidence](../.protocols/TASK-095-T3-FT-007-W28/red-verification.md)
+- [W28 sync evidence](../.tasks/TASK-095-T3-FT-007-W28/TASK-095-T3-FT-007-W28-S-MB-SYNC-final-report-docs-01.md)
+
+The RTM rows for `REQ-014` and `REQ-017`, their lifecycle values, feature/epic
+state, and all historical task evidence remain unchanged.
+
+## FT-007 W29 task evidence route — 2026-08-22
+
+`TASK-080-T3-FT-007-W29`, `TASK-089-T3-FT-007-W29`, and
+`TASK-090-T3-FT-007-W29` are durably `done` with current functional `PASS` and
+T3 semantic `semantic-pass` evidence for FT-007 Home/Classes scope, attendance
+percentage, and payment capability respectively. Their accepted requirement
+mapping remains `REQ-014 / REQ-017`.
+
+- [TASK-080 card](tasks/TASK-080-T3-FT-007-W29.task.json),
+  [functional evidence](../.protocols/TASK-080-T3-FT-007-W29/verification.md),
+  and [semantic evidence](../.protocols/TASK-080-T3-FT-007-W29/red-verification.md)
+- [TASK-089 card](tasks/TASK-089-T3-FT-007-W29.task.json),
+  [functional evidence](../.protocols/TASK-089-T3-FT-007-W29/verification.md),
+  and [semantic evidence](../.protocols/TASK-089-T3-FT-007-W29/red-verification.md)
+- [TASK-090 card](tasks/TASK-090-T3-FT-007-W29.task.json),
+  [functional evidence](../.protocols/TASK-090-T3-FT-007-W29/verification.md),
+  and [semantic evidence](../.protocols/TASK-090-T3-FT-007-W29/red-verification.md)
+- [W29 sync evidence](../.tasks/TASK-090-T3-FT-007-W29/TASK-090-T3-FT-007-W29-S-MB-SYNC-final-report-docs-01.md)
+
+Historical TASK-080 correction, TASK-089 verifier recovery, and TASK-090
+fixture-failure evidence remain preserved. The RTM rows for REQ-014 and REQ-017
+remain `planned`, as do FT-007 and EP-006, because the W30/W31 feature outcomes
+remain planned. No lifecycle, promotion, or dependent transition is inferred
+from the W29 task closures.

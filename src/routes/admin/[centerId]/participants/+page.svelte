@@ -15,8 +15,16 @@
 
 	<section class="card" aria-labelledby="create-participant-title">
 		<h2 id="create-participant-title">Новое приглашение</h2>
-		<form method="POST">
-			<label>
+			<form method="POST">
+				<label>
+					<span>Фамилия</span>
+					<input name="surname" required autocomplete="family-name" />
+				</label>
+				<label>
+					<span>Имя</span>
+					<input name="givenName" required autocomplete="given-name" />
+				</label>
+				<label>
 				<span>Роль участника</span>
 				<select name="role" required>
 					<option value="teacher">Учитель</option>

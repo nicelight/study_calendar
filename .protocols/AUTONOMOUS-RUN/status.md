@@ -6,19 +6,64 @@ status: active
 
 ## Checkpoint
 
-- STATE: `SUCCESS`
+- STATE: `HALT_CLARIFICATION_REQUIRED`
 - command: `/autopilot`
 - role: `ORCHESTRATOR/SCHEDULER`
 - planning revision: `2`
-- current phase: `terminal`
-- current task: `TASK-050-T3-FT-006-W26`
-- current stage: `terminal`
-- last durable child verdict/handoff: W26 `/mb-sync`, lint, strict doctor, and
-  tech-debt advisory — PASS; TASK-050 is `done`
-- next action: none
-- terminal reason: W26 is the terminal indexed product wave; no pending task or
-  dependent product task remains
-- reconciled at: `2026-08-18 17:00 +0500`
+- current phase: `product queue execution`
+- current task: `TASK-096-T3-FT-007-W30`
+- current stage: `red-verify`
+- last durable child verdict/handoff: fresh fixed-role Architect
+  `/feature-doctor FT-007` returned terminal result
+  `HALT_CLARIFICATION_REQUIRED` and durably recorded three operator-owned
+  choices in `.protocols/FT-007/clarification.md`. Scheduler then applied the
+  proven-authority-gap disposition: TASK-096 is authoritative `blocked`, and
+  its direct dependents TASK-097/098 are `blocked`; no execution or review
+  stage was replayed.
+- verifier recovery evidence: two fresh `/verify TASK-089-T3-FT-007-W29`
+  contexts independently produced focused probe evidence and gate results. The
+  first recorded a verifier-owned probe plus full suite `63 files / 208 tests`
+  PASS but stalled in `ep_poll/futex` before a durable verdict. The replacement
+  recorded a separate retry probe plus `check`, full suite `63/208`, build,
+  diff, mb-lint, and strict doctor PASS, then stalled at the required co-review
+  handoffs in `futex` without writing `VERDICT: PASS|FAIL|NEEDS-CLARIFICATION`.
+  Both exact Reviewer sessions were interrupted only after preserving their
+  artifacts; no verdict is inferred from probe or gate PASS.
+- recovery Judge: fresh `gpt-5.6-sol/xhigh` returned `REDIRECT` with
+  `trajectory_signal: progress`; durable T3 evidence is sufficient for
+  scheduler-owned TASK-089 closure, no Reviewer replay is required, and W29
+  remains open because TASK-090 is ready.
+- post-sync gates: scheduler `mb-lint` passed `74 files` with existing advisory
+  metadata warnings; strict doctor returned `status: pass`, 0 errors, 1 warning,
+  and 2 info. The warning identifies planned TASK-096 as the normal promotion
+  candidate.
+- planning review trigger: none; W29 changed only lifecycle evidence, RTM links,
+  changelog, and feature closure routing without changing verdict-relevant
+  specs/claims, slicing, proof obligations, dependencies, tier, scope, or plan
+  assumptions. Current FT-007 `APPROVE` at Planning Revision `2` survives.
+- advisory tech debt: one report completed at
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W29-2026-08-22.md`; it confirms two MEDIUM
+  recurrence signals (late bare-route semantic detection and verifier
+  finalization stalls) but no current production defect or queue blocker.
+- W29 boundary Judge: fresh `gpt-5.6-sol/xhigh` returned `SUPPORT` with
+  `trajectory_signal: progress`; W29 gates are complete and advisory findings
+  are not blockers. Conditions preserve Planning Revision `2`, current FT-007
+  `APPROVE`, budgets/history, sequential ownership, and fresh T3 child roles.
+- TASK-096 concern Judge: fresh `gpt-5.6-sol/xhigh` returned `SUPPORT` with
+  `trajectory_signal: progress`; `/autopilot` must invoke fresh
+  `/feature-doctor FT-007` before terminal disposition because unresolved
+  feature-related semantic concerns require owning-layer triage.
+- next action: none while halted. Exact resume route: the operator answers all
+  three TASK-096 questions in `.protocols/FT-007/clarification.md`, then reruns
+  `/feature-doctor FT-007`. Apply its accepted-answer route through
+  `/feature-to-tasks FT-007`, a fresh `/review-tasks-plan FT-007`, current
+  readiness gates, and `/autopilot` recovery before rerunning only the
+  applicable TASK-096 functional/semantic gates.
+- terminal reason: accepted product/spec authority does not decide Student row
+  cardinality, Teacher `studentCount` distinctness, or the Teacher viewer's
+  Teachers-registry rows. Evidence owner is the operator through
+  `/feature-doctor FT-007`; unattended recommendations are not consent.
+- reconciled at: `2026-08-22 20:09 +0500`
 
 ## Review and readiness gates
 
@@ -28,7 +73,8 @@ status: active
   evidence at Planning Revision `2`; the review repair budget/counters remain
   preserved and no automatic repair cycle was consumed by the accepted operator
   decision.
-- Strict doctor: `PASS` after TASK-040 acceptance trace reconciliation.
+- Strict doctor: `PASS` after FT-007 task-plan reconciliation and current
+  Review Revision 2; 0 errors, 0 warnings, 2 info.
 - Feature/task gates: TASK-039, TASK-040, and TASK-041 are `done`; current full
   test (32 files / 148 tests), check, build, real browser E2E, lint, strict doctor,
   and diff gates passed.
@@ -36,8 +82,10 @@ status: active
 ## Queue state
 
 - Authoritative index: [.memory-bank/tasks/index.json](../../.memory-bank/tasks/index.json).
-- Product queue: `44 done`, `3 terminal failed`, `0 planned`, `0 ready`,
-  `0 in_progress`, `0 blocked`.
+- Product queue: `48 done`, `3 terminal failed`, `0 planned`, `0 ready`,
+  `0 in_progress`, `3 blocked`; W29 boundary remains accepted. TASK-096 is
+  blocked by the confirmed FT-007 authority gap, and direct dependents
+  TASK-097/098 are blocked by policy before any promotion pass.
 - Current planning record: `TASK-039-T3-FT-003-W10` is `done` with done
   TASK-014 and TASK-037 dependencies. TASK-038 is terminal `failed` with
   explicit `superseded_by: TASK-039` evidence.
@@ -59,11 +107,17 @@ status: active
 
 ## Budgets and blockers
 
-- `max_retries_per_task: 2`; no retry was consumed by this run.
-- `max_consecutive_failures: 3`; current consecutive failures: `0`.
-- `max_open_blockers: 3`; current open blockers: `0`.
-- The operator-authorized stale-test reconciliation is durably recorded in the
-  TASK-039 lifecycle artifact; no unresolved product behavior branch remains.
+- `max_retries_per_task: 2`; TASK-079 used the initial attempt plus two bounded
+  retries; TASK-095 is authorized only retry 1 of 2 after its Attempt 1 FAIL;
+  no fourth attempt is permitted and all retry evidence is preserved.
+- `max_consecutive_failures: 3`; current consecutive failures: `0` after
+  successful TASK-079 closure.
+- `max_open_blockers: 3`; current open blockers: `3`. The limit is reached but
+  not exceeded; the exact clarification halt takes precedence and no promotion
+  pass is authorized.
+- The unresolved branch is feature-local FT-007 registry behavior and is
+  durably owned by `.protocols/FT-007/clarification.md`; unrelated historical
+  reconciliation remains preserved.
 
 ## Wave-boundary and technical debt
 
@@ -84,7 +138,11 @@ status: active
 - Task-specific RED: preserved expected failure, recorded in
   `.tasks/TASK-038-T3-FT-003-W10/attempt-1-red.md`.
 - Fresh task-plan review: `APPROVE`,
-  `REVIEWED_PLANNING_REVISION: 2`, evidence in the current review report.
+  `REVIEWED_PLANNING_REVISION: 2`, `ARCHITECTURE_REVIEW: not_required`; the
+  current report covers the post-reconciliation FT-007 surface.
+- Fresh strict doctor after reconciliation: `PASS`, 0 errors, 0 warnings, 2
+  info; queue summary is 56 indexed records, 47 done, 3 failed, 3 planned,
+  2 ready, 1 in_progress, 0 blocked (including the 2 done FT-000 records).
 - Full TASK-039 gates and both independent verdicts are green; strict doctor
   and wave-boundary sync remain after the lifecycle decision.
 
@@ -231,3 +289,34 @@ status: active
   `TASK-045-T3-FT-006-W23`; the remaining W23–W26 cards stay planned.
 - Failure budgets remain: retries used `0`, consecutive failures `0`, open
   blockers `0`.
+
+## Current `/autopilot` TASK-080 execution handoff — 2026-08-22
+
+- After W28 boundary Judge `SUPPORT`, stable index promotion selected
+  `TASK-080-T3-FT-007-W29`; the scheduler checkpoint entered `execute` and a
+  fresh Implementer was launched.
+- Implementer Attempt 1 proved claim-linked RED (missing route modules), then
+  GREEN for the accepted role-oriented `/home` and `/classes` destinations.
+  The implementation remains inside the task boundary and uses the existing
+  server authorization/query owners; no scheduler lifecycle or AUTONOMOUS-RUN
+  edits were made by the child.
+- Durable execution evidence: focused `13/13`, owned disposable E2E `1/1`
+  with exact cleanup, full Vitest `61/61 files` and `203/203 tests`,
+  `npm run check`, build, diff-check, mb-lint, and strict doctor all PASS.
+- Scheduler reconciled the checkpoint to `verify`; next action is a fresh
+  independent `/verify TASK-080-T3-FT-007-W29`, followed only after functional
+  PASS by the required separate T3 `/red-verify`.
+- Fresh functional `/verify` returned exactly one `VERDICT: PASS`; scheduler
+  reconciled the checkpoint to `red-verify` and routed the required separate
+  T3 semantic review. Task lifecycle remains `in_progress` until semantic
+  evidence and scheduler closure.
+- Fresh T3 `/red-verify` returned exactly one `SEMANTIC_VERDICT: semantic-fail`:
+  authorized Student/Parent shell navigation to bare `/home` and `/classes`
+  is denied, while query-qualified destinations pass. The scheduler moved to
+  `diagnose`; no closure, promotion, or implementation change is inferred.
+- Fresh Judge `gpt-5.6-sol/xhigh` returned `JUDGE_ASSESSMENT: REDIRECT` with
+  `trajectory_signal: owning_layer_drift`: the finding is not a safe route-only
+  retry because C&S lacks an accessible-class list query and is forbidden by
+  TASK-080's hard boundary. `/debug` is unnecessary because the cause is
+  known. The existing route is `/feature-doctor FT-007`, followed by any
+  authority-set reconciliation, fresh task-plan review, and readiness gates.

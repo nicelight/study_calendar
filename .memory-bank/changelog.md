@@ -4,6 +4,58 @@ status: active
 ---
 # Changelog
 
+## [2026-08-22] Wave W29 — FT-007 Home/Classes and metric providers
+
+- Reconciled `TASK-080-T3-FT-007-W29`, `TASK-089-T3-FT-007-W29`, and
+  `TASK-090-T3-FT-007-W29` from their authoritative `done` cards with current
+  functional `PASS` and T3 semantic `semantic-pass` evidence.
+- Updated FT-007 and requirements evidence routes for AC-002, AC-005, AC-006,
+  REQ-014, and REQ-017; the task registry already contained all three records.
+- Preserved TASK-080 Attempt 1 semantic-failure/Judge-redirect and Attempt 2
+  correction history, TASK-089 stalled-verifier/recovery history, and TASK-090
+  verifier-fixture failure history.
+- Confirmed the accepted canonical ownership, Planning Revision `2`, current
+  task-plan `APPROVE`, RTM values, feature/epic lifecycle, dependencies, and
+  routers remain consistent. FT-007, EP-006, REQ-014, and REQ-017 remain
+  `planned` while W30/W31 tasks remain planned.
+- Handoff: sync-local validation passed. Caller-owned scheduler `mb-lint`,
+  strict doctor, and subsequent scheduler passes remain outside `/mb-sync`; no
+  promotion, dependent unblock/block, lifecycle, product, design, or scheduler
+  checkpoint decision was made.
+
+## [2026-08-22] Wave W28 — FT-007 navigation and registry-facts closure
+
+- Reconciled `TASK-079-T3-FT-007-W28` and `TASK-095-T3-FT-007-W28` from their
+  authoritative `done` cards with current functional `PASS`, T3 semantic
+  `semantic-pass`, and the recorded Judge closure evidence.
+- Updated the FT-007 feature and RTM evidence routes; the task index already
+  contains TASK-079, TASK-094, and TASK-095, so no registry repair was needed.
+- Preserved TASK-094's W27 route and all historical W28 correction evidence,
+  including TASK-079 Attempt 1/2 failures and TASK-095 Attempt 1 failure,
+  Judge `REDIRECT`, and retry evidence.
+- Confirmed accepted canonical specs, Planning Revision `2`, RTM `REQ-014` /
+  `REQ-017` lifecycle values, feature/epic state, dependencies, and routers
+  remain consistent. No promotion, dependent unblock/block, lifecycle,
+  product, design, or scheduler checkpoint decision was made.
+- Handoff: sync-local validation passed. Caller-owned `mb-lint`, strict doctor,
+  subsequent scheduler passes, and advisory `/tech-debt wave W28` remain
+  outside `/mb-sync`.
+
+## [2026-08-22] Wave W27 — FT-007 account profile boundary closure
+
+- Reconciled `TASK-094-T3-FT-007-W27` as `done` with fresh functional `PASS`
+  and semantic `semantic-pass` evidence for `FT-007-AC-008 / REQ-014 / REQ-017`.
+- Updated FT-007 and requirements evidence routes with the authoritative task
+  card, current functional/semantic reports, and this W27 sync report; the
+  task index already contained TASK-094, so no registry repair was needed.
+- Confirmed the accepted profile, actor-context, provisioning, statistics,
+  domain, backbone, spec registry, and router links remain consistent.
+- Preserved all historical evidence, existing feature/epic/requirement
+  lifecycle values, and Planning Revision `2`; no promotion, dependent
+  unblock/block, lifecycle, product, design, or scheduler decision was made.
+- Handoff: sync-local validation passed. Caller-owned post-sync `mb-lint`,
+  strict doctor, and subsequent scheduler passes remain outside `/mb-sync`.
+
 ## [2026-08-20] FT-007 fresh-review blocker rebuild
 
 - Rebuilt the rejected unexecuted TASK-062 and TASK-065..069 subset as

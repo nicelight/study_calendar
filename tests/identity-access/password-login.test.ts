@@ -19,6 +19,8 @@ describe('password credential authentication boundary', () => {
 		const identityAccess = new IdentityAccessBoundary(database);
 		identityAccess.bootstrapFirstAdmin({
 			email: '  ADMIN@Example.COM  ',
+			surname: 'Admin',
+			givenName: 'First',
 			password: 'task-030-test-password'
 		});
 

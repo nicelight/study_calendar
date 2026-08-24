@@ -9,6 +9,8 @@ import { SharedDatabase } from '../src/lib/server/platform/database';
  * 	env?: Record<string, string | undefined>;
  * 	output?: { write: (value: string) => unknown };
  * 	promptEmailInput?: () => Promise<string>;
+ * 	promptSurnameInput?: () => Promise<string>;
+ * 	promptGivenNameInput?: () => Promise<string>;
  * 	promptPasswordInput?: () => Promise<string>;
  * 	createDatabase?: (filename: string) => SharedDatabase;
  * 	createIdentityAccess?: (database: SharedDatabase) => IdentityAccessBoundary;
@@ -22,22 +24,27 @@ export class BootstrapCancelledError extends Error {
 	}
 }
 
-/** @param {NodeJS.ReadStream} input @param {NodeJS.WriteStream} output */
-export async function promptEmail(input = process.stdin, output = process.stdout) {
+/** @param {string} label @param {NodeJS.ReadStream} input @param {NodeJS.WriteStream} output */
+export async function promptText(label, input = process.stdin, output = process.stdout) {
 	if (!input.isTTY || !output.isTTY) {
 		throw new Error('interactive-terminal-required');
 	}
 
 	const prompt = createInterface({ input, output, terminal: true });
 	try {
-		const email = await prompt.question('Email: ');
-		if (email.length === 0) {
+		const value = await prompt.question(`${label}: `);
+		if (value.trim().length === 0) {
 			throw new BootstrapCancelledError();
 		}
-		return email;
+		return value;
 	} finally {
 		prompt.close();
 	}
+}
+
+/** @param {NodeJS.ReadStream} input @param {NodeJS.WriteStream} output */
+export async function promptEmail(input = process.stdin, output = process.stdout) {
+	return promptText('Email', input, output);
 }
 
 /** @param {NodeJS.ReadStream} input @param {NodeJS.WriteStream} output */
@@ -108,6 +115,8 @@ export async function runBootstrapAdmin({
 	env = process.env,
 	output = process.stdout,
 	promptEmailInput = promptEmail,
+	promptSurnameInput = () => promptText('Surname'),
+	promptGivenNameInput = () => promptText('Given name'),
 	promptPasswordInput = promptHiddenPassword,
 	createDatabase = createSharedDatabase,
 	createIdentityAccess = createFirstAdminBoundary,
@@ -120,8 +129,10 @@ export async function runBootstrapAdmin({
 	const database = createDatabase(env.DATABASE_URL ?? 'study-calendar.db');
 	try {
 		const email = await promptEmailInput();
+		const surname = await promptSurnameInput();
+		const givenName = await promptGivenNameInput();
 		const password = await promptPasswordInput();
-		createIdentityAccess(database).bootstrapFirstAdmin({ email, password });
+		createIdentityAccess(database).bootstrapFirstAdmin({ email, surname, givenName, password });
 		output.write('Bootstrap complete.\n');
 	} finally {
 		if (closeDatabase) {

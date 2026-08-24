@@ -307,6 +307,8 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		const invitation = await api.inviteParticipant(
 			event(root, 'center-own', 'session-admin-own', [
 				['role', 'teacher'],
+				['surname', 'Invited'],
+				['givenName', 'Teacher'],
 				['centerId', 'center-other'],
 				['accountId', 'forged']
 			])
@@ -330,6 +332,8 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		const student = await api.createParticipant(
 			event(root, 'center-own', 'session-admin-own', [
 				['role', 'student'],
+				['surname', 'Student'],
+				['givenName', 'One'],
 				['email', 'student@example.com'],
 				['password', 'student-password']
 			])
@@ -342,6 +346,8 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		const parent = await api.createParticipant(
 			event(root, 'center-own', 'session-admin-own', [
 				['role', 'parent'],
+				['surname', 'Parent'],
+				['givenName', 'One'],
 				['email', 'parent@example.com'],
 				['password', 'parent-password'],
 				['studentAccountId', studentAccount.account_id]
@@ -367,6 +373,8 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		const duplicate = await api.createParticipant(
 			event(root, 'center-own', 'session-admin-own', [
 				['role', 'teacher'],
+				['surname', 'Duplicate'],
+				['givenName', 'Student'],
 				['email', 'student@example.com'],
 				['password', 'another-password']
 			])
@@ -376,6 +384,8 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		const nonAdmin = await api.createParticipant(
 			event(root, 'center-own', 'session-teacher-own', [
 				['role', 'teacher'],
+				['surname', 'Denied'],
+				['givenName', 'Teacher'],
 				['email', 'teacher@example.com'],
 				['password', 'teacher-password']
 			])

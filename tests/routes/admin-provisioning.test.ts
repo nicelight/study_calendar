@@ -73,18 +73,20 @@ function providerRequestEvent(
 }
 
 function formRequest(url: string, fields: Record<string, string>): Request {
+	const profileFields = { surname: 'Test', givenName: 'Participant', ...fields };
 	return new Request(url, {
 		method: 'POST',
 		headers: { 'content-type': 'application/x-www-form-urlencoded' },
-		body: new URLSearchParams(fields)
+		body: new URLSearchParams(profileFields)
 	});
 }
 
 function jsonRequest(url: string, body: Record<string, unknown>): Request {
+	const profileFields = { surname: 'Test', givenName: 'Participant', ...body };
 	return new Request(url, {
 		method: 'POST',
 		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify(body)
+		body: JSON.stringify(profileFields)
 	});
 }
 
@@ -358,8 +360,9 @@ describe('protected Admin participant transport', () => {
 				root,
 				transport,
 				formRequest('https://calendar.test/admin/center-own/participants', { role: 'parent' })
-			),
-			'parent'
+				),
+				'parent',
+				{ surname: 'Parent', givenName: 'Invited' }
 		);
 		expect(result.ok).toBe(true);
 		if (!result.ok) return;
@@ -386,8 +389,9 @@ describe('protected Admin participant transport', () => {
 				root,
 				transport,
 				formRequest('https://calendar.test/admin/center-own/participants', { role: 'teacher' })
-			),
-			'teacher'
+				),
+				'teacher',
+				{ surname: 'Teacher', givenName: 'Duplicate' }
 		);
 		expect(duplicateResult.ok).toBe(true);
 		if (!duplicateResult.ok) return;
@@ -430,7 +434,8 @@ describe('protected Admin participant transport', () => {
 					transport,
 					formRequest('https://calendar.test/admin/center-own/participants', { role: 'student' })
 				),
-				'student'
+				'student',
+				{ surname: 'Student', givenName: status }
 			);
 			expect(result.ok).toBe(true);
 			if (!result.ok) continue;
@@ -467,8 +472,9 @@ describe('protected Admin participant transport', () => {
 				root,
 				transport,
 				formRequest('https://calendar.test/admin/center-own/participants', { role: 'student' })
-			),
-			'student'
+				),
+				'student',
+				{ surname: 'Rollback', givenName: 'Student' }
 		);
 		expect(rollback).toEqual({ ok: false, status: 500, error: 'provisioning_failed' });
 		expect(state(root)).toEqual(before);

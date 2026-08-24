@@ -46,13 +46,15 @@ attendance transition or financial allocation semantics.
   [.memory-bank/contracts/access-control.md](../../contracts/access-control.md),
   [.memory-bank/domains/core-domain.md](../../domains/core-domain.md).
 
-## Rebuilt queue
+## Reconciled queue
 
-Queue action is `rebuild_required`. The accepted nine-outcome slicing is
-unchanged. TASK-079, TASK-080, TASK-089, and TASK-090 retain their identities;
-the planned profile/provider cards and their dependent cards are replaced by
-TASK-094..098 because exact AC or dependency mapping changed. No replacement
-inherits evidence.
+Queue action is `reconciled` after the fresh feature-doctor completion. The
+accepted nine-outcome slicing is unchanged. All existing FT-007 task identities,
+tiers, waves, lifecycles, and evidence routes remain in place; TASK-080 remains
+`in_progress`, while TASK-079, TASK-094, and TASK-095 retain their current
+closed evidence. No task inherits another task's proof. The bounded repair
+extends TASK-080 to the accepted C&S accessible-class public query and adds the
+completed TASK-095 provider baseline as a direct prerequisite.
 
 The profile correction uses the exact Access Control `Profile creation and
 query obligation`. It covers all supported new-account paths through the
@@ -84,7 +86,7 @@ unchanged.
 | W27 | TASK-094-T3-FT-007-W27 | all-path Internal Account profile facts and profile queries, including C&S direct-password seam, AC-008 | TASK-015-T3-FT-001-W2; TASK-029-T3-FT-001-W13; TASK-040-T3-FT-001-W20 |
 | W28 | TASK-079-T3-FT-007-W28 | protected shell, existing logout integration, disposable proof, AC-001 | TASK-002-T3-FT-000-W1; TASK-020-T3-FT-001-W9; TASK-035-T3-FT-002-W19 |
 | W28 | TASK-095-T3-FT-007-W28 | Center & Scheduling scoped registry facts query, AC-009 | TASK-006-T2-FT-002-W4 |
-| W29 | TASK-080-T3-FT-007-W29 | `/home` and `/classes` role/scope outcome, AC-002 | TASK-079-T3-FT-007-W28; TASK-035-T3-FT-002-W19; TASK-026-T3-FT-002-W12 |
+| W29 | TASK-080-T3-FT-007-W29 | C&S accessible-class query plus `/home` and `/classes` role/scope outcome, AC-002 | TASK-079-T3-FT-007-W28; TASK-095-T3-FT-007-W28; TASK-035-T3-FT-002-W19; TASK-026-T3-FT-002-W12 |
 | W29 | TASK-089-T3-FT-007-W29 | Learning Progress attendance projection over accepted actor/C&S edges, AC-006 | TASK-042-T3-FT-005-W22; TASK-006-T2-FT-002-W4 |
 | W29 | TASK-090-T3-FT-007-W29 | Financial Ledger payment projection over accepted actor/C&S edges, AC-005 | TASK-045-T3-FT-006-W23; TASK-046-T3-FT-006-W23 |
 | W30 | TASK-096-T3-FT-007-W30 | `/statistics` Lesson Context composition, AC-003 | TASK-094-T3-FT-007-W27; TASK-079-T3-FT-007-W28; TASK-095-T3-FT-007-W28; TASK-089-T3-FT-007-W29; TASK-090-T3-FT-007-W29 |
@@ -104,8 +106,10 @@ onto a provider card.
 
 Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
 gates, and only its own ownership evidence. TASK-079 implements the disposable
-runner while proving AC-001; TASK-080, TASK-097, and TASK-098 reuse it for their
-own focused browser claims. Provider and composition cards use isolated
+runner while proving AC-001; TASK-080 now also owns an isolated C&S
+accessible-list provider probe and reuses the runner for its own focused browser
+claim. TASK-097 and TASK-098 continue to reuse the runner without inheriting
+TASK-079 or TASK-080 evidence. Provider and composition cards use isolated
 database/route tests. No card inherits dependency proof.
 
 ## Planning Revision and Foundation

@@ -1,7 +1,7 @@
 {
   "id": "TASK-094-T3-FT-007-W27",
   "title": "Establish Internal Account profile facts and profile queries",
-  "status": "planned",
+  "status": "done",
   "wave": "W27",
   "feature": "FT-007",
   "reqs": ["REQ-001", "REQ-003", "REQ-014", "REQ-017"],
@@ -32,7 +32,45 @@
   "verify": [
     "Every supported new target-account path — first bootstrap Admin, invitation participant, and direct-password participant — requires surname and given name and atomically stores trimmed fullName plus immutable server-generated registeredAt.",
     "The current-actor profile query returns only accountId, fullName, role, and registeredAt for a valid session; the statistics profile query returns only accountId, fullName, and registeredAt for requested account IDs.",
-    "Invalid, duplicate, revoked, or failed paths leave account, credential/invitation, profile, membership, and session state unchanged; no migration, backfill, or fallback name is introduced."
+    "Invalid, duplicate, revoked, or failed paths leave account, credential/invitation, profile, membership, and session state unchanged; no migration, backfill, or fallback name is introduced.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-094-T3-FT-007-W27/verification.md",
+      "artifact": ".tasks/TASK-094-T3-FT-007-W27/verification-evidence.md",
+      "evidence": [
+        "Fresh verifier-owned disposable probe passed bootstrap, invitation, direct-password student/parent, exact projections, immutable timestamps, revoked denial, invalid/duplicate/forced rollback, and legacy exclusion.",
+        "Fresh focused and targeted Vitest checks passed: 1 file / 4 tests and 5 files / 29 tests; npm run check, npm run test (57 files / 181 tests), build, git diff --check, mb-lint, and strict doctor passed.",
+        "Independent functional report: .protocols/TASK-094-T3-FT-007-W27/verification.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-094-T3-FT-007-W27/red-verification.md",
+      "artifact": ".tasks/TASK-094-T3-FT-007-W27/TASK-094-T3-FT-007-W27-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial review covered ownership, authorization, exact projections, atomic failure paths, hard boundary, and no migration/backfill/fallback/legacy behavior.",
+        "Two independent Codex Luna co-review focus reports returned no candidate findings; no operator question was required.",
+        "Independent semantic report: .tasks/TASK-094-T3-FT-007-W27/TASK-094-T3-FT-007-W27-S-RED-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-094-T3-FT-007-W27/verification.md",
+        ".protocols/TASK-094-T3-FT-007-W27/red-verification.md",
+        ".tasks/TASK-094-T3-FT-007-W27/execution-evidence.md",
+        ".tasks/TASK-094-T3-FT-007-W27/verification-evidence.md",
+        ".tasks/TASK-094-T3-FT-007-W27/TASK-094-T3-FT-007-W27-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [

@@ -1,7 +1,7 @@
 {
   "id": "TASK-096-T3-FT-007-W30",
   "title": "Compose the profile-enriched Statistics destination",
-  "status": "planned",
+  "status": "blocked",
   "wave": "W30",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -25,7 +25,38 @@
   "verify": [
     "FT-007-AC-003: /statistics presents complete Students, Teachers, and Classes rows with permitted profile, Center & Scheduling, attendance, and payment fields for Admin own-center and Teacher assigned-class scope.",
     "Lesson Context obtains authorized account IDs from Center & Scheduling before profile enrichment, then consumes only the accepted Identity & Access, Learning Progress, and Financial Ledger queries; Student/Parent, guessed-route, cross-center, and removed-assignment cases return safe denial.",
-    "The route remains a transport/presentation adapter over serializable Lesson Context output, and all provider facts remain unchanged."
+    "The route remains a transport/presentation adapter over serializable Lesson Context output, and all provider facts remain unchanged.",
+    "Independent functional PASS: fresh focused 13/13 and verifier-owned 7/7 probes plus check, full test 66/223, build, diff, mb-lint, and strict-doctor gates prove AC-003 call path, complete rows, denial matrix, thin route, hard-boundary/anti-goal compliance, and non-mutation; see .protocols/TASK-096-T3-FT-007-W30/verification.md and .tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-01.md.",
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-concern",
+      "report": ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
+      "artifact": ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh separate semantic review proved no unambiguous authorization, provider-ownership, mutation, or serialization defect, but found reachable multi-class and co-teacher interpretations not decided by accepted authority.",
+        "The current red-verification protocol contains exactly one SEMANTIC_VERDICT: semantic-concern; it does not increment the unsuccessful-attempt or retry budget.",
+        "Fresh /feature-doctor FT-007 confirmed that Student row cardinality, Teacher studentCount distinctness, and Teacher-registry row selection require operator decisions."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_disposition",
+      "decision": "blocked",
+      "cause": "proven feature-authority gap",
+      "halt": "HALT_CLARIFICATION_REQUIRED",
+      "accepted_evidence": [
+        ".protocols/TASK-096-T3-FT-007-W30/verification.md",
+        ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
+        ".protocols/FT-007/clarification.md",
+        ".memory-bank/features/FT-007-navigation-and-statistics.md",
+        ".protocols/AUTONOMOUS-RUN/decision-log.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; invoke fresh /feature-doctor FT-007 before disposition and block on a confirmed unresolved authority gap",
+      "owner": "operator via /feature-doctor FT-007",
+      "resume": "Answer all three TASK-096 questions in .protocols/FT-007/clarification.md, then rerun /feature-doctor FT-007; follow its authority-set reconciliation route before any applicable TASK-096 gates are rerun.",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [

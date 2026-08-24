@@ -1,14 +1,16 @@
 {
   "id": "TASK-080-T3-FT-007-W29",
-  "title": "Implement role-oriented Home and Classes destinations",
-  "status": "planned",
+  "title": "Implement role-oriented Home and Classes destinations with C&S accessible-class selection",
+  "status": "done",
   "wave": "W29",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
-  "depends_on": ["TASK-079-T3-FT-007-W28", "TASK-035-T3-FT-002-W19", "TASK-026-T3-FT-002-W12"],
+  "depends_on": ["TASK-079-T3-FT-007-W28", "TASK-095-T3-FT-007-W28", "TASK-035-T3-FT-002-W19", "TASK-026-T3-FT-002-W12"],
   "touched_files": [
+    "src/lib/server/modules/center-scheduling/public.ts",
     "src/routes/home/",
     "src/routes/classes/",
+    "tests/center-scheduling/ft-007-accessible-class-list.test.ts",
     "tests/routes/ft-007-home-classes.test.ts",
     "e2e/ft-007-home-classes.spec.ts"
   ],
@@ -17,6 +19,7 @@
     {"name": "check", "command": "npm run check", "required": true},
     {"name": "test", "command": "npm run test", "required": true},
     {"name": "build", "command": "npm run build", "required": true},
+    {"name": "accessible-class-provider", "command": "npm run test -- tests/center-scheduling/ft-007-accessible-class-list.test.ts", "required": true},
     {"name": "e2e-home-classes", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-007-home-classes.db --spec e2e/ft-007-home-classes.spec.ts", "required": true},
     {"name": "diff", "command": "git diff --check", "required": true},
     {"name": "mb-lint", "command": "node scripts/mb-lint.mjs", "required": true},
@@ -25,17 +28,59 @@
   "verify": [
     "FT-007-AC-002: /home and /classes consume server-resolved actor and Center & Scheduling scope to present Admin own-center, Teacher assigned-class, and Student/Parent accessible-calendar destinations.",
     "Unauthenticated, revoked, cross-center, cross-class, non-member, and removed-assignment requests fail before protected destination data renders.",
-    "Both routes are read-only adapters, never reconstruct provider scope, and pass their own disposable browser role/scope matrix."
+    "Both routes are read-only adapters, never reconstruct provider scope, and pass their own disposable browser role/scope matrix.",
+    "The C&S accessible-class query supplies the complete server-authorized Student/Parent destination list for bare canonical routes; it returns only C&S-owned class facts and remains separate from AC-009 registry metrics/profile composition.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-080-T3-FT-007-W29/verification.md",
+      "artifact": ".tasks/TASK-080-T3-FT-007-W29/TASK-080-T3-FT-007-W29-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned probe passed 1 file / 6 tests for C&S accessible-class enumeration, bare /home and /classes, non-expanding classId filtering, Admin/Teacher scope, denial and removed-assignment paths, non-mutation, provider ownership, and destination owners.",
+        "Independent provider and route gates passed 1/1 and 13/13; disposable browser E2E passed 1/1 with exact database/sidecar cleanup; full suite passed 62 files / 204 tests; check, build, diff, mb-lint, and strict doctor passed.",
+        "Attempt 1 evidence and the historical semantic-fail remain preserved as supporting correction history; the current report contains exactly one VERDICT: PASS."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-080-T3-FT-007-W29/red-verification.md",
+      "artifact": ".tasks/TASK-080-T3-FT-007-W29/TASK-080-T3-FT-007-W29-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh T3 adversarial review passed the current provider/route probes and two independent Codex Luna xhigh co-reviews after bounded recovery, with no material finding or operator question.",
+        "Coverage confirmed complete authorized Student/Parent enumeration, no scope expansion from caller classId, Admin/Teacher mappings, denial/revocation/cross-center/non-member paths, request-local actor use, provider/destination ownership, and no route database access or writes.",
+        "The current protocol and report each contain exactly one SEMANTIC_VERDICT: semantic-pass; prior semantic-fail remains preserved as historical correction evidence."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-080-T3-FT-007-W29/verification.md",
+        ".protocols/TASK-080-T3-FT-007-W29/red-verification.md",
+        ".protocols/TASK-080-T3-FT-007-W29/handoff.md",
+        ".tasks/TASK-080-T3-FT-007-W29/execution-evidence.md",
+        ".tasks/TASK-080-T3-FT-007-W29/TASK-080-T3-FT-007-W29-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-080-T3-FT-007-W29/TASK-080-T3-FT-007-W29-S-RED-VERIFY-final-report-docs-01.md",
+        ".protocols/AUTONOMOUS-RUN/decision-log.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; recommended_route: scheduler closure and canonical sequential W29 selection",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002 / REQ-014 / REQ-017 RED: /home or /classes trusts client scope, omits an allowed destination, exposes unauthorized center/class data, or permits removed assignment; GREEN: focused route and owned-server browser tests prove both canonical routes, the full role/scope matrix, safe denial, and non-mutation; artifact: .tasks/TASK-080-T3-FT-007-W29/ and .protocols/TASK-080-T3-FT-007-W29/."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002 / REQ-014 / REQ-017 RED: the C&S accessible-class query is absent or route-owned, bare /home or /classes over-denies an authorized Student/Parent, trusts caller-selected scope, omits an allowed destination, exposes unauthorized center/class data, or permits removed assignment; GREEN: isolated C&S provider and route tests plus owned-server browser tests prove the complete bare-route role/scope matrix, safe denial, no provider bypass, and non-mutation; artifact: .tasks/TASK-080-T3-FT-007-W29/ and .protocols/TASK-080-T3-FT-007-W29/."
   ],
-  "purpose": "Deliver the accepted Home/Classes role-oriented navigation outcome as one server-scoped implementation result.",
-  "success_outcome": "Each supported role can open /home and /classes and see only the center/class destinations currently authorized by server boundaries.",
+  "purpose": "Deliver the accepted Home/Classes role-oriented navigation outcome as one server-scoped implementation result, including the C&S-owned accessible-class selection needed by bare canonical routes.",
+  "success_outcome": "Each supported role can open /home and /classes and see only the center/class destinations currently authorized by server boundaries; Student/Parent bare routes receive the complete accessible class list from C&S without caller-selected authorization.",
   "anti_goals": [
     "Do not implement Statistics, Profile, or provider formulas.",
-    "Do not read Center & Scheduling tables directly from routes.",
+    "Do not read Center & Scheduling tables directly from routes, return Identity & Access profile fields or metric fields from the accessible-class query, or claim AC-009 registry ownership.",
     "Do not add a role, membership, assignment, or client authority."
   ],
   "source_artifacts": [
@@ -61,29 +106,32 @@
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
   "constraints": [
-    "Both pages are thin adapters over the same server-resolved destination scope and together own AC-002.",
+    "Center & Scheduling owns the accessible-class enumeration/list selection; both pages are thin adapters over that server-resolved destination scope and together own AC-002.",
     "The existing class calendar and class-entry routes remain destination owners.",
+    "The C&S extension is a read-only public query over existing membership, parent-link, assignment, and class facts; it does not change source ownership or introduce a new graph edge.",
     "Browser proof reuses TASK-079's executable runner but proves only this task's role/scope result."
   ],
   "invariants": [
     "Server actor, center membership, class membership, and assignment are decisive.",
+    "Bare Student/Parent routes enumerate only the classes returned by the server-resolved C&S accessible-class query; no arbitrary first class or caller-supplied classId is authorization.",
     "Removed assignment is denied at the next request without unrelated data disclosure.",
-    "Home and Classes add no writes or provider-table access."
+    "Home and Classes add no writes; routes do not access provider tables, and the C&S query returns no profile or metric facts."
   ],
   "verification_targets": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002: Admin/Teacher/Student/Parent positive destinations plus cross-center/class, non-member, revoked, and removed-assignment negatives on both routes."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-002: C&S accessible-class enumeration plus Admin/Teacher/Student/Parent positive destinations, bare canonical /home and /classes access, and cross-center/class, non-member, revoked, and removed-assignment negatives on both routes."
   ],
   "runtime_context": {
     "write_boundary": [
+      "src/lib/server/modules/center-scheduling/public.ts",
       "src/routes/home/",
       "src/routes/classes/",
+      "tests/center-scheduling/ft-007-accessible-class-list.test.ts",
       "tests/routes/ft-007-home-classes.test.ts",
       "e2e/ft-007-home-classes.spec.ts",
       "tmp/ft-007-home-classes.db"
     ],
     "forbidden_scope": [
       "src/lib/server/modules/identity-access/",
-      "src/lib/server/modules/center-scheduling/",
       "src/lib/server/modules/learning-progress/",
       "src/lib/server/modules/financial-ledger/",
       "src/routes/statistics/",
@@ -91,8 +139,9 @@
       "study-calendar.db"
     ],
     "stop_conditions": [
-      "Stop if either route requires a new public query, role, membership, assignment, or authorization contract.",
-      "Stop if route code must read provider tables or browser proof cannot remain disposable."
+      "Stop if the accessible-class query requires a new capability slice, graph edge, source-of-truth owner, role, membership, assignment, or authorization rule beyond the accepted Calendar and Membership Query Boundary.",
+      "Stop if either route must select authorization locally, read provider tables, or if the query returns profile, attendance, payment, or composed registry fields.",
+      "Stop if browser proof cannot remain disposable."
     ]
   }
 }

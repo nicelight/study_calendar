@@ -28,6 +28,8 @@ describe('bootstrap-admin local CLI adapter', () => {
 			env: { DATABASE_URL: ':memory:' },
 			output,
 			promptEmailInput: async () => '  ADMIN@example.com ',
+			promptSurnameInput: async () => '  Admin ',
+			promptGivenNameInput: async () => ' First ',
 			promptPasswordInput: async () => password,
 			createDatabase: () => database,
 			closeDatabase: false
@@ -60,6 +62,8 @@ describe('bootstrap-admin local CLI adapter', () => {
 			runBootstrapAdmin({
 				argv: [],
 				promptEmailInput: async () => 'admin@example.com',
+				promptSurnameInput: async () => 'Admin',
+				promptGivenNameInput: async () => 'First',
 				promptPasswordInput: async () => {
 					throw new BootstrapCancelledError();
 				},
@@ -78,6 +82,8 @@ describe('bootstrap-admin local CLI adapter', () => {
 			argv: [],
 			output: { write: vi.fn() },
 			promptEmailInput: async () => 'admin@example.com',
+			promptSurnameInput: async () => 'Admin',
+			promptGivenNameInput: async () => 'First',
 			promptPasswordInput: async () => 'task-029-cli-test-password',
 			createDatabase: () => database,
 			closeDatabase: false

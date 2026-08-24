@@ -1,7 +1,7 @@
 {
   "id": "TASK-098-T3-FT-007-W31",
   "title": "Implement the bounded Profile destination and canonical-route proof",
-  "status": "planned",
+  "status": "blocked",
   "wave": "W31",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -25,11 +25,27 @@
   "verify": [
     "FT-007-AC-007: shell links resolve exactly to protected /home, /classes, /statistics, and /profile, while Logout continues to submit to existing POST /auth/logout.",
     "/profile displays only server-owned fullName, role, and immutable registeredAt from the current-actor profile query and exposes no editing, password/provider management, membership management, or writes.",
-    "Authenticated canonical-route navigation succeeds; anonymous and revoked requests fail closed; logout revokes the session and returns to /login under disposable browser proof."
+    "Authenticated canonical-route navigation succeeds; anonymous and revoked requests fail closed; logout revokes the session and returns to /login under disposable browser proof.",
+    "The exact /home and /classes links remain the TASK-080 dependency result, including its bare Student/Parent accessible-class path; this task checks route integration and does not re-prove C&S provider selection.",
+    {
+      "stage": "dependency_disposition",
+      "decision": "blocked",
+      "blocked_by": "TASK-096-T3-FT-007-W30",
+      "cause": "direct dependency is blocked by a proven feature-authority gap",
+      "halt": "HALT_CLARIFICATION_REQUIRED",
+      "owner": "operator via /feature-doctor FT-007",
+      "resume": "Resolve and reconcile the three TASK-096 decisions, then restore eligibility only through the reviewed FT-007 planning/readiness route.",
+      "evidence": [
+        ".protocols/FT-007/clarification.md",
+        ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
+        ".memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json"
+      ],
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md", ".protocols/FT-007/clarification.md"],
   "evidence_required": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007 / REQ-014 / REQ-017 RED: any shell href is non-canonical, a protected route exposes anonymous/revoked data, /profile reads Identity & Access persistence directly, Profile omits or exceeds its three fields, mutation controls appear, or logout leaves the session valid; GREEN: focused route and owned-server disposable browser tests prove exact hrefs, all four destinations, current-actor-query-only Profile access, exact read-only fields, denial matrix, logout revocation/redirect, cleanup, and unchanged study-calendar.db; artifact: .tasks/TASK-098-T3-FT-007-W31/ and .protocols/TASK-098-T3-FT-007-W31/."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-007 / REQ-014 / REQ-017 RED: any shell href is non-canonical, the TASK-080 bare /home or /classes dependency is bypassed or replaced, a protected route exposes anonymous/revoked data, /profile reads Identity & Access persistence directly, Profile omits or exceeds its three fields, mutation controls appear, or logout leaves the session valid; GREEN: focused route and owned-server disposable browser tests prove exact hrefs, all four destinations, integration with the TASK-080 bare Home/Classes result without re-proving C&S internals, current-actor-query-only Profile access, exact read-only fields, denial matrix, logout revocation/redirect, cleanup, and unchanged study-calendar.db; artifact: .tasks/TASK-098-T3-FT-007-W31/ and .protocols/TASK-098-T3-FT-007-W31/."
   ],
   "purpose": "Complete the accepted Profile user outcome and prove that the entire navigation shell targets the canonical protected routes.",
   "success_outcome": "An authenticated actor can navigate the exact four canonical destinations and view a bounded read-only Profile, while anonymous and revoked actors receive no protected data.",
@@ -67,6 +83,7 @@
   "constraints": [
     "Profile consumes only the current-actor Identity & Access query; it never reads account persistence directly.",
     "Canonical navigation identities are exactly /home, /classes, /statistics, and /profile; logout remains POST /auth/logout.",
+    "Home/Classes canonical destination behavior is consumed from TASK-080; this task does not replace or broaden the C&S accessible-class query.",
     "This task proves dependency outcomes only as route integration and adopts no provider-internal claim."
   ],
   "invariants": [

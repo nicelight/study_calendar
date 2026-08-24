@@ -1,7 +1,7 @@
 {
   "id": "TASK-089-T3-FT-007-W29",
   "title": "Expose the conducted-lesson attendance projection",
-  "status": "planned",
+  "status": "done",
   "wave": "W29",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -19,7 +19,47 @@
   "verify": [
     "FT-007-AC-006: authorized student and Teacher attendance percentages use present conducted student/lesson slots over all conducted slots, including default-present, explicit absence, and correction cases.",
     "No conducted slots returns 0%; the provider does not persist or mutate attendance or financial facts and denies unassigned/cross-center scope.",
-    "The projection is exposed through the accepted Learning Progress query and remains independent of Lesson Context presentation."
+    "The projection is exposed through the accepted Learning Progress query and remains independent of Lesson Context presentation.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-089-T3-FT-007-W29/verification.md",
+      "artifact": ".tasks/TASK-089-T3-FT-007-W29/TASK-089-T3-FT-007-W29-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned disposable probe passed 1 file / 1 test for Student and Teacher ratios, conducted-only denominator, default-present and explicit absence, correction, no-slot 0, denial matrix, removed assignment, and read-only source-state equality.",
+        "Independent check, full suite 63 files / 208 tests, build, diff, mb-lint, and strict doctor passed; preserved stalled verifier artifacts remain supporting history only.",
+        "The current verification protocol contains exactly one VERDICT: PASS."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-089-T3-FT-007-W29/red-verification.md",
+      "artifact": ".tasks/TASK-089-T3-FT-007-W29/TASK-089-T3-FT-007-W29-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial review found no admitted finding or operator question across conducted/default-present/absence/correction/no-slot behavior, Student and Teacher authorization, removed assignment, provider ownership, forbidden bypasses, and read-only isolation.",
+        "The current red-verification protocol contains exactly one SEMANTIC_VERDICT: semantic-pass."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "accepted_evidence": [
+        ".protocols/TASK-089-T3-FT-007-W29/handoff.md",
+        ".protocols/TASK-089-T3-FT-007-W29/verification.md",
+        ".protocols/TASK-089-T3-FT-007-W29/red-verification.md",
+        ".tasks/TASK-089-T3-FT-007-W29/execution-evidence.md",
+        ".tasks/TASK-089-T3-FT-007-W29/TASK-089-T3-FT-007-W29-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-089-T3-FT-007-W29/TASK-089-T3-FT-007-W29-S-RED-VERIFY-final-report-docs-01.md",
+        ".protocols/AUTONOMOUS-RUN/decision-log.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: REDIRECT; trajectory_signal: progress; recommended_route: recovery-first scheduler closure, then canonical sequential TASK-090 selection before the W29 boundary",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [

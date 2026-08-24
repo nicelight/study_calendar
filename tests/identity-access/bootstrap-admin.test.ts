@@ -18,7 +18,7 @@ describe('first Admin password bootstrap boundary', () => {
 		const identityAccess = new IdentityAccessBoundary(database);
 		const password = 'task-029-test-password';
 
-		identityAccess.bootstrapFirstAdmin({ email: '  ADMIN@Example.COM  ', password });
+		identityAccess.bootstrapFirstAdmin({ email: '  ADMIN@Example.COM  ', surname: 'Admin', givenName: 'First', password });
 
 		const account = database.sqlite.prepare('SELECT id, role FROM accounts').get() as {
 			id: string;
@@ -42,10 +42,14 @@ describe('first Admin password bootstrap boundary', () => {
 		databases.push(first, second);
 		new IdentityAccessBoundary(first).bootstrapFirstAdmin({
 			email: 'admin-one@example.com',
+			surname: 'Admin',
+			givenName: 'One',
 			password: 'task-029-test-password'
 		});
 		new IdentityAccessBoundary(second).bootstrapFirstAdmin({
 			email: 'admin-two@example.com',
+			surname: 'Admin',
+			givenName: 'Two',
 			password: 'task-029-test-password'
 		});
 
@@ -70,6 +74,8 @@ describe('first Admin password bootstrap boundary', () => {
 		expect(() =>
 			new IdentityAccessBoundary(database).bootstrapFirstAdmin({
 				email: 'new@example.com',
+				surname: 'New',
+				givenName: 'Admin',
 				password: 'task-029-test-password'
 			})
 		).toThrow('first-admin-already-bootstrapped');
@@ -87,6 +93,8 @@ describe('first Admin password bootstrap boundary', () => {
 		expect(() =>
 			new IdentityAccessBoundary(database).bootstrapFirstAdmin({
 				email: '   ',
+				surname: 'New',
+				givenName: 'Admin',
 				password: 'task-029-test-password'
 			})
 		).toThrow('invalid-email');
@@ -108,6 +116,8 @@ describe('first Admin password bootstrap boundary', () => {
 		expect(() =>
 			new IdentityAccessBoundary(database).bootstrapFirstAdmin({
 				email: 'admin@example.com',
+				surname: 'Admin',
+				givenName: 'First',
 				password: 'task-029-test-password'
 			})
 		).toThrow('forced-credential-write-failure');
@@ -125,7 +135,12 @@ describe('first Admin password bootstrap boundary', () => {
 		});
 
 		expect(() =>
-			identityAccess.bootstrapFirstAdmin({ email: 'admin@example.com', password: 'task-029-test-password' })
+			identityAccess.bootstrapFirstAdmin({
+				email: 'admin@example.com',
+				surname: 'Admin',
+				givenName: 'First',
+				password: 'task-029-test-password'
+			})
 		).toThrow('forced-derivation-failure');
 		expect(database.sqlite.prepare('SELECT COUNT(*) AS count FROM accounts').get()).toEqual({ count: 0 });
 		expect(database.sqlite.prepare('SELECT COUNT(*) AS count FROM password_credentials').get()).toEqual({ count: 0 });

@@ -39,6 +39,8 @@ describe('center membership and class modes', () => {
 			centerId: input.centerId ?? 'center-own',
 			accountId: input.accountId,
 			role: input.role,
+			surname: input.accountId,
+			givenName: 'Participant',
 			invitationToken: `invite-${input.accountId}`
 		});
 		const providerSubject = `fixture-${input.accountId}`;
@@ -150,6 +152,8 @@ describe('center membership and class modes', () => {
 				centerId: 'center-own',
 				accountId: 'student-by-teacher',
 				role: 'student',
+				surname: 'Denied',
+				givenName: 'Student',
 				invitationToken: 'invite-student-by-teacher'
 			})
 		).toThrow('not-authorized');
@@ -159,6 +163,8 @@ describe('center membership and class modes', () => {
 				centerId: 'center-other',
 				accountId: 'student-cross-center',
 				role: 'student',
+				surname: 'Cross',
+				givenName: 'Student',
 				invitationToken: 'invite-student-cross-center'
 			})
 		).toThrow('not-authorized');

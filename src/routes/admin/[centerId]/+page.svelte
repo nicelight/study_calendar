@@ -225,9 +225,10 @@
 		return {
 			unauthorized: 'Сессия завершена. Войдите снова.',
 			forbidden: 'Недостаточно прав для этой операции.',
-			invalid_request: 'Проверьте заполненные поля.',
-			invalid_name: 'Укажите название класса.',
-			invalid_mode: 'Выберите индивидуальный или групповой режим.',
+				invalid_request: 'Проверьте заполненные поля.',
+				invalid_name: 'Укажите название класса.',
+				invalid_profile_name: 'Укажите фамилию и имя участника.',
+				invalid_mode: 'Выберите индивидуальный или групповой режим.',
 			invalid_schedule: 'Проверьте даты и выберите хотя бы один день недели.',
 			schedule_conflict: 'Нельзя заменить завершённое или отменённое занятие.',
 				invalid_teacher: 'Выберите учителя этого центра.',
@@ -494,8 +495,16 @@
 
 				<div class="invite-block">
 					<h3>Новый аккаунт</h3>
-					<p class="muted">Придумайте пароль и передайте пользователю email вместе с ним.</p>
+					<p class="muted">Укажите ФИО, придумайте пароль и передайте пользователю email вместе с ним.</p>
 					<form method="POST" action="?/createParticipant" class="form-grid">
+						<label>
+							<span>Фамилия</span>
+							<input name="surname" required autocomplete="family-name" />
+						</label>
+						<label>
+							<span>Имя</span>
+							<input name="givenName" required autocomplete="given-name" />
+						</label>
 						<label>
 							<span>Роль</span>
 							<select name="role" value={participantRole} onchange={selectParticipantRole} required>

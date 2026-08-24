@@ -45,6 +45,8 @@ describe('authoritative account provisioning boundary', () => {
 					centerId: 'center-own',
 					accountId: `denied-${sessionToken ?? 'anonymous'}`,
 					role: 'admin',
+					surname: 'Denied',
+					givenName: 'Account',
 					invitationToken: `invite-${sessionToken ?? 'anonymous'}`
 				})
 			).toThrow('not-authorized');
@@ -56,6 +58,8 @@ describe('authoritative account provisioning boundary', () => {
 				centerId: 'center-other',
 				accountId: 'cross-center',
 				role: 'teacher',
+				surname: 'Cross',
+				givenName: 'Center',
 				invitationToken: 'invite-cross-center'
 			})
 		).toThrow('not-authorized');
@@ -95,6 +99,8 @@ describe('authoritative account provisioning boundary', () => {
 			centerId: 'center-own',
 			accountId: 'student-new',
 			role: 'student',
+			surname: 'Student',
+			givenName: 'New',
 			invitationToken: 'invite-new'
 		});
 
@@ -111,7 +117,7 @@ describe('authoritative account provisioning boundary', () => {
 
 		expect(() =>
 			root.centerScheduling.provisionAccount({
-				sessionToken: 'session-admin-own', centerId: 'center-own', accountId: 'rollback-account', role: 'student', invitationToken: 'invite-duplicate'
+				sessionToken: 'session-admin-own', centerId: 'center-own', accountId: 'rollback-account', role: 'student', surname: 'Rollback', givenName: 'Account', invitationToken: 'invite-duplicate'
 			})
 		).toThrow();
 
@@ -121,7 +127,7 @@ describe('authoritative account provisioning boundary', () => {
 
 	it('rejects reused or expired invitations without changing state', () => {
 		root.centerScheduling.provisionAccount({
-			sessionToken: 'session-admin-own', centerId: 'center-own', accountId: 'first-account', role: 'student', invitationToken: 'reusable'
+			sessionToken: 'session-admin-own', centerId: 'center-own', accountId: 'first-account', role: 'student', surname: 'First', givenName: 'Account', invitationToken: 'reusable'
 		});
 		root.identityAccess.bindProvider({ invitationToken: 'reusable', provider: 'google', providerSubject: 'subject-1' }, { verify: () => true });
 		const beforeReuse = state();

@@ -152,6 +152,12 @@ type AllocationRow = {
 	lesson_date: string;
 };
 
+type PaymentCapabilityAllocationRow = {
+	payment_id: string;
+	lesson_id: string;
+	payment_factual_date: string;
+};
+
 type PaymentDbRow = {
 	id: string;
 	center_id: string;
@@ -539,6 +545,52 @@ export class FinancialLedgerBoundary {
 			);
 	}
 
+	getPaymentCapability(request: {
+		sessionToken?: string;
+		classId: string;
+		studentAccountId: string;
+	}): number {
+		return this.database.transaction(() => {
+			const actor = this.requireActor(request.sessionToken);
+			const financialScope = this.requirePaymentScope(
+				actor,
+				request.classId,
+				request.studentAccountId
+			);
+			const allocations = this.getPaymentCapabilityAllocationRows(
+				request.classId,
+				request.studentAccountId
+			);
+			if (allocations.length === 0) {
+				return 0;
+			}
+
+			let onTime = 0;
+			for (const allocation of allocations) {
+				const lesson = this.scope.getFinancialLessonFacts(
+					actor,
+					allocation.lesson_id,
+					request.studentAccountId
+				);
+				if (
+					!lesson ||
+					lesson.centerId !== financialScope.centerId ||
+					lesson.classId !== request.classId ||
+					lesson.lessonId !== allocation.lesson_id ||
+					lesson.studentAccountId !== request.studentAccountId
+				) {
+					throw new Error('not-authorized');
+				}
+				this.requireIsoDate(lesson.lessonDate);
+				if (allocation.payment_factual_date < lesson.lessonDate) {
+					onTime += 1;
+				}
+			}
+
+			return (onTime / allocations.length) * 100;
+		});
+	}
+
 	private requirePaymentScope(
 		actor: ActorContext,
 		classId: string,
@@ -735,6 +787,29 @@ export class FinancialLedgerBoundary {
 				 ORDER BY c.lesson_date, c.lesson_id, p.factual_date, p.id`
 			)
 			.all(classId, studentAccountId) as AllocationRow[];
+	}
+
+	private getPaymentCapabilityAllocationRows(
+		classId: string,
+		studentAccountId: string
+	): PaymentCapabilityAllocationRow[] {
+		return this.database.sqlite
+			.prepare(
+				`SELECT a.payment_id,
+						a.lesson_id,
+						p.factual_date AS payment_factual_date
+					 FROM financial_payment_allocations a
+					 JOIN financial_payments p ON p.id = a.payment_id
+					 JOIN financial_lesson_charges c
+					   ON c.lesson_id = a.lesson_id
+					  AND c.student_account_id = a.student_account_id
+					 WHERE p.class_id = ?
+					   AND p.student_account_id = ?
+					   AND p.status = 'recorded'
+					   AND c.status = 'active'
+					 ORDER BY p.factual_date, p.id, c.lesson_date, c.lesson_id`
+			)
+			.all(classId, studentAccountId) as PaymentCapabilityAllocationRow[];
 	}
 
 	private getChargeState(

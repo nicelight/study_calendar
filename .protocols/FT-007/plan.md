@@ -51,13 +51,15 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
 - Accepted graph and provider contracts:
   [.memory-bank/contracts/boundary-map.md](../../.memory-bank/contracts/boundary-map.md)
 
-## Rebuilt queue and boundary outline
+## Reconciled queue and boundary outline
 
-Queue action is `rebuild_required`. The accepted nine-outcome slicing remains
-unchanged. TASK-079, TASK-080, TASK-089, and TASK-090 retain identity; the
-planned profile/provider cards and their dependent cards are replaced by
-TASK-094..098 because exact AC or dependency mapping changed. No replacement
-inherits proof:
+Queue action is `reconciled` after the fresh feature-doctor completion. The
+accepted nine-outcome slicing remains unchanged. Every existing FT-007 task
+identity, tier, wave, lifecycle, and evidence route is retained; TASK-080
+remains `in_progress`, and TASK-079, TASK-094, and TASK-095 remain closed with
+their current evidence. Existing TASK-080 prerequisites remain, with the
+completed TASK-095 provider baseline added as one direct prerequisite. No task
+inherits another task's proof:
 
 1. TASK-094 owns one complete Identity & Access profile result under AC-008 across bootstrap
    Admin, invitation, and direct-password creation plus the two accepted profile
@@ -66,7 +68,12 @@ inherits proof:
 2. TASK-079 implements the protected shell and keeps existing logout integration,
    disposable-runner implementation, and AC-001 RED/GREEN proof together.
 3. TASK-080 implements both `/home` and `/classes` as one role/scope-oriented
-   AC-002 result.
+   AC-002 result and owns the bounded C&S accessible-class query required for
+   bare Student/Parent navigation. The query remains within the existing
+   Calendar and Membership Query Boundary and returns only server-resolved
+   C&S-owned class facts; the two route adapters consume it without local
+   authorization or provider-table access. TASK-080 now depends directly on
+   the completed TASK-095 C&S public-boundary baseline.
 4. TASK-095 owns only Center & Scheduling scoped registry facts under AC-009.
 5. TASK-089 and TASK-090 separately own attendance and payment projections;
    each links its exact actor and C&S source/authorization boundary.
@@ -107,10 +114,12 @@ composition, sorting, and Profile remain independently completable.
 
 Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
 gates, and only its owned proof. TASK-079 establishes the fail-closed disposable
-runner while proving AC-001; TASK-080, TASK-097, and TASK-098 reuse the runner
-for their own claims without inheriting TASK-079 evidence. Provider and
-composition cards use isolated database/route tests. Feature completion remains
-subject to `/red-verify --feature FT-007` and the normal review/sync boundary.
+runner while proving AC-001; TASK-080 adds an isolated C&S accessible-list
+provider probe and reuses the runner for its own route claim; TASK-097 and
+TASK-098 continue to reuse the runner without inheriting TASK-079 or TASK-080
+evidence. Provider and composition cards use isolated database/route tests.
+Feature completion remains subject to `/red-verify --feature FT-007` and the
+normal review/sync boundary.
 
 ## Planning revision
 

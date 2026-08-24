@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import {
 	IdentityAccessBoundary,
-	 type ActorContext,
-	 type AccountProvisioning,
+	type ActorContext,
+	type AccountProvisioning,
+	type AccountProfileInput,
 	type PasswordAccountProvisioning,
 	type Role
 } from '$lib/server/modules/identity-access/public';
@@ -36,6 +37,43 @@ export type AdminClassView = {
 	schedules: ScheduleView[];
 };
 
+export type RegistryMembershipFact = {
+	centerId: string;
+	accountId: string;
+};
+
+export type RegistryParentLinkFact = {
+	centerId: string;
+	parentAccountId: string;
+	studentAccountId: string;
+};
+
+export type RegistryAssignmentFact = {
+	centerId: string;
+	classId: string;
+	teacherAccountId: string;
+};
+
+export type RegistryClassFact = {
+	classId: string;
+	centerId: string;
+	name: string;
+	mode: ClassMode;
+	studentAccountIds: string[];
+	teacherAccountIds: string[];
+	studentCount: number;
+};
+
+export type CenterSchedulingRegistryFacts = {
+	centerId: string;
+	institution: CenterView;
+	accountIds: string[];
+	memberships: RegistryMembershipFact[];
+	parentLinks: RegistryParentLinkFact[];
+	assignments: RegistryAssignmentFact[];
+	classes: RegistryClassFact[];
+};
+
 export type AdminCenterView = CenterView & {
 	participants: AdminParticipantView[];
 	classes: AdminClassView[];
@@ -50,6 +88,13 @@ export type AuthorizedClassScope = CenterScope & {
 	className: string;
 	mode: ClassMode;
 	studentAccountIds: string[];
+};
+
+export type AccessibleClassView = {
+	classId: string;
+	centerId: string;
+	name: string;
+	mode: ClassMode;
 };
 
 export type LessonStatus = 'planned' | 'completed' | 'cancelled';
@@ -85,7 +130,7 @@ export type LessonView = {
 	createdAt: string;
 };
 
-export type AccountProvisioningRequest = {
+export type AccountProvisioningRequest = AccountProfileInput & {
 	sessionToken?: string;
 	centerId: string;
 	accountId: string;
@@ -98,7 +143,7 @@ export type ParticipantRequest = Omit<AccountProvisioningRequest, 'role'> & {
 	role: Exclude<Role, 'admin'>;
 };
 
-export type PasswordParticipantRequest = {
+export type PasswordParticipantRequest = AccountProfileInput & {
 	sessionToken?: string;
 	centerId: string;
 	accountId: string;
@@ -268,6 +313,108 @@ export class CenterSchedulingBoundary {
 		};
 	}
 
+	getRegistryFacts(request: { actor: ActorContext | null }): CenterSchedulingRegistryFacts | null {
+		const actor = request.actor;
+		if (!actor || (actor.role !== 'admin' && actor.role !== 'teacher')) {
+			return null;
+		}
+
+		const institution = this.getRegistryInstitution(actor);
+		if (!institution) {
+			return null;
+		}
+
+		const classRows = this.getRegistryClassRows(actor, institution.centerId);
+		if (actor.role === 'teacher' && classRows.length === 0) {
+			return null;
+		}
+
+		const classes = classRows.map((classRow) => {
+			const studentAccountIds = this.getClassStudentIds(classRow.id);
+			const teacherAccountIds = this.getClassTeacherIds(classRow.id);
+			return {
+				classId: classRow.id,
+				centerId: classRow.center_id,
+				name: classRow.name,
+				mode: classRow.mode,
+				studentAccountIds,
+				teacherAccountIds,
+				studentCount: studentAccountIds.length
+			};
+		});
+		const classIds = classRows.map((classRow) => classRow.id);
+		const assignments = this.getRegistryAssignments(institution.centerId, classIds);
+		const parentLinks = this.getRegistryParentLinks(
+			institution.centerId,
+			actor.role === 'admin' ? undefined : classes.flatMap((classRow) => classRow.studentAccountIds)
+		);
+		const memberships = this.getRegistryMemberships(
+			institution.centerId,
+			actor.role === 'admin'
+				? undefined
+				: [
+						...classes.flatMap((classRow) => classRow.studentAccountIds),
+						...assignments.map((assignment) => assignment.teacherAccountId),
+						...parentLinks.map((parentLink) => parentLink.parentAccountId)
+					]
+		);
+
+		return {
+			centerId: institution.centerId,
+			institution,
+			accountIds: memberships.map((membership) => membership.accountId),
+			memberships,
+			parentLinks,
+			assignments,
+			classes
+		};
+	}
+
+	getAccessibleClassList(request: { actor: ActorContext | null }): AccessibleClassView[] | null {
+		const actor = request.actor;
+		if (!actor || (actor.role !== 'student' && actor.role !== 'parent')) {
+			return null;
+		}
+
+		const eligibility = actor.role === 'student'
+			? `EXISTS (
+					SELECT 1
+					FROM class_students
+					WHERE class_students.center_id = classes.center_id
+					  AND class_students.class_id = classes.id
+					  AND class_students.student_account_id = ?
+				)`
+			: `EXISTS (
+					SELECT 1
+					FROM parent_student_links
+					JOIN class_students
+					  ON class_students.center_id = parent_student_links.center_id
+					 AND class_students.student_account_id = parent_student_links.student_account_id
+					WHERE parent_student_links.center_id = classes.center_id
+					  AND parent_student_links.parent_account_id = ?
+					  AND class_students.class_id = classes.id
+				)`;
+
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT classes.id AS classId,
+						classes.center_id AS centerId,
+						classes.name,
+						classes.mode
+				 FROM classes
+				 WHERE EXISTS (
+					 SELECT 1
+					 FROM center_memberships
+					 WHERE center_memberships.center_id = classes.center_id
+					   AND center_memberships.account_id = ?
+				 )
+				 AND ${eligibility}
+				 ORDER BY classes.name, classes.id`
+			)
+			.all(actor.accountId, actor.accountId) as AccessibleClassView[];
+		return rows.length > 0 ? rows : null;
+	}
+
 	provisionAccount(request: AccountProvisioningRequest): void {
 		const actor = this.identityAccess.resolveActor(request.sessionToken);
 		if (!this.getAuthorizedCenterAdminScope(actor, request.centerId)) {
@@ -278,6 +425,8 @@ export class CenterSchedulingBoundary {
 			accountId: request.accountId,
 			role: request.role,
 			invitationToken: request.invitationToken,
+			surname: request.surname,
+			givenName: request.givenName,
 			expiresAt: request.expiresAt
 		});
 	}
@@ -297,6 +446,8 @@ export class CenterSchedulingBoundary {
 				accountId: request.accountId,
 				role: request.role,
 				invitationToken: request.invitationToken,
+				surname: request.surname,
+				givenName: request.givenName,
 				expiresAt: request.expiresAt
 			});
 			this.database.sqlite
@@ -320,7 +471,9 @@ export class CenterSchedulingBoundary {
 				accountId: request.accountId,
 				role: request.role,
 				email: request.email,
-				password: request.password
+				password: request.password,
+				surname: request.surname,
+				givenName: request.givenName
 			});
 			this.database.sqlite
 				.prepare('INSERT INTO center_memberships (center_id, account_id) VALUES (?, ?)')
@@ -826,6 +979,141 @@ export class CenterSchedulingBoundary {
 		return this.database.sqlite
 			.prepare('SELECT id, center_id, name, mode FROM classes WHERE id = ?')
 			.get(classId) as ClassRow | undefined;
+	}
+
+	private getRegistryInstitution(actor: ActorContext): CenterView | undefined {
+		if (actor.role === 'admin') {
+			const row = this.database.sqlite
+				.prepare(
+					`SELECT centers.id, centers.name
+					 FROM center_memberships
+					 JOIN centers ON centers.id = center_memberships.center_id
+					 WHERE center_memberships.account_id = ?
+					 ORDER BY centers.id
+					 LIMIT 1`
+				)
+				.get(actor.accountId) as { id: string; name: string } | undefined;
+			return row ? { centerId: row.id, name: row.name } : undefined;
+		}
+
+		const row = this.database.sqlite
+			.prepare(
+				`SELECT centers.id, centers.name
+				 FROM teacher_assignments
+				 JOIN classes ON classes.id = teacher_assignments.class_id
+				 JOIN centers ON centers.id = teacher_assignments.center_id
+				 WHERE teacher_assignments.teacher_account_id = ?
+				 ORDER BY centers.id
+				 LIMIT 1`
+			)
+			.get(actor.accountId) as { id: string; name: string } | undefined;
+		return row ? { centerId: row.id, name: row.name } : undefined;
+	}
+
+	private getRegistryClassRows(actor: ActorContext, centerId: string): ClassRow[] {
+		if (actor.role === 'admin') {
+			return this.database.sqlite
+				.prepare(
+					`SELECT id, center_id, name, mode
+					 FROM classes
+					 WHERE center_id = ?
+					 ORDER BY name, id`
+				)
+				.all(centerId) as ClassRow[];
+		}
+
+		return this.database.sqlite
+			.prepare(
+				`SELECT classes.id, classes.center_id, classes.name, classes.mode
+				 FROM classes
+				 JOIN teacher_assignments
+				   ON teacher_assignments.class_id = classes.id
+				  AND teacher_assignments.center_id = classes.center_id
+				 WHERE classes.center_id = ?
+				   AND teacher_assignments.teacher_account_id = ?
+				 ORDER BY classes.name, classes.id`
+			)
+			.all(centerId, actor.accountId) as ClassRow[];
+	}
+
+	private getRegistryMemberships(
+		centerId: string,
+		accountIds?: string[]
+	): RegistryMembershipFact[] {
+		const scope = this.getRegistryAccountScope(accountIds, 'account_id');
+		if (scope === null) {
+			return [];
+		}
+
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT center_memberships.center_id AS centerId,
+						center_memberships.account_id AS accountId
+				 FROM center_memberships
+				 WHERE center_memberships.center_id = ?${scope.clause}
+				 ORDER BY center_memberships.account_id`
+			)
+			.all(centerId, ...scope.values) as RegistryMembershipFact[];
+		return rows;
+	}
+
+	private getRegistryParentLinks(
+		centerId: string,
+		studentAccountIds?: string[]
+	): RegistryParentLinkFact[] {
+		const scope = this.getRegistryAccountScope(studentAccountIds, 'student_account_id');
+		if (scope === null) {
+			return [];
+		}
+
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT parent_student_links.center_id AS centerId,
+						parent_student_links.parent_account_id AS parentAccountId,
+						parent_student_links.student_account_id AS studentAccountId
+				 FROM parent_student_links
+				 WHERE parent_student_links.center_id = ?${scope.clause}
+				 ORDER BY parent_student_links.parent_account_id,
+						parent_student_links.student_account_id`
+				)
+				.all(centerId, ...scope.values) as RegistryParentLinkFact[];
+		return rows;
+	}
+
+	private getRegistryAssignments(centerId: string, classIds: string[]): RegistryAssignmentFact[] {
+		if (classIds.length === 0) {
+			return [];
+		}
+
+		const placeholders = classIds.map(() => '?').join(', ');
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT center_id AS centerId,
+						class_id AS classId,
+						teacher_account_id AS teacherAccountId
+				 FROM teacher_assignments
+				 WHERE center_id = ? AND class_id IN (${placeholders})
+				 ORDER BY class_id, teacher_account_id`
+			)
+			.all(centerId, ...classIds) as RegistryAssignmentFact[];
+		return rows;
+	}
+
+	private getRegistryAccountScope(
+		accountIds: string[] | undefined,
+		column: 'account_id' | 'student_account_id'
+	): { clause: string; values: string[] } | null {
+		if (accountIds === undefined) {
+			return { clause: '', values: [] };
+		}
+		const uniqueAccountIds = [...new Set(accountIds)];
+		if (uniqueAccountIds.length === 0) {
+			return null;
+		}
+		return {
+			clause: ` AND ${column} IN (${uniqueAccountIds.map(() => '?').join(', ')})`,
+			values: uniqueAccountIds
+		};
 	}
 
 	private getSchedule(scheduleId: string): ScheduleRow | undefined {

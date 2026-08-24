@@ -50,7 +50,10 @@ export function createAdminActions(
 	return {
 		default: async (event) => {
 			const formData = await event.request.formData();
-			const result = transport.provision(event, formData.get('role'));
+			const result = transport.provision(event, formData.get('role'), {
+				surname: formData.get('surname'),
+				givenName: formData.get('givenName')
+			});
 			return result.ok ? result : actionFailure(result);
 		}
 	};
