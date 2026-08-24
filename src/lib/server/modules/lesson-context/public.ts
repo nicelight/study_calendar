@@ -407,10 +407,9 @@ export class LessonContextBoundary {
 					teacherAccountId
 				}),
 				institutionName,
-				studentCount: assignedClasses.reduce(
-					(count, classView) => count + classView.studentCount,
-					0
-				)
+				studentCount: new Set(
+					assignedClasses.flatMap((classView) => classView.studentAccountIds)
+				).size
 			};
 		});
 		const classes = facts.classes.map((classView) => ({

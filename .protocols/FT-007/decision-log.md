@@ -68,3 +68,19 @@ implementation; Home and Classes are one AC-002 implementation result; provider
 queries, statistics composition, sorting, and Profile remain separate outcomes.
 The unexecuted TASK-058..061, TASK-063/064, and TASK-070..077 queue is rebuilt
 with fresh identities. Planning Revision remains `2`.
+
+## 2026-08-24 — TASK-096 registry cardinality reconciliation
+
+The operator accepted the three feature-local KISS decisions recorded by
+`/feature-doctor FT-007`: Students use one row per `student/class` relationship;
+Teacher `studentCount` counts distinct Student accounts across assigned
+classes; and a Teacher viewer's Teachers registry contains only the current
+Teacher, without co-teachers as separate rows. Relationship-level teacher names
+remain available where the Student/Class row contract permits them.
+
+The existing Statistics Projection contract is extended with these exact
+cardinality and viewer-scope rules. TASK-096 retains AC-003 ownership and
+TASK-097 retains AC-004 ownership; their proof mappings are reconciled to the
+contract without changing task identity, tier, wave, dependencies, lifecycle,
+or historical evidence. Planning Revision `2` remains unchanged. The next
+workflow route is a fresh `/review-tasks-plan FT-007`.

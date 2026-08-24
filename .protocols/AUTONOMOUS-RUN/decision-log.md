@@ -1672,3 +1672,294 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
   1 history, retry/failure budgets, and all prior evidence remain preserved.
 - No `/exe`, `/verify`, `/red-verify`, `/mb-sync`, W31 wave gate, task closure,
   or final human product acceptance is inferred or authorized.
+
+## 2026-08-24 — stale TASK-096 halt checkpoint reconciled
+
+- Recovery-first reread proved the old `HALT_CLARIFICATION_REQUIRED` /
+  `red-verify` checkpoint safely superseded by authoritative durable state: all
+  three operator choices are accepted, the Statistics Projection/FT-007/task
+  proof surface is reconciled, and the fresh task-plan verdict is `APPROVE` at
+  Planning Revision `2`.
+- Scheduler-owned recovery already records TASK-096 `ready` and direct
+  dependents TASK-097/098 `planned`; all five TASK-096 dependencies remain
+  `done`. Strict doctor freshly passed with 0 errors, 0 warnings, and 2 info;
+  product queue is `48 done`, `3 failed`, `1 ready`, `2 planned`, `0
+  in_progress`, `0 blocked`.
+- Accepted recovery route: checkpoint `current task:
+  TASK-096-T3-FT-007-W30`, `current stage: execute`, exact next action `/exe
+  TASK-096-T3-FT-007-W30`, then run fresh `/verify` and fresh `/red-verify` in
+  separate children. Historical TASK-096 executor, functional, and semantic
+  artifacts are not current proof and will not be replayed as such.
+- No task lifecycle, implementation, verifier verdict, retry/failure budget,
+  dependency, planning revision, or unrelated dirty work was changed by this
+  checkpoint reconciliation.
+
+## 2026-08-24 — TASK-096 fresh execution Attempt 2 reconciled
+
+- Fresh fixed-role Implementer `/exe TASK-096-T3-FT-007-W30` performed only
+  `ready -> in_progress` and treated every Attempt 1 executor/verifier/semantic
+  artifact as historical-only.
+- Current claim-linked RED proved the accepted distinct-count delta: one
+  Student in two assigned classes yielded Teacher `studentCount: 2` instead of
+  `1`. The bounded Lesson Context correction now counts the `Set` of assigned
+  `studentAccountIds`; one Student relationship row per class remains intact.
+- Current execution gates passed: focused `14/14`, check, full test `66/224`,
+  build, diff, mb-lint, and strict doctor `0 errors / 0 warnings / 2 info`.
+  Durable handoff is
+  `.tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-EXE-final-report-code-02.md`.
+- Scheduler checkpoint advances to `verify` with exact next action `/verify
+  TASK-096-T3-FT-007-W30` in a separate fresh Reviewer context. No functional
+  verdict, semantic verdict, closure, dependent promotion, sync, or wave action
+  is inferred from executor evidence.
+
+## 2026-08-24 — TASK-096 fresh functional verification Attempt 2 reconciled
+
+- Fresh fixed-role Reviewer `/verify TASK-096-T3-FT-007-W30` excluded all
+  Attempt 1 verifier and semantic artifacts as historical-only and wrote one
+  current `VERDICT: PASS` for Attempt 2.
+- Verifier-owned evidence passed `7/7` and independently covered registry-first
+  scope, Student relationship cardinality, distinct Teacher count, Teacher
+  self-only view, denials, thin route, serialization, and non-mutation. Check,
+  full test `66/224`, build, diff, mb-lint, and strict doctor also passed.
+- Scheduler checkpoint advances immediately to `red-verify`; TASK-096 remains
+  `in_progress`, and no closure, retry/failure budget, dependent promotion,
+  sync, or wave action is inferred from functional PASS.
+
+## 2026-08-24 — TASK-096 fresh semantic verification Attempt 2 reconciled
+
+- Fresh fixed-role Reviewer `/red-verify TASK-096-T3-FT-007-W30` excluded
+  Attempt 1 semantic evidence from the current conclusion and wrote Attempt 2
+  `SEMANTIC_VERDICT: semantic-pass` with no admitted finding or operator
+  question.
+- Current semantic evidence includes verifier-owned probe `7/7`, current
+  Lesson Context and route suites `14/14`, C&S registry-facts suite `1/1`,
+  `git diff --check`, and two fresh Codex Luna `xhigh` focus reviews.
+- Because this is Attempt 2, the multiagentic autopilot overlay requires a fresh
+  read-only Judge assessment before scheduler disposition or closure. TASK-096
+  remains `in_progress`; no dependent promotion, sync, or wave action has been
+  applied.
+
+## 2026-08-24 — TASK-096 closed on current Attempt 2 evidence
+
+- Fresh closure Judge `gpt-5.6-sol/xhigh` returned `SUPPORT` with
+  `trajectory_signal: progress`. The accepted route is scheduler closure from
+  current Attempt 2 evidence, followed by the complete W30 boundary before any
+  dependent promotion.
+- Scheduler appended the current functional report-02 `VERDICT: PASS`, current
+  semantic report-02 `SEMANTIC_VERDICT: semantic-pass`, and closure evidence to
+  the authoritative card, then changed TASK-096 `in_progress -> done`.
+- The stale Attempt 1 semantic entry now points only to preserved docs-01;
+  current `red-verification.md` belongs to Attempt 2. Attempt 1 executor,
+  verifier, and semantic docs-01 remain historical-only. Retry/failure budgets
+  were not changed.
+- Queue is now `49 done / 3 failed / 2 planned / 0 ready / 0 in_progress / 0
+  blocked`. TASK-097/098 stay planned. Exact next route is W30 `/mb-sync`, then
+  post-sync deterministic gates, conditional review check, tech debt, and the
+  complete-wave Judge.
+
+## 2026-08-24 — W30 sync and post-sync gates passed
+
+- Fresh `/mb-sync` reconciled TASK-096 closure evidence into FT-007, the RTM,
+  changelog, and IMPL queue wording without changing feature/epic/requirement
+  lifecycle or dependent task state. Durable report is
+  `.tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-MB-SYNC-final-report-docs-01.md`.
+- Scheduler post-sync `mb-lint` passed `74 files`; strict doctor passed with `0
+  errors / 2 warnings / 2 info`. The warnings identify TASK-097 and TASK-098 as
+  planned ready candidates and do not authorize promotion before the remaining
+  wave gates.
+- No task-plan review rerun is triggered: W30 fulfilled the current reviewed
+  claim, while sync changed only status/evidence routes, RTM/changelog, and
+  mechanically stale queue wording. FT-007 `APPROVE` at Planning Revision `2`
+  survives.
+- TASK-097/098 remain planned. Next action is advisory `/tech-debt wave W30`,
+  followed by the mandatory complete-wave Judge.
+
+## 2026-08-24 — W30 advisory tech debt completed
+
+- Fresh `/tech-debt wave W30` created exactly one advisory report at
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W30-2026-08-24.md` and changed no task,
+  scheduler, lifecycle, planning, or implementation state.
+- No material repeated-change cost, coupling, regression, reliability, or
+  maintenance finding was confirmed in the bounded W30 surface. The advisory
+  focused suite rerun passed `14/14`.
+- All pre-Judge W30 gates are complete. TASK-097/098 remain planned pending the
+  mandatory fresh complete-wave Judge assessment.
+
+## 2026-08-24 — W30 completed; W31 promotion and selection applied
+
+- Fresh complete-wave Judge `gpt-5.6-sol/xhigh` returned `SUPPORT` with
+  `trajectory_signal: progress`. W30 semantic, closure, sync, lint, strict
+  doctor, review-trigger, and tech-debt gates are complete.
+- Scheduler promoted both eligible cards `TASK-097 planned -> ready` and
+  `TASK-098 planned -> ready` in one promotion pass. Historical blocked and
+  recovery entries remain history, not live blockers; budgets and Planning
+  Revision `2` are unchanged.
+- Stable index order selects TASK-097 only. TASK-098 remains ready and must not
+  execute before TASK-097 scheduler closure. Next route is strict doctor after
+  promotion, then fresh `/exe TASK-097-T3-FT-007-W31`.
+- Post-promotion strict doctor passed with `0 errors / 0 warnings / 2 info`.
+  Exact next action is fresh `/exe TASK-097-T3-FT-007-W31`; TASK-098 remains
+  ready and unexecuted.
+
+## 2026-08-24 — TASK-097 execution Attempt 1 reconciled
+
+- Fresh fixed-role Implementer `/exe TASK-097-T3-FT-007-W31` completed Attempt
+  1 and left lifecycle `in_progress` for independent verification. It added
+  local typed bidirectional Statistics sorting with visible active direction,
+  preserving TASK-096's authorized serializable rows and server/provider scope.
+- Current execution evidence records honest RED, claim-equivalent GREEN,
+  focused `5/5`, full test `67/225`, check, build, disposable owned-server E2E
+  `1/1` with exact DB cleanup, diff, mb-lint, and strict doctor `0 errors / 0
+  warnings / 2 info`, all PASS. Durable report is
+  `.tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-EXE-final-report-code-01.md`.
+- Scheduler checkpoint advances immediately from `execute` to `verify`. Exact
+  next action is a separate fresh `/verify TASK-097-T3-FT-007-W31`; TASK-098
+  remains `ready` and unexecuted, and no functional verdict, semantic verdict,
+  closure, sync, wave action, or dependent selection is inferred from executor
+  evidence.
+
+## 2026-08-24 — TASK-097 functional verification evidence gap reconciled
+
+- Fresh fixed-role Reviewer `/verify TASK-097-T3-FT-007-W31` returned exactly
+  `VERDICT: NEEDS-CLARIFICATION` without changing lifecycle. Repeated check,
+  full test `67/225`, build, diff, mb-lint, strict doctor, and two disposable
+  E2E runs passed with cleanup and source non-mutation.
+- Independent inspection proved that the current browser spec exposes all `18`
+  controls but performs only `12` clicks, so it does not establish both
+  directions for every column as required by FT-007-AC-004 / REQ-017. This is
+  an execution-evidence gap, not an observed product violation or an unresolved
+  semantic/operator decision.
+- Autonomy policy does not count `NEEDS-CLARIFICATION` as an unsuccessful
+  attempt. The accepted direct owner is the current task executor, and the
+  bounded correction stays inside the reviewed task identity and hard boundary.
+  Scheduler checkpoint therefore advances from `verify` to `execute` with
+  exact next action `/exe TASK-097-T3-FT-007-W31` for evidence completion only,
+  followed by a separate fresh `/verify`. TASK-098 remains ready and unexecuted.
+
+## 2026-08-24 — TASK-097 bounded browser evidence completion reconciled
+
+- Fresh fixed-role Implementer `/exe TASK-097-T3-FT-007-W31` retained current
+  Attempt 1 and its original honest RED; no unsuccessful-attempt counter or
+  lifecycle changed. Durable report is
+  `.tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-EXE-final-report-code-02.md`.
+- The task-owned browser proof now performs `36` interactions: both directions
+  for every `8` Students, `6` Teachers, and `4` Classes control. It asserts
+  active `aria-sort` after every click, representative typed ordering including
+  first-rendered Teacher class, equality of `15` source/provider tables, and
+  removal of the disposable DB plus SQLite sidecars.
+- Current gates passed: full test `67/225`, check, build, owned-server E2E
+  `1/1`, cleanup, diff, mb-lint, and strict doctor `0 errors / 0 warnings / 2
+  info`. Scheduler checkpoint advances immediately from `execute` to `verify`;
+  exact next action is a separate fresh `/verify TASK-097-T3-FT-007-W31`.
+  TASK-098 remains ready and unexecuted.
+
+## 2026-08-24 — TASK-097 fresh functional PASS reconciled
+
+- Fresh fixed-role Reviewer `/verify TASK-097-T3-FT-007-W31` returned
+  `VERDICT: PASS` with no findings and no lifecycle change. Durable report is
+  `.tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-VERIFY-final-report-docs-01.md`.
+- Verifier-owned proof ran the disposable owned-server browser spec twice,
+  each `1/1`, covering all `18` controls in both directions (`36`
+  interactions), active `aria-sort`, typed ordering, Teacher first-rendered
+  class ordering, `15` source/provider table non-mutation, exact cleanup, and
+  unchanged `study-calendar.db` metadata. Check `0/0`, full test `67/225`,
+  build, diff, mb-lint `74`, and strict doctor `0/0/2` also passed.
+- TASK-097 remains `in_progress`: T3 functional PASS is not closure. Scheduler
+  checkpoint advances immediately from `verify` to `red-verify`; exact next
+  action is a separate fresh `/red-verify TASK-097-T3-FT-007-W31`. TASK-098
+  remains ready and unexecuted.
+
+## 2026-08-24 — TASK-097 semantic PASS and scheduler closure reconciled
+
+- Fresh fixed-role Reviewer `/red-verify TASK-097-T3-FT-007-W31` returned
+  exactly `SEMANTIC_VERDICT: semantic-pass`, with no admitted finding or
+  operator question. Durable report is
+  `.tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-RED-VERIFY-final-report-docs-01.md`.
+- Reviewer-owned disposable browser evidence passed `1/1`, covered all `18`
+  controls in both directions, preserved `15` source/provider tables, removed
+  the exact temporary DB/sidecars, and retained `study-calendar.db` metadata.
+  Cold-start and hydration candidates raised by the two co-reviews did not
+  reproduce on the isolated supported path or five sequential owned runs and
+  were not admitted under finding adjudication.
+- This is the initial Attempt 1, with no retry, competing route, admitted
+  semantic concern, or escalation trigger; Judge overlay is not required.
+  Scheduler appended current semantic and closure evidence and changed
+  TASK-097 `in_progress -> done`. The initial verifier NEEDS remains historical
+  only and did not affect an unsuccessful-attempt budget.
+- Queue is now `50 done / 3 failed / 0 planned / 1 ready / 0 in_progress / 0
+  blocked`. Exact next action is strict doctor, then sequential fresh `/exe
+  TASK-098-T3-FT-007-W31`; no W31 boundary action occurs before TASK-098
+  closure.
+
+## 2026-08-24 — TASK-098 selected after strict readiness PASS
+
+- Post-TASK-097 scheduler gate `node scripts/mb-doctor.mjs --strict` passed
+  with `0 errors / 0 warnings / 2 info`; TASK-098 is structurally eligible and
+  all of its dependencies are done.
+- Stable sequential selection chooses the sole ready card TASK-098. It remains
+  `ready` until the fresh Implementer starts `/exe`; no other task, W31 sync,
+  tech-debt, wave Judge, promotion, or lifecycle action runs concurrently.
+- Exact next action is fresh `/exe TASK-098-T3-FT-007-W31`, followed only by
+  its own fresh `/verify` and required T3 `/red-verify` before scheduler
+  closure is considered.
+
+## 2026-08-24 — TASK-098 execution Attempt 1 reconciled
+
+- Fresh fixed-role Implementer `/exe TASK-098-T3-FT-007-W31` completed Attempt
+  1 and left lifecycle `in_progress`. Durable report is
+  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-EXE-final-report-code-01.md`.
+- The change adds only a read-only `/profile` adapter/page and task-owned
+  route/browser probes. Honest focused RED `0/2` became GREEN `3/3`; full test
+  `68/228`, check `0/0`, build, owned-server E2E `1/1`, diff, mb-lint, strict
+  doctor `0/0/2`, exact cleanup, and real-DB metadata preservation passed.
+- The unchanged shell's exact four hrefs and existing logout POST are checked
+  statically; the browser probe directly exercises all four protected routes,
+  exact Profile fields/no controls, anonymous/revoked denial, logout
+  revocation, cleanup, and non-mutation. These are executor claims only and the
+  fresh Reviewer must independently judge their sufficiency.
+- Scheduler checkpoint advances immediately from `execute` to `verify`. Exact
+  next action is separate fresh `/verify TASK-098-T3-FT-007-W31`; no semantic,
+  closure, sync, tech-debt, wave Judge, or terminal state is inferred.
+
+## 2026-08-24 — TASK-098 functional evidence clarification routed
+
+- Fresh fixed-role Reviewer `/verify TASK-098-T3-FT-007-W31` returned exactly
+  `VERDICT: NEEDS-CLARIFICATION` and left lifecycle unchanged. Durable report is
+  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-01.md`.
+- Independent focused `3/3`, disposable browser `1/1` twice, full test
+  `68/228`, check `0/0`, build, diff, mb-lint, and strict doctor `0/0/2`
+  passed. Profile's query/field boundary, denial matrix, all four direct
+  destinations, logout revocation, cleanup, and real-DB preservation are
+  proved; no product violation was found.
+- The literal card still requires browser proof of the exact shell href/logout
+  integration. Those exact values are currently static-only because a bounded
+  verifier probe did not obtain a hydrated-menu observation. This is an
+  executor-owned evidence gap, not an unsuccessful attempt or operator-level
+  ambiguity.
+- Scheduler checkpoint therefore advances immediately from `verify` to
+  `execute`, retains current Attempt 1 and `in_progress`, and routes one bounded
+  `/exe TASK-098-T3-FT-007-W31` evidence completion. A separate fresh
+  `/verify` must follow; `/red-verify`, lifecycle closure, W31 sync, tech debt,
+  and wave Judge remain deferred.
+
+## 2026-08-24 — TASK-098 hydrated-shell evidence completion reconciled
+
+- Fresh fixed-role Implementer `/exe TASK-098-T3-FT-007-W31` completed the
+  verifier-requested bounded evidence recovery inside current Attempt 1.
+  Durable report is
+  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-EXE-final-report-code-02.md`;
+  the original RED and all prior artifacts remain preserved.
+- The owned-server browser probe now opens the hydrated shell, observes the
+  exact `/home`, `/classes`, `/statistics`, and `/profile` hrefs plus the
+  existing form attributes `method=POST` and `action=/auth/logout`, clicks all
+  four menu links, submits the visible Logout form, and confirms old-token
+  rejection. It assumes no `nav form` nesting.
+- Fresh focused `3/3`, final disposable browser `1/1`, full test `68/228`,
+  check `0/0`, build, diff, mb-lint, and strict doctor `0/0/2` passed. Final
+  E2E cleanup removed the exact disposable DB/sidecars and preserved
+  `study-calendar.db` metadata (`356352 / 1787569891 / 265994`) before/after.
+- This evidence-only recovery changed no production file, status, retry
+  counter, or Attempt identity. Scheduler checkpoint advances immediately from
+  `execute` to `verify`; exact next action is a separate fresh
+  `/verify TASK-098-T3-FT-007-W31`. Semantic review and all closure actions
+  remain deferred.

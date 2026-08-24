@@ -4,6 +4,22 @@ status: active
 ---
 # Changelog
 
+## [2026-08-24] Wave W30 — TASK-096 statistics composition closure
+
+- Reconciled indexed `TASK-096-T3-FT-007-W30` as `done` from current Attempt 2
+  functional `PASS` and T3 `semantic-pass` evidence for
+  `FT-007-AC-003 / REQ-014 / REQ-017`.
+- Updated FT-007, its implementation plan, and RTM evidence routes; the task
+  index already resolves TASK-096, TASK-097, and TASK-098 correctly.
+- Preserved Attempt 1 report-01 executor, functional, and semantic artifacts
+  as historical-only; TASK-097 and TASK-098 remain `planned`.
+- Confirmed FT-007, EP-006, REQ-014, and REQ-017 remain `planned` because the
+  feature is incomplete. No feature/epic/requirement lifecycle transition,
+  dependency change, promotion, retry-budget change, AUTONOMOUS-RUN status, or
+  new product/design decision was made by this sync.
+- Handoff: scheduler owns post-sync `mb-lint`, then strict doctor, and any
+  separate promotion/dependency pass.
+
 ## [2026-08-22] Wave W29 — FT-007 Home/Classes and metric providers
 
 - Reconciled `TASK-080-T3-FT-007-W29`, `TASK-089-T3-FT-007-W29`, and

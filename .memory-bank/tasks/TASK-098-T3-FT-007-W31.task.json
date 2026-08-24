@@ -1,7 +1,7 @@
 {
   "id": "TASK-098-T3-FT-007-W31",
   "title": "Implement the bounded Profile destination and canonical-route proof",
-  "status": "blocked",
+  "status": "in_progress",
   "wave": "W31",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -27,6 +27,7 @@
     "/profile displays only server-owned fullName, role, and immutable registeredAt from the current-actor profile query and exposes no editing, password/provider management, membership management, or writes.",
     "Authenticated canonical-route navigation succeeds; anonymous and revoked requests fail closed; logout revokes the session and returns to /login under disposable browser proof.",
     "The exact /home and /classes links remain the TASK-080 dependency result, including its bare Student/Parent accessible-class path; this task checks route integration and does not re-prove C&S provider selection.",
+    "Attempt 1 independent functional result: VERDICT: NEEDS-CLARIFICATION. Fresh focused/server and owned-server disposable browser probes, plus every required gate, prove Profile's bounded query/fields, denial/logout behavior, all four direct canonical destinations, cleanup, and real-DB metadata preservation. Exact shell href and POST logout integration remain static-only because a bounded hydrated-menu browser observation could not be reproduced; see .protocols/TASK-098-T3-FT-007-W31/verification.md and .tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-VERIFY-final-report-docs-01.md.",
     {
       "stage": "dependency_disposition",
       "decision": "blocked",
@@ -40,6 +41,32 @@
         ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
         ".memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json"
       ],
+      "lifecycle_changed": true
+    },
+    {
+      "stage": "scheduler_dependency_recovery",
+      "decision": "planned",
+      "cause": "the TASK-096 authority blocker is resolved in accepted FT-007 authority; TASK-096 remains an unfinished dependency",
+      "evidence": [
+        ".protocols/FT-007/clarification.md",
+        ".tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-007-final-report-docs-01.md",
+        ".memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json"
+      ],
+      "promotion_deferred_until": "TASK-096-T3-FT-007-W30 is done and W30 boundary gates pass",
+      "lifecycle_changed": true
+    },
+    {
+      "stage": "scheduler_promotion",
+      "decision": "ready",
+      "cause": "all dependencies are done and the complete W30 boundary Judge supported W31 promotion",
+      "evidence": [
+        ".memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-MB-SYNC-final-report-docs-01.md",
+        "PAPERCUTS/TECHDEBTS/tech-debt-wave-W30-2026-08-24.md",
+        ".protocols/AUTONOMOUS-RUN/decision-log.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; complete W30, promote both eligible W31 cards, and select TASK-097 first",
+      "execution_deferred_until": "TASK-097-T3-FT-007-W31 reaches scheduler closure",
       "lifecycle_changed": true
     }
   ],

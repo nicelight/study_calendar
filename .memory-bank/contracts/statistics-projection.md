@@ -1,7 +1,7 @@
 ---
 description: Read-only scoped registry shape, metric formulas, and composition contract for FT-007 statistics.
 status: active
-last_updated: 2026-08-21
+last_updated: 2026-08-24
 source_of_truth:
   - .memory-bank/contracts/statistics-projection.md
 ---
@@ -46,9 +46,10 @@ directly or implement these provider-owned formulas.
 
 The authorized registry projection returns three read-only collections:
 
-- Students: full name, registration date, class names, linked parent names,
-  assigned teacher names, payment capability percentage, attendance
-  percentage, and institution name.
+- Students: one row per authorized student/class relationship, with full name,
+  registration date, that relationship's class and teacher context, linked
+  parent names, payment capability percentage, attendance percentage, and
+  institution name.
 - Teachers: full name, registration date, assigned class names, attendance
   percentage, institution name, and student count across assigned classes.
 - Classes: class name, institution name, student count, and assigned teacher
@@ -62,6 +63,23 @@ private fields.
 The result MUST be read-only and MUST NOT mutate account, Center, Class,
 membership, assignment, lesson, attendance, payment, allocation, balance, or
 audit facts.
+
+## Registry cardinality and Teacher-view scope
+
+- Students MUST contain one row for each authorized `student/class`
+  relationship. A Student with several class memberships therefore appears
+  once per relationship; the row keeps that relationship's class and teacher
+  context and does not introduce cross-class metric aggregation.
+- `studentCount` in a Teacher row MUST count distinct Student accounts across
+  that Teacher's assigned classes. A Student shared by several assigned
+  classes counts once.
+- When the viewer is a Teacher, the Teachers collection MUST contain only the
+  current Teacher. Co-teachers are not separate Teacher-registry rows; teacher
+  names needed by permitted Student/Class relationship fields remain part of
+  those relationship rows.
+
+These rules constrain the existing read-only projection shape and do not add a
+new source of truth, scope rule, or provider boundary.
 
 ## Center and Scheduling registry facts query
 

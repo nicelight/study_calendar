@@ -6,10 +6,13 @@ status: active
 
 ## Summary
 
-- Attempt 1 implemented the accepted Lesson Context-owned, profile-enriched
-  Statistics projection and working `/statistics` destination.
-- Claim-linked RED/GREEN and all required gates pass. Task lifecycle remains
-  `in_progress` for fresh independent verification and scheduler ownership.
+- Attempt 1 is historical-only after the task's recovery. Its implementation,
+  executor, functional-verification, and semantic-verification artifacts do
+  not constitute current evidence.
+- Attempt 2 began on 2026-08-24 14:17:48 +0500 from task state `ready`; `/exe`
+  owns the resulting `in_progress` state. It fresh-proved the accepted distinct
+  Teacher `studentCount` rule and completed all task gates. Lifecycle closure
+  remains outside `/exe`.
 
 ## Where to look
 
@@ -26,14 +29,26 @@ status: active
 
 ## How to run / verify
 
-- gates: focused `13/13`, check, full test `66/223`, build, diff, mb-lint, and
-  strict doctor all pass; exact results are in `execution-evidence.md`.
-- claim-linked RED/GREEN evidence: `progress.md`, `attempt-1-red.md`, and
-  `attempt-1-green.md` for `FT-007-AC-003 / REQ-014 / REQ-017`.
+- focused current command: `npx vitest run tests/lesson-context/ft-007-statistics-composition.test.ts tests/routes/ft-007-statistics.test.ts`
+  → `14/14` passed.
+- required gates: check, full test `66/224`, build, diff, mb-lint, and strict
+  doctor all passed; exact results are in `execution-evidence-attempt-2.md`.
+- claim-linked current RED/GREEN evidence: `progress.md`, `attempt-2-red.md`,
+  and `attempt-2-green.md` for `FT-007-AC-003 / REQ-014 / REQ-017`.
 - current-attempt reuse candidate locators: none
 - superseded/supporting-only receipt locators: all executor gate evidence is
   supporting-only because unrelated shared dirty state prevents a bounded
   read-surface receipt.
+
+## Attempt 2 current evidence
+
+- claim: `FT-007-AC-003 / REQ-014 / REQ-017` and
+  `statistics-projection.md#registry-cardinality-and-teacher-view-scope`.
+- current RED receipt: `.tasks/TASK-096-T3-FT-007-W30/attempt-2-red.md`.
+- current GREEN and gates: `.tasks/TASK-096-T3-FT-007-W30/attempt-2-green.md`
+  and `.tasks/TASK-096-T3-FT-007-W30/execution-evidence-attempt-2.md`.
+- old Attempt 1 executor and verifier/semantic artifacts: historical-only,
+  supporting-only; never use them as current evidence.
 
 ## Known issues
 
@@ -43,4 +58,5 @@ status: active
 ## Follow-ups
 
 - Fresh `/verify TASK-096-T3-FT-007-W30`; after functional PASS, required T3
-  `/red-verify`. Scheduler retains lifecycle closure, promotion, and wave-sync.
+  `/red-verify TASK-096-T3-FT-007-W30`. Scheduler retains lifecycle closure,
+  promotion, and wave-sync.

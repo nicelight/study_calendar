@@ -1,115 +1,50 @@
 ---
-description: Independent functional verification for TASK-096 Statistics composition.
+description: Current independent functional verification for TASK-096 Statistics composition, Attempt 2.
 status: active
 ---
 # Verification — TASK-096-T3-FT-007-W30
 
 ## What was verified
 
-- `FT-007-AC-003 / REQ-014 / REQ-017`: the complete Lesson Context-owned,
-  profile-enriched Students/Teachers/Classes projection and thin protected
-  `/statistics` destination.
-- Exact provider path, complete serializable rows, Admin own-center and Teacher
-  assigned-class scope, anonymous/Student/Parent/cross-center/removed-assignment
-  denials, no consumer table bypass, and state-before/state-after equality.
-- Dependency-owned profile, registry-fact, attendance, and payment formulas were
-  treated as `done` prerequisites; their internal claims were not re-proved.
-- Task lifecycle was observed as `in_progress` and remains unchanged.
+- Current execution is Attempt 2; the authoritative card is identity-consistent `T3 / FT-007 / W30`, `in_progress`, with `REQ-014`, `REQ-017`, five `done` prerequisites, valid gates, and current `/exe` handoff.
+- `FT-007-AC-003` outcome: `/statistics` returns the complete authorized serializable registry through Lesson Context. Students retain one row per `student/class` relationship; Teacher `studentCount` is distinct across assigned classes; a Teacher sees only the current Teacher row.
+- The current correction is limited to the Lesson Context count and its task-owned test. The route remains a protected presentation adapter, all provider facts stay read-only, and provider/internal formula claims remain `done` dependency prerequisites rather than adopted proof claims.
 
 ## Verification basis
 
-- The index resolves exactly one identity-consistent task card with `T3`,
-  `FT-007`, and `W30`; `reqs`, `depends_on`, gates, `verify`, execution evidence,
-  and literal hard scope are structurally valid.
-- All five dependencies are `done`: `TASK-094`, `TASK-079`, `TASK-095`,
-  `TASK-089`, and `TASK-090` for their exact FT-007 identities.
-- Normative task claim: `.memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-003`
-  with `REQ-014` and `REQ-017` in `.memory-bank/requirements.md`.
-- Direct canonical rules checked: Access Control profile consumer and
-  authority/scope; Statistics Projection participant metadata and registry
-  boundary; Boundary Map Actor Context, Calendar and Membership, Personal
-  Progress, Financial Projection, dependency graph, and cross-slice
-  orchestration; System Architecture composition/request flow and AD-005;
-  Testing Strategy evidence ownership; Tier Policy hard boundary, claim and
-  dependency ownership, task-scoped evidence, claim-linked RED/GREEN, tier
-  obligations, and closure authority.
-- Complete Attempt 1 `context.md`, `plan.md`, `progress.md`, `handoff.md`, prior
-  `verification.md`, RED/GREEN receipts, execution evidence, and executor final
-  report were inspected before the verdict.
+- Direct task-linked rules applied: `FT-007-AC-003`; Statistics Projection `#participant-profile-metadata`, `#registry-projection-boundary`, and `#registry-cardinality-and-teacher-view-scope`; Access Control `#authority-and-scope` and `#profile-consumer-boundary`; Boundary Map actor, registry/provider boundaries and `#cross-slice-orchestration`; System Architecture `#composition-and-request-data-flow` and `#ad-005--cross-slice-orchestration-stays-with-a-capability-owner`.
+- Task purpose, anti-goals, constraints, invariants, verification target, literal hard write boundary, forbidden scope, T3 claim-linked RED/GREEN, tier obligations, and closure authority were applied.
+- Attempt 1 executor, functional, and semantic artifacts were excluded as historical-only. Current execution evidence is the Attempt 2 handoff, `attempt-2-red.md`, `attempt-2-green.md`, and `execution-evidence-attempt-2.md`.
 
 ## Executor claim path
 
-- Attempt 1 applicable RED is honest and claim-linked: before production
-  changes, the focused composition probe failed `8/8` because
-  `getStatisticsRegistry` was absent.
-- Claim-equivalent executor GREEN retained the composition scenarios and added
-  route/presentation plus real in-memory non-mutation coverage: `13/13` passed.
-- Executor RED/GREEN and all local gates were supporting inputs only; they did
-  not substitute for fresh verifier evidence.
+- Current Attempt 2 RED: before the correction, the isolated duplicate relationship probe observed two Student rows and incorrect Teacher `studentCount: 2` where the accepted rule requires `1` (`.tasks/TASK-096-T3-FT-007-W30/attempt-2-red.md`).
+- Current Attempt 2 GREEN: after the correction, the focused composition/route suite passed 14/14, including the distinct count, relationship rows, Teacher-view scope, call order, denials, thin route, and non-mutation (`.tasks/TASK-096-T3-FT-007-W30/attempt-2-green.md`).
+- This evidence is current supporting evidence only; it does not replace the fresh verifier-owned observations below.
 
 ## Reused execute evidence
 
-- None. The executor offered no bounded-input reuse candidate because the
-  shared worktree contains unrelated dirty dependency state.
+- None. Attempt 2 offers no bounded-input reuse candidate because unrelated dirty work makes every executor receipt supporting-only.
 
 ## Repeated checks
 
-- `npx vitest run tests/lesson-context/ft-007-statistics-composition.test.ts tests/routes/ft-007-statistics.test.ts`
-  — PASS, 2 files / 13 tests. This freshly observed C&S-before-profile scope,
-  exact downstream arguments, complete Admin and Teacher views, denial matrix,
-  serializability, thin route, and real in-memory source-table equality.
-- `npm run check` — PASS, 0 errors / 0 warnings.
-- `npm run test` — PASS, 66 files / 223 tests.
-- `npm run build` — PASS; `/statistics` server/client artifacts emitted.
+- `npm run check` — PASS, Svelte check: 0 errors, 0 warnings.
+- `npm run test` — PASS, 66 files / 224 tests.
+- `npm run build` — PASS, production SvelteKit build completed; the adapter-auto deployment-environment notice is non-failing.
 - `git diff --check` — PASS.
-- `node scripts/mb-lint.mjs` — PASS, 74 files; only existing advisory metadata
-  warnings.
-- `node scripts/mb-doctor.mjs --strict` — PASS, 0 errors / 0 warnings / 2 info.
+- `node scripts/mb-lint.mjs` — PASS, 74 files; pre-existing advisory metadata warnings only.
+- `node scripts/mb-doctor.mjs --strict` — PASS, 0 errors, 0 warnings, 2 info.
 
 ## New targeted probes
 
-- Command: `npx vitest run --config
-  .tasks/TASK-096-T3-FT-007-W30/verifier.vitest.config.ts` — PASS, 1 file / 7
-  tests.
-- Artifact: `.tasks/TASK-096-T3-FT-007-W30/verifier.test.ts`.
-- Exact observed successful call sequence was C&S `getRegistryFacts` -> I&A
-  `getStatisticsProfiles` over only the scoped account IDs -> Financial Ledger
-  `getPaymentCapability` for the scoped student/class -> Learning Progress
-  student and Teacher `getAttendancePercentage` calls. Only the four accepted
-  public method families occur; profile/metric calls never precede scope.
-- The probe independently asserted every Students/Teachers/Classes field, exact
-  metric arguments, JSON round-trip equality, one route-to-Lesson-Context call,
-  anonymous redirect, and Student/Parent/cross-center Admin/removed Teacher 403
-  before profile or metric enrichment.
-- Fixture equality plus the repeated real in-memory table snapshot prove
-  non-mutation. Bounded source inspection found no SQL/database access in the
-  Statistics method, no provider imports/table access in the route, and no
-  mutation controls in the page.
+- `npx vitest run --config .tasks/TASK-096-T3-FT-007-W30/verify-attempt-2.vitest.config.ts` — PASS, one file / seven tests. Artifact: `.tasks/TASK-096-T3-FT-007-W30/verify-attempt-2.test.ts`.
+- The verifier-owned isolated probe observed C&S scope before profile lookup, then only the accepted Identity & Access, Learning Progress, and Financial Ledger queries. It proved complete serializable Admin/Teacher rows, exactly two relationship rows for a shared Student, distinct `studentCount: 1`, and one current-Teacher registry row while preserved relationship teacher names remain available.
+- It independently covered Student, Parent, cross-center Admin, and removed-Teacher denials before profile or metric calls, anonymous route redirect, `not-authorized` to 403 mapping, no provider/table access in the route, no direct table/write path in composition, absence of page mutation controls, and fixture state-before/state-after equality.
 
-## Architecture, boundary, and anti-goal result
+## Architecture, scope, and finding adjudication
 
-- Lesson Context retains the cross-slice composition; `/statistics` is only a
-  transport/presentation adapter over serializable output.
-- The current implementation change is limited to
-  `src/lib/server/modules/lesson-context/public.ts`, `src/routes/statistics/`,
-  and the two literal task test paths. The verifier probe/config and protocol
-  report are skill-owned evidence artifacts. Pre-existing forbidden-provider
-  dirty state is the recorded `done` dependency baseline and was preserved; no
-  provider root, `playwright.config.ts`, `study-calendar.db`, scheduler, or
-  AUTONOMOUS-RUN file was changed by this verification.
-- No direct provider-table read, dependency reversal, source-of-truth copy,
-  provider formula implementation, typed sorting, or Statistics persistence
-  appears in the task-owned surface. No higher-tier trigger was found.
-
-## Finding adjudication
-
-- Focus A: functional completeness, exact call path, rows, denials, and
-  non-mutation. Focus B: architecture, hard scope, thin route, and anti-goals.
-- Fresh `Codex Luna` `xhigh` launch and one retry failed for each focus because
-  that model is unavailable in the current runtime. No substitute model was
-  used; verification continued under the semantic pack's fallback rule.
-- Independent adjudication found no evidence-backed task-scoped defect or
-  unresolved product/design interpretation.
+- The actual change is inside the literal hard boundary; no forbidden provider root, `playwright.config.ts`, `study-calendar.db`, lifecycle field, or AUTONOMOUS-RUN artifact was changed by this verification. No higher-tier trigger, new provider edge, second source of truth, direct provider-table access, sorting, persistence, or route-owned orchestration was observed.
+- Finding focuses: (1) functional cardinality, scope, denial, and non-mutation; (2) architecture ownership, hard boundary, and thin-route anti-goals. The required Codex Luna co-reviewer launch and one retry failed before a thread was created; per the installed semantic pack, no substitute was used and this verification continued under its fallback. No evidence-backed finding remained from the verifier's independent checks.
 
 ## Verdict
 
@@ -117,8 +52,5 @@ VERDICT: PASS
 
 ## Handoff
 
-- Recommended scheduler route: `/red-verify TASK-096-T3-FT-007-W30`.
-- T3 is not closure-eligible from functional verification alone. The scheduler
-  retains lifecycle authority; task status remains `in_progress`.
-- `/red-verify`, `/mb-sync`, planning/doctor repair, Judge, debug, and scheduler
-  transitions were not run.
+- Recommended scheduler action: `/red-verify TASK-096-T3-FT-007-W30`.
+- T3 functional PASS is not closure eligibility. Task lifecycle remains `in_progress`; no red verification, sync, Judge/scheduler action, dependent promotion, or AUTONOMOUS-RUN edit occurred.

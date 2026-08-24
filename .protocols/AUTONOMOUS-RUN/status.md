@@ -6,20 +6,25 @@ status: active
 
 ## Checkpoint
 
-- STATE: `HALT_CLARIFICATION_REQUIRED`
+- STATE: `RUNNING`
 - command: `/autopilot`
 - role: `ORCHESTRATOR/SCHEDULER`
 - planning revision: `2`
 - current phase: `product queue execution`
-- current task: `TASK-096-T3-FT-007-W30`
-- current stage: `red-verify`
-- last durable child verdict/handoff: fresh fixed-role Architect
-  `/feature-doctor FT-007` returned terminal result
-  `HALT_CLARIFICATION_REQUIRED` and durably recorded three operator-owned
-  choices in `.protocols/FT-007/clarification.md`. Scheduler then applied the
-  proven-authority-gap disposition: TASK-096 is authoritative `blocked`, and
-  its direct dependents TASK-097/098 are `blocked`; no execution or review
-  stage was replayed.
+- current task: `TASK-098-T3-FT-007-W31`
+- current stage: `verify`
+- last durable child verdict/handoff: fresh fixed-role Implementer `/exe
+  TASK-098-T3-FT-007-W31` completed bounded evidence recovery in the existing
+  Attempt 1 at
+  `.tasks/TASK-098-T3-FT-007-W31/TASK-098-T3-FT-007-W31-S-EXE-final-report-code-02.md`.
+  The task-owned browser probe now opens the hydrated shell, observes exact
+  `/home`, `/classes`, `/statistics`, `/profile` hrefs and the existing
+  `POST /auth/logout` form, exercises each menu link, and submits visible
+  Logout. Final focused `3/3`, disposable browser `1/1`, full test `68/228`,
+  check `0/0`, build, diff, mb-lint, and strict doctor `0/0/2` passed; exact
+  temporary DB/sidecars are absent and the final E2E preserved
+  `study-calendar.db` size/mtime/inode. No production file, lifecycle, retry
+  counter, or Attempt identity changed; TASK-098 remains `in_progress`.
 - verifier recovery evidence: two fresh `/verify TASK-089-T3-FT-007-W29`
   contexts independently produced focused probe evidence and gate results. The
   first recorded a verifier-owned probe plus full suite `63 files / 208 tests`
@@ -37,14 +42,27 @@ status: active
   metadata warnings; strict doctor returned `status: pass`, 0 errors, 1 warning,
   and 2 info. The warning identifies planned TASK-096 as the normal promotion
   candidate.
+- W30 post-sync gates: scheduler `mb-lint` passed `74 files` with the existing
+  advisory metadata warnings; strict doctor passed with `0 errors / 2 warnings
+  / 2 info`. The two warnings identify planned TASK-097 and TASK-098 as normal
+  ready candidates and are not quality blockers.
 - planning review trigger: none; W29 changed only lifecycle evidence, RTM links,
   changelog, and feature closure routing without changing verdict-relevant
   specs/claims, slicing, proof obligations, dependencies, tier, scope, or plan
   assumptions. Current FT-007 `APPROVE` at Planning Revision `2` survives.
+- W30 planning review trigger: none; W30 implementation fulfilled the already
+  reviewed cardinality contract, and sync changed only closure/evidence routes,
+  RTM/changelog, and mechanically stale queue wording. No verdict-relevant
+  claim, slicing, proof obligation, dependency, tier, scope, or plan assumption
+  changed; FT-007 `APPROVE` at Planning Revision `2` survives.
 - advisory tech debt: one report completed at
   `PAPERCUTS/TECHDEBTS/tech-debt-wave-W29-2026-08-22.md`; it confirms two MEDIUM
   recurrence signals (late bare-route semantic detection and verifier
   finalization stalls) but no current production defect or queue blocker.
+- W30 advisory tech debt: fresh report
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W30-2026-08-24.md` confirms no material
+  finding in the bounded TASK-096/W30 change surface; its focused suite rerun
+  passed `14/14`. The report is advisory and changes no workflow state.
 - W29 boundary Judge: fresh `gpt-5.6-sol/xhigh` returned `SUPPORT` with
   `trajectory_signal: progress`; W29 gates are complete and advisory findings
   are not blockers. Conditions preserve Planning Revision `2`, current FT-007
@@ -53,17 +71,22 @@ status: active
   `trajectory_signal: progress`; `/autopilot` must invoke fresh
   `/feature-doctor FT-007` before terminal disposition because unresolved
   feature-related semantic concerns require owning-layer triage.
-- next action: none while halted. Exact resume route: the operator answers all
-  three TASK-096 questions in `.protocols/FT-007/clarification.md`, then reruns
-  `/feature-doctor FT-007`. Apply its accepted-answer route through
-  `/feature-to-tasks FT-007`, a fresh `/review-tasks-plan FT-007`, current
-  readiness gates, and `/autopilot` recovery before rerunning only the
-  applicable TASK-096 functional/semantic gates.
-- terminal reason: accepted product/spec authority does not decide Student row
-  cardinality, Teacher `studentCount` distinctness, or the Teacher viewer's
-  Teachers-registry rows. Evidence owner is the operator through
-  `/feature-doctor FT-007`; unattended recommendations are not consent.
-- reconciled at: `2026-08-22 20:09 +0500`
+- TASK-096 Attempt 2 closure Judge: fresh `gpt-5.6-sol/xhigh` returned
+  `SUPPORT` with `trajectory_signal: progress`; scheduler closure is justified
+  only from current Attempt 2 functional and semantic evidence, with Attempt 1
+  docs-01 preserved historical-only and W30 boundary required before promotion.
+- W30 boundary Judge: fresh `gpt-5.6-sol/xhigh` returned `SUPPORT` with
+  `trajectory_signal: progress`; W30 is complete, both W31 cards may be
+  promoted, and stable sequential selection must start with TASK-097 while
+  TASK-098 stays ready and unexecuted.
+- post-promotion gate: strict doctor passed with `0 errors / 0 warnings / 2
+  info`; both ready cards are structurally valid.
+- next action: separate fresh `/verify TASK-098-T3-FT-007-W31` in a fixed-role
+  Reviewer child using current Attempt 1 evidence, independently reproducing
+  the hydrated shell/browser outcome; only functional PASS routes to required
+  T3 `/red-verify`.
+- terminal reason: none; scheduler recovery is active.
+- reconciled at: `2026-08-24 16:14 +0500`
 
 ## Review and readiness gates
 
@@ -82,10 +105,10 @@ status: active
 ## Queue state
 
 - Authoritative index: [.memory-bank/tasks/index.json](../../.memory-bank/tasks/index.json).
-- Product queue: `48 done`, `3 terminal failed`, `0 planned`, `0 ready`,
-  `0 in_progress`, `3 blocked`; W29 boundary remains accepted. TASK-096 is
-  blocked by the confirmed FT-007 authority gap, and direct dependents
-  TASK-097/098 are blocked by policy before any promotion pass.
+- Product queue: `50 done`, `3 terminal failed`, `0 planned`, `0 ready`,
+  `1 in_progress`, `0 blocked`; W30 is complete. TASK-097 is done; TASK-098 is
+  the sole active card at fresh functional verification after bounded
+  execution-evidence completion.
 - Current planning record: `TASK-039-T3-FT-003-W10` is `done` with done
   TASK-014 and TASK-037 dependencies. TASK-038 is terminal `failed` with
   explicit `superseded_by: TASK-039` evidence.
@@ -112,12 +135,12 @@ status: active
   no fourth attempt is permitted and all retry evidence is preserved.
 - `max_consecutive_failures: 3`; current consecutive failures: `0` after
   successful TASK-079 closure.
-- `max_open_blockers: 3`; current open blockers: `3`. The limit is reached but
-  not exceeded; the exact clarification halt takes precedence and no promotion
-  pass is authorized.
-- The unresolved branch is feature-local FT-007 registry behavior and is
-  durably owned by `.protocols/FT-007/clarification.md`; unrelated historical
-  reconciliation remains preserved.
+- `max_open_blockers: 3`; current open blockers: `0` after authoritative
+  scheduler recovery restored TASK-096 to `ready` and TASK-097/098 to
+  `planned` from the resolved feature-local blocker.
+- The former FT-007 registry authority branch is durably resolved in
+  `.protocols/FT-007/clarification.md`; unrelated historical reconciliation and
+  all failure/retry counters remain preserved.
 
 ## Wave-boundary and technical debt
 

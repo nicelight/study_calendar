@@ -1,7 +1,7 @@
 {
   "id": "TASK-096-T3-FT-007-W30",
   "title": "Compose the profile-enriched Statistics destination",
-  "status": "blocked",
+  "status": "done",
   "wave": "W30",
   "feature": "FT-007",
   "reqs": ["REQ-014", "REQ-017"],
@@ -23,15 +23,15 @@
     {"name": "strict-doctor", "command": "node scripts/mb-doctor.mjs --strict", "required": true}
   ],
   "verify": [
-    "FT-007-AC-003: /statistics presents complete Students, Teachers, and Classes rows with permitted profile, Center & Scheduling, attendance, and payment fields for Admin own-center and Teacher assigned-class scope.",
+    "FT-007-AC-003: /statistics presents complete Students, Teachers, and Classes rows with permitted profile, Center & Scheduling, attendance, and payment fields for Admin own-center and Teacher assigned-class scope; Students are one row per student/class relationship, Teacher studentCount counts distinct Student accounts across assigned classes, and a Teacher viewer's Teachers registry contains only the current Teacher.",
     "Lesson Context obtains authorized account IDs from Center & Scheduling before profile enrichment, then consumes only the accepted Identity & Access, Learning Progress, and Financial Ledger queries; Student/Parent, guessed-route, cross-center, and removed-assignment cases return safe denial.",
-    "The route remains a transport/presentation adapter over serializable Lesson Context output, and all provider facts remain unchanged.",
-    "Independent functional PASS: fresh focused 13/13 and verifier-owned 7/7 probes plus check, full test 66/223, build, diff, mb-lint, and strict-doctor gates prove AC-003 call path, complete rows, denial matrix, thin route, hard-boundary/anti-goal compliance, and non-mutation; see .protocols/TASK-096-T3-FT-007-W30/verification.md and .tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-01.md.",
+    "The route remains a transport/presentation adapter over serializable Lesson Context output, relationship-level teacher names remain available only in permitted Student/Class rows, and all provider facts remain unchanged.",
+    "Attempt 2 independent functional result: fresh verifier-owned 7/7 probe plus check, full test 66/224, build, diff, mb-lint, and strict-doctor gates prove AC-003 call path, complete rows, denial matrix, thin route, hard-boundary/anti-goal compliance, and non-mutation; see .protocols/TASK-096-T3-FT-007-W30/verification.md and .tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-02.md.",
     {
       "stage": "semantic",
       "attempt": "Attempt 1",
       "verdict": "semantic-concern",
-      "report": ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
+      "report": ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-RED-VERIFY-final-report-docs-01.md",
       "artifact": ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-RED-VERIFY-final-report-docs-01.md",
       "evidence": [
         "Fresh separate semantic review proved no unambiguous authorization, provider-ownership, mutation, or serialization defect, but found reachable multi-class and co-teacher interpretations not decided by accepted authority.",
@@ -46,7 +46,7 @@
       "cause": "proven feature-authority gap",
       "halt": "HALT_CLARIFICATION_REQUIRED",
       "accepted_evidence": [
-        ".protocols/TASK-096-T3-FT-007-W30/verification.md",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-01.md",
         ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
         ".protocols/FT-007/clarification.md",
         ".memory-bank/features/FT-007-navigation-and-statistics.md",
@@ -56,14 +56,79 @@
       "owner": "operator via /feature-doctor FT-007",
       "resume": "Answer all three TASK-096 questions in .protocols/FT-007/clarification.md, then rerun /feature-doctor FT-007; follow its authority-set reconciliation route before any applicable TASK-096 gates are rerun.",
       "lifecycle_changed": true
+    },
+    {
+      "stage": "scheduler_lifecycle_recovery",
+      "decision": "planned",
+      "cause": "the operator-owned FT-007 authority gap is durably resolved and the reconciled task plan is freshly approved at Planning Revision 2",
+      "evidence": [
+        ".protocols/FT-007/clarification.md",
+        ".memory-bank/contracts/statistics-projection.md#registry-cardinality-and-teacher-view-scope",
+        ".tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-007-final-report-docs-01.md",
+        ".protocols/AUTONOMOUS-RUN/decision-log.md"
+      ],
+      "historical_evidence_only": [
+        ".protocols/TASK-096-T3-FT-007-W30/handoff.md",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-096-T3-FT-007-W30/red-verification.md"
+      ],
+      "fresh_gates_required": [
+        "/exe TASK-096-T3-FT-007-W30",
+        "/verify TASK-096-T3-FT-007-W30",
+        "/red-verify TASK-096-T3-FT-007-W30"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; recover the exact old blocker consequence and require fresh post-contract task gates",
+      "lifecycle_changed": true
+    },
+    {
+      "stage": "scheduler_promotion",
+      "decision": "ready",
+      "cause": "all five dependencies are done, FT-007 is eligible at Planning Revision 2, and post-recovery strict doctor passed",
+      "next_action": "/exe TASK-096-T3-FT-007-W30",
+      "fresh_evidence_required": true,
+      "lifecycle_changed": true
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
+      "artifact": ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh post-authority semantic review used only current Attempt 2 functional evidence and independently passed verifier-owned 7/7, production-focused 14/14, C&S registry-facts 1/1, and git diff --check.",
+        "Two fresh Codex Luna xhigh focus reviews produced no admitted material finding or operator question.",
+        "The current red-verification protocol contains exactly one SEMANTIC_VERDICT: semantic-pass; Attempt 1 docs-01 remains historical-only."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 2",
+      "cause": "current functional PASS and required T3 semantic-pass satisfy the reconciled FT-007-AC-003 outcome",
+      "evidence": [
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-EXE-final-report-code-02.md",
+        ".protocols/TASK-096-T3-FT-007-W30/verification.md",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-02.md",
+        ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-RED-VERIFY-final-report-docs-02.md"
+      ],
+      "historical_evidence_only": [
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-EXE-final-report-code-01.md",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; close TASK-096 from current Attempt 2 evidence, then complete W30 boundary before dependent promotion",
+      "next_action": "/mb-sync at W30 boundary",
+      "lifecycle_changed": true
     }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-007.md", ".protocols/FT-007/plan.md"],
   "evidence_required": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-003 / REQ-014 / REQ-017 RED: profile enrichment precedes Center & Scheduling scope, Lesson Context or /statistics reads a provider table directly, a required registry field/row is absent, an unauthorized role/scope receives data, or composition mutates facts; GREEN: isolated Lesson Context and /statistics route tests prove the four exact provider calls, no direct provider-table access, complete serializable rows, the denial matrix, and state-before/state-after equality; artifact: .tasks/TASK-096-T3-FT-007-W30/ and .protocols/TASK-096-T3-FT-007-W30/."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-003 / REQ-014 / REQ-017 RED: profile enrichment precedes Center & Scheduling scope, Lesson Context or /statistics reads a provider table directly, a required field/row or accepted row-cardinality rule is absent, distinct Teacher studentCount or Teacher-view scope is wrong, an unauthorized role/scope receives data, or composition mutates facts; GREEN: isolated Lesson Context and /statistics route tests prove the four exact provider calls, one Student row per authorized student/class relationship, distinct Student-account counting, current-Teacher-only registry rows for Teacher viewers, preserved relationship teacher context, no direct provider-table access, complete serializable rows, the denial matrix, and state-before/state-after equality; artifact: .tasks/TASK-096-T3-FT-007-W30/ and .protocols/TASK-096-T3-FT-007-W30/."
   ],
   "purpose": "Own the legal cross-slice composition and working /statistics destination for the complete scoped-registry result.",
-  "success_outcome": "/statistics exposes one read-only profile-enriched registry projection assembled by Lesson Context only through accepted provider boundaries.",
+  "success_outcome": "/statistics exposes one read-only profile-enriched registry projection assembled by Lesson Context only through accepted provider boundaries, with the accepted student/class row cardinality, distinct Teacher studentCount, and Teacher-view registry scope.",
   "anti_goals": [
     "Do not read Identity & Access, Center & Scheduling, Learning Progress, or Financial Ledger tables directly.",
     "Do not re-prove provider formulas or provider-internal scope claims.",
@@ -74,6 +139,7 @@
     ".memory-bank/contracts/access-control.md#profile-consumer-boundary",
     ".memory-bank/contracts/statistics-projection.md#participant-profile-metadata",
     ".memory-bank/contracts/statistics-projection.md#registry-projection-boundary",
+    ".memory-bank/contracts/statistics-projection.md#registry-cardinality-and-teacher-view-scope",
     ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
     ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
     ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
@@ -89,6 +155,7 @@
     ".memory-bank/contracts/access-control.md#profile-consumer-boundary",
     ".memory-bank/contracts/statistics-projection.md#participant-profile-metadata",
     ".memory-bank/contracts/statistics-projection.md#registry-projection-boundary",
+    ".memory-bank/contracts/statistics-projection.md#registry-cardinality-and-teacher-view-scope",
     ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
     ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
     ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
@@ -106,15 +173,17 @@
   "constraints": [
     "Lesson Context owns cross-slice statistics composition; /statistics remains a transport/presentation adapter.",
     "Center & Scheduling-scoped account IDs precede profile lookup; providers are called only through the four accepted boundaries.",
-    "Provider formulas and internal proofs remain owned by TASK-095, TASK-089, and TASK-090."
+    "Provider formulas and internal proofs remain owned by TASK-095, TASK-089, and TASK-090.",
+    "The composition preserves one Student row per authorized student/class relationship, counts distinct Student accounts for Teacher studentCount, and emits only the current Teacher in the Teachers collection for a Teacher viewer; it does not add cross-class metric aggregation."
   ],
   "invariants": [
     "Only authorized serializable rows reach the browser.",
     "Statistics reads do not mutate account, class, membership, lesson, attendance, payment, allocation, balance, or audit facts.",
-    "Composition never broadens provider scope or reverses a dependency edge."
+    "Composition never broadens provider scope or reverses a dependency edge.",
+    "Student relationship rows retain their own class and teacher context; a shared Student contributes once to a Teacher's distinct studentCount, and co-teachers are not separate Teacher rows for a Teacher viewer."
   ],
   "verification_targets": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-003: complete Students/Teachers/Classes field and role/scope matrix with exact boundary calls, guessed-route and removed-assignment negatives, and non-mutation."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-003: complete Students/Teachers/Classes field and role/scope matrix with exact boundary calls, accepted student/class relationship-row cardinality, distinct Teacher studentCount, Teacher-view registry scope, guessed-route and removed-assignment negatives, and non-mutation."
   ],
   "runtime_context": {
     "write_boundary": ["src/lib/server/modules/lesson-context/public.ts", "src/routes/statistics/", "tests/lesson-context/ft-007-statistics-composition.test.ts", "tests/routes/ft-007-statistics.test.ts"],

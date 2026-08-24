@@ -50,11 +50,20 @@ attendance transition or financial allocation semantics.
 
 Queue action is `reconciled` after the fresh feature-doctor completion. The
 accepted nine-outcome slicing is unchanged. All existing FT-007 task identities,
-tiers, waves, lifecycles, and evidence routes remain in place; TASK-080 remains
-`in_progress`, while TASK-079, TASK-094, and TASK-095 retain their current
-closed evidence. No task inherits another task's proof. The bounded repair
-extends TASK-080 to the accepted C&S accessible-class public query and adds the
-completed TASK-095 provider baseline as a direct prerequisite.
+tiers, waves, lifecycles, and evidence routes remain in place. TASK-079,
+TASK-080, TASK-089, TASK-090, TASK-094, TASK-095, and TASK-096 retain `done`;
+TASK-097 and TASK-098 remain `planned`. No task inherits another task's proof.
+The existing TASK-080 accessible-class query and TASK-095 prerequisite remain
+unchanged.
+
+The Statistics Projection leaf contract now states the accepted FT-007-AC-003
+cardinality: Students are one row per `student/class` relationship, Teacher
+`studentCount` is distinct Student accounts across assigned classes, and a
+Teacher viewer's Teachers registry contains only the current Teacher. TASK-096
+retains AC-003 ownership and its existing hard boundary; its claim-linked
+proof mapping is extended to these rules. TASK-097 retains AC-004 ownership
+and consumes the reconciled row shape without adopting AC-003 proof. No task
+identity, tier, wave, dependency, lifecycle, or historical evidence changes.
 
 The profile correction uses the exact Access Control `Profile creation and
 query obligation`. It covers all supported new-account paths through the
@@ -106,11 +115,11 @@ onto a provider card.
 
 Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
 gates, and only its own ownership evidence. TASK-079 implements the disposable
-runner while proving AC-001; TASK-080 now also owns an isolated C&S
-accessible-list provider probe and reuses the runner for its own focused browser
-claim. TASK-097 and TASK-098 continue to reuse the runner without inheriting
-TASK-079 or TASK-080 evidence. Provider and composition cards use isolated
-database/route tests. No card inherits dependency proof.
+runner while proving AC-001; TASK-080 owns the isolated C&S accessible-list
+provider probe and its own focused browser claim. TASK-096's closed Attempt 2
+proof covers the accepted AC-003 row/cardinality rules; TASK-097 uses that
+result only for typed sorting, and TASK-098 remains route-integration proof.
+No card inherits dependency proof.
 
 ## Planning Revision and Foundation
 
@@ -118,4 +127,5 @@ Global Backbone is `complete` at Planning Revision `2`. Foundation is required
 and its final gate `TASK-002-T3-FT-000-W1` is `done`; every FT-007 task depends
 on that gate directly or transitively through the existing product queue.
 This reconciliation extends accepted leaf contracts only and does not change
-the global architecture target or Foundation decision.
+the global architecture target or Foundation decision. Immediate next route:
+`/review-tasks-plan FT-007`.

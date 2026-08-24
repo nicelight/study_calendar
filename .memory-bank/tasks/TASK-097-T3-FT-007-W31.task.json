@@ -1,7 +1,7 @@
 {
   "id": "TASK-097-T3-FT-007-W31",
   "title": "Implement typed sorting for Statistics registries",
-  "status": "blocked",
+  "status": "done",
   "wave": "W31",
   "feature": "FT-007",
   "reqs": ["REQ-017"],
@@ -19,7 +19,7 @@
   ],
   "verify": [
     "FT-007-AC-004: each registry column exposes visible ascending/descending state; text, dates, percentages, and counts sort by typed values, and Teacher classes sort by the first rendered class.",
-    "Sorting operates only on the authorized serializable TASK-096 result and does not change scope, provider query semantics, or source facts.",
+    "Sorting operates only on the authorized serializable TASK-096 result with its reconciled Student relationship rows, distinct Teacher studentCount, and Teacher-view registry scope; it does not change scope, provider query semantics, row cardinality, or source facts.",
     "Focused browser proof starts a new server on tmp/ft-007-statistics.db, removes it after the run, and never opens study-calendar.db.",
     {
       "stage": "dependency_disposition",
@@ -34,6 +34,66 @@
         ".protocols/TASK-096-T3-FT-007-W30/red-verification.md",
         ".memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json"
       ],
+      "lifecycle_changed": true
+    },
+    {
+      "stage": "scheduler_dependency_recovery",
+      "decision": "planned",
+      "cause": "the TASK-096 authority blocker is resolved in accepted FT-007 authority; TASK-096 remains an unfinished dependency",
+      "evidence": [
+        ".protocols/FT-007/clarification.md",
+        ".tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-007-final-report-docs-01.md",
+        ".memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json"
+      ],
+      "promotion_deferred_until": "TASK-096-T3-FT-007-W30 is done and W30 boundary gates pass",
+      "lifecycle_changed": true
+    },
+    {
+      "stage": "scheduler_promotion",
+      "decision": "ready",
+      "cause": "all dependencies are done and the complete W30 boundary Judge supported W31 promotion",
+      "evidence": [
+        ".memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json",
+        ".tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-MB-SYNC-final-report-docs-01.md",
+        "PAPERCUTS/TECHDEBTS/tech-debt-wave-W30-2026-08-24.md",
+        ".protocols/AUTONOMOUS-RUN/decision-log.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; complete W30, promote both eligible W31 cards, and select TASK-097 first",
+      "next_action": "/exe TASK-097-T3-FT-007-W31",
+      "lifecycle_changed": true
+    },
+    "Fresh /verify evidence: verifier reran check, full test, build, diff, mb-lint, strict doctor, focused route test, and two owned-server disposable browser runs with tmp/ft-007-statistics.db; gates passed and cleanup/non-mutation were observed, but e2e/ft-007-statistics.spec.ts proves only a subset of the required all-column/both-direction browser matrix (18 controls, 12 clicks). Route bounded evidence completion to the current execution owner, then fresh /verify; lifecycle unchanged.",
+    "Fresh /verify evidence after bounded Attempt 1 completion: verifier reran check, full test, build, diff, mb-lint, strict doctor, and two owned-server disposable browser runs with tmp/ft-007-statistics.db. Each browser run passed 1 Playwright test; the current spec executes all 8 Students + 6 Teachers + 4 Classes controls in both directions (36 interactions), asserts active aria-sort after every click, proves typed text/date/percentage/count and Teacher first-rendered-class ordering, 15-table source non-mutation, authorized serializable input, and exact tmp DB/sidecar cleanup. Current VERDICT: PASS; see .protocols/TASK-097-T3-FT-007-W31/verification.md and .tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-VERIFY-final-report-docs-01.md. Scheduler lifecycle unchanged; next required T3 route: /red-verify TASK-097-T3-FT-007-W31.",
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-097-T3-FT-007-W31/red-verification.md",
+      "artifact": ".tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh adversarial review independently passed the complete owned-server disposable browser matrix and confirmed typed bidirectional presentation over the authorized serializable projection only.",
+        "Two fresh focus reviews raised cold-start and hydration candidates; isolated supported-path reproduction plus five sequential owned runs did not reproduce either, so no finding or operator question was admitted.",
+        "The red-verification protocol contains exactly one SEMANTIC_VERDICT: semantic-pass; lifecycle remained scheduler-owned."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 1",
+      "cause": "current functional PASS and required T3 semantic-pass satisfy FT-007-AC-004 / REQ-017",
+      "evidence": [
+        ".tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-EXE-final-report-code-02.md",
+        ".protocols/TASK-097-T3-FT-007-W31/verification.md",
+        ".tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-097-T3-FT-007-W31/red-verification.md",
+        ".tasks/TASK-097-T3-FT-007-W31/TASK-097-T3-FT-007-W31-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "historical_evidence_only": [
+        "the initial 12-click NEEDS-CLARIFICATION entry preserved earlier in this verify array and in the historical section of verification.md"
+      ],
+      "judge": "not_required: initial Attempt 1 closed without retry, competing route, admitted semantic concern, or escalation trigger",
+      "next_action": "strict doctor, then sequential /exe TASK-098-T3-FT-007-W31",
       "lifecycle_changed": true
     }
   ],
@@ -51,6 +111,7 @@
   "source_artifacts": [
     ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004",
     ".memory-bank/contracts/statistics-projection.md#sorting-and-presentation",
+    ".memory-bank/contracts/statistics-projection.md#registry-cardinality-and-teacher-view-scope",
     ".memory-bank/contracts/access-control.md#authority-and-scope",
     ".memory-bank/testing/strategy.md#disposable-browser-proof"
   ],
@@ -60,6 +121,7 @@
     ".memory-bank/spec-index.md#spec-registry",
     ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004",
     ".memory-bank/contracts/statistics-projection.md#sorting-and-presentation",
+    ".memory-bank/contracts/statistics-projection.md#registry-cardinality-and-teacher-view-scope",
     ".memory-bank/contracts/access-control.md#authority-and-scope",
     ".memory-bank/testing/strategy.md#disposable-browser-proof",
     ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
@@ -70,16 +132,18 @@
   ],
   "constraints": [
     "Sorting is presentation over TASK-096's authorized serializable projection and adopts no provider claim.",
+    "Sorting consumes TASK-096's reconciled row shape without changing Student relationship-row cardinality, distinct Teacher studentCount, or Teacher-view registry scope.",
     "Use TASK-079's runner with tmp/ft-007-statistics.db; never use study-calendar.db or an existing server.",
     "No sorting operation may alter server-side scope or provider query semantics."
   ],
   "invariants": [
     "Both directions are visible and deterministic for every column type.",
     "Teacher multi-class rendering sorts by the first rendered ordered class.",
-    "No product or provider state changes during sorting proof."
+    "No product or provider state changes during sorting proof.",
+    "Sorting does not reinterpret or broaden the reconciled TASK-096 registry row shape."
   ],
   "verification_targets": [
-    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004: full typed sorting matrix for all three registries and both directions under disposable browser proof."
+    ".memory-bank/features/FT-007-navigation-and-statistics.md#FT-007-AC-004: full typed sorting matrix for all three registries and both directions over TASK-096's reconciled authorized row shape under disposable browser proof; sorting does not own or alter AC-003 cardinality semantics."
   ],
   "runtime_context": {
     "write_boundary": ["src/routes/statistics/", "tests/routes/ft-007-statistics-sorting.test.ts", "e2e/ft-007-statistics.spec.ts", "tmp/ft-007-statistics.db"],

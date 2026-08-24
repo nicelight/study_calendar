@@ -227,6 +227,28 @@ describe('FT-007-AC-003 Lesson Context Statistics composition', () => {
 		expect(JSON.stringify(result)).not.toContain('Beta');
 	});
 
+	it('counts a shared Student once across a Teacher\'s assigned classes', () => {
+		const factsWithSharedStudent = {
+			...adminFacts,
+			accountIds: ['student-one', 'parent-one', 'teacher-one', 'teacher-two'],
+			memberships: adminFacts.memberships.filter(({ accountId }) => accountId !== 'student-two'),
+			classes: adminFacts.classes.map((classView) =>
+				classView.classId === 'class-beta'
+					? { ...classView, studentAccountIds: ['student-one'], studentCount: 1 }
+					: classView
+			)
+		};
+		const profileRows = profiles.filter(({ accountId }) =>
+			factsWithSharedStudent.accountIds.includes(accountId)
+		);
+		const { boundary } = createApi({ facts: factsWithSharedStudent, profileRows });
+
+		const result = boundary.getStatisticsRegistry({ actor: admin, sessionToken: 'session-admin' });
+
+		expect(result.students.filter(({ fullName }) => fullName === 'Student One')).toHaveLength(2);
+		expect(result.teachers.find(({ fullName }) => fullName === 'Teacher One')?.studentCount).toBe(1);
+	});
+
 	it.each([
 		[null, 'anonymous'],
 		[{ accountId: 'student-one', role: 'student' } as ActorContext, 'student'],

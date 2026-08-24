@@ -25,6 +25,12 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
   attendance across the teacher's assigned classes and conducted lessons,
   divided by all assigned-class student/lesson slots. Unmarked slots follow the
   accepted default-present attendance workflow.
+- Students contain one row per authorized `student/class` relationship; a
+  Student in several classes appears once per relationship without
+  cross-class metric aggregation.
+- Teacher `studentCount` counts distinct Student accounts across the Teacher's
+  assigned classes, and a Teacher viewer's Teachers registry contains only the
+  current Teacher; co-teachers are not separate Teacher-registry rows.
 - The feature remains read-only: no statistics projection may mutate account,
   center, class, lesson, attendance, payment, allocation, or balance facts.
 - Protected destinations use `/home`, `/classes`, `/statistics`, and `/profile`;
@@ -55,11 +61,10 @@ sorting, factual payment capability, and conducted-lesson attendance metrics.
 
 Queue action is `reconciled` after the fresh feature-doctor completion. The
 accepted nine-outcome slicing remains unchanged. Every existing FT-007 task
-identity, tier, wave, lifecycle, and evidence route is retained; TASK-080
-remains `in_progress`, and TASK-079, TASK-094, and TASK-095 remain closed with
-their current evidence. Existing TASK-080 prerequisites remain, with the
-completed TASK-095 provider baseline added as one direct prerequisite. No task
-inherits another task's proof:
+identity, tier, wave, lifecycle, and evidence route is retained; TASK-079,
+TASK-080, TASK-089, TASK-090, TASK-094, and TASK-095 remain `done`, while
+TASK-096, TASK-097, and TASK-098 retain their existing `blocked` status. The
+reconciled queue does not inherit another task's proof:
 
 1. TASK-094 owns one complete Identity & Access profile result under AC-008 across bootstrap
    Admin, invitation, and direct-password creation plus the two accepted profile
@@ -77,8 +82,12 @@ inherits another task's proof:
 4. TASK-095 owns only Center & Scheduling scoped registry facts under AC-009.
 5. TASK-089 and TASK-090 separately own attendance and payment projections;
    each links its exact actor and C&S source/authorization boundary.
-6. TASK-096 owns Lesson Context composition and the `/statistics` AC-003 route.
-7. TASK-097 owns typed Statistics sorting under AC-004.
+6. TASK-096 owns Lesson Context composition and the `/statistics` AC-003 route,
+   including the accepted Student relationship-row, distinct-count, and
+   Teacher-view cardinality rules.
+7. TASK-097 owns typed Statistics sorting under AC-004 over TASK-096's
+   reconciled authorized row shape; it does not own or re-prove AC-003
+   cardinality.
 8. TASK-098 implements `/profile` and owns the canonical protected-route AC-007
    result after the other destinations exist.
 
@@ -113,16 +122,19 @@ composition, sorting, and Profile remain independently completable.
 ## Verification and gates
 
 Each T3 task has a claim-linked RED/GREEN path, project-native check/build/test
-gates, and only its owned proof. TASK-079 establishes the fail-closed disposable
-runner while proving AC-001; TASK-080 adds an isolated C&S accessible-list
-provider probe and reuses the runner for its own route claim; TASK-097 and
-TASK-098 continue to reuse the runner without inheriting TASK-079 or TASK-080
-evidence. Provider and composition cards use isolated database/route tests.
+gates, and only its owned proof. TASK-079 establishes the fail-closed
+disposable runner while proving AC-001; TASK-080 adds an isolated C&S
+accessible-list provider probe and reuses the runner for its own route claim;
+TASK-096's next applicable proof must exercise the accepted registry
+cardinality/viewer rules, while TASK-097 consumes that shape only for sorting.
+TASK-098 continues to check route integration without adopting AC-003 proof.
+Provider and composition cards use isolated database/route tests.
 Feature completion remains subject to `/red-verify --feature FT-007` and the
 normal review/sync boundary.
 
 ## Planning revision
 
 Global Backbone remains `complete` at Planning Revision `2`. This feature
-extends accepted leaf contracts and provider queries without changing module
-identity, the global architecture target, or the Foundation decision.
+extends the accepted Statistics Projection leaf contract and downstream proof
+mapping without changing module identity, the global architecture target, or
+the Foundation decision. Immediate next route: `/review-tasks-plan FT-007`.

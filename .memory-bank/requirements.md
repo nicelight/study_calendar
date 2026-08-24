@@ -494,3 +494,20 @@ fixture-failure evidence remain preserved. The RTM rows for REQ-014 and REQ-017
 remain `planned`, as do FT-007 and EP-006, because the W30/W31 feature outcomes
 remain planned. No lifecycle, promotion, or dependent transition is inferred
 from the W29 task closures.
+
+## FT-007 W30 task evidence route — 2026-08-24
+
+`TASK-096-T3-FT-007-W30` is `done` from its current Attempt 2 independent
+functional `PASS` and required T3 `semantic-pass` for
+`FT-007-AC-003 / REQ-014 / REQ-017`. The authoritative card links the current
+Attempt 2 executor, functional, and semantic evidence; its Attempt 1
+executor/functional/semantic report-01 artifacts remain historical-only.
+
+- [TASK-096 card](tasks/TASK-096-T3-FT-007-W30.task.json)
+- [Attempt 2 functional evidence](../.protocols/TASK-096-T3-FT-007-W30/verification.md)
+- [Attempt 2 semantic evidence](../.protocols/TASK-096-T3-FT-007-W30/red-verification.md)
+- [W30 sync evidence](../.tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-MB-SYNC-final-report-docs-01.md)
+
+`TASK-097-T3-FT-007-W31` and `TASK-098-T3-FT-007-W31` remain `planned`.
+REQ-014 and REQ-017 remain `planned` in the RTM because FT-007 is not complete;
+this task closure does not decide a requirement lifecycle transition.

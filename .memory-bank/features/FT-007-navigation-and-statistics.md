@@ -6,17 +6,17 @@ id: FT-007
 lifecycle: planned
 epic: EP-006
 requirements: [REQ-014, REQ-017]
-spec_design_status: blocked
+spec_design_status: complete
 spec_design_links:
   - .memory-bank/contracts/access-control.md
   - .memory-bank/contracts/authentication-transport.md
   - .memory-bank/contracts/boundary-map.md
   - .memory-bank/contracts/statistics-projection.md
   - .memory-bank/domains/core-domain.md
-clarification_status: blocked
-last_clarified: 2026-08-21
+clarification_status: complete
+last_clarified: 2026-08-24
 clarification_questions: 4
-last_updated: 2026-08-22
+last_updated: 2026-08-24
 ---
 # FT-007 — Navigation and Scoped Statistics
 
@@ -63,8 +63,12 @@ last_updated: 2026-08-22
   institution, число students; Classes — название, institution, число students,
   teacher. ФИО и дата регистрации принадлежат server-owned participant profile;
   Teacher attendance % — aggregate present-student ratio по conducted lessons в
-  assigned classes. Admin получает свой Center, Teacher — assigned classes;
-  Student/Parent не получают center-wide registry или private fields.
+  assigned classes. Students contain one row per `student/class` relationship;
+  Teacher `studentCount` counts distinct Student accounts across assigned
+  classes; a Teacher viewer's Teachers registry contains only the current
+  Teacher, without co-teachers as separate rows. Admin получает свой Center,
+  Teacher — assigned classes; Student/Parent не получают center-wide registry
+  или private fields.
 - Verification: server-side role/scope matrix и guessed-route negative cases.
 
 ### FT-007-AC-004 — Registry sorting is typed
@@ -152,8 +156,8 @@ or statistics source of truth.
 - [.memory-bank/contracts/statistics-projection.md](../contracts/statistics-projection.md)
 - [.memory-bank/domains/core-domain.md](../domains/core-domain.md#read-and-write-data-flow)
 
-Feature-level composition and verification remain downstream `/feature-to-tasks`
-work.
+Task implementation, independent verification, semantic verification, and
+lifecycle closure remain downstream workflow responsibilities.
 
 ## Clarifications
 
@@ -176,6 +180,26 @@ editing, password/provider management, membership controls, or persistence.
 Logout continues to use the existing server-owned `POST /auth/logout` contract.
 This is a feature-local clarification under REQ-014/REQ-017 and does not change
 the shared architecture or Planning Revision.
+
+### 2026-08-24 — TASK-096 registry cardinality and Teacher scope
+
+The operator accepted three feature-local decisions under REQ-014/REQ-017:
+
+- Students use one row for each `student/class` relationship. A Student in
+  several classes appears once per relationship, preserving that relationship's
+  class and teacher context without introducing cross-class metric aggregation.
+- Teacher `studentCount` counts distinct Student accounts across the Teacher's
+  assigned classes; a Student shared by several assigned classes counts once.
+- For a Teacher viewer, the Teachers registry contains only the current Teacher;
+  co-teachers are not separate Teacher-registry rows. Permitted Student/Class
+  relationship fields retain their own existing teacher-name semantics.
+
+This resolves the TASK-096 semantic concern without changing any
+`FT-007-AC-*` ID or its exact `- REQ: REQ-014, REQ-017` linkage, product target,
+global architecture, or Planning Revision. The linked Statistics Projection
+contract and the TASK-096/TASK-097 task-planning/proof surface are now
+reconciled by `/feature-to-tasks FT-007`; no canonical SDD spec or task artifact
+was edited by `/feature-doctor`.
 
 ## W27 account profile closure — 2026-08-22
 
@@ -257,27 +281,55 @@ T3 semantic `semantic-pass` evidence for `FT-007-AC-002`, `FT-007-AC-006`, and
 
 The accepted Calendar and Membership, Personal Progress, Financial Projection,
 and Statistics Projection ownership remains unchanged. Planning Revision `2`
-and the current task-plan `APPROVE` remain authoritative. FT-007, EP-006,
-REQ-014, and REQ-017 remain `planned` because TASK-096 in W30 and TASK-097/098
-in W31 remain planned; no feature, epic, requirement, dependency, promotion,
-or scheduler transition was applied by `/mb-sync`.
+remains authoritative. The prior task-plan `APPROVE` is preserved as
+Revision-2 history, while this contract/proof reconciliation requires a fresh
+review before execution. FT-007, EP-006, REQ-014, and REQ-017 remain `planned`;
+at the W29 boundary TASK-096, TASK-097, and TASK-098 were `blocked` pending
+that review and the owner-controlled task route. No feature, epic, requirement,
+dependency, promotion, or scheduler transition was applied by that
+reconciliation.
 
-## Blocking registry clarification — 2026-08-22
+## Resolved registry clarification — 2026-08-24
 
 `FT-007-AC-003 / REQ-014 / REQ-017` still governs the complete scoped
-Students/Teachers/Classes projection, but accepted authority does not choose:
+Students/Teachers/Classes projection. The operator resolved the three choices
+that were previously open:
 
-- whether a Student with several class memberships appears once per
-  participant or once per student/class relation;
-- whether Teacher `studentCount` counts distinct student accounts or class
-  memberships;
-- whether a Teacher's Teachers registry contains only the current Teacher or
-  also co-teachers assigned to the returned classes.
+- a Student appears once per `student/class` relationship;
+- Teacher `studentCount` counts distinct Student accounts across assigned
+  classes;
+- a Teacher's Teachers registry contains only the current Teacher, with no
+  co-teachers as separate rows.
 
-The questions are durably routed in
+The semantic basis and accepted answers are recorded in
 [.protocols/FT-007/clarification.md](../../.protocols/FT-007/clarification.md).
-No answer is accepted by this unattended triage. Until the operator answers
-and `/feature-doctor FT-007` applies the result, `clarification_status` and
-`spec_design_status` remain `blocked`; all existing `FT-007-AC-*` IDs and REQ
-links, Planning Revision `2`, the current task-plan `APPROVE`, and task
-lifecycle state remain unchanged.
+`clarification_status` and `spec_design_status` are now `complete`. The
+Statistics Projection contract and the AC-003/AC-004 downstream task proof
+surface now carry the accepted cardinality and Teacher-view rules. Existing
+`FT-007-AC-*` IDs and REQ links, Planning Revision `2`, the prior task-plan
+`APPROVE` history, task IDs, dependencies, lifecycle state, and historical
+evidence remain unchanged; at that clarification boundary the next route was a fresh
+`/review-tasks-plan FT-007`.
+
+## W30 statistics composition closure — 2026-08-24
+
+`TASK-096-T3-FT-007-W30` is durably `done` from current Attempt 2 functional
+`PASS` and T3 `semantic-pass` evidence for `FT-007-AC-003 / REQ-014 / REQ-017`.
+It proves the authorized, read-only Lesson Context composition: one Student
+row per permitted `student/class` relationship, distinct Student-account
+Teacher counts, and the current-Teacher-only Teachers registry for a Teacher
+viewer. Attempt 1 executor, functional, and semantic report-01 artifacts are
+preserved as historical-only evidence and do not support the closure.
+
+- [TASK-096 card](../tasks/TASK-096-T3-FT-007-W30.task.json)
+- [Attempt 2 functional verification](../../.protocols/TASK-096-T3-FT-007-W30/verification.md)
+- [Attempt 2 functional report](../../.tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-VERIFY-final-report-docs-02.md)
+- [Attempt 2 semantic verification](../../.protocols/TASK-096-T3-FT-007-W30/red-verification.md)
+- [Attempt 2 semantic report](../../.tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-RED-VERIFY-final-report-docs-02.md)
+- [W30 boundary sync](../../.tasks/TASK-096-T3-FT-007-W30/TASK-096-T3-FT-007-W30-S-MB-SYNC-final-report-docs-01.md)
+
+`TASK-097-T3-FT-007-W31` and `TASK-098-T3-FT-007-W31` remain `planned`.
+FT-007, EP-006, and RTM `REQ-014` / `REQ-017` remain `planned` because the
+feature is incomplete. This sync applies no feature/epic/requirement lifecycle
+transition, dependency change, promotion, retry-budget change, or scheduler
+status decision.

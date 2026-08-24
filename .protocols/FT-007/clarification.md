@@ -4,9 +4,9 @@ status: active
 ---
 # FT-007 Clarification
 
-- Clarification status: blocked
+- Clarification status: complete
 - Clarification questions: 4
-- Last clarified: 2026-08-21
+- Last clarified: 2026-08-24
 - Target feature: `.memory-bank/features/FT-007-navigation-and-statistics.md`
 
 ## Pending question — 2026-08-21
@@ -151,7 +151,8 @@ ID. The TASK-096 triage below supersedes only that overall clarification status.
 
 ### Validation status and semantic basis
 
-`blocked` — an operator decision remains unresolved.
+`complete` — the operator accepted all three decisions required to close the
+feature-local authority gap.
 
 The current task evidence contains exactly one independent functional
 `VERDICT: PASS` and one separate `SEMANTIC_VERDICT: semantic-concern` for
@@ -169,9 +170,10 @@ bounded to `FT-007-AC-003 / REQ-014 / REQ-017`:
   membership, sums class membership counts, and returns only the current
   Teacher in the Teachers collection.
 
-Those implementation choices are evidence, not accepted authority. No existing
-operator decision settles them, so the unattended flow does not accept any
-recommendation.
+Those implementation choices were evidence, not accepted authority at the time
+of the finding. The operator's decisions below now settle the row identity,
+distinctness, and Teacher-registry scope without changing the product target or
+global architecture.
 
 ### Operator decision 1 — Student row cardinality
 
@@ -179,7 +181,7 @@ recommendation.
 should Students contain one row per student/class relation, or one row for the
 participant with all related classes and Teachers?
 
-1. **One row per student/class relation — recommended, not accepted.** The
+1. **One row per student/class relation — recommended and accepted.** The
    existing singular class column and class-scoped attendance/payment calls
    remain exact; the same participant may appear more than once. This is the
    lowest-cost option because it needs feature/contract wording and proof
@@ -195,7 +197,7 @@ participant with all related classes and Teachers?
 **Exact question:** for a Teacher assigned to several classes, should
 `studentCount` count distinct student accounts or sum class memberships?
 
-1. **Distinct student accounts — recommended, not accepted.** A Student shared
+1. **Distinct student accounts — recommended and accepted.** A Student shared
    by two assigned classes counts once, matching the column's participant
    wording and avoiding a misleading people count. The existing scoped account
    IDs are sufficient, but composition and tests must change.
@@ -208,7 +210,7 @@ participant with all related classes and Teachers?
 **Exact question:** should a Teacher's Teachers registry contain only the
 current Teacher, or also co-teachers assigned to the returned classes?
 
-1. **Current Teacher only — recommended, not accepted.** This preserves the
+1. **Current Teacher only — recommended and accepted.** This preserves the
    current implementation, minimizes profile/aggregate disclosure, and still
    exposes assigned-class co-teacher names where the Student/Class rows require
    them.
@@ -216,11 +218,27 @@ current Teacher, or also co-teachers assigned to the returned classes?
    class-related Teacher registry, but exposes every listed co-teacher's
    registration date and aggregate row and requires composition/test changes.
 
+### Operator resolution — 2026-08-24
+
+The operator accepted the recommended KISS decisions:
+
+1. Students contain one row for each `student/class` relationship. A Student
+   belonging to several classes therefore appears once per relationship, with
+   the relationship's class and teacher context; no cross-class metric
+   aggregation is introduced by this clarification.
+2. Teacher `studentCount` counts distinct Student accounts across the Teacher's
+   assigned classes. A Student shared by multiple assigned classes counts once.
+3. A Teacher's Teachers registry contains only the current Teacher. Co-teachers
+   are not emitted as separate Teacher-registry rows; names needed by permitted
+   Student/Class relationship fields remain governed by those row fields.
+
 ### Impact, owners, and exact route
 
-- `Design impact: blocked` — the linked Statistics Projection contract is not
-  sufficiently decisive for TASK-096 closure. This is feature-local; the
-  Global Backbone stays `complete` at Planning Revision `2`.
+- `Design impact: feature_design_stale` — the accepted feature behavior now has
+  decisive row/cardinality semantics, but the linked Statistics Projection
+  wording and TASK-096 task/plan/proof surface require downstream
+  reconciliation. `/feature-doctor` does not edit the canonical contract or
+  task artifacts.
 - `Behavior spec impact: none` — FT-007 has no linked behavior JSON to refresh.
 - Likely consumers are FT-007 AC-003, the Statistics Projection registry/metric
   wording, TASK-096 composition and proof, and TASK-097 sorting over the chosen
@@ -233,11 +251,13 @@ current Teacher, or also co-teachers assigned to the returned classes?
   `.protocols/TASK-096-T3-FT-007-W30/{verification,red-verification}.md`.
   After reconciliation, the caller's existing TASK-096 execution/functional/
   semantic evidence owners rerun only the applicable gates.
-- **Terminal result:** `HALT_CLARIFICATION_REQUIRED`.
-- **Exact resume route:** answer all three questions above, then rerun
-  `/feature-doctor FT-007`.
+- **Terminal result:** `complete`.
+- **Immediate route:** `/feature-to-tasks FT-007`, followed by a fresh
+  `/review-tasks-plan FT-007` after the feature's canonical task surface is
+  reconciled.
 
 No task JSON/index, implementation, plan, canonical spec, review, scheduler
 status, lifecycle, checkpoint, decision log, or evidence file is changed by
-this triage. Existing `FT-007-AC-*` IDs and REQ links, Planning Revision `2`,
+this triage. The feature clarification and this protocol are the only changed
+artifacts. Existing `FT-007-AC-*` IDs and REQ links, Planning Revision `2`,
 and the current task-plan `APPROVE` are preserved.

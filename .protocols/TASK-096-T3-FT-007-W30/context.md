@@ -14,6 +14,15 @@ the `/statistics` adapter for `FT-007-AC-003 / REQ-014 / REQ-017`.
 - attempt: 1
 - started: 2026-08-22 19:26:31 +0500
 
+## Execution Attempt
+
+- attempt: 2
+- started: 2026-08-24 14:17:48 +0500
+- status: current
+- basis: fresh post-recovery `/exe`; Attempt 1 execution, functional, and
+  semantic artifacts are historical-only under the recovered task card and do
+  not support this attempt.
+
 ## Inputs
 
 - Task record: `.memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json`
@@ -72,5 +81,13 @@ the `/statistics` adapter for `FT-007-AC-003 / REQ-014 / REQ-017`.
 
 ## Next session
 
-- Start by reading: `context.md`, `plan.md`, `progress.md`.
-- Next action: run the focused claim-scoped RED before production changes.
+- Current attempt: 2. Its preflight independently confirmed task `ready`, all
+  five dependency cards `done`, Global Backbone Planning Revision `2`, and the
+  standalone FT-007 `APPROVE` report at the same revision. No
+  `PLANNING_RECONCILIATION_REQUIRED` marker is present.
+- Hard implementation writes remain limited to the four literal task entries;
+  the current dirty work does not overlap them.
+- The current source violates the accepted distinct-count rule: its Teacher
+  `studentCount` sums each assigned class's membership count. A focused,
+  isolated duplicate-student relation probe is the prospective current-claim
+  RED and will precede the production correction.

@@ -1,5 +1,5 @@
 ---
-description: Fresh full semantic review of the reconciled FT-007 task-planning surface at Planning Revision 2.
+description: Bounded rerun of the FT-007 task-planning review after the accepted registry-cardinality KISS reconciliation at Planning Revision 2.
 status: final
 ---
 # Review FT-007 — Navigation and Statistics
@@ -12,188 +12,164 @@ ARCHITECTURE_REVIEW: not_required
 
 BLOCKING_FINDINGS: none
 
-## Review mode and current delta
+## Review mode and checked delta
 
-Это fresh full review текущей post-reconciliation surface после зависшего
-предыдущего reviewer. Старый report не использован как authoritative proof.
-Текущая delta проверена напрямую по feature, plan, task cards, canonical
-contracts и evidence:
+Это bounded rerun предыдущего FT-007 `APPROVE`. Предыдущий report является
+не-authoritative cache; его evidence retained только там, где target, scope и
+governing inputs не изменились.
 
-- Calendar and Membership Query Boundary теперь явно включает серверно-
-  resolved accessible class list с `class identity`, `center`, `name` и `mode`,
-  а Home/Classes остаются тонкими adapters без локальной authorization.
-  ([boundary-map](../../.memory-bank/contracts/boundary-map.md:166-208))
-- `TASK-080` теперь owns C&S public accessible-class query вместе с единым
-  Home/Classes AC-002 outcome, получил completed `TASK-095` prerequisite и
-  отдельный provider probe; его lifecycle наблюдался как `in_progress` и не
-  менялся. ([card](../../.memory-bank/tasks/TASK-080-T3-FT-007-W29.task.json:2-105),
-  [plan](../../.memory-bank/tasks/plans/IMPL-FT-007.md:49-113))
-- `TASK-098` теперь явно потребляет bare Home/Classes result только как route
-  integration и не присваивает себе C&S provider proof.
-  ([card](../../.memory-bank/tasks/TASK-098-T3-FT-007-W31.task.json:25-80))
-- Existing done evidence for `TASK-079`, `TASK-094`, `TASK-095` remains current
-  functional `PASS` plus T3 `semantic-pass`; historical failures remain
-  history and are not reused as current proof. `TASK-080` current functional
-  `PASS` and semantic `semantic-fail` remain execution evidence for the
-  explicitly reconciled correction, not closure evidence.
+Проверенный delta:
+
+- operator принял и feature-doctor применил три KISS decisions: Student имеет
+  одну строку на каждую `student/class` relation; `Teacher.studentCount` считает
+  distinct Student accounts по assigned classes; для Teacher viewer коллекция
+  Teachers содержит только текущего Teacher;
+- [.memory-bank/contracts/statistics-projection.md](../../.memory-bank/contracts/statistics-projection.md:45-82)
+  закрепляет эти правила без нового source of truth, provider boundary или
+  persistence;
+- FT-007 AC-003, implementation plan и protocol decision/plan wording
+  синхронизированы, а TASK-096/TASK-097 получили соответствующие proof
+  mappings;
+- task IDs, tier, wave, dependencies, lifecycle и
+  [.memory-bank/tasks/index.json](../../.memory-bank/tasks/index.json) не
+  менялись. Review не нормализует текущие `blocked` статусы TASK-096/097/098.
+
+## Retained and refreshed evidence
+
+Retained: Global Backbone `complete` at positive Planning Revision `2`,
+Foundation gate `TASK-002-T3-FT-000-W1` `done`, existing AC/REQ identity and
+nine-outcome feature closure, unchanged provider ownership and historical task
+evidence outside TASK-096/TASK-097, and unchanged task identity/dependency
+graph. Refreshed: Statistics Projection contract, FT-007 AC-003, plan,
+clarification completion, TASK-096/TASK-097 proof scope, and all design and
+execution conclusions that can be affected by the delta.
 
 ## 1. Structural integrity — PASS
 
-- Global Backbone is `complete` with positive `Planning Revision: 2`; the
-  Foundation final gate is `TASK-002-T3-FT-000-W1` and is `done`.
-  ([backbone](../../.memory-bank/spec-backbone.md:84-125),
-  [foundation](../../.memory-bank/foundation.md:5-18))
-- The read-only Ajv2020 probe validated all 9 indexed FT-007 task records
-  against `.memory-bank/schemas/task.schema.json`; all nine returned `valid:
-  true`.
-- `.memory-bank/tasks/index.json` resolves 56/56 cards. The target set has 9
-  unique entries, all cards resolve, all IDs match their card records, and
-  ID/tier/feature/wave consistency is exact (`T3`, `FT-007`, `W27..W31`).
-  The dependency probe found no missing dependency and no DAG cycle.
-- All target task `docs`, `source_artifacts`, `normative_inputs`, and
-  `verification_targets` paths resolve. Every product task is `W1+` and has
-  concrete `REQ` linkage.
+- [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md:84-125)
+  records `Global Backbone Status: complete` and `Planning Revision: 2`.
+- A current read-only Ajv2020/schema and index probe found all 9 indexed FT-007
+  cards schema-valid; `.memory-bank/tasks/index.json` resolves 56/56 unique
+  cards. Target IDs match their `T3` / `FT-007` / `W27..W31` identity tuples,
+  every dependency resolves, and the full dependency graph is acyclic.
+- Every FT-007 task is product `W1+`, has concrete REQ linkage, and reaches the
+  done Foundation gate. No `PLANNING_RECONCILIATION_REQUIRED` marker is present
+  on the feature surface.
 
 ## 2. Coverage and slicing — PASS
 
-The feature has exactly nine stable AC headings with governing REQs and an
-explicit acceptance-closure table. ([feature](../../.memory-bank/features/FT-007-navigation-and-statistics.md:43-141),
-[RTM](../../.memory-bank/requirements.md:160-166)) The independent exact-locator
-probe found one and only one feature-matching owner for every AC, no orphan or
-duplicate owner, and no task/AC REQ mismatch:
+Current feature headings preserve complete exact ownership:
 
-| Feature AC / REQ | Exact owner | Current status |
+| Feature AC / REQ | Sole exact owner | Status |
 |---|---|---|
 | `FT-007-AC-001` / `REQ-017` | `TASK-079-T3-FT-007-W28` | `done` |
-| `FT-007-AC-002` / `REQ-014, REQ-017` | `TASK-080-T3-FT-007-W29` | `in_progress` |
-| `FT-007-AC-003` / `REQ-014, REQ-017` | `TASK-096-T3-FT-007-W30` | `planned` |
-| `FT-007-AC-004` / `REQ-017` | `TASK-097-T3-FT-007-W31` | `planned` |
-| `FT-007-AC-005` / `REQ-017` | `TASK-090-T3-FT-007-W29` | `ready` |
-| `FT-007-AC-006` / `REQ-017` | `TASK-089-T3-FT-007-W29` | `ready` |
-| `FT-007-AC-007` / `REQ-014, REQ-017` | `TASK-098-T3-FT-007-W31` | `planned` |
+| `FT-007-AC-002` / `REQ-014, REQ-017` | `TASK-080-T3-FT-007-W29` | `done` |
+| `FT-007-AC-003` / `REQ-014, REQ-017` | `TASK-096-T3-FT-007-W30` | `blocked` |
+| `FT-007-AC-004` / `REQ-017` | `TASK-097-T3-FT-007-W31` | `blocked` |
+| `FT-007-AC-005` / `REQ-017` | `TASK-090-T3-FT-007-W29` | `done` |
+| `FT-007-AC-006` / `REQ-017` | `TASK-089-T3-FT-007-W29` | `done` |
+| `FT-007-AC-007` / `REQ-014, REQ-017` | `TASK-098-T3-FT-007-W31` | `blocked` |
 | `FT-007-AC-008` / `REQ-014, REQ-017` | `TASK-094-T3-FT-007-W27` | `done` |
 | `FT-007-AC-009` / `REQ-014, REQ-017` | `TASK-095-T3-FT-007-W28` | `done` |
 
-The plan's boundary pass identifies nine independent material implementation
-outcomes. Account-profile paths correctly merge into one complete Identity &
-Access result; Home and Classes correctly merge into one server-resolved AC-002
-result; provider facts, attendance, payment, composition, sorting and Profile
-remain independently completable. The new C&S provider query is part of the
-AC-002 implementation outcome, not a proof-only sibling. `TASK-095` retains
-AC-009 ownership, while `TASK-098` adopts only Home/Classes route integration.
-([plan](../../.memory-bank/tasks/plans/IMPL-FT-007.md:96-113))
+The table is grounded by the stable AC headings and closure in
+[FT-007](../../.memory-bank/features/FT-007-navigation-and-statistics.md:43-145)
+and the current exact `source_artifacts` locators in the nine indexed cards.
+The refreshed mapping keeps TASK-096 as the sole AC-003 owner and TASK-097 as
+the sole AC-004 owner. TASK-097 consumes the authorized reconciled row shape
+for presentation and explicitly does not own or re-prove AC-003 cardinality.
 
-No dependency proof is transferred: every task has its own exact
-`source_artifacts`, `verification_targets`, and `evidence_required` locator.
-The current cards do not create an unrelated acceptance outcome or duplicate
-the C&S registry-facts claim.
+The accepted plan still has nine independent material implementation outcomes.
+The new cardinality rules belong to the existing Lesson Context composition
+outcome; they do not create a proof-only sibling, duplicate owner, orphan
+outcome, or unrelated task. Dependency proof remains with its owning task under
+[execution-cohesive-task-boundary](../../.memory-bank/workflows/execute-loop.md:100-110)
+and [task claim/dependency ownership](../../.memory-bank/workflows/tier-policy.md:66-88).
 
 ## 3. Design readiness — PASS
 
-- FT-007 has `spec_design_status: complete` and `clarification_status:
-  complete`; the accepted route/Profile decision is recorded and no feature
-  clarification remains pending or blocked. ([feature](../../.memory-bank/features/FT-007-navigation-and-statistics.md:1-19),
-  [clarification](../../.protocols/FT-007/clarification.md:7-62))
-- Each concrete concern has a registered canonical route: Access Control,
-  Authentication Transport, Boundary Map, Statistics Projection, Core Domain,
-  Testing Strategy, and the applicable workflow/tier sections. No hub-only
-  T2/T3 design was used.
-- The current C&S extension preserves the accepted owner, source-of-truth,
-  dependency direction, and public boundary. It adds no slice, graph edge,
-  role, membership rule, source owner, persistence, or migration. The boundary
-  directly defines server-resolved list selection, denial behavior, forbidden
-  caller-selected authorization, and verification coverage.
-  ([boundary-map](../../.memory-bank/contracts/boundary-map.md:166-208),
-  [TASK-080 constraints/invariants](../../.memory-bank/tasks/TASK-080-T3-FT-007-W29.task.json:67-103))
-- TASK-080 makes the C&S owner, thin route adapters, forbidden profile/metric
-  output, no local authorization, and isolated proof path discoverable. TASK-098
-  makes the Profile owner, canonical routes, exact fields, no writes, and
-  dependency-only Home/Classes integration discoverable.
-- No accepted ownership, dependency, invariant, compatibility, persistence,
-  or public-contract choice remains unresolved in a way that would force
-  execution to choose between distinct outcomes. Therefore a separate
-  architecture-review artifact is not required.
+- FT-007 and its clarification are now `complete`, and the accepted decisions
+  are recorded in the feature's current clarification section
+  ([feature](../../.memory-bank/features/FT-007-navigation-and-statistics.md:184-202);
+  [clarification](../../.protocols/FT-007/clarification.md:216-270)). No
+  unresolved operator choice remains for the runnable AC-003/AC-004 surface.
+- The Statistics Projection contract gives decisive row cardinality,
+  distinctness, viewer scope, relationship teacher-context, denial, and
+  read-only rules. Lesson Context remains the composition owner; provider
+  formulas and source facts remain owned by TASK-095, TASK-089 and TASK-090.
+- Direct feature links and task links resolve to the applicable Access Control,
+  Boundary Map, Statistics Projection, Core Domain, architecture, testing and
+  workflow contracts. The `/statistics` route remains a transport/presentation
+  adapter over accepted server-resolved composition; no execution-time choice
+  would legalize a copied topology, direct table read, new graph edge, new
+  persistence, migration, or changed authority.
+- No material ownership, dependency, invariant, compatibility or proof-path
+  question remains that could change the verdict; therefore a separate
+  architecture review is not required.
 
 ## 4. Execution readiness — PASS
 
-- Current statuses are legal and were only observed: `TASK-079`, `TASK-094`,
-  and `TASK-095` are `done` with current functional PASS and T3 semantic-pass
-  evidence; `TASK-080` remains `in_progress` after its current semantic-fail;
-  `TASK-089` and `TASK-090` are `ready` with all dependencies `done`; and
-  `TASK-096`, `TASK-097`, `TASK-098` remain `planned` while their dependencies
-  are unmet. The review does not normalize, promote, close, block, or infer
-  any scheduler lifecycle decision.
-- The existing done evidence was checked directly. `TASK-094` closes the
-  all-path profile facts/query result (`AC-008`); `TASK-079` closes the shell,
-  logout, isolation and cleanup result (`AC-001`); `TASK-095` closes the
-  corrected server-resolved C&S registry-facts result (`AC-009`). Historical
-  FAIL/RETRY/Judge artifacts remain preserved and are not substituted for the
-  current PASS evidence.
-  ([requirements evidence routes](../../.memory-bank/requirements.md:439-489),
-  [TASK-094 evidence](../../.protocols/TASK-094-T3-FT-007-W27/verification.md:8-108),
-  [TASK-095 evidence](../../.protocols/TASK-095-T3-FT-007-W28/verification.md:9-132))
-- TASK-080's current semantic-fail is precisely retained: bare Student/Parent
-  `/home` and `/classes` over-deny when `classId` is absent. The reconciled
-  card now owns the contract-correct C&S list query and its own provider/route/
-  browser proof, while the current `in_progress` state remains open. This is
-  a planned correction prerequisite, not a missing planning owner.
-  ([semantic evidence](../../.protocols/TASK-080-T3-FT-007-W29/red-verification.md:19-88),
-  [reconciled card](../../.memory-bank/tasks/TASK-080-T3-FT-007-W29.task.json:28-103))
-- All nine cards are complete T3 handoffs with non-empty purpose,
-  scalar success outcome, direct canonical inputs, concrete REQs, valid
-  dependencies, gates/verification targets, literal hard boundaries,
-  forbidden scopes, stop conditions, and task-local claim-linked RED/GREEN
-  evidence contracts. Ajv and boundary probes found no schema/path defect.
-- Prospective `planned|ready` material-NFR cards carry exact AC/REQ locators,
-  verification targets, and evidence contracts with observable RED/GREEN,
-  decisive comparisons and artifacts. TASK-098 explicitly checks only
-  integration with TASK-080 and does not inherit C&S provider proof.
-  ([tier policy](../../.memory-bank/workflows/tier-policy.md:90-148),
-  [TASK-098 proof scope](../../.memory-bank/tasks/TASK-098-T3-FT-007-W31.task.json:25-96))
+- Current indexed statuses are observed, not changed: TASK-079/080/089/090/094/095
+  are `done`; TASK-096/097/098 remain `blocked` under lifecycle ownership.
+  The blocked records and historical semantic-concern/disposition entries are
+  not fabricated or normalized by this review. The resolved clarification and
+  current proof mappings remove the former design blocker; status promotion or
+  restoration remains an owner action.
+- TASK-096 is a complete T3 handoff for the existing AC-003 composition result:
+  its current success outcome, constraints, invariants, verification target and
+  claim-linked RED/GREEN evidence cover one relation row per authorized
+  student/class, distinct Teacher student count, Teacher-only Teacher rows,
+  preserved relationship teacher context, exact provider calls, denial and
+  non-mutation ([card](../../.memory-bank/tasks/TASK-096-T3-FT-007-W30.task.json:25-136)).
+- TASK-097 remains a separate T3 sorting result. Its proof is limited to typed
+  bidirectional sorting and visible direction over TASK-096's authorized
+  serializable result; its added cardinality link is a non-reinterpretation
+  constraint, not inherited AC-003 proof
+  ([card](../../.memory-bank/tasks/TASK-097-T3-FT-007-W31.task.json:20-103)).
+- Both changed cards retain concrete REQ/AC locators, non-empty verification
+  targets, decisive evidence conditions and artifacts, literal hard write
+  boundaries, forbidden scopes, disposable-state constraints and native gates.
+  The prospective T3 proof is minimal and claim-equivalent; no inherited,
+  unrelated or speculative proof requirement was added.
+- Existing `done` evidence is retained under the historical-task exception; no
+  fabricated RED/GREEN backfill is requested for historical records.
 
-## Independent co-review focuses and bounded fallback
+## Refreshed co-review focuses
 
-Two different focuses were established as required by the semantic pack:
+Both prior focuses were refreshed because their governing feature/contract/task
+inputs changed; neither was retained.
 
-1. **Focus A — acceptance closure / exact claims / ownership / slicing.**
-   Fresh `Codex Luna`/`xhigh` launch was bounded to the FT-007 feature, RTM,
-   plan, all nine cards, dependency records, execute-loop cohesion rules and
-   tier claim-ownership rules. The launch returned no compact result within the
-   bounded wait; the equivalent local focus independently derived the 9/9
-   unique-owner table above and checked no orphan, duplicate, unrelated, or
-   proof-only sibling outcome.
-2. **Focus B — design / execution / C&S boundary / TASK-080↔TASK-098 / proof
-   scope.** Fresh `Codex Luna`/`xhigh` launch was bounded to the same target and
-   normative basis with this separate scope. It returned no compact result
-   within the bounded wait; the equivalent local focus checked the accepted
-   Boundary Map extension, card hard/forbidden scopes, current statuses,
-   dependency legality, done evidence, and prospective T3 proof obligations.
+1. **Focus A — acceptance closure, exact claims, ownership and slicing.** The
+   required fresh Codex Luna/xhigh launch was attempted and retried once, but
+   the current ChatGPT account rejected that model. The equivalent local
+   read-only focus independently re-derived the 9/9 sole-owner mapping and
+   checked the nine-outcome boundary, no orphan/duplicate/proof-only sibling,
+   and no dependency-proof transfer. No candidate finding resulted.
+2. **Focus B — design/execution readiness, boundary ownership and T3 proof
+   scope.** The required fresh Codex Luna/xhigh launch was attempted and
+   retried once with the same result. The equivalent local focus checked the
+   accepted contract extension, canonical ownership, unchanged graph/status
+   semantics, hard scopes, and TASK-096/TASK-097 proof separation. No candidate
+   finding resulted.
 
-The launches were shut down after the bounded wait. No focus result was treated
-as a vote, and no collaborator artifact was created.
-
-## Architecture result
-
-The accepted C&S boundary already assigns accessible-class eligibility/list
-selection and route consumption. Current evidence supplies ownership, failure,
-compatibility, forbidden-bypass and proof-path rules, so there is no material
-architecture question that could change this verdict.
+No unavailable co-reviewer result was treated as a vote, and no collaborator
+artifact was created.
 
 ## Verdict and handoff
 
 APPROVE
 
-All four coverage groups pass. There is no planning repair route.
+All four coverage groups pass for the current Planning Revision `2` surface.
+This approval covers planning readiness only; it does not promote tasks or
+change lifecycle state.
 
-NEXT_ROUTE: At the applicable T3 feature/task boundary, run the required
-`/mb-doctor --strict`; then the lifecycle owner may route the reconciled
-`TASK-080` correction and its fresh `/verify` plus T3 `/red-verify`, while the
-independent ready/planned cards retain their existing status ownership. This
-review does not execute, verify, promote, close, block, sync, or infer scheduler
-lifecycle, and it does not authorize use of the stale TASK-080 functional PASS
-as semantic closure.
+NEXT_ROUTE: Run `/mb-doctor --strict` at the T3 feature/task boundary. Then the
+lifecycle owner may restore the applicable TASK-096 route and invoke `/exe`
+sequentially with the existing dependencies; TASK-097 and TASK-098 remain
+downstream of TASK-096. For scheduler handoff, run strict doctor before the
+selected scheduler.
 
-REVIEW_INTEGRITY: Only this report and REQUEST.md were written. No task card,
-plan, feature/spec, index, code, protocol, evidence, lifecycle/status,
-promotion, scheduler checkpoint, or AUTONOMOUS-RUN artifact was mutated by this
-review.
+REVIEW_INTEGRITY: Only REQUEST.md and this FT-007 final report were replaced.
+No reviewed feature, contract, plan, protocol, task card, task index, code,
+evidence, lifecycle, status, tier, wave, dependency, promotion, scheduler or
+AUTONOMOUS-RUN artifact was mutated by this review.
