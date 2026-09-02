@@ -105,9 +105,10 @@ every role.
   registeredAt }` after resolving a valid non-revoked session. The statistics
   profile query returns only `{ accountId, fullName, registeredAt }` for account
   IDs already authorized by Center & Scheduling.
-- Accounts without the required profile facts are outside the accepted target
-  population. FT-007 adds no migration, backfill, inferred/fallback name, or
-  legacy-account compatibility path.
+- Existing accounts without profile facts are repaired once by inserting
+  generated `fullName` and a repair timestamp only when the profile row is
+  absent; existing profile facts are never overwritten. Runtime queries remain
+  fail-closed and do not infer or synthesize fallback names.
 - Verification covers all three creation paths, immutable timestamp generation,
   atomic failure state, exact current-actor and scoped statistics projections,
   and revoked-session denial.

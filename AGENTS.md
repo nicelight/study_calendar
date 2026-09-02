@@ -92,31 +92,19 @@ when they are satisfied.
 
 ## Source path semantics
 
-- Treat `package/workspace/code root + directories + complete filename` as one
-  context surface for project-authored source.
-- Preserve language/framework/tooling contracts, configured generators and
-  applicable project scaffolds, accepted architecture/project conventions, and
-  then observed local convention. Apply the general path heuristic only after
-  those authorities.
-- Within accepted executable boundaries, use the minimum necessary path
-  structure with enough durable context to identify the relevant owner,
-  boundary, subject/capability, or technical role. Each optional segment should
-  add durable meaning.
-- Do not repeat directory context mechanically in the filename. Repetition is
-  valid when required by an exported/public symbol, component identity, tooling,
-  or another evidenced convention.
-- Generic or reserved filenames are valid when the full path, framework, or
-  project convention makes their role clear. Preserve required prefixes,
-  suffixes, and compound extensions.
-- Filesystem paths, import/module paths, package exports, URLs/routes, and build
-  targets are distinct executable identities; do not force them to match unless
-  the applicable architecture or ecosystem contract does.
-- Do not opportunistically rename brownfield source. Rename only when required
-  by the current task outcome and inside its semantic and hard scope.
+- Preserve naming and path requirements imposed by the language, framework,
+  tooling, generators, and accepted project contracts.
+- Name project-authored files so their purpose is clear without the directory,
+  using only durable subject or role terms that add meaning.
+- Directory context does not replace a descriptive filename; repeat it only when
+  it improves clarity. Generic names are valid only when required by contract.
+- Preserve executable identities and rename existing files only when required by
+  the current task.
 
 ## Communication
 
 - Always answer this user in Russian, while preserving stable English technical terms and established expressions when they are conventional in software engineering, product, or workflow contexts.
+- Write every user-facing report in plain language with enough context to explain what was done, what happened, why, and what, if anything, the user should do next. Do not substitute internal terminology or status labels for an explanation. Keep the report concise unless the user asks for details.
 
 ## Preferred context routing
 - Start with `.memory-bank/architecture/*` and `.memory-bank/guides/*` for concept priming.
@@ -145,9 +133,10 @@ After finishing a meaningful unit of work:
 
 ## Log papercuts
 
-When minor workflow friction occurs—a failed tool call, confusing setup, flaky
-command, stale cache, misleading error, missing helper, or non-obvious
-gotcha—record it.
+Record minor, evidence-backed problems in the project's code, architecture, or
+structure encountered during current work.
+If current work proves a project-wide problem that makes continuation unsafe or
+invalid, record it in ALL CAPS and stop.
 
 Use one Markdown file per agent session. Create it only when the first papercut
 occurs, at `PAPERCUTS/<model> __ MM-DD-YYYY HH.MM.md`, using the current model
@@ -155,11 +144,6 @@ identifier and the local time of that first papercut. Replace filename-unsafe
 characters in the model identifier with `-`. Reuse that file for every later
 papercut in the same session; do not create a file for each note and do not add
 timestamps inside the file.
-
-Log papercuts proactively when they occur, but do not interrupt the main task.
-Do not record a papercut already present in `PAPERCUTS/`. Papercuts are minor
-workflow friction, distinct from completed-work logs, real bugs, tracked issues,
-and technical debt.
 
 ## Where skills live (don’t confuse)
 - Codex CLI reads project skills from `.agents/skills/<name>/SKILL.md` (not from `.codex/`).
@@ -207,21 +191,3 @@ Task execution commands:
 
 Maintenance commands:
 `/mb-doctor`, `/mb-garden`, `/map-codebase`, `/discuss`, `/add-tests`.
-
-
-
-
-## SvelteKit / Svelte 5
-
-* MUST use runes mode and current non-legacy Svelte 5 APIs in new Svelte components/reactive modules; preserve existing legacy mode unless migration is task-required.
-* MUST keep reactive state at the narrowest owner: local `$state`/props first, context for subtree-shared state, URL for state that must survive reload or affect SSR; use stores only when their stream/subscription semantics are needed.
-* MUST use `$derived` for values computable from reactive state; treat `$effect` as a client-only escape hatch for side effects/external sync when no direct Svelte primitive fits; NEVER mirror derivable state with it.
-* NEVER mutate props; use callback props, or `$bindable` only when parent and child intentionally share writable state.
-* NEVER keep request/user state in server module scope or mutate shared state from `load`; `load` MUST remain side-effect-free.
-* MUST keep secrets, DB/filesystem access and server-only utilities in `$lib/server` or `.server.*`; treat server `load`/action returns as client-visible and serializable.
-* SHOULD use `load` for route data participating in SSR/navigation, server `load` when server-only access is required, and the provided `fetch` inside `load`; follow established remote-function usage when the project has opted in.
-* SHOULD use form actions for browser form submissions and `+server` for HTTP APIs/non-page clients; use remote functions only when the project has explicitly opted in.
-* MUST keep components and universal modules SSR-safe; isolate browser-only execution/imports and NEVER disable SSR merely to bypass browser-only code.
-* SHOULD use `<a>`/`<form>` declaratively, `$app/navigation` for imperative internal navigation/history, and `$app/state` in runes code; use `window.location` for external URLs and `$app/stores` only for legacy compatibility.
-
-

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatDateTime } from '$lib/date-input';
 	import type { ProfilePageData } from './+page.server';
 
 	let { data }: { data: ProfilePageData } = $props();
@@ -23,7 +24,7 @@
 		</div>
 		<div>
 			<dt>Регистрация</dt>
-			<dd>{data.profile.registeredAt}</dd>
+			<dd>{formatDateTime(data.profile.registeredAt)}</dd>
 		</div>
 	</dl>
 </main>

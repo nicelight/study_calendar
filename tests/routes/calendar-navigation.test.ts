@@ -261,6 +261,7 @@ describe('FT-003-AC-008 calendar lesson navigation', () => {
 			expect.objectContaining({ lessonId: 'lesson-own-unpaid', paymentStatus: 'unpaid' })
 		]));
 		const rendered = render(CalendarPage, { props: { data: afterPayment } } as any).body;
+		expect(rendered).toContain('Формат: Групповой');
 		expect(rendered).toContain('data-payment-status="paid"');
 		expect(rendered).toContain('data-payment-status="unpaid"');
 		expect(rendered).toContain('Оплачено');

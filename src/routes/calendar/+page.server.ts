@@ -15,7 +15,7 @@ type CalendarLessonContextPort = Pick<LessonContextBoundary, 'getStudentPaymentS
 export type CalendarPaymentStatus = 'paid' | 'unpaid';
 export type CalendarLessonView = LessonView & { paymentStatus?: CalendarPaymentStatus };
 
-export type CalendarPageData = Pick<AuthorizedClassScope, 'classId' | 'className' | 'role'> & {
+export type CalendarPageData = Pick<AuthorizedClassScope, 'classId' | 'className' | 'mode' | 'role'> & {
 	selectedDate: string;
 	lessons: CalendarLessonView[];
 };
@@ -69,6 +69,7 @@ export function _createCalendarPageLoad(
 		return {
 			classId: scope.classId,
 			className: scope.className,
+			mode: scope.mode,
 			role: scope.role,
 			selectedDate: isIsoDate(requestedDate) ? requestedDate : DEFAULT_SELECTED_DATE,
 			lessons: calendarLessons

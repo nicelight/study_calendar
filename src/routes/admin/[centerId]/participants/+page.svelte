@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { formatDateTime } from '$lib/date-input';
+
 	let { data, form } = $props();
 </script>
 
@@ -43,7 +45,7 @@
 			<aside class="message success" aria-live="polite">
 				<strong>Приглашение создано</strong>
 				<p>Статус: {form.status}</p>
-				<p>Действует до: {form.expiresAt}</p>
+				<p>Действует до: {formatDateTime(form.expiresAt)}</p>
 				<a href={form.invitationUrl}>Открыть одноразовую ссылку</a>
 			</aside>
 		{/if}

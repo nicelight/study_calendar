@@ -7,14 +7,42 @@ type LessonSummary = Pick<LessonView, 'lessonId' | 'classId' | 'lessonDate' | 's
 	className: string;
 	canEditMaterial: boolean;
 	canEditAttendance: boolean;
-	attendance: AttendanceView[] | null;
+	attendance: AttendanceFormEntry[] | null;
 	payment: PaymentFormData | null;
+	studentLabels: Record<string, string>;
 };
 
 export type PaymentFormData = {
 	studentAccountIds: string[];
+	studentLabels: Record<string, string>;
 	factualDate: string;
 };
+
+type AttendanceFormEntry = AttendanceView & {
+	studentLabel: string;
+};
+
+function studentLabels(
+	root: ReturnType<typeof getCompositionRoot>,
+	studentAccountIds: string[]
+): Record<string, string> {
+	const profiles = new Map(
+		root.identityAccess
+			.getStatisticsProfiles(studentAccountIds)
+			.map((profile) => [profile.accountId, profile.fullName] as const)
+	);
+
+	return Object.fromEntries(
+		studentAccountIds.map((studentAccountId) => [
+			studentAccountId,
+			(() => {
+				const fullName = profiles.get(studentAccountId);
+				const email = root.identityAccess.getAccountEmail(studentAccountId);
+				return fullName && email ? `${fullName} · ${email}` : fullName ?? email ?? 'Ученик без ФИО';
+			})()
+		])
+	);
+}
 
 function canEditMaterial(role: string | undefined): boolean {
 	return role === 'admin' || role === 'teacher';
@@ -22,10 +50,11 @@ function canEditMaterial(role: string | undefined): boolean {
 
 function paymentForm(
 	scope: ReturnType<ReturnType<typeof getCompositionRoot>['centerScheduling']['getAuthorizedClassScope']>,
-	lessonDate: string
+	lessonDate: string,
+	labels: Record<string, string>
 ): PaymentFormData | null {
 	return scope && (scope.role === 'admin' || scope.role === 'teacher')
-		? { studentAccountIds: scope.studentAccountIds, factualDate: lessonDate }
+		? { studentAccountIds: scope.studentAccountIds, studentLabels: labels, factualDate: lessonDate }
 		: null;
 }
 
@@ -33,11 +62,13 @@ function attendanceForm(
 	root: ReturnType<typeof getCompositionRoot>,
 	sessionToken: string | undefined,
 	scope: AuthorizedClassScope,
-	lessonId: string
-): AttendanceView[] | null {
-	return scope.role === 'teacher'
-		? root.learningProgress.getLessonAttendance({ sessionToken, classId: scope.classId, lessonId })
-		: null;
+	lessonId: string,
+	labels: Record<string, string>
+): AttendanceFormEntry[] | null {
+	if (scope.role !== 'teacher') return null;
+	return root.learningProgress
+		.getLessonAttendance({ sessionToken, classId: scope.classId, lessonId })
+		.map((entry) => ({ ...entry, studentLabel: labels[entry.studentAccountId] ?? entry.studentAccountId }));
 }
 
 function lessonSummary(
@@ -53,6 +84,7 @@ function lessonSummary(
 	if (!scope || !lesson) {
 		throw new Error('not-authorized');
 	}
+	const labels = studentLabels(root, scope.studentAccountIds);
 
 	return {
 		lessonId: lesson.lessonId,
@@ -62,8 +94,9 @@ function lessonSummary(
 		className: scope.className,
 		canEditMaterial: canEditMaterial(scope.role),
 		canEditAttendance: scope.role === 'teacher',
-		attendance: attendanceForm(root, sessionToken, scope, lesson.lessonId),
-		payment: paymentForm(scope, lesson.lessonDate)
+		attendance: attendanceForm(root, sessionToken, scope, lesson.lessonId, labels),
+		payment: paymentForm(scope, lesson.lessonDate, labels),
+		studentLabels: labels
 	};
 }
 
@@ -78,7 +111,8 @@ export const load: ServerLoad = ({ cookies, url }) => {
 			canEditAttendance: false,
 			attendance: null,
 			canCreatePayment: false,
-			payment: null
+			payment: null,
+			studentLabels: {}
 		};
 	}
 
@@ -86,21 +120,25 @@ export const load: ServerLoad = ({ cookies, url }) => {
 	const sessionToken = cookies.get('foundation_session');
 	try {
 		const scope = root.centerScheduling.getAuthorizedClassScope(sessionToken, classId);
+		const labels = scope ? studentLabels(root, scope.studentAccountIds) : {};
 		const dayContext = root.lessonContext.getDayContext({
 			sessionToken,
 			classId,
 			lessonId,
 			studentAccountId: url.searchParams.get('studentAccountId') ?? undefined
 		});
-		const attendance = scope ? attendanceForm(root, sessionToken, scope, dayContext.lesson.lessonId) : null;
+		const attendance = scope
+			? attendanceForm(root, sessionToken, scope, dayContext.lesson.lessonId, labels)
+			: null;
 		return {
 			dayContext,
 			lesson: null,
 			canEditMaterial: canEditMaterial(scope?.role),
 			canEditAttendance: scope?.role === 'teacher',
 			attendance,
-			canCreatePayment: paymentForm(scope, dayContext.lesson.lessonDate) !== null,
-			payment: paymentForm(scope, dayContext.lesson.lessonDate)
+			canCreatePayment: paymentForm(scope, dayContext.lesson.lessonDate, labels) !== null,
+			payment: paymentForm(scope, dayContext.lesson.lessonDate, labels),
+			studentLabels: labels
 		};
 	} catch (cause) {
 		if (cause instanceof Error && cause.message === 'lesson-material-not-found') {
@@ -112,7 +150,8 @@ export const load: ServerLoad = ({ cookies, url }) => {
 				canEditAttendance: summary.canEditAttendance,
 				attendance: summary.attendance,
 				canCreatePayment: summary.payment !== null,
-				payment: summary.payment
+				payment: summary.payment,
+				studentLabels: summary.studentLabels
 			};
 		}
 		throw error(403, 'Forbidden');

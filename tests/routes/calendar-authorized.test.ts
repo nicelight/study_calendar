@@ -155,6 +155,7 @@ describe('FT-003-AC-007 authorized database-backed calendar', () => {
 		expect(data).toMatchObject({
 			classId: 'class-own',
 			className: 'Алгебра',
+			mode: 'group',
 			role,
 			selectedDate: '2026-08-10',
 			lessons: [

@@ -26,6 +26,8 @@ type AdminCenterPort = Pick<
 	| 'createRecurringSchedule'
 	| 'assignTeacher'
 	| 'removeTeacherAssignment'
+	| 'addStudentToClass'
+	| 'removeStudentFromClass'
 	| 'removeCenterParticipant'
 >;
 
@@ -38,6 +40,8 @@ type SuccessMessage =
 	| 'schedule_created'
 	| 'teacher_assigned'
 	| 'teacher_removed'
+	| 'student_added'
+	| 'student_removed'
 	| 'teacher_membership_removed'
 	| 'participant_created'
 	| 'invitation_created';
@@ -52,6 +56,7 @@ type DashboardError =
 	| 'invalid_schedule'
 	| 'schedule_conflict'
 	| 'invalid_teacher'
+	| 'invalid_student'
 	| 'invalid_role'
 	| 'invalid_email'
 	| 'invalid_password'
@@ -81,6 +86,8 @@ export type AdminDashboardActions = {
 	createSchedule: DashboardAction;
 	assignTeacher: DashboardAction;
 	removeTeacher: DashboardAction;
+	addStudent: DashboardAction;
+	removeStudent: DashboardAction;
 	removeTeacherMembership: DashboardAction;
 	createParticipant: DashboardAction;
 	inviteParticipant: DashboardAction;
@@ -167,6 +174,18 @@ function requireTeacher(center: AdminCenterView, accountId: string | null): stri
 	return accountId;
 }
 
+function requireStudent(center: AdminCenterView, accountId: string | null): string {
+	if (
+		!accountId ||
+		!center.participants.some(
+			(participant) => participant.accountId === accountId && participant.role === 'student'
+		)
+	) {
+		throw new Error('invalid-student');
+	}
+	return accountId;
+}
+
 async function authorizedAction(
 	event: RequestEvent,
 	centerScheduling: AdminCenterPort,
@@ -185,6 +204,9 @@ async function authorizedAction(
 	} catch (cause) {
 		if (messageOf(cause) === 'invalid-teacher') {
 			return fail(400, { error: 'invalid_teacher' });
+		}
+		if (messageOf(cause) === 'invalid-student') {
+			return fail(400, { error: 'invalid_student' });
 		}
 		return actionError(cause);
 	}
@@ -309,6 +331,26 @@ export function createAdminDashboardActions(
 					teacherAccountId: requireTeacher(center, field(formData, 'teacherAccountId'))
 				});
 				return { ok: true, message: 'teacher_removed' };
+			}),
+
+		addStudent: (event) =>
+			authorizedAction(event, centerScheduling, (center, formData) => {
+				centerScheduling.addStudentToClass({
+					sessionToken: sessionToken(event),
+					classId: requireClass(center, field(formData, 'classId')),
+					studentAccountId: requireStudent(center, field(formData, 'studentAccountId'))
+				});
+				return { ok: true, message: 'student_added' };
+			}),
+
+		removeStudent: (event) =>
+			authorizedAction(event, centerScheduling, (center, formData) => {
+				centerScheduling.removeStudentFromClass({
+					sessionToken: sessionToken(event),
+					classId: requireClass(center, field(formData, 'classId')),
+					studentAccountId: requireStudent(center, field(formData, 'studentAccountId'))
+				});
+				return { ok: true, message: 'student_removed' };
 			}),
 
 		removeTeacherMembership: (event) =>

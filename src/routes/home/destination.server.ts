@@ -49,10 +49,6 @@ function forbidden(): never {
 	throw error(403, 'Forbidden');
 }
 
-function classEntryHref(centerId: string, classId: string): string {
-	return `/center/${encodeURIComponent(centerId)}/class/${encodeURIComponent(classId)}`;
-}
-
 function calendarHref(classId: string): string {
 	return `/calendar?classId=${encodeURIComponent(classId)}`;
 }
@@ -83,12 +79,12 @@ function registryDestinations(
 	return {
 		role: actor.role,
 		destinations: registry.classes.map((classView) => ({
-			kind: 'class' as const,
+			kind: 'calendar' as const,
 			centerId: classView.centerId,
 			classId: classView.classId,
 			className: classView.name,
 			mode: classView.mode,
-			href: classEntryHref(classView.centerId, classView.classId)
+			href: calendarHref(classView.classId)
 		}))
 	};
 }

@@ -20,10 +20,15 @@ spec_design_links:
 ## Use Cases
 - Admin manages teachers, classes, students, parents, and links within one
   center and chooses individual or group class mode.
+- Admin can choose a student in a class card to add or remove that student from
+  the class; the individual-class capacity rule remains server-enforced.
 - Admin creates a recurring schedule; Admin or assigned teacher changes one
   lesson without rewriting other repetitions.
 - Admin can leave or reload a partially completed class schedule form and
   resume that same class draft in the same browser.
+- Admin enters schedule dates as `dd.mm.yyyy` (dots are inserted while typing)
+  and sees schedule ranges in the same format; account selectors use participant
+  FIO/email labels while submitted values remain account IDs.
 - Admin assigns or removes a teacher while preserving author attribution and
   enforcing history access.
 
@@ -97,10 +102,11 @@ spec_design_links:
 - REQ: REQ-003, REQ-004, REQ-014
 - Given an authenticated Admin with a center membership, when the Admin opens
   the center Admin UI, then the Admin can create/edit/delete individual or
-  group classes, create schedules, invite teachers, and assign or remove
-  teachers from classes. Every command is server-authorized for the Admin's own
-  center; a teacher can operate only on assigned classes and cannot be promoted
-  to Admin or access another center through client fields.
+  group classes, create schedules, invite teachers, assign or remove teachers,
+  and add or remove students from classes. Every command is server-authorized
+  for the Admin's own center; a teacher can operate only on assigned classes
+  and cannot be promoted to Admin or access another center through client
+  fields.
 - Verification: running UI/HTTP CRUD flow with own-center success and
   cross-center, non-Admin, invalid-role, and removed-assignment denial.
 
@@ -136,18 +142,20 @@ spec_design_links:
   state-before/state-after equality; browser draft retention remains AC-008
   supporting evidence only.
 
-### FT-002-AC-010 — Schedule date input uses strict dd/mm/yyyy presentation
+### FT-002-AC-010 — Schedule date input uses automatic dd.mm.yyyy presentation
 - REQ: REQ-004
 - Given an Admin opens a recurring-schedule form, then each start/end date
-  control presents and accepts the strict user-facing `dd/mm/yyyy` format with
-  an explicit invalid-date state for malformed or impossible calendar values.
-  The submitted form payload and the existing scoped browser draft continue to
-  carry canonical ISO `YYYY-MM-DD` values; no server schedule contract or
-  persistence representation changes.
+  control presents the user-facing `dd.mm.yyyy` format, inserts dots while the
+  user enters digits, and accepts compact input such as `1122026` as
+  `01.12.2026`. It shows an explicit invalid-date state for malformed or
+  impossible calendar values. The submitted form payload and the existing
+  scoped browser draft continue to carry canonical ISO `YYYY-MM-DD` values; no
+  server schedule contract or persistence representation changes.
 - Verification: SSR/source and focused browser/form checks prove the visible
-  `dd/mm/yyyy` controls, strict parse/format behavior, unchanged ISO Form Data,
-  unchanged `study-calendar:schedule-draft:${centerId}:${classId}` payload,
-  and clean handling of invalid dates.
+  `dd.mm.yyyy` controls, automatic separator and compact-digit formatting,
+  strict parse/format behavior, unchanged ISO Form Data, unchanged
+  `study-calendar:schedule-draft:${centerId}:${classId}` payload, and clean
+  handling of invalid dates.
 
 ### FT-002-AC-011 — Role-scoped class entry shell is available for permitted members
 - REQ: REQ-003, REQ-014
@@ -174,6 +182,7 @@ spec_design_links:
 | Transfer without duplicate lesson/charge | FT-002-AC-004 |
 | Substitute teacher historical access | FT-002-AC-005 |
 | Removed teacher/member access revocation | FT-002-AC-006 |
+| Admin student-to-class add/remove controls | FT-002-AC-007 |
 | Unfinished schedule survives same-form return/reload without cross-scope restore | FT-002-AC-008 |
 | Zero-occurrence recurring schedule cannot create empty persisted state | FT-002-AC-009 |
 | Strict localized schedule date presentation preserves ISO wire/storage | FT-002-AC-010 |
@@ -300,3 +309,11 @@ unchanged.
 - [TASK-035 card](../tasks/TASK-035-T3-FT-002-W19.task.json)
 - [TASK-035 retry verification](../../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-VERIFY-RETRY-final-report-docs-02.md)
 - [TASK-035 semantic verification](../../.tasks/TASK-035-T3-FT-002-W19/TASK-035-T3-FT-002-W19-S-RED-VERIFY-final-report-docs-01.md)
+
+## Admin teacher labels — 2026-08-24
+
+The Admin class-assignment UI now renders each teacher as `ФИО · email` when
+both server-owned profile facts are available. It falls back to whichever
+human-readable value exists, and only then to the technical account ID. The
+submitted `teacherAccountId`, authorization checks, and assignment commands are
+unchanged; this is a presentation correction inside FT-002-AC-007.

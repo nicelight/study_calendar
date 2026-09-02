@@ -37,8 +37,10 @@ directly or implement these provider-owned formulas.
 - Lesson Context obtains these fields through the Identity & Access Actor
   Context Boundary for account IDs already scoped by Center & Scheduling; no
   statistics code may read Identity & Access tables directly.
-- The target account population is created with mandatory surname and given
-  name. This feature adds no migration, backfill, or legacy-account behavior.
+- New target accounts are created with mandatory surname and given name. The
+  current legacy population has been repaired once for missing profile rows;
+  the repair never overwrites existing facts, and runtime projections do not
+  infer names.
 - Profile metadata is not client-supplied authority and does not change role,
   membership, assignment, or authentication behavior.
 

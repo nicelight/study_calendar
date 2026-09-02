@@ -26,6 +26,8 @@ last_updated: 2026-08-24
   завершает сессию через существующий `POST /auth/logout`.
 - Admin/Teacher просматривают разрешённые registry; Student/Parent переходят
   в доступный календарь класса.
+- Teacher при выборе назначенного класса сразу открывает его календарь; формат
+  класса показывается в заголовке календаря.
 - В Profile пользователь видит только server-owned `fullName`, `role` и
   immutable `registeredAt`; editing, password/provider management и membership
   controls не входят в FT-007.
@@ -115,10 +117,12 @@ last_updated: 2026-08-24
   `accountId`, `fullName`, `role`, `registeredAt` для valid session, а scoped
   statistics query — только `accountId`, `fullName`, `registeredAt` для
   запрошенных account IDs; revoked actor и failed creation не раскрывают и не
-  оставляют partial profile state. Migration, backfill и fallback name не
-  добавляются.
+  оставляют partial profile state. Existing accounts without a profile are
+  repaired once with generated `fullName` and the repair timestamp, without
+  overwriting existing profile facts; runtime queries do not infer fallback
+  names.
 - Verification: isolated all-path creation/query matrix с exact projections,
-  revoked denial, rollback, immutable timestamp и no-legacy proof.
+  revoked denial, rollback, immutable timestamp и no-fallback proof.
 
 ### FT-007-AC-009 — Registry source facts preserve provider scope
 - REQ: REQ-014, REQ-017
@@ -167,9 +171,10 @@ Statistics receives `fullName` and immutable `registeredAt` from Identity &
 Access through the accepted Actor Context Boundary; direct account-table access
 is forbidden. Every supported new target-account path — first bootstrap Admin,
 invitation participant, and direct-password participant — requires surname and
-given name and records the server timestamp. Accounts without these facts are
-outside the target population, so FT-007 adds no migration, backfill, fallback
-name, or legacy-account handling.
+given name and records the server timestamp. The current deployment's legacy
+accounts were repaired once by inserting generated profile facts only where the
+profile was absent; existing profile rows are never overwritten. Runtime
+profile queries remain fail-closed and do not infer names for incomplete data.
 
 ### 2026-08-21 — Canonical routes and bounded Profile
 
@@ -368,3 +373,19 @@ boundary. Planning Revision `2` and the current FT-007 task-plan `APPROVE`
 remain authoritative. This status/evidence reconciliation changes no claim,
 task slicing, proof obligation, dependency, tier, scope, or unresolved planning
 assumption, so it introduces no fresh task-plan review trigger.
+
+## Role-oriented login and Home alignment — 2026-08-24
+
+The implemented browser landing now matches `FT-007-AC-002`: successful
+password or provider authentication keeps Admin on `/admin` and sends Teacher,
+Student, and Parent to `/home`. Teacher Home renders the assigned-class list.
+Student and Parent Home reuses the canonical protected calendar by redirecting
+to the first authorized class, or to the exact authorized `classId` when one is
+requested; `/classes` remains the chooser when several calendars are available.
+
+Route tests cover role landing and fail-closed scope behavior. The focused
+disposable Playwright flow performs real password login and proves the Teacher
+class list plus Student/Parent calendar lesson rendering without touching the
+real project database. This closes an implementation drift only; the accepted
+ACs, requirements, ownership boundaries, Planning Revision, lifecycle, and task
+history are unchanged.

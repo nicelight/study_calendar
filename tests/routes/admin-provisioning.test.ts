@@ -208,7 +208,7 @@ async function acceptInvitation(
 			providerRequestEvent(callbackUrl, 'google', sessionCookies.cookies, new Request(callbackUrl))
 		)
 	);
-	expect(callback).toMatchObject({ status: 303, location: '/' });
+	expect(callback).toMatchObject({ status: 303, location: '/home' });
 	const invitation = root.database.sqlite
 		.prepare('SELECT account_id FROM invitations WHERE token = ?')
 		.get(token) as InvitationAccountRow | undefined;
@@ -353,6 +353,49 @@ describe('protected Admin participant transport', () => {
 		);
 		expect(invalidRole).toMatchObject({ status: 400, data: { error: 'invalid_role' } });
 	});
+
+	it.each(['teacher', 'student', 'parent'] as const)(
+		'requires surname and given name when inviting a %s',
+		async (role) => {
+			const before = state(root);
+			const result = transport.provision(
+				adminEvent(
+					root,
+					transport,
+					formRequest('https://calendar.test/admin/center-own/participants', { role })
+				),
+				role,
+				{ surname: '', givenName: ' ' }
+			);
+
+			expect(result).toEqual({ ok: false, status: 400, error: 'invalid_profile_name' });
+			expect(state(root)).toEqual(before);
+		}
+	);
+
+	it.each(['teacher', 'student', 'parent'] as const)(
+		'requires surname and given name when directly creating a %s account',
+		async (role) => {
+			const before = state(root);
+			const result = transport.provisionPassword(
+				adminEvent(
+					root,
+					transport,
+					formRequest('https://calendar.test/admin/center-own/participants', { role })
+				),
+				{
+					role,
+					surname: '',
+					givenName: ' ',
+					email: `${role}-missing-name@example.com`,
+					password: 'test-password'
+				}
+			);
+
+			expect(result).toEqual({ ok: false, status: 400, error: 'invalid_profile_name' });
+			expect(state(root)).toEqual(before);
+		}
+	);
 
 	it('reaches the existing one-time invitation browser path and keeps duplicate/replay errors safe', async () => {
 		const result = transport.provision(

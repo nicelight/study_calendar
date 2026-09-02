@@ -4,6 +4,85 @@ status: active
 ---
 # Changelog
 
+## [2026-08-25] Admin class names stay readable in dark theme
+
+- Class-card headings now set their own foreground color and use a light value
+  in dark mode, so the class name remains visible on dark cards.
+
+## [2026-08-25] Teacher class selection opens calendar directly
+
+- Teacher Home/Classes destinations now open the assigned class calendar without
+  the intermediate class-entry page.
+- The calendar header shows only the class format (`Формат: Групповой` or
+  `Формат: Индивидуальный`) in the place of the generic server-context text.
+
+## [2026-08-24] Unified frontend dates and account labels
+
+- All manually entered frontend dates now use the same `dd.mm.yyyy` mask;
+  compact digits such as `1122026` become `01.12.2026`, while forms continue
+  submitting canonical ISO values.
+- Calendar navigation and lesson payment dates use the same input behavior;
+  visible lesson, schedule, registration, and invitation dates are localized.
+- Admin and lesson-context account choices and lists show stored FIO, with email
+  or a neutral no-profile label as fallback; technical account IDs remain only
+  in hidden values, URLs, and request payloads.
+
+## [2026-08-24] Student labels in lesson context
+
+- Attendance, payment selection, and personal lesson context now show the
+  student's stored FIO, with email or account ID only as fallback.
+- Form values remain the technical account IDs so attendance and payment
+  authorization/persistence contracts are unchanged.
+
+## [2026-08-24] Automatic schedule date entry
+
+- Schedule date fields now display `dd.mm.yyyy` and insert dots automatically.
+- Compact digit entry is supported: `1122026` becomes `01.12.2026`; the
+  server still receives canonical ISO dates.
+
+## [2026-08-24] Admin student-to-class assignment
+
+- Admin class cards now show assigned students by FIO/email and provide
+  `Добавить ученика` / `Убрать из класса` controls.
+- The UI uses the existing server-authorized class-membership commands; the
+  individual-class capacity rule remains enforced by the backend.
+- The existing student `Лебедев Ирина` was linked to `класс два` in the current
+  `study-calendar.db`.
+
+## [2026-08-24] Profile completion for all existing accounts
+
+- Invitation and direct-password creation paths now have regression coverage
+  proving that Teacher, Student, and Parent require both surname and given name
+  before any account, credential, invitation, membership, or link is saved.
+- Repaired the current `study-calendar.db`: all 4 existing accounts now have
+  profile rows with generated names; existing profile rows would be preserved.
+- Added one password Parent account linked to the existing Student account and
+  assigned it to the current center.
+- Admin participant and class-assignment views use the stored FIO/email for all
+  roles, with account IDs retained only as technical fallback/value data.
+
+## [2026-08-24] FT-002 Admin teacher labels
+
+- Admin class assignment controls now show a teacher's server-owned full name
+  and email when available; the account ID remains only the submitted form
+  value and is used as a fallback for incomplete legacy/provider data.
+- The assigned-teacher list uses the same human-readable label. Scope and
+  assignment commands are unchanged.
+
+## [2026-08-24] FT-007 role-oriented login and Home alignment
+
+- Aligned password and provider login with the accepted role-oriented Home:
+  Admin continues to `/admin`, while Teacher, Student, and Parent continue to
+  `/home` instead of the public `/` route.
+- Kept Teacher Home as the assigned-class list. Student and Parent Home now
+  redirects to the first server-authorized class calendar, or to the exact
+  authorized `classId` requested; `/classes` remains the class/calendar chooser.
+- Added route and disposable browser regression coverage for real login,
+  Teacher class visibility, Student/Parent lesson-calendar rendering, and
+  existing scope denial. This is an implementation correction under existing
+  FT-007-AC-002/REQ-014/REQ-017 behavior, not a new product or architecture
+  decision.
+
 ## [2026-08-24] Wave W31 — FT-007 complete implementation coverage
 
 - Reconciled indexed `TASK-097-T3-FT-007-W31` and

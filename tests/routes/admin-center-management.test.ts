@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import type { RequestEvent } from '@sveltejs/kit';
 import { render } from 'svelte/server';
 import { createCompositionRoot, type CompositionRoot } from '../../src/lib/server/composition-root';
@@ -8,6 +10,8 @@ import {
 	createAdminDashboardPageLoad
 } from '../../src/routes/admin/center-dashboard.server';
 import { createAdminProvisioningTransport } from '../../src/routes/admin/provisioning.server';
+
+const adminCenterPagePath = resolve(process.cwd(), 'src/routes/admin/[centerId]/+page.svelte');
 
 function cookies(sessionToken?: string) {
 	const values = new Map<string, string>();
@@ -84,6 +88,12 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 				('center-own', 'student-two'),
 				('center-other', 'admin-other'),
 				('center-other', 'teacher-other');
+			INSERT INTO account_profiles (account_id, full_name, registered_at) VALUES
+				('teacher-own', 'Учитель Свой', '2026-01-01T00:00:00.000Z'),
+				('teacher-spare', 'Учитель Запасной', '2026-01-02T00:00:00.000Z'),
+				('teacher-other', 'Учитель Другого Центра', '2026-01-03T00:00:00.000Z'),
+				('student-one', 'Ученик Первый', '2026-01-04T00:00:00.000Z'),
+				('student-two', 'Ученик Второй', '2026-01-05T00:00:00.000Z');
 		`);
 	});
 
@@ -119,7 +129,8 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 				expect.objectContaining({
 					classId: 'class-existing',
 					mode: 'group',
-					teacherAccountIds: ['teacher-own']
+					teacherAccountIds: ['teacher-own'],
+					studentAccountIds: []
 				})
 			]
 		});
@@ -128,7 +139,14 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		expect(rendered.body).toContain('Английский A2');
 		expect(rendered.body).toContain('?/createClass');
 		expect(rendered.body).toContain('?/createParticipant');
+		expect(rendered.body).toContain('?/addStudent');
 		expect(rendered.body).toContain('teacher-own');
+		expect(rendered.body).toContain('Учитель Запасной');
+		expect(rendered.body).toContain('Учитель Свой');
+		expect(rendered.body).toContain('Ученик Первый');
+		expect(readFileSync(adminCenterPagePath, 'utf8')).toContain(
+		'<option value={student.accountId}>{participantLabel(student)}</option>'
+	);
 		expect(rendered.body).toContain('href="/center/center-own/class/class-existing"');
 		expect(rendered.body).toContain('Открыть класс');
 
@@ -257,6 +275,36 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 		);
 		expect(removed).toMatchObject({ ok: true, message: 'teacher_removed' });
 		expect(root.centerScheduling.getAuthorizedClassScope('session-teacher-own', 'class-group')).toBeNull();
+
+		root.centerScheduling.removeStudentFromClass({
+			sessionToken: 'session-admin-own',
+			classId: 'class-group',
+			studentAccountId: 'student-two'
+		});
+		const addedStudent = await api.addStudent(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-group'],
+				['studentAccountId', 'student-two']
+			])
+		);
+		expect(addedStudent).toMatchObject({ ok: true, message: 'student_added' });
+		expect(root.database.sqlite.prepare(
+			'SELECT student_account_id FROM class_students WHERE class_id = ?'
+		).all('class-group')).toEqual([
+			{ student_account_id: 'student-one' },
+			{ student_account_id: 'student-two' }
+		]);
+
+		const removedStudent = await api.removeStudent(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-group'],
+				['studentAccountId', 'student-two']
+			])
+		);
+		expect(removedStudent).toMatchObject({ ok: true, message: 'student_removed' });
+		expect(root.database.sqlite.prepare(
+			'SELECT 1 FROM class_students WHERE class_id = ? AND student_account_id = ?'
+		).get('class-group', 'student-two')).toBeUndefined();
 
 		root.centerScheduling.assignTeacher({
 			sessionToken: 'session-admin-own',

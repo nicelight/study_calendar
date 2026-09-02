@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'svelte/server';
 import type { ActorContext, CurrentActorProfile } from '../../src/lib/server/modules/identity-access/public';
+import { formatDateTime } from '../../src/lib/date-input';
 
 const profileServerPath = resolve(process.cwd(), 'src/routes/profile/+page.server.ts');
 const profilePagePath = resolve(process.cwd(), 'src/routes/profile/+page.svelte');
@@ -50,9 +51,10 @@ describe('FT-007-AC-007 canonical Profile route', () => {
 		expect(JSON.parse(JSON.stringify(data))).toEqual(data);
 
 		const body = render(ProfilePage, { props: { data } } as any).body;
-		for (const value of ['Профиль', 'Профиль Админа', 'admin', '2026-08-24T10:00:00.000Z']) {
+		for (const value of ['Профиль', 'Профиль Админа', 'admin', formatDateTime(profile.registeredAt)]) {
 			expect(body).toContain(value);
 		}
+		expect(body).not.toContain(profile.registeredAt);
 		expect(body).not.toContain('<form');
 		expect(body).not.toContain('<input');
 		expect(body).not.toContain('<button');

@@ -48,7 +48,7 @@ export function createPasswordLoginActions(
 				foundationSessionCookieOptions(event.url.protocol)
 			);
 			const actor = identityAccess.resolveActor(sessionToken);
-			throw redirect(303, actor?.role === 'admin' ? '/admin' : '/');
+			throw redirect(303, actor?.role === 'admin' ? '/admin' : '/home');
 		}
 	};
 }

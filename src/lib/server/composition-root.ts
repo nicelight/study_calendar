@@ -37,6 +37,7 @@ export function createCompositionRoot(
 	const centerScheduling = new CenterSchedulingBoundary(database, {
 		resolveActor: identityAccess.resolveActor.bind(identityAccess),
 		getAccountEmail: identityAccess.getAccountEmail.bind(identityAccess),
+		getStatisticsProfiles: identityAccess.getStatisticsProfiles.bind(identityAccess),
 		provisionAccount: provisioningWriter,
 		provisionPasswordAccount: passwordProvisioningWriter
 	});

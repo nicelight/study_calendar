@@ -23,6 +23,10 @@ spec_design_links:
 - Teacher records a grade using `α`, `β`, `γ`, or `F`.
 - At the end of a lesson, Teacher opens the class lesson day, marks absent
   students with a minus, and saves the attendance list.
+- Lesson-day student controls show the student's stored FIO instead of exposing
+  the technical account ID as the primary label.
+- Lesson dates and factual payment dates are shown/entered as `dd.mm.yyyy`,
+  while the payment action continues receiving an ISO date.
 - Teacher or admin records/corrects attendance and the financial charge eligibility
   follows the resulting state.
 

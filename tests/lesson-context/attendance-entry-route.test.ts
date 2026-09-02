@@ -29,6 +29,9 @@ function seed(root: CompositionRoot): void {
 		INSERT INTO center_memberships (center_id, account_id) VALUES
 			('center-own', 'admin-own'), ('center-own', 'teacher-own'), ('center-own', 'teacher-unassigned'),
 			('center-own', 'student-one'), ('center-own', 'student-two');
+		INSERT INTO account_profiles (account_id, full_name, registered_at) VALUES
+			('student-one', 'Ученик Первый', '2026-01-01T00:00:00.000Z'),
+			('student-two', 'Ученик Второй', '2026-01-02T00:00:00.000Z');
 		INSERT INTO classes (id, center_id, name, mode) VALUES ('class-group', 'center-own', 'Group', 'group');
 		INSERT INTO teacher_assignments (center_id, class_id, teacher_account_id)
 			VALUES ('center-own', 'class-group', 'teacher-own');
@@ -89,7 +92,12 @@ describe('FT-005-AC-005 lesson context attendance entry', () => {
 			expect.objectContaining({ studentAccountId: 'student-one', recordedAt: null }),
 			expect.objectContaining({ studentAccountId: 'student-two', recordedAt: null })
 		]));
-		expect(render(LessonContextPage, { props: { data } } as any).body).toContain('Отметить отсутствующих');
+		const rendered = render(LessonContextPage, { props: { data } } as any).body;
+		expect(rendered).toContain('Отметить отсутствующих');
+		expect(rendered).toContain('Ученик Первый');
+		expect(rendered).toContain('Ученик Второй');
+		expect(rendered).toContain('03.08.2026');
+		expect(rendered).not.toMatch(/<h1[^>]*>2026-08-03<\/h1>/);
 
 		const saved = await lessonContextActions.default(event(root, 'session-teacher-own', {
 			action: 'saveAttendance',

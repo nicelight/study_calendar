@@ -1,10 +1,17 @@
 <script lang="ts">
+	import { formatDateInput, formatDisplayDate, parseDisplayDate } from '$lib/date-input';
+
 	let { data, form } = $props();
 	let context = $derived(data.dayContext);
 	let lesson = $derived(data.lesson);
 	let material = $derived(context?.material ?? null);
 	let attendance = $derived(data.attendance ?? lesson?.attendance ?? null);
 	let payment = $derived(data.payment ?? null);
+
+	function studentLabel(studentAccountId: string): string {
+		const labels = data.studentLabels as Record<string, string> | undefined;
+		return labels?.[studentAccountId] ?? 'Ученик без ФИО';
+	}
 
 	function contextHref(
 		current: NonNullable<typeof context>,
@@ -54,6 +61,20 @@
 			attendance_operation_failed: 'Не удалось сохранить посещаемость.'
 		}[error] ?? 'Не удалось сохранить посещаемость.';
 	}
+
+	function syncPaymentDate(event: Event): void {
+		const inputEvent = event as InputEvent;
+		const input = event.currentTarget as HTMLInputElement;
+		const hiddenInput = input.form?.querySelector<HTMLInputElement>('input[type="hidden"][name="factualDate"]');
+		if (!hiddenInput) return;
+
+		input.value = formatDateInput(input.value, inputEvent.inputType ?? '');
+		const isoDate = parseDisplayDate(input.value);
+		const invalid = input.value !== '' && isoDate === null;
+		input.setCustomValidity(invalid ? 'Введите существующую дату в формате dd.mm.yyyy.' : '');
+		input.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+		hiddenInput.value = isoDate ?? '';
+	}
 </script>
 
 <svelte:head>
@@ -66,7 +87,7 @@
 		<header class="context-header">
 			<div>
 				<p class="eyebrow">{context.lesson.className}</p>
-				<h1>{context.lesson.lessonDate}</h1>
+				<h1>{formatDisplayDate(context.lesson.lessonDate)}</h1>
 				<p class="identity-line">Общий контекст занятия в классе «{context.lesson.className}»</p>
 			</div>
 			<nav aria-label="Контекст дня">
@@ -89,7 +110,7 @@
 		{#if context.personal}
 			<section class="personal" aria-labelledby="personal-title">
 				<div class="section-label">Личный контекст</div>
-				<h2 id="personal-title">Ученик {context.personal.studentAccountId}</h2>
+				<h2 id="personal-title">Ученик {studentLabel(context.personal.studentAccountId)}</h2>
 				<p>Посещаемость: {context.personal.progress.attendance.attendance}</p>
 				{#if context.personal.progress.grade}
 					<p>Оценка: {context.personal.progress.grade.grade}</p>
@@ -110,7 +131,7 @@
 		<header class="context-header">
 			<div>
 				<p class="eyebrow">{lesson.className}</p>
-				<h1>{lesson.lessonDate}</h1>
+				<h1>{formatDisplayDate(lesson.lessonDate)}</h1>
 				<p class="identity-line">Занятие в классе «{lesson.className}»</p>
 			</div>
 			<p class="status">{statusLabel(lesson.status)}</p>
@@ -149,7 +170,7 @@
 							value={entry.studentAccountId}
 							checked={entry.attendance === 'absent' && entry.recordedAt !== null}
 						/>
-						<span>{entry.studentAccountId}</span>
+						<span>{studentLabel(entry.studentAccountId)}</span>
 						<span class="attendance-hint">минус</span>
 					</label>
 				{/each}
@@ -202,7 +223,7 @@
 					<span>Ученик</span>
 					<select name="studentAccountId" required>
 						{#each payment.studentAccountIds as studentAccountId}
-							<option value={studentAccountId}>{studentAccountId}</option>
+							<option value={studentAccountId}>{studentLabel(studentAccountId)}</option>
 						{/each}
 					</select>
 				</label>
@@ -211,8 +232,20 @@
 					<input name="amount" type="number" min="0.01" step="0.01" required />
 				</label>
 				<label>
-					<span>Фактическая дата</span>
-					<input name="factualDate" type="date" value={payment.factualDate} required />
+					<span>Фактическая дата (дд.мм.гггг)</span>
+					<input type="hidden" name="factualDate" value={payment.factualDate} />
+					<input
+						type="text"
+						inputmode="numeric"
+						maxlength="10"
+						placeholder="дд.мм.гггг"
+						pattern={'[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}'}
+						value={formatDisplayDate(payment.factualDate)}
+						required
+						aria-invalid="false"
+						oninput={syncPaymentDate}
+						onchange={syncPaymentDate}
+					/>
 				</label>
 				<label>
 					<span>Подтверждение операции</span>

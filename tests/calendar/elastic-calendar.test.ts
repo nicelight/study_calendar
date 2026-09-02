@@ -19,7 +19,10 @@ describe('FT-001 public home login entry', () => {
 
 describe('FT-003 calendar presentation claims', () => {
 	it('FT-003-AC-001 exposes exact date navigation and elastic weekly geometry', () => {
-		expect(routeSource).toMatch(/type=["']date["']/);
+		expect(routeSource).toMatch(/type=["']text["']/);
+		expect(routeSource).toContain('inputmode="numeric"');
+		expect(routeSource).toContain('formatDateInput');
+		expect(routeSource).toContain('parseDisplayDate');
 		expect(routeSource).toMatch(/searchParams|page\.url/);
 		expect(routeSource).toMatch(/grid-template-columns/);
 		expect(routeSource).toMatch(/selectedDate/);

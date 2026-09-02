@@ -175,7 +175,7 @@ export class AuthenticationTransport {
 				foundationSessionCookieOptions(event.url.protocol)
 			);
 			const actor = this.dependencies.identityAccess.resolveActor(sessionToken);
-			throw redirect(303, actor?.role === 'admin' ? '/admin' : '/');
+			throw redirect(303, actor?.role === 'admin' ? '/admin' : '/home');
 		} finally {
 			event.cookies.delete(
 			AUTHENTICATION_BINDING_COOKIE,

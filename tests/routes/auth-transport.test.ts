@@ -258,7 +258,7 @@ describe('browser authentication transport', () => {
 				siblingBrowser.cookies
 			)
 		));
-		expect(redirectLocation(siblingCallback)).toBe('/');
+		expect(redirectLocation(siblingCallback)).toBe('/home');
 		expect(telegramVerify).toHaveBeenCalledTimes(1);
 		expect(root.identityAccess.resolveActor(siblingBrowser.writes.find(({ name }) => name === 'foundation_session')?.value))
 			.toEqual({ accountId: 'sibling-account', role: 'teacher' });
@@ -439,7 +439,7 @@ describe('browser authentication transport', () => {
 					)
 				)
 			);
-			expect(redirectLocation(callbackControlFlow)).toBe('/');
+			expect(redirectLocation(callbackControlFlow)).toBe('/home');
 			const sessionWrite = sessionCookies.writes.find(({ name }) => name === 'foundation_session');
 			expect(sessionWrite).toMatchObject({
 				name: 'foundation_session',
@@ -520,7 +520,7 @@ describe('browser authentication transport', () => {
 				)
 			)
 		);
-		expect(redirectLocation(success)).toBe('/');
+		expect(redirectLocation(success)).toBe('/home');
 		expect(root.database.sqlite.prepare('SELECT status FROM invitations WHERE token = ?').get('invite-one'))
 			.toEqual({ status: 'consumed' });
 		const sessionWrite = sessionCookies.writes.find(({ name }) => name === 'foundation_session');

@@ -2,6 +2,11 @@
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
+	import {
+		formatDateInput,
+		formatDisplayDate,
+		parseDisplayDate
+	} from '$lib/date-input';
 
 	let { data, form } = $props();
 	type ParticipantRole = 'teacher' | 'student' | 'parent';
@@ -44,16 +49,16 @@
 	}
 
 	function parseScheduleDate(value: string): string | null {
-		const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
-		if (!match) return null;
-		const [, day, month, year] = match;
-		const isoDate = `${year}-${month}-${day}`;
-		return isStoredDate(isoDate) ? isoDate : null;
+		const isoDate = parseDisplayDate(value);
+		return isoDate && isStoredDate(isoDate) ? isoDate : null;
 	}
 
 	function formatScheduleDate(value: string): string {
-		if (!isStoredDate(value) || value === '') return '';
-		return `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
+		return isStoredDate(value) ? formatDisplayDate(value) : '';
+	}
+
+	function formatScheduleDateInput(value: string, inputType = ''): string {
+		return formatDateInput(value, inputType);
 	}
 
 	function isScheduleDraft(value: unknown): value is ScheduleDraft {
@@ -109,7 +114,7 @@
 		}
 	}
 
-	function syncScheduleDateInput(input: HTMLInputElement): void {
+	function syncScheduleDateInput(input: HTMLInputElement, inputType = ''): void {
 		const field = input.dataset.scheduleDateField as ScheduleDateField | undefined;
 		if (field !== 'startDate' && field !== 'endDate') return;
 
@@ -119,9 +124,10 @@
 		);
 		if (!formElement || !hiddenInput) return;
 
+		input.value = formatScheduleDateInput(input.value, inputType);
 		const isoDate = parseScheduleDate(input.value);
 		const invalid = input.value !== '' && isoDate === null;
-		input.setCustomValidity(invalid ? 'Введите существующую дату в формате dd/mm/yyyy.' : '');
+		input.setCustomValidity(invalid ? 'Введите существующую дату в формате dd.mm.yyyy.' : '');
 		input.setAttribute('aria-invalid', invalid ? 'true' : 'false');
 		hiddenInput.value = isoDate ?? '';
 
@@ -130,7 +136,8 @@
 	}
 
 	function syncScheduleDate(event: Event): void {
-		syncScheduleDateInput(event.currentTarget as HTMLInputElement);
+		const inputEvent = event as InputEvent;
+		syncScheduleDateInput(event.currentTarget as HTMLInputElement, inputEvent.inputType ?? '');
 	}
 
 	function persistScheduleDraft(event: Event): void {
@@ -200,6 +207,31 @@
 		}[role] ?? role;
 	}
 
+	type ParticipantOption = {
+		accountId: string;
+		fullName: string | null;
+		email: string | null;
+	};
+
+	function participantLabel(participant: ParticipantOption): string {
+		if (participant.fullName && participant.email) return `${participant.fullName} · ${participant.email}`;
+		return participant.fullName ?? participant.email ?? 'Аккаунт без ФИО';
+	}
+
+	function teacherLabel(teacher: ParticipantOption): string {
+		return participantLabel(teacher);
+	}
+
+	function assignedTeacherLabel(accountId: string): string {
+		const teacher = teachers.find((candidate) => candidate.accountId === accountId);
+		return teacher ? teacherLabel(teacher) : 'Учитель без профиля';
+	}
+
+	function assignedStudentLabel(accountId: string): string {
+		const student = students.find((candidate) => candidate.accountId === accountId);
+		return student ? participantLabel(student) : 'Ученик без профиля';
+	}
+
 	function selectParticipantRole(event: Event): void {
 		const value = (event.currentTarget as HTMLSelectElement).value;
 		if (value === 'teacher' || value === 'student' || value === 'parent') {
@@ -215,6 +247,8 @@
 			schedule_created: 'Расписание создано; пересекающиеся запланированные даты заменены.',
 			teacher_assigned: 'Учитель назначен на класс.',
 			teacher_removed: 'Доступ учителя к классу отозван.',
+			student_added: 'Ученик добавлен в класс.',
+			student_removed: 'Ученик убран из класса.',
 				teacher_membership_removed: 'Учитель удалён из центра.',
 				participant_created: 'Аккаунт создан. Передайте пользователю email и пароль.',
 				invitation_created: 'Приглашение создано.'
@@ -232,6 +266,7 @@
 			invalid_schedule: 'Проверьте даты и выберите хотя бы один день недели.',
 			schedule_conflict: 'Нельзя заменить завершённое или отменённое занятие.',
 				invalid_teacher: 'Выберите учителя этого центра.',
+				invalid_student: 'Выберите ученика этого центра.',
 				invalid_role: 'Выберите разрешённую роль участника.',
 				invalid_email: 'Укажите корректный email.',
 				invalid_password: 'Укажите пароль.',
@@ -311,6 +346,9 @@
 						{@const availableTeachers = teachers.filter(
 							(teacher) => !classView.teacherAccountIds.includes(teacher.accountId)
 						)}
+						{@const availableStudents = students.filter(
+							(student) => !classView.studentAccountIds.includes(student.accountId)
+						)}
 						<article class="card class-card">
 							<div class="class-title-row">
 								<div>
@@ -356,7 +394,7 @@
 									<ul class="assignment-list">
 										{#each classView.teacherAccountIds as teacherAccountId}
 											<li>
-												<code>{teacherAccountId}</code>
+												<span>{assignedTeacherLabel(teacherAccountId)}</span>
 												<form method="POST" action="?/removeTeacher">
 													<input type="hidden" name="classId" value={classView.classId} />
 													<input type="hidden" name="teacherAccountId" value={teacherAccountId} />
@@ -377,12 +415,50 @@
 											<select name="teacherAccountId" required>
 												<option value="">Выберите учителя</option>
 												{#each availableTeachers as teacher}
-													<option value={teacher.accountId}>{teacher.accountId}</option>
+													<option value={teacher.accountId}>{teacherLabel(teacher)}</option>
 												{/each}
 											</select>
 										</label>
 										<button class="button secondary" type="submit">Назначить</button>
 									</form>
+								{/if}
+							</div>
+
+							<div class="subsection">
+								<h4>Ученики</h4>
+								{#if classView.studentAccountIds.length > 0}
+									<ul class="assignment-list">
+										{#each classView.studentAccountIds as studentAccountId}
+											<li>
+												<span>{assignedStudentLabel(studentAccountId)}</span>
+												<form method="POST" action="?/removeStudent">
+													<input type="hidden" name="classId" value={classView.classId} />
+													<input type="hidden" name="studentAccountId" value={studentAccountId} />
+													<button class="text-button danger" type="submit">Убрать из класса</button>
+												</form>
+											</li>
+										{/each}
+									</ul>
+								{:else}
+									<p class="muted">Ученики не назначены.</p>
+								{/if}
+
+								{#if availableStudents.length > 0 && (classView.mode === 'group' || classView.studentCount === 0)}
+									<form method="POST" action="?/addStudent" class="inline-form">
+										<input type="hidden" name="classId" value={classView.classId} />
+										<label>
+											<span class="sr-only">Ученик</span>
+											<select name="studentAccountId" required>
+												<option value="">Выберите ученика</option>
+												{#each availableStudents as student}
+													<option value={student.accountId}>{participantLabel(student)}</option>
+												{/each}
+											</select>
+										</label>
+										<button class="button secondary" type="submit">Добавить ученика</button>
+									</form>
+								{:else if classView.mode === 'individual' && classView.studentCount > 0}
+									<p class="muted">Индивидуальный класс уже занят.</p>
 								{/if}
 							</div>
 
@@ -402,12 +478,12 @@
 										<input type="hidden" name="startDate" />
 										<input type="hidden" name="endDate" />
 										<label>
-											<span>С даты (dd/mm/yyyy)</span>
+											<span>С даты (dd.mm.yyyy)</span>
 											<input
 												type="text"
 												inputmode="numeric"
-												placeholder="dd/mm/yyyy"
-												pattern={'[0-9]{2}/[0-9]{2}/[0-9]{4}'}
+												placeholder="dd.mm.yyyy"
+												pattern={'[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}'}
 												required
 												data-schedule-date-field="startDate"
 												aria-invalid="false"
@@ -415,16 +491,16 @@
 												onchange={syncScheduleDate}
 											/>
 											<span class="date-error" data-date-error-for="startDate" hidden role="alert">
-												Введите существующую дату в формате dd/mm/yyyy.
+												Введите существующую дату в формате dd.mm.yyyy.
 											</span>
 										</label>
 										<label>
-											<span>По дату (dd/mm/yyyy)</span>
+											<span>По дату (dd.mm.yyyy)</span>
 											<input
 												type="text"
 												inputmode="numeric"
-												placeholder="dd/mm/yyyy"
-												pattern={'[0-9]{2}/[0-9]{2}/[0-9]{4}'}
+												placeholder="dd.mm.yyyy"
+												pattern={'[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}'}
 												required
 												data-schedule-date-field="endDate"
 												aria-invalid="false"
@@ -432,7 +508,7 @@
 												onchange={syncScheduleDate}
 											/>
 											<span class="date-error" data-date-error-for="endDate" hidden role="alert">
-												Введите существующую дату в формате dd/mm/yyyy.
+												Введите существующую дату в формате dd.mm.yyyy.
 											</span>
 										</label>
 									</div>
@@ -452,7 +528,7 @@
 								{#if classView.schedules.length > 0}
 									<ul class="schedule-list">
 										{#each classView.schedules as schedule}
-											<li>{schedule.startDate} — {schedule.endDate} · дни {schedule.weekdays.join(', ')}</li>
+											<li>{formatScheduleDate(schedule.startDate)} — {formatScheduleDate(schedule.endDate)} · дни {schedule.weekdays.join(', ')}</li>
 										{/each}
 									</ul>
 								{/if}
@@ -480,8 +556,10 @@
 					{#each data.participants as participant}
 						<li>
 							<div>
-								<strong>{roleLabel(participant.role)}</strong>
-								<code>{participant.accountId}</code>
+							<strong>{participantLabel(participant)}</strong>
+							<span class="participant-meta">
+									{roleLabel(participant.role)}{participant.email ? ` · ${participant.email}` : ''}
+							</span>
 							</div>
 							{#if participant.role === 'teacher'}
 								<form method="POST" action="?/removeTeacherMembership">
@@ -527,7 +605,7 @@
 								<select name="studentAccountId" required disabled={students.length === 0}>
 									<option value="">Выберите ученика</option>
 									{#each students as student}
-										<option value={student.accountId}>{student.email ?? student.accountId}</option>
+										<option value={student.accountId}>{participantLabel(student)}</option>
 									{/each}
 								</select>
 								{#if students.length === 0}
@@ -606,7 +684,7 @@
 	.button.secondary { border-color: var(--accent); background: transparent; color: var(--accent); }
 	.button.danger { border-color: var(--danger); background: transparent; color: var(--danger); }
 	.class-title-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: start; justify-content: space-between; }
-	.class-title-row h3 { margin: .55rem 0 .25rem; font-size: 1.45rem; }
+	.class-title-row h3 { margin: .55rem 0 .25rem; color: var(--ink); font-size: 1.45rem; }
 	.class-title-row p { margin: 0; color: var(--muted); font-size: .88rem; }
 	.class-title-actions { display: grid; gap: .65rem; justify-items: end; }
 	.class-title-actions .button { width: auto; }
@@ -621,6 +699,7 @@
 	.assignment-list li, .participant-list li { display: flex; gap: .8rem; align-items: center; justify-content: space-between; padding: .75rem 0; border-bottom: 1px solid var(--line); }
 	.assignment-list li:first-child, .participant-list li:first-child { border-top: 1px solid var(--line); }
 	.participant-list li > div { display: grid; gap: .15rem; }
+	.participant-meta { color: var(--muted); font-size: .78rem; }
 	.text-button { min-height: 2.75rem; padding: .4rem 0; border: 0; background: transparent; cursor: pointer; color: var(--accent); font-weight: 800; }
 	.text-button.danger { color: var(--danger); }
 	.inline-form { display: grid; gap: .65rem; }
@@ -675,6 +754,7 @@
 			--shadow: 0 20px 50px rgba(0, 0, 0, .2);
 		}
 		.mode-pill.individual { background: #4e402a; color: #f1d49e; }
+		.class-title-row h3 { color: #eef3ed; }
 		input, select, .button { border-color: var(--line); }
 	}
 

@@ -201,7 +201,7 @@ test('real teacher payment is recorded and appears as paid on the student calend
 		await page.getByLabel('Email').fill(teacherEmail);
 		await page.getByLabel('Пароль').fill(teacherPassword);
 		await page.getByRole('button', { name: 'Войти' }).click();
-		await expect(page).toHaveURL(/\/$/);
+		await expect(page).toHaveURL(/\/home$/);
 		sessionTokens.push(await sessionToken(page));
 		await page.goto(
 		`/lesson-context?classId=${encodeURIComponent(classRow.id)}&lessonId=${encodeURIComponent(paidLesson.id)}&date=${encodeURIComponent(paidLesson.lesson_date)}`
@@ -241,7 +241,7 @@ test('real teacher payment is recorded and appears as paid on the student calend
 		await page.getByLabel('Email').fill(studentEmail);
 		await page.getByLabel('Пароль').fill(studentPassword);
 		await page.getByRole('button', { name: 'Войти' }).click();
-		await expect(page).toHaveURL(/\/$/);
+		await expect(page).toHaveURL(/\/calendar\?classId=[^&]+$/);
 		sessionTokens.push(await sessionToken(page));
 		await page.goto(`/calendar?classId=${encodeURIComponent(classRow.id)}&date=${encodeURIComponent(paidLesson.lesson_date)}`);
 

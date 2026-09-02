@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { formatDateInput, formatDisplayDate, parseDisplayDate } from '$lib/date-input';
 	import { buildCalendarWeeks, formatCalendarDate, isIsoDate } from '$lib/calendar';
 	import type { CalendarPageData } from './+page.server';
 
 	let { data }: { data: CalendarPageData } = $props();
+
+	function modeLabel(mode: CalendarPageData['mode']): string {
+		return mode === 'individual' ? 'Индивидуальный' : 'Групповой';
+	}
 
 	function groupLessonsByDate(lessons: CalendarPageData['lessons']) {
 		const grouped = new Map<string, CalendarPageData['lessons']>();
@@ -38,9 +43,15 @@
 
 	function selectDate(event: Event) {
 		const input = event.currentTarget as HTMLInputElement;
-		if (!isIsoDate(input.value)) return;
+		const inputEvent = event as InputEvent;
+		input.value = formatDateInput(input.value, inputEvent.inputType ?? '');
+		const isoDate = parseDisplayDate(input.value);
+		const invalid = input.value !== '' && isoDate === null;
+		input.setCustomValidity(invalid ? 'Введите существующую дату в формате dd.mm.yyyy.' : '');
+		input.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+		if (!isoDate || !isIsoDate(isoDate)) return;
 
-		void goto(calendarHref(input.value), {
+		void goto(calendarHref(isoDate), {
 			replaceState: true,
 			keepFocus: true,
 			noScroll: true
@@ -67,15 +78,21 @@
 		<div>
 			<p class="eyebrow">Календарь класса</p>
 			<h1>{data.className}</h1>
-			<p class="intro">Занятия и их текущий статус предоставлены сервером.</p>
+			<p class="intro">Формат: {modeLabel(data.mode)}</p>
 		</div>
 
 		<label class="date-picker">
-			<span>Перейти к дате</span>
+			<span>Перейти к дате (дд.мм.гггг)</span>
 			<input
 				aria-label="Выбранная дата"
-				type="date"
-				value={data.selectedDate}
+				type="text"
+				inputmode="numeric"
+				maxlength="10"
+				placeholder="дд.мм.гггг"
+				pattern={'[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}'}
+				value={formatDisplayDate(data.selectedDate)}
+				aria-invalid="false"
+				oninput={selectDate}
 				onchange={selectDate}
 			/>
 		</label>

@@ -25,6 +25,7 @@ export type CenterView = {
 export type AdminParticipantView = {
 	accountId: string;
 	role: Role;
+	fullName: string | null;
 	email: string | null;
 };
 
@@ -33,6 +34,7 @@ export type AdminClassView = {
 	name: string;
 	mode: ClassMode;
 	teacherAccountIds: string[];
+	studentAccountIds: string[];
 	studentCount: number;
 	schedules: ScheduleView[];
 };
@@ -187,7 +189,10 @@ type ParticipantRow = {
 	role: Role;
 };
 
-type IdentityAccessProvisioningPort = Pick<IdentityAccessBoundary, 'resolveActor' | 'getAccountEmail'> & {
+type IdentityAccessProvisioningPort = Pick<
+	IdentityAccessBoundary,
+	'resolveActor' | 'getAccountEmail' | 'getStatisticsProfiles'
+> & {
 	provisionAccount: (provisioning: AccountProvisioning) => void;
 	provisionPasswordAccount: (provisioning: PasswordAccountProvisioning) => void;
 };
@@ -293,6 +298,11 @@ export class CenterSchedulingBoundary {
 				 ORDER BY name, id`
 			)
 			.all(request.centerId) as ClassRow[];
+		const profilesByAccountId = new Map(
+			this.identityAccess
+				.getStatisticsProfiles(participants.map((participant) => participant.account_id))
+				.map((profile) => [profile.accountId, profile.fullName])
+		);
 
 		return {
 			centerId: center.id,
@@ -300,16 +310,21 @@ export class CenterSchedulingBoundary {
 			participants: participants.map((participant) => ({
 				accountId: participant.account_id,
 				role: participant.role,
+				fullName: profilesByAccountId.get(participant.account_id) ?? null,
 				email: this.identityAccess.getAccountEmail(participant.account_id)
 			})),
-			classes: classes.map((classRow) => ({
-				classId: classRow.id,
-				name: classRow.name,
-				mode: classRow.mode,
-				teacherAccountIds: this.getClassTeacherIds(classRow.id),
-				studentCount: this.getClassStudentCount(classRow.id),
-				schedules: this.getScheduleViewsForClass(classRow.id)
-			}))
+			classes: classes.map((classRow) => {
+				const studentAccountIds = this.getClassStudentIds(classRow.id);
+				return {
+					classId: classRow.id,
+					name: classRow.name,
+					mode: classRow.mode,
+					teacherAccountIds: this.getClassTeacherIds(classRow.id),
+					studentAccountIds,
+					studentCount: studentAccountIds.length,
+					schedules: this.getScheduleViewsForClass(classRow.id)
+				};
+			})
 		};
 	}
 

@@ -173,37 +173,49 @@ describe('FT-007-AC-002 role-oriented Home and Classes', () => {
 		const data = await loadRoute(root, route, 'session-teacher-assigned');
 		const body = await renderRoute(route, data);
 
-		expect(data).toMatchObject({ role: 'teacher', destinations: [{ kind: 'class', classId: 'class-own', centerId: 'center-own' }] });
+		expect(data).toMatchObject({ role: 'teacher', destinations: [{ kind: 'calendar', classId: 'class-own', centerId: 'center-own', href: '/calendar?classId=class-own' }] });
 		expect(body).toContain('Алгебра');
-		expect(body).toContain('/center/center-own/class/class-own');
+		expect(body).toContain('/calendar?classId=class-own');
+		expect(body).not.toContain('/center/center-own/class/class-own');
 		expect(body).not.toContain('Геометрия');
 	});
 
-	it.each(['home', 'classes'] as const)('proves Student and Parent accessible-calendar destinations on /%s', async (route) => {
+	it('redirects Student and Parent Home to the first or explicitly selected accessible calendar', async () => {
+		for (const sessionToken of ['session-student-own', 'session-parent-own'] as const) {
+			const defaultRedirect = await thrown(() => loadRoute(root, 'home', sessionToken));
+			expect(defaultRedirect).toMatchObject({
+				status: 303,
+				location: '/calendar?classId=class-own'
+			});
+
+			const selectedRedirect = await thrown(() =>
+				loadRoute(root, 'home', sessionToken, 'class-second')
+			);
+			expect(selectedRedirect).toMatchObject({
+				status: 303,
+				location: '/calendar?classId=class-second'
+			});
+		}
+	});
+
+	it('keeps every accessible Student and Parent calendar in Classes', async () => {
 		for (const [sessionToken, role] of [
 			['session-student-own', 'student'],
 			['session-parent-own', 'parent']
 		] as const) {
-			const data = await loadRoute(root, route, sessionToken);
-			const body = await renderRoute(route, data);
+			const data = await loadRoute(root, 'classes', sessionToken);
+			const body = await renderRoute('classes', data);
 
 			expect(data).toMatchObject({
 				role,
 				destinations: [
-					{ kind: 'calendar', classId: 'class-own', centerId: 'center-own', href: '/calendar?classId=class-own' },
-					{ kind: 'calendar', classId: 'class-second', centerId: 'center-own', href: '/calendar?classId=class-second' }
+					{ kind: 'calendar', classId: 'class-own', href: '/calendar?classId=class-own' },
+					{ kind: 'calendar', classId: 'class-second', href: '/calendar?classId=class-second' }
 				]
 			});
 			expect(body).toContain('Алгебра');
 			expect(body).toContain('Геометрия');
-			expect(body).toContain('/calendar?classId=class-own');
-			expect(body).toContain('/calendar?classId=class-second');
 			expect(body).not.toContain('student-own');
-
-			const selected = await loadRoute(root, route, sessionToken, 'class-own');
-			expect(selected.destinations).toEqual([
-				expect.objectContaining({ kind: 'calendar', classId: 'class-own' })
-			]);
 		}
 	});
 

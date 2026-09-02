@@ -106,6 +106,24 @@ describe('password login route', () => {
 		expect(root.identityAccess.resolveActor(cookie?.value)).toBeNull();
 	});
 
+	it.each(['teacher', 'student', 'parent'] as const)(
+		'redirects a password-authenticated %s to the role-oriented Home',
+		async (role) => {
+			const jar = cookieJar();
+			const controlFlow = await thrown(() =>
+				createPasswordLoginActions({
+					authenticatePassword: () => `${role}-session`,
+					resolveActor: () => ({ accountId: `${role}-account`, role })
+				}).default(requestEvent(loginForm(`${role}@example.com`, 'test-password'), jar.cookies))
+			);
+
+			expect(controlFlow).toMatchObject({ status: 303, location: '/home' });
+			expect(jar.writes).toContainEqual(
+				expect.objectContaining({ name: FOUNDATION_SESSION_COOKIE, value: `${role}-session` })
+			);
+		}
+	);
+
 	it('returns one sessionless invalid-credentials action failure for unknown email and wrong password', async () => {
 		root = createCompositionRoot({ databaseFilename: ':memory:' });
 		root.identityAccess.bootstrapFirstAdmin({

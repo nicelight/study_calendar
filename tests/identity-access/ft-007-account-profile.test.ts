@@ -197,7 +197,7 @@ describe('FT-007-AC-008 account profile facts and queries', () => {
 		expect(root.identityAccess.getCurrentActorProfile('session-admin-own')).toBeNull();
 	});
 
-	it('keeps existing unnamed accounts outside the accepted profile population', () => {
+	it('keeps an incomplete legacy fixture out of profile projections', () => {
 		const root = rootWithAdmin();
 		expect(root.identityAccess.getCurrentActorProfile('session-admin-own')).toBeNull();
 		expect(root.identityAccess.getStatisticsProfiles(['admin-own'])).toEqual([]);
