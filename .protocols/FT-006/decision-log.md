@@ -47,3 +47,45 @@ The real-DB cleanup policy is explicit: dedicated accounts, membership,
 price/charge/payment/allocation fixture, and unrelated rows remain for
 inspection; only exact test-created session tokens are removed. No task,
 architecture, contract, or Planning Revision change.
+
+## 2026-09-03 — Browser financial contour gap
+
+The operator requested the missing user-facing financial contour after the
+W26 baseline. Current code has the Financial Ledger price/payment commands and
+the marker calculation, but no Admin settings/history surface, no Admin payment
+journal adapter/UI, and no calendar rendering of marker views. The accepted
+increment is three new independent browser outcomes: pricing/history,
+journal/edit-cancel, and personal markers. Existing payment creation and
+paid/unpaid labels are explicitly excluded from new ownership.
+
+The Financial Ledger contract is extended only with the read/view shape and
+consumer rules needed by these routes. Module ownership, accepted dependency
+graph, Foundation dependency, and Planning Revision `2` remain unchanged.
+
+## 2026-09-03 — KISS repair decisions
+
+The operator requested the simplest sufficient model. One effective-dated class
+amount is retained as both lesson price and default payment value; the actual
+amount in the existing payment form remains editable, and no second persisted
+default-amount setting or history is introduced. Student override affects
+future Charges only.
+
+The accepted Parent scope is closed by using the same personal marker
+projection for a server-resolved linked child. TASK-101 must prove one positive
+Parent-linked-child path and the existing denial matrix; no new child selector,
+financial API, or alternate data source is added.
+
+The remaining review gap is closed in the same KISS scope: TASK-099 owns the
+small existing Lesson Context consumer change that initializes the payment
+amount from the authorized current class value. Payment creation, validation,
+allocation, and audit semantics remain owned by the existing flow; only the
+initial input value and its proof are added.
+
+## 2026-09-03 — Task-plan approval and decomposition closure
+
+The fresh `/review-tasks-plan FT-006` returned `APPROVE` for Planning Revision
+`2`. The repaired `rebuild_required` queue is accepted with the final
+sequential cards TASK-099, TASK-100, and TASK-101. Planning is closed for this
+revision; task cards and FT-006 remain `planned` until the readiness/promotion
+owner starts execution. No implementation, verification, or product lifecycle
+promotion is inferred here.

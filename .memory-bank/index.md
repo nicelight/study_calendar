@@ -40,6 +40,7 @@ status: active
 - [.memory-bank/tasks/plans/IMPL-FT-001.md](tasks/plans/IMPL-FT-001.md): FT-001 ordered implementation plan and task ownership.
 - [.memory-bank/tasks/plans/IMPL-FT-002.md](tasks/plans/IMPL-FT-002.md): FT-002 ordered implementation plan and W16 closure ownership.
 - [.memory-bank/tasks/plans/IMPL-FT-003.md](tasks/plans/IMPL-FT-003.md): FT-003 ordered implementation plan and W7/W8 task ownership.
+- [.memory-bank/tasks/plans/IMPL-FT-006.md](tasks/plans/IMPL-FT-006.md): FT-006 ordered implementation plan and remaining Admin/calendar browser-gap ownership.
 - [.memory-bank/tasks/plans/IMPL-FT-007.md](tasks/plans/IMPL-FT-007.md): FT-007 ordered implementation plan and navigation/statistics ownership.
 - [.memory-bank/bugs/TASK-003-provisioning-boundary-bypass.md](bugs/TASK-003-provisioning-boundary-bypass.md): Retained TASK-003 semantic-failure record and follow-up route.
 - [.memory-bank/tasks/plans/IMPL-FT-000.md](tasks/plans/IMPL-FT-000.md): Foundation implementation plan.

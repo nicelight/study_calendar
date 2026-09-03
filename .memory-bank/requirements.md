@@ -152,8 +152,8 @@ status: draft
 | REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..010 | verified |
 | REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004;FT-003-AC-007..008 | verified |
 | REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-003-AC-008;FT-004-AC-001;FT-004-AC-005 | planned |
-| REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | verified |
-| REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | verified |
+| REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | planned |
+| REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | planned |
 | REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | verified |
 | REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..005;FT-006-AC-004 | verified |
 | REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
@@ -166,6 +166,17 @@ status: draft
 
 `REQ-016` release-gate verification runs after mapped feature acceptance
 checks and before operator acceptance: `test:product-release-acceptance`.
+
+## FT-004 browser-surface reconciliation — 2026-09-03
+
+The RTM lifecycle for REQ-007 and REQ-008 is `planned`, not `verified`: the
+operator requires field collaboration and threaded chat to be usable through
+the browser, while the current `/lesson-context` exposes only a personal
+discussion count and no Collaboration mutation controls. Existing backend
+boundary, persistence, and isolation evidence remains historical supporting
+evidence and is not browser proof. TASK-102 and TASK-103 provide the planned
+projection/transport and UI/browser outcomes; REQ-006 and shared REQ-014
+remain governed by their existing mapped feature coverage.
 
 ## W10 task evidence route
 

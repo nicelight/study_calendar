@@ -1,0 +1,117 @@
+{
+  "id": "TASK-101-T3-FT-006-W34",
+  "title": "Render personal-calendar payment markers",
+  "status": "planned",
+  "wave": "W34",
+  "feature": "FT-006",
+  "reqs": ["REQ-013", "REQ-014"],
+  "depends_on": ["TASK-047-T3-FT-006-W23", "TASK-050-T3-FT-006-W26", "TASK-039-T3-FT-003-W10"],
+  "touched_files": [
+    "src/lib/server/modules/lesson-context/public.ts",
+    "src/routes/calendar/+page.server.ts",
+    "src/routes/calendar/+page.svelte",
+    "tests/lesson-context/personal-payment-markers.test.ts",
+    "tests/routes/calendar-payment-markers.test.ts",
+    "e2e/ft-006-payment-markers.spec.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-payment-markers", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-006-payment-markers.db --spec e2e/ft-006-payment-markers.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node .memory-bank/scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node .memory-bank/scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-006-AC-011 / REQ-013 / REQ-014: an authorized Student or Parent-linked-child personal calendar consumes the named Financial Ledger marker projection and renders a marker on the closest previous non-lesson day, including previous-week/month boundaries, with exact amount and factual date.",
+    "Multiple payments projected to the same markerDate remain separately discoverable; existing paid/unpaid lesson labels and their authoritative derivation remain unchanged.",
+    "Marker loading, calendar navigation, ordering, and rendering are read-only. Shared Admin and Teacher calendars omit personal payment markers; Parent receives only a server-resolved linked child's markers, and non-permitted student data is not accepted from URL or form input.",
+    "Disposable Playwright proof uses the project-owned temporary database/server and compares financial state before and after marker-only navigation/rendering."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-011 / REQ-013 / REQ-014 RED: the personal calendar does not consume the named projection, places a marker on a lesson day, loses factual date or same-day markers, denies the valid Parent-linked-child path, leaks personal markers to a shared role, or mutates financial state; GREEN: permitted Student and Parent-linked-child calendars render every marker at the closest previous non-lesson date with exact amount/factual date, preserve multiple discoverability, keep paid/unpaid labels, omit shared-role markers, reject non-linked student scope, and prove full financial state equality; artifact: .tasks/TASK-101-T3-FT-006-W34/ and .protocols/TASK-101-T3-FT-006-W34/."
+  ],
+  "purpose": "Close the missing personal-calendar consumer and presentation for the already implemented Financial Ledger payment-marker projection.",
+  "success_outcome": "A permitted Student or Parent receives every payment marker for the server-resolved self or linked child on the correct free calendar day, can distinguish multiple markers, and can see each payment's amount and factual date without changing financial facts or existing paid/unpaid behavior.",
+  "anti_goals": [
+    "Do not reimplement marker placement, payment facts, balances, or allocation in Calendar or Lesson Context.",
+    "Do not change existing payment creation or paid/unpaid label derivation.",
+    "Do not expose student-specific payment markers in shared Admin or Teacher calendars.",
+    "Do not add a new Parent selector, financial API, or alternate data source; use the existing server-resolved linked-child scope.",
+    "Do not add a new financial persistence or API boundary without an accepted contract change."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-011",
+    ".memory-bank/contracts/financial-ledger.md#personal-calendar-marker-consumer",
+    ".memory-bank/contracts/financial-ledger.md#marker-projection",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/prd.md#parent",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-011",
+    ".memory-bank/contracts/financial-ledger.md#personal-calendar-marker-consumer",
+    ".memory-bank/contracts/financial-ledger.md#marker-projection",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/prd.md#parent",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Lesson Context and Calendar consume only the named Financial Ledger marker projection; Financial Ledger remains the semantic owner.",
+    "The personal route uses server-authorized identity and scope; it does not trust a client-selected studentAccountId or role.",
+    "Parent scope is limited to the linked child resolved by the existing Center & Scheduling boundary; Student scope remains self-only.",
+    "The consumer must preserve the existing paid/unpaid status path and add marker data as a separate presentation field.",
+    "Disposable browser proof uses tmp/ and the project runner; it must never use study-calendar.db."
+  ],
+  "invariants": [
+    "Each visible marker shows its exact amount and factual payment date at the projected markerDate.",
+    "Multiple markers with one markerDate remain separately discoverable.",
+    "Marker reads, navigation, ordering, and rendering leave Payment, Allocation, Charge, Balance, and Audit state unchanged.",
+    "Shared Admin and Teacher calendars contain no personal payment markers, and paid/unpaid labels retain their existing source and meaning."
+  ],
+  "verification_targets": [
+    "FT-006-AC-011: route/adapter/component tests and browser proof cover Student self and Parent linked-child authorization, closest previous non-lesson placement, prior week/month navigation, factual date and exact amount, multiple same-day markers, shared-role omission, and marker-only state equality.",
+    "Privacy and ownership: source review confirms the consumer reads the named projection through Lesson Context, does not accept forged student scope, does not query financial persistence directly, and does not write financial state.",
+    "Regression: prove existing paid/unpaid labels still render from their current status adapter and that payment creation remains the existing Lesson Context flow."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/modules/lesson-context/public.ts",
+      "src/routes/calendar/+page.server.ts",
+      "src/routes/calendar/+page.svelte",
+      "tests/lesson-context/personal-payment-markers.test.ts",
+      "tests/routes/calendar-payment-markers.test.ts",
+      "e2e/ft-006-payment-markers.spec.ts",
+      "tmp/ft-006-payment-markers.db"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/financial-ledger/",
+      "src/routes/admin/",
+      "src/routes/lesson-context/",
+      "src/lib/server/modules/center-scheduling/",
+      "study-calendar.db",
+      "playwright.config.ts",
+      "scripts/run-disposable-e2e.mjs"
+    ],
+    "stop_conditions": [
+      "Stop if marker consumption requires direct financial writes, a second marker source, or a new route/API boundary; route the accepted-boundary change to spec-redesign before implementation.",
+      "Stop if personal scope cannot be established from the existing server-side identity and Lesson Context boundary without trusting URL/form student fields.",
+      "Stop if disposable E2E requires study-calendar.db, an existing server, or reset of unrelated state."
+    ]
+  }
+}

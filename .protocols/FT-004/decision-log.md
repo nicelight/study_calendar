@@ -81,3 +81,20 @@ through the two fresh T3 replacement task paths. The old feature
 `semantic-fail`, TASK-012 Attempt 1/2 evidence, and retry `1/2` history remain
 preserved and are not reused as current T3 proof. No implementation, test
 execution, architecture, dependency, or Planning Revision changed.
+
+## 2026-09-03 — Browser completion boundary confirmed
+
+The operator confirms that FT-004 is implemented only when all planned
+Collaboration behavior is available through the browser UI. The audit shows
+that the existing `/lesson-context` renders neither Collaboration content nor
+mutation controls and that `/api/lesson-context` is GET-only. The prior
+backend-boundary `semantic-pass` is therefore historical scope evidence, not
+feature completion evidence; FT-004 is reconciled to `active`/`planned`.
+
+The minimum sequential queue is two new T3 outcomes: first, the server-composed
+Lesson Context projection and server-authorized form-action transport; second,
+the complete shared/personal UI and disposable Playwright proof. The existing
+Collaboration public module, SQLite tables, accepted boundaries, and old task
+cards are reused. No new top-level route, mutation API, frontend state layer,
+database abstraction, old task identity, old lifecycle, or accumulated evidence
+is changed.

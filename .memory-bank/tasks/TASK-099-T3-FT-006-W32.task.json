@@ -1,0 +1,125 @@
+{
+  "id": "TASK-099-T3-FT-006-W32",
+  "title": "Expose Admin class price, override, history, and payment-form default",
+  "status": "planned",
+  "wave": "W32",
+  "feature": "FT-006",
+  "reqs": ["REQ-011", "REQ-014"],
+  "depends_on": ["TASK-043-T3-FT-006-W22", "TASK-005-T3-FT-002-W3", "TASK-049-T3-FT-006-W25"],
+  "touched_files": [
+    "src/lib/server/modules/financial-ledger/public.ts",
+    "src/routes/admin/[centerId]/+page.svelte",
+    "src/routes/admin/[centerId]/finance/+page.server.ts",
+    "src/routes/admin/[centerId]/finance/+page.svelte",
+    "src/routes/lesson-context/+page.server.ts",
+    "src/routes/lesson-context/+page.svelte",
+    "tests/financial-ledger/price-settings.test.ts",
+    "tests/routes/admin-finance.test.ts",
+    "tests/routes/lesson-context-payment-default.test.ts",
+    "e2e/ft-006-admin-pricing.spec.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-admin-pricing", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-006-admin-pricing.db --spec e2e/ft-006-admin-pricing.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node .memory-bank/scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node .memory-bank/scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-006-AC-009 / REQ-011 / REQ-014: an own-center Admin can open the protected finance page, append the single class lesson-price/default-payment value and a student-specific override with effective date, and inspect deterministic history including exact amount, author, and timestamp.",
+    "The finance page uses the existing setClassPrice and setStudentPriceOverride commands and adds only the authorized Financial Ledger price-history query; class and student labels are server-resolved within the Admin center. No second persisted default-payment setting is introduced.",
+    "The existing Lesson Context payment form initializes its editable amount input from the authorized current class value; changing that input still submits the existing createPayment action and remains user-editable.",
+    "After each Admin setting action, a future lesson reconciled through the existing reconcileLessonCharge path receives the new class value or student override in applied_price, while a pre-existing Charge remains byte-for-byte unchanged.",
+    "Validation or anonymous, non-Admin, wrong-center, forged-class, and forged-student requests fail before mutation.",
+    "Disposable Playwright proof uses the project-owned temporary database/server and removes only its exact temporary state."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-009 / REQ-011 / REQ-014 RED: the Admin pricing/history surface is absent, an unauthorized or out-of-scope request reads or mutates settings, history is not deterministic, the existing Lesson Context form lacks the current initial amount, a future Charge ignores the submitted class/override setting, or a setting rewrites a prior Charge; GREEN: an own-center Admin appends the single class value and student override, sees deterministic effective-dated author/time history, the existing payment form starts with the authorized current value while remaining editable, future Charges use the selected value, all denials leave state unchanged, and the historical Charge remains equal; artifact: .tasks/TASK-099-T3-FT-006-W32/ and .protocols/TASK-099-T3-FT-006-W32/."
+  ],
+  "purpose": "Close the missing protected Admin class-price/override configuration and history outcome, plus the minimal initial-value consumer in the existing payment form.",
+  "success_outcome": "An own-center Admin can append one effective-dated class amount or student override, inspect deterministic history, see the authorized current amount initially populated in the existing editable payment form, and prove the selected value reaches future Charges while prior Charges and unauthorized state remain unchanged.",
+  "anti_goals": [
+    "Do not add a second payment creation flow or change the existing Lesson Context createPayment path.",
+    "Do not create a second persisted default-payment setting; one class amount serves both lesson price and default payment value.",
+    "Do not reimplement or change the existing createPayment action; add only its initial amount value from the authorized current setting.",
+    "Do not change allocation, replay, or paid/unpaid label logic.",
+    "Do not let routes or Center & Scheduling write financial tables."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-009",
+    ".memory-bank/prd.md#payments-and-balance",
+    ".memory-bank/contracts/financial-ledger.md#admin-browser-management-surface",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-009",
+    ".memory-bank/contracts/financial-ledger.md#admin-browser-management-surface",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Financial Ledger remains the sole pricing, charge, payment, allocation, balance, marker, and audit writer.",
+    "Price history is append-only and effective-dated; the applied price on an existing Charge is immutable.",
+    "The Admin page resolves own-center class and student scope on the server; UI visibility is not authorization.",
+    "One effective-dated class amount is both lesson price and default payment value; no second persisted default is allowed.",
+    "Only the existing Lesson Context form's initial amount is extended; its createPayment semantics remain unchanged.",
+    "Disposable browser proof uses tmp/ and the project runner; it must never use study-calendar.db."
+  ],
+  "invariants": [
+    "Later settings affect only future charges, and future Charges use the selected class or override value.",
+    "Denied setting reads and writes leave financial state unchanged.",
+    "History contains class defaults and student overrides in deterministic effectiveFrom/id order.",
+    "Existing payment creation and paid/unpaid labels are dependency behavior, not this task's owner."
+  ],
+  "verification_targets": [
+    "FT-006-AC-009: route/action, Financial Ledger query, and Lesson Context form tests cover Admin own-center setting writes, single class-value and student override history, effective-date/amount validation, initial payment-form amount, future Charge applied_price for both setting kinds, historical Charge equality, and the negative role/center/forged-scope matrix.",
+    "Ownership: source review confirms no direct financial SQL outside Financial Ledger and that the Admin page is a thin server-side adapter.",
+    "Run disposable Playwright proof for class value, override, history, future-Charge effect, validation, Admin authorization, and denied scopes, then run all listed project gates."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/modules/financial-ledger/public.ts",
+      "src/routes/admin/[centerId]/+page.svelte",
+      "src/routes/admin/[centerId]/finance/+page.server.ts",
+      "src/routes/admin/[centerId]/finance/+page.svelte",
+      "src/routes/lesson-context/+page.server.ts",
+      "src/routes/lesson-context/+page.svelte",
+      "tests/financial-ledger/price-settings.test.ts",
+      "tests/routes/admin-finance.test.ts",
+      "tests/routes/lesson-context-payment-default.test.ts",
+      "e2e/ft-006-admin-pricing.spec.ts",
+      "tmp/ft-006-admin-pricing.db"
+    ],
+    "forbidden_scope": [
+      "src/routes/calendar/",
+      "src/lib/server/modules/center-scheduling/",
+      "study-calendar.db",
+      "playwright.config.ts",
+      "scripts/run-disposable-e2e.mjs"
+    ],
+    "stop_conditions": [
+      "Stop if implementation would require a second persisted default-payment setting, a consumer-owned financial write, a second persistence source, or caller-trusted scope.",
+      "Stop if disposable E2E requires study-calendar.db, an existing server, or reset of unrelated state."
+    ]
+  }
+}

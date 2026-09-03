@@ -697,6 +697,17 @@ hamburger-кнопкой в правом верхнем углу. Через н�
 - Final operator acceptance is a product-level release gate after feature
   checks, not a separate product feature.
 
+### 2026-09-03 — KISS financial browser contour
+
+- Для минимальной модели одно effective-dated значение класса одновременно
+  является стоимостью урока и default payment amount. Student-specific override
+  меняет применяемую стоимость будущего Charge; фактическая сумма конкретного
+  платежа остаётся редактируемым полем существующей payment form. Отдельная
+  история для второго default amount не создаётся.
+- Parent получает тот же personal calendar projection для server-resolved
+  linked child. Новый child selector, отдельный финансовый API и второй источник
+  данных не добавляются; чужой student scope по-прежнему запрещён.
+
 ## Unresolved Blockers
 
 - None.

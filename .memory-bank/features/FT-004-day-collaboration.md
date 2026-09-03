@@ -1,15 +1,24 @@
 ---
 description: Product feature for field comments, reactions, and threaded day chat.
 status: active
+last_updated: 2026-09-03
+source_of_truth:
+  - .memory-bank/features/FT-004-day-collaboration.md
+  - .memory-bank/contracts/collaboration-browser-surface.md
+clarification_status: complete
+last_clarified: 2026-09-03
+clarification_questions: 1
 type: feature
 id: FT-004
-lifecycle: verified
+lifecycle: planned
 epic: EP-003
 requirements: [REQ-006, REQ-007, REQ-008, REQ-014]
 spec_design_status: complete
 spec_design_links:
   - .memory-bank/architecture/system-architecture.md#accepted-target
   - .memory-bank/contracts/boundary-map.md#day-discussion-query-boundary
+  - .memory-bank/contracts/boundary-map.md#actor-context-boundary
+  - .memory-bank/contracts/collaboration-browser-surface.md#server-composed-projection
   - .memory-bank/contracts/access-control.md
   - .memory-bank/domains/core-domain.md#domain-relationships
   - .memory-bank/states/lifecycle-map.md#collaboration
@@ -95,9 +104,10 @@ Feature-level contract detail remains downstream task-design work.
   - [current semantic report](../../.tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-RED-VERIFY-final-report-docs-01.md)
 - The combined [W5 boundary sync report](../../.tasks/TASK-011-T3-FT-004-W5/TASK-011-T3-FT-004-W5-S-MB-SYNC-final-report-docs-01.md)
   records the current TASK-009 and TASK-011 reconciliation.
-- Feature document `status: draft`, feature `lifecycle: planned`, and the
-  EP-003/REQ lifecycle values remain unchanged; no product promotion was
-  applied by `/mb-sync`.
+- At the W5 boundary the feature document was still `draft`/`planned`; that
+  historical lifecycle note remains unchanged in its original evidence
+  context. The current feature document is `active`/`planned` pending the
+  browser surface.
 
 ## Task Coverage at W6 Rebuild Boundary
 
@@ -139,23 +149,69 @@ Feature-level contract detail remains downstream task-design work.
   `superseded` disposition. Its original `T2` / `W6` identity, dependencies,
   task-owned claims, Attempt 1/2 evidence, retry history, and under-tiered
   `NEEDS-CLARIFICATION` record remain preserved; it is not current T3 proof.
-- The fresh feature-level semantic result is recorded in the current report
-  below as `semantic-pass`: TASK-016 and TASK-017 provide the independent T3
-  evidence covering FT-004-AC-001..AC-005.
-- FT-004 document `status: draft` and feature `lifecycle: planned` remain
-  unchanged. No architecture, Planning Revision, REQ/epic promotion, or
-  dependent transition was applied by this reconciliation.
+- TASK-016 and TASK-017 provide independent T3 evidence for the backend
+  boundary, persistence, and center-lifecycle isolation of AC-001..AC-005;
+  this evidence does not prove that a user can perform those outcomes through
+  the browser UI.
+- The operator's browser-completion decision supersedes the prior
+  feature-level completion interpretation. FT-004 remains `planned` until the
+  new browser projection, form transport, UI, and disposable Playwright proof
+  are complete. No old task identity, lifecycle, evidence, architecture,
+  Planning Revision, REQ/epic value, or dependency is changed by this
+  reconciliation.
 
-## Semantic Verification
+## Historical Semantic Verification
 
 - Historical feature-level adversarial report (preserved, not erased):
   [FT-004 semantic-fail report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md).
-- Current feature-level adversarial report:
+- Historical feature-level adversarial report for the backend-boundary scope:
   [FT-004 semantic-pass report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-02.md).
-- Current feature-level durable reconciliation:
+- Historical feature-level durable reconciliation:
   [FT-004 feature sync report](../../.tasks/FT-004/FT-004-S-MB-SYNC-final-report-docs-01.md).
-- The current result covers all five acceptance criteria through the fresh
-  feature review and the current T3 task evidence. The prior supported
-  class-delete/recreate disclosure remains historical correction evidence only.
+- Those reports and task cards remain valid evidence for their recorded
+  backend claims only. They are not browser-surface evidence and cannot close
+  FT-004 under the operator decision.
 
-SEMANTIC_VERDICT: semantic-pass
+## Browser Completion Queue
+
+- [Collaboration Browser Surface](../contracts/collaboration-browser-surface.md)
+  defines the missing projection, server-authorized form actions, UI state,
+  persistence, and disposable browser proof.
+- The first new T3 task owns the Lesson Context projection and named mutation
+  transport. The second new T3 task owns the complete Collaboration UI and
+  the shared/personal Playwright matrix. They are sequential and are planned
+  after the existing W6 backend tasks and `TASK-039-T3-FT-003-W10`.
+- Feature completion remains pending until both new task cards have their own
+  claim-linked functional and semantic evidence.
+
+## Feature Doctor — Participant Labels
+
+The browser surface requires display labels for comment authors and reaction
+participants, but the current Actor Context Boundary permits profile lookup only
+for account IDs selected by Center & Scheduling's statistics composition.
+Collaboration currently exposes only account IDs for these participants.
+Passing discussion IDs through the statistics query or reading Identity & Access
+storage directly is not legal. The bounded owner decision and evidence are
+recorded in [FT-004 clarification](../../.protocols/FT-004/clarification.md).
+
+The operator accepted the KISS recommendation: Identity & Access remains the
+profile owner and exposes one bounded read-only participant-label projection;
+Collaboration requests it only after authorizing the current discussion scope
+and selecting the author/reactor IDs. Labels grant no authority. The accepted
+contract extension and bounded impact are recorded by `/spec-redesign`; no
+acceptance criterion or task identity is changed.
+
+## Clarifications
+
+### 2026-09-03 — Participant-label owner
+
+The operator chose the minimum legal option: extend the existing Actor Context
+Boundary with a read-only `{accountId, fullName}` participant-label projection
+for IDs selected by Collaboration's server-authorized discussion projection.
+Identity & Access owns profile facts; Collaboration owns resource authorization;
+Lesson Context only composes and renders the labels. Raw IDs, direct account
+storage reads, and broad Center & Scheduling registry labels remain excluded.
+
+Impact is `bounded`: Planning Revision remains `2`, Foundation is unaffected,
+and only FT-004 requires task-plan reconciliation. The feature remains planned
+until TASK-102 and TASK-103 pass their browser-surface proof.

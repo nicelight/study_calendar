@@ -1,7 +1,7 @@
 ---
 description: Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership.
 status: active
-last_updated: 2026-08-19
+last_updated: 2026-09-03
 source_of_truth:
   - .memory-bank/contracts/boundary-map.md
 ---
@@ -120,8 +120,12 @@ remain implementation details.
   account context for a request; reject absent, invalid, or revoked sessions.
   The trusted server-side statistics composition may also resolve
   `{accountId, fullName, registeredAt}` for account IDs already selected by
-  Center & Scheduling. This profile query returns fields only and never
-  exposes Identity & Access tables.
+  Center & Scheduling. A resource-owning protected slice may additionally
+  request the named `getParticipantLabels` bounded `{accountId, fullName}`
+  participant-label projection for
+  account IDs that the slice has already selected from its own
+  server-authorized resource projection. Both profile queries return fields
+  only and never expose Identity & Access tables.
 - **State/data authority:** Identity & Access owns authentication facts and
   participant profile metadata; it does not own class/student membership facts
   or registry scope.
@@ -129,7 +133,10 @@ remain implementation details.
   role facts, then must combine them with its own resource-scope facts before
   authorizing an operation. Lesson Context may call the profile query only
   after Center & Scheduling has resolved the authorized registry account IDs;
-  routes and components cannot call it or read account tables directly.
+  Collaboration may call the bounded participant-label projection only after
+  its own server-resolved discussion scope has selected the author/reactor IDs.
+  Routes and components cannot call either profile query or read account tables
+  directly.
 - **Failure/compatibility:** an invalid or unauthenticated actor cannot reach a
   protected command or receive protected data. A profile lookup never broadens
   the caller's scope and returns no raw account rows.
@@ -139,7 +146,10 @@ remain implementation details.
 - **Verification:** negative unauthenticated, revoked-session, and role/context
   mismatch scenarios at each protected public boundary, plus a statistics
   profile-query probe proving only the requested `fullName`/`registeredAt`
-  projection crosses the boundary.
+  projection crosses the boundary. Collaboration's participant-label probe
+  proves only `{accountId, fullName}` for IDs from the current authorized
+  discussion projection crosses the boundary, that labels grant no authority,
+  and that an unauthorized discussion cannot obtain labels for its targets.
 
 ### Provider Verification Boundary
 
@@ -271,17 +281,20 @@ remain implementation details.
 
 - **Provider:** Financial Ledger.
 - **Public surface:** return an authorized balance, charge/payment/allocation
-  status, payment-marker projection, and student payment-capability percentage
-  for a student/class scope; accept owner-side payment and financial correction
-  commands.
+  status, current payment-default amount, payment-marker projection, and
+  student payment-capability percentage for a student/class scope; accept
+  owner-side payment and financial correction commands.
 - **State/data authority:** Financial Ledger exclusively writes price settings,
   charges, payments, allocations, balances, payment markers, and financial
   audit records.
 - **Allowed interaction:** Lesson Context reads the projection for a personal
-  day; no consumer changes it through a projection query.
+  day and reads the authorized current payment-default amount to initialize the
+  existing editable payment form; no consumer changes financial state through a
+  projection query.
 - **Failure/compatibility:** marker placement is a read projection and cannot
-  change Payment, allocation, or balance; exact values remain stable across
-  replay.
+  change Payment, allocation, or balance; the initial payment value is only a
+  form default and does not alter `createPayment`; exact values remain stable
+  across replay.
 - **Forbidden bypasses:** no UI or neighbor module writes financial tables or
   derives a balance from presentation data.
 - **Verification:** financial contract replay, marker projection, and

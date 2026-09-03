@@ -3,8 +3,8 @@ description: Product feature for pricing, payments, allocation, balances, audit,
 status: active
 type: feature
 id: FT-006
-lifecycle: verified
-last_updated: 2026-08-18
+lifecycle: planned
+last_updated: 2026-09-03
 epic: EP-005
 requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015]
 spec_design_status: complete
@@ -20,8 +20,8 @@ spec_design_links:
 # FT-006 — Financial Ledger
 
 ## Use Cases
-- Admin configures class price/default payment and a student-specific price
-  override where needed.
+- Admin configures one class lesson price/default payment value and a
+  student-specific price override where needed.
 - Admin records a payment for any student/class in the Admin's own center, or an
   assigned teacher records one for a student in the assigned class, with amount
   and factual date.
@@ -106,6 +106,53 @@ spec_design_links:
   created teacher/student, class membership, payment/allocation assertions, and
   paid/unpaid calendar-card assertions.
 
+### FT-006-AC-009 — Admin pricing settings and history
+- REQ: REQ-011, REQ-014
+- Given an Admin in the own center, when the Admin opens the protected financial
+  page, then the Admin can append one class lesson price/default payment value
+  and a student-specific price override with an effective date, and can inspect
+  the deterministic history with author and timestamp. The single class value
+  is the lesson price and the default value for the existing editable payment
+  form; the existing form's initial amount is proved from that same value. A
+  later setting affects only future charges. The UI does not offer deletion or
+  historical-charge rewrite.
+  Teacher, Student, Parent, cross-center, forged-class, and forged-student
+  requests do not return pricing data or mutate settings.
+- Verification: protected route/action tests plus disposable Playwright E2E
+  cover default and override history, validation, own-center Admin writes,
+  existing payment-form initial amount, future-Charge effect, denied
+  roles/scope, and unchanged historical charge rows.
+
+### FT-006-AC-010 — Admin payment journal and correction controls
+- REQ: REQ-012, REQ-013, REQ-014, REQ-015
+- Given an Admin in the own center, when the Admin opens the protected payment
+  journal, then every payment is shown once with student/class, exact amount,
+  factual date, status, allocation/balance result, and audit history. The Admin
+  can edit amount/date or cancel a recorded payment only with explicit
+  confirmation; the existing Financial Ledger commands recompute allocation
+  and balance and the refreshed journal shows the audit before/after. No create
+  payment form is added to this journal. Teacher, Student, Parent,
+  cross-center, forged-payment, and forged-scope requests are rejected before
+  financial mutation.
+- Verification: protected route/action tests plus disposable Playwright E2E
+  cover journal read, Admin edit/cancel, recalculated allocation/balance,
+  audit visibility, and negative role/center/payment scope cases.
+
+### FT-006-AC-011 — Personal calendar payment markers
+- REQ: REQ-013, REQ-014
+- Given recorded payments whose factual date is a lesson day, when the permitted
+  Student personal calendar or Parent-linked-child personal calendar is opened
+  or navigated to the projected day, then each marker is rendered on the closest
+  previous non-lesson day, including a week or month boundary, with amount and
+  factual date; multiple markers on one day are separately discoverable.
+  Existing paid/unpaid labels remain unchanged, and marker rendering does not
+  change Payment, Allocation, Balance, or Audit.
+  Shared Admin/Teacher calendars do not expose the personal marker projection.
+- Verification: route/component tests plus disposable Playwright E2E cover
+  Student and Parent-linked-child access, factual-date labels, week/month
+  boundary navigation, multiple markers, and before/after financial-state
+  equality.
+
 ## Acceptance Closure
 | Material outcome | Coverage |
 |---|---|
@@ -117,6 +164,9 @@ spec_design_links:
 | Marker placement, date label, and marker retention | FT-006-AC-006 |
 | Duplicate command safety | FT-006-AC-007 |
 | Browser payment entry and personal paid/unpaid calendar state | FT-006-AC-008 |
+| Admin pricing settings, overrides, and history UI | FT-006-AC-009 |
+| Admin payment journal, correction controls, allocation refresh, and audit UI | FT-006-AC-010 |
+| Personal calendar payment-marker rendering | FT-006-AC-011 |
 
 ## SDD Design Gate
 Global monetary source of truth, storage, decimal representation, allocation,
@@ -286,5 +336,33 @@ The complete browser contour is now durable:
 
 The real local database E2E preserved the dedicated Teacher/Student and
 payment/allocation fixture and removed only exact automation sessions. No
-Financial Ledger or Lesson Context ownership changed; FT-006 lifecycle remains
-`verified`, and no further indexed product task remains after W26.
+Financial Ledger or Lesson Context ownership changed; at the W26 boundary
+FT-006 lifecycle remained `verified` and no further indexed product task was
+then present.
+
+## 2026-09-03 UI-gap tasking after W26 baseline
+
+The W22–W26 records remain closed historical owners for the already-working
+financial commands, payment creation adapter, allocation/replay, marker
+calculation, and paid/unpaid labels. Current code inspection found no protected
+Admin financial page, no Admin-readable pricing history, no journal adapter for
+the existing edit/cancel commands, and no calendar consumer for the existing
+`getPaymentMarkers` projection. The current feature lifecycle is therefore
+`planned` while the three new browser outcomes are implemented.
+
+The current queue adds only:
+
+- `TASK-099-T3-FT-006-W32` for Admin pricing/override settings and history;
+- `TASK-100-T3-FT-006-W33` for the Admin payment journal and correction UI;
+- `TASK-101-T3-FT-006-W34` for personal payment-marker rendering.
+
+None of these tasks reopens payment creation or the existing paid/unpaid label
+behavior; those remain dependencies and regression inputs only.
+
+## 2026-09-03 Task-plan approval and decomposition closure
+
+The fresh `/review-tasks-plan FT-006` returned `APPROVE` at Planning Revision
+`2`. The repaired `rebuild_required` queue is accepted with the sequential
+planned cards TASK-099, TASK-100, and TASK-101. The decomposition is closed for
+this revision; implementation, task verification, and FT-006 lifecycle
+promotion remain future execution decisions.

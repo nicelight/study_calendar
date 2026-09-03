@@ -62,3 +62,43 @@ Financial Ledger contracts. The review `REJECT` is repaired as a
 contract, financial scope, or Planning Revision changes. Historical
 `TASK-007`, `TASK-008`, and `TASK-041` retain identity, lifecycle, evidence,
 dependencies, and retry history; fresh cohesive owners are planned separately.
+
+## 2026-09-03 browser-gap reconciliation
+
+The W22–W26 baseline is retained as the historical owner of the already-working
+Financial Ledger commands, Lesson Context payment creation, allocation/replay,
+marker calculation, and personal paid/unpaid labels. Current code inspection
+found three missing user-facing contours:
+
+1. `TASK-099-T3-FT-006-W32` adds the protected Admin class-price/default and
+   student-override settings surface plus deterministic append-only history,
+   using the existing setting commands and one Admin-authorized history query.
+   The single class amount is both lesson price and default payment value; no
+   second persisted default-amount setting is introduced. The same authorized
+   current value initializes the existing Lesson Context amount field; the
+   existing `createPayment` action is not re-planned.
+2. `TASK-100-T3-FT-006-W33` adds the own-center Admin payment journal and
+   server actions for confirmed edit/cancel, reloading the existing
+   allocation/balance/audit result. It does not add payment creation.
+3. `TASK-101-T3-FT-006-W34` adapts the existing marker projection through
+   Lesson Context into the personal Calendar, rendering factual dates,
+   closest previous free-day placement, and multiple markers for Student and
+   Parent-linked-child views without changing paid/unpaid labels or financial
+   state.
+
+The three tasks are sequential where the UI shell is shared and remain
+separate by view model, authorization/privacy surface, and proof fixture. Each
+has its own T3 RED/GREEN evidence and disposable Playwright gate using an
+owned `tmp/` database. Admin, Teacher, Student, Parent, forged-scope, and
+cross-center denial behavior is server-side; shared Admin/Teacher calendars do
+not receive personal payment markers. No historical task is reopened, and no
+new payment-creation or paid/unpaid-label task is introduced.
+
+## Task-plan approval and decomposition closure — 2026-09-03
+
+The fresh `/review-tasks-plan FT-006` returned `APPROVE` at Planning Revision
+`2`. The repaired queue is accepted as `rebuild_required` with final planned
+cards `TASK-099` → `TASK-100` → `TASK-101`. Decomposition is closed for this
+revision. The cards remain `planned` until the applicable readiness/promotion
+owner acts; this boundary does not claim implementation, verification, or
+feature lifecycle promotion.

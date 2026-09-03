@@ -1,0 +1,112 @@
+{
+  "id": "TASK-100-T3-FT-006-W33",
+  "title": "Expose the Admin payment journal and correction controls",
+  "status": "planned",
+  "wave": "W33",
+  "feature": "FT-006",
+  "reqs": ["REQ-012", "REQ-013", "REQ-014", "REQ-015"],
+  "depends_on": ["TASK-099-T3-FT-006-W32", "TASK-046-T3-FT-006-W23", "TASK-048-T3-FT-006-W24"],
+  "touched_files": [
+    "src/routes/admin/[centerId]/finance/+page.server.ts",
+    "src/routes/admin/[centerId]/finance/+page.svelte",
+    "tests/routes/admin-finance-journal.test.ts",
+    "e2e/ft-006-admin-journal.spec.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "e2e-admin-journal", "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-006-admin-journal.db --spec e2e/ft-006-admin-journal.spec.ts", "required": true},
+    {"name": "diff", "command": "git diff --check", "required": true},
+    {"name": "mb-lint", "command": "node .memory-bank/scripts/mb-lint.mjs", "required": true},
+    {"name": "strict-doctor", "command": "node .memory-bank/scripts/mb-doctor.mjs --strict", "required": true}
+  ],
+  "verify": [
+    "FT-006-AC-010 / REQ-012 / REQ-013 / REQ-014 / REQ-015: the protected own-center Admin journal lists each recorded or cancelled Payment once with server-resolved class/student, exact amount, factual date, status, allocations, current balance/advance, and audit history.",
+    "The journal's edit and cancel actions require explicit confirmation and invoke only the existing Financial Ledger editPayment and cancelPayment commands; after success the authoritative allocation, balance, status, and before/after audit are reloaded.",
+    "The journal contains no payment-creation form. Anonymous, Teacher, Student, Parent, wrong-center, forged class/student, and forged payment requests are rejected before mutation.",
+    "Disposable Playwright proof uses the project-owned temporary database/server and removes only its exact temporary state."
+  ],
+  "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
+  "evidence_required": [
+    "FT-006-AC-010 / REQ-012 / REQ-013 / REQ-014 / REQ-015 RED: the journal omits or duplicates a payment, exposes an out-of-scope record, edits/cancels without explicit Admin confirmation, fails to show refreshed allocation/balance/audit, or introduces a second creation path; GREEN: own-center Admin can inspect every in-scope payment once, edit or cancel only with confirmation, and see deterministic recalculation plus audit while all denials leave state unchanged; artifact: .tasks/TASK-100-T3-FT-006-W33/ and .protocols/TASK-100-T3-FT-006-W33/."
+  ],
+  "purpose": "Close the missing Admin payment-journal read and correction user outcome over the existing Financial Ledger edit, cancel, allocation, replay, and audit commands.",
+  "success_outcome": "An own-center Admin can inspect a complete payment journal and safely edit or cancel a payment with explicit confirmation, then see authoritative allocation, balance, status, and audit results.",
+  "anti_goals": [
+    "Do not add a payment-creation form to the journal; creation remains in the existing Lesson Context flow.",
+    "Do not reimplement allocation, replay, balance, or audit logic in the route.",
+    "Do not grant Teacher edit/cancel authority or trust client-provided center, class, student, or payment scope.",
+    "Do not let the route or UI write financial tables directly."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-010",
+    ".memory-bank/contracts/financial-ledger.md#admin-browser-management-surface",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#financial-scope-and-lesson-fact-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-010",
+    ".memory-bank/contracts/financial-ledger.md#admin-browser-management-surface",
+    ".memory-bank/contracts/financial-ledger.md#public-commands-and-queries",
+    ".memory-bank/contracts/financial-ledger.md#transaction-and-failure-rules",
+    ".memory-bank/contracts/boundary-map.md#financial-projection-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "The Admin page composes server-resolved own-center class/student pairs and the named Financial Ledger projections; it owns no financial facts.",
+    "Edit and cancel actions carry the payment identity, validated change, and explicit confirmation into existing commands; successful actions reload authoritative state.",
+    "The journal must represent recorded and cancelled payments once, including exact decimal-safe values and audit-relevant before/after information.",
+    "Disposable browser proof uses tmp/ and the project runner; it must never use study-calendar.db."
+  ],
+  "invariants": [
+    "Only an Admin scoped to the payment's center can edit or cancel it.",
+    "Denied reads and commands leave Payment, Allocation, Charge, Balance, and Audit state unchanged.",
+    "Journal correction results come from Financial Ledger deterministic replay and audit, not UI arithmetic.",
+    "Payment creation remains the existing Lesson Context behavior and is not duplicated here."
+  ],
+  "verification_targets": [
+    "FT-006-AC-010: route/action tests and browser proof cover one-time journal listing, exact amount/factual date/status, allocations, balance/advance, audit, Admin edit, Admin cancel, explicit confirmation, and post-command reload.",
+    "Privacy and authorization: prove anonymous, non-Admin, wrong-center, forged class/student, and forged payment reads/mutations fail before mutation, with no client-trusted scope.",
+    "Ownership: source review confirms the Admin route calls Financial Ledger commands/queries and contains no direct financial persistence or duplicate payment creation logic."
+  ],
+    "runtime_context": {
+    "write_boundary": [
+      "src/routes/admin/[centerId]/finance/+page.server.ts",
+      "src/routes/admin/[centerId]/finance/+page.svelte",
+      "tests/routes/admin-finance-journal.test.ts",
+      "e2e/ft-006-admin-journal.spec.ts",
+      "tmp/ft-006-admin-journal.db"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/financial-ledger/",
+      "src/routes/lesson-context/",
+      "src/routes/calendar/",
+      "src/lib/server/modules/center-scheduling/",
+      "study-calendar.db",
+      "playwright.config.ts",
+      "scripts/run-disposable-e2e.mjs"
+    ],
+    "stop_conditions": [
+      "Stop if the journal needs a new financial command or persistence owner rather than the accepted projection and existing edit/cancel commands; route the contract change to spec-redesign before implementation.",
+      "Stop if any action would trust client-provided scope, expose another center/student, or bypass the Financial Ledger boundary.",
+      "Stop if disposable E2E requires study-calendar.db, an existing server, or reset of unrelated state."
+    ]
+  }
+}

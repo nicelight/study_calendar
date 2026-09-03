@@ -1,7 +1,7 @@
 ---
 description: Server-side authentication, authorization scope, and privacy contract.
 status: active
-last_updated: 2026-08-22
+last_updated: 2026-09-03
 source_of_truth:
   - .memory-bank/contracts/access-control.md
 ---
@@ -104,7 +104,11 @@ every role.
 - The current-actor profile query returns only `{ accountId, fullName, role,
   registeredAt }` after resolving a valid non-revoked session. The statistics
   profile query returns only `{ accountId, fullName, registeredAt }` for account
-  IDs already authorized by Center & Scheduling.
+  IDs already authorized by Center & Scheduling. A resource-owning protected
+  slice may use the named `getParticipantLabels` participant-label query to receive only
+  `{ accountId, fullName }` for IDs already selected by that slice's own
+  server-authorized resource projection; this query grants no authority and
+  does not replace resource authorization.
 - Existing accounts without profile facts are repaired once by inserting
   generated `fullName` and a repair timestamp only when the profile row is
   absent; existing profile facts are never overwritten. Runtime queries remain
@@ -118,9 +122,15 @@ every role.
 - Profile facts never grant role, center, class, membership, assignment, or
   session authority or serve as authorization input.
 - Routes and other consumers MUST NOT read the `accounts` table directly; they
-  consume only the named current-actor or scoped statistics query.
+  consume only the named current-actor, scoped-statistics, or bounded
+  participant-label query. Collaboration is the resource/privacy owner for
+  discussion participant IDs and may request labels only after its own
+  server-side discussion scope check.
 - Verification belongs to each consuming composition/route outcome and proves
-  that no direct account-table read bypasses its accepted profile query.
+  that no direct account-table read bypasses its accepted profile query, that
+  participant labels are limited to IDs selected by the authorized resource,
+  and that labels cannot broaden role, center, class, student, membership,
+  assignment, or session scope.
 
 ## Data minimization and failure behavior
 

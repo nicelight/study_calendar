@@ -1,0 +1,177 @@
+{
+  "id": "TASK-103-T3-FT-004-W36",
+  "title": "Render complete Collaboration UI in Lesson Context with disposable browser proof",
+  "status": "planned",
+  "wave": "W36",
+  "feature": "FT-004",
+  "reqs": [
+    "REQ-006",
+    "REQ-007",
+    "REQ-008",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-102-T3-FT-004-W35"
+  ],
+  "touched_files": [
+    "src/routes/lesson-context/+page.svelte",
+    "tests/lesson-context/",
+    "tests/routes/",
+    "e2e/ft-004-collaboration-ui.spec.ts",
+    "tmp/ft-004-collaboration-ui.db"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    },
+    {
+      "name": "diff",
+      "command": "git diff --check",
+      "required": true
+    },
+    {
+      "name": "mb-lint",
+      "command": "node .memory-bank/scripts/mb-lint.mjs",
+      "required": true
+    },
+    {
+      "name": "strict-doctor",
+      "command": "node .memory-bank/scripts/mb-doctor.mjs --strict",
+      "required": true
+    }
+  ],
+  "verify": [
+    "FT-004-AC-001: the browser displays one account-owned comment for each supported field with author and last-change attribution, permits create and edit only for the current account, and persists the result after reload.",
+    "FT-004-AC-002: the browser exposes like, love, laugh, celebrate, and question reactions on supported field/comment/message targets and lets a permitted viewer inspect the participants for each reaction.",
+    "FT-004-AC-003 and FT-004-AC-004: the browser renders the common feed, reply controls, arbitrary-depth threaded discussion, a branch tab after its first reply, no more than ten most recently active branch tabs, and retained hidden branches that return after new activity.",
+    "FT-004-AC-005: the browser keeps shared and personal discussions separate for Admin, assigned Teacher, Student, and linked Parent, denies unauthenticated, invalid-session, cross-student/cross-class/cross-center, and revoked-membership/assignment cases, and shows no unauthorized data after reload."
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-004.md",
+    ".protocols/FT-004/plan.md",
+    ".memory-bank/contracts/collaboration-browser-surface.md"
+  ],
+  "evidence_required": [
+    "FT-004-AC-001 / REQ-006 / REQ-007 / REQ-014 RED: /lesson-context exposes only a count or permits editing another account's comment, omits author/time, or loses a created comment after reload; GREEN: a Playwright shared/personal scenario creates one comment per supported field, sees author and last-change time, edits only its own comment, rejects a second account-owned duplicate and forged edit, and proves persistence in the disposable database; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
+    "FT-004-AC-002 / REQ-007 RED: a reaction control, one of the five standard reaction types, or reactor participant view is absent, cross-scope, or non-persistent; GREEN: the browser applies and reloads all five standard reactions on supported targets and displays only permitted participants for each; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
+    "FT-004-AC-003 / REQ-008 RED: the common feed, reply control, nested thread, or branch activation is absent, capped, or stale after reload; GREEN: the browser creates a root and replies of arbitrary tested depth, shows every current-scope message in the common feed, creates the branch tab after the first reply, and preserves the selected thread through SSR/reload; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
+    "FT-004-AC-004 / REQ-008 RED: more than ten branch tabs are visible, the least-recent hidden branch is deleted, or new activity cannot reactivate it; GREEN: eleven-plus browser-created branches show at most the ten most recent tabs, hidden branch messages remain retained in SQLite, and a new reply returns the hidden branch to the visible set; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
+    "FT-004-AC-005 / REQ-006 / REQ-014 RED: shared/personal discussions cross student or role scope, an unauthenticated/invalid-session request succeeds, a forged authority selector succeeds, or removed membership/teacher assignment still exposes or mutates data; GREEN: positive Admin/assigned Teacher/Student/linked Parent flows and negative no-cookie/invalid-session/cross-student/cross-class/cross-center/revocation flows prove browser-visible isolation, deny-before-mutation, no existence leakage, full state snapshots, and safe cleanup; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/."
+  ],
+  "purpose": "Close the product-surface gap by rendering and exercising all accepted Collaboration behavior through the existing Lesson Context browser UI.",
+  "success_outcome": "Permitted users can create, edit, react to, and inspect the complete shared or personal Collaboration experience in `/lesson-context`, including common and threaded chat, bounded recent branches, and persistent browser state, while unauthorized roles and scopes see neither data nor mutation effects.",
+  "anti_goals": [
+    "Do not create a new top-level Collaboration page, mutation API, frontend state layer, or duplicate backend/store; use the projection and form actions from TASK-102.",
+    "Do not put authorization, student/center scope resolution, or direct SQLite access in Svelte components.",
+    "Do not expose client role, center, author, or student fields as authority and do not weaken existing access-control or privacy behavior.",
+    "Do not delete hidden branches/messages or change Collaboration semantics, schema, or unrelated FT-002, FT-005, FT-006, or payment E2E surfaces."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-001",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-002",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-003",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-004",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-005",
+    ".memory-bank/contracts/collaboration-browser-surface.md#browser-user-surface-and-persistence",
+    ".memory-bank/contracts/collaboration-browser-surface.md#verification-target",
+    ".memory-bank/contracts/collaboration-browser-surface.md#ownership-and-route",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#account-profile-facts",
+    ".memory-bank/contracts/access-control.md#profile-consumer-boundary",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/states/lifecycle-map.md#collaboration"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-001",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-002",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-003",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-004",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-005",
+    ".memory-bank/contracts/collaboration-browser-surface.md#browser-user-surface-and-persistence",
+    ".memory-bank/contracts/collaboration-browser-surface.md#verification-target",
+    ".memory-bank/contracts/collaboration-browser-surface.md#ownership-and-route",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#actor-context-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#account-profile-facts",
+    ".memory-bank/contracts/access-control.md#profile-consumer-boundary",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/states/lifecycle-map.md#collaboration",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Integrate only into the existing `/lesson-context` page and consume TASK-102's server-rendered projection and named form actions.",
+    "Keep browser state narrow: use URL state for selected branch root so SSR/reload reproduces the view; do not add a client-wide Collaboration store.",
+    "Render server-provided display labels and timestamps without exposing unnecessary personal data or trusting browser authority fields.",
+    "Run all browser scenarios with scripts/run-disposable-e2e.mjs and a separate tmp/ft-004-collaboration-ui.db; never seed destructive fixtures in study-calendar.db.",
+    "Use try/finally cleanup in the Playwright fixture and runner cleanup on success or failure; close database/server/session resources before removing exact temporary files."
+  ],
+  "invariants": [
+    "Each permitted account can create at most one editable comment per supported field and can edit only its own comment; author and last-change attribution remain visible to permitted viewers.",
+    "Exactly the five standard reaction types are usable on supported targets and each participant list is filtered by the current server-authorized context.",
+    "Common feed includes every message available to the current context; reply depth is not capped; a branch tab appears only after its first reply; at most ten most recently active tabs are visible.",
+    "Hidden branches/messages are retained and reappear after new activity; reload reads the persisted server projection instead of a client-only optimistic state.",
+    "Shared and personal discussions remain isolated for every permitted role; removal of membership or teacher assignment is effective on the next server request without deleting authored data or leaking existence."
+  ],
+  "verification_targets": [
+    "FT-004-AC-001",
+    "FT-004-AC-002",
+    "FT-004-AC-003",
+    "FT-004-AC-004",
+    "FT-004-AC-005",
+    "Claim-linked Playwright RED/GREEN scenarios in a disposable SQLite database cover shared and personal contexts, Admin/assigned Teacher/Student/linked Parent positives, unauthenticated/invalid-session/unassigned/cross-center/cross-class/cross-student/revoked negatives, form mutations, reload persistence, and no unauthorized body/participant leakage.",
+    "The browser flow creates the supported comments, all five reactions, a root and arbitrary-depth replies, and eleven-plus branches through real `/lesson-context` form actions; it asserts author/time, own-edit restriction, reactor participants, common feed, first-reply tab activation, ten-tab limit, hidden retention, and reactivation.",
+    "Route/component tests and source review prove the UI consumes server data only, uses URL state for branch selection, has no direct database or authority resolution, and introduces no mutation API or unrelated feature change.",
+    "The test records state before and after denied operations and verifies persisted rows after reload; the project disposable runner removes only the exact temporary database and sidecar files even when a scenario fails."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "src/lib/server/modules/collaboration/",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/platform/database.ts",
+      "src/routes/lesson-context/+page.server.ts",
+      "src/routes/api/lesson-context/",
+      "src/lib/server/modules/financial-ledger/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/center-scheduling/",
+      "study-calendar.db",
+      ".memory-bank/tasks/TASK-012-T2-FT-004-W6.task.json",
+      ".memory-bank/tasks/TASK-016-T3-FT-004-W6.task.json",
+      ".memory-bank/tasks/TASK-017-T3-FT-004-W6.task.json",
+      "scripts/run-disposable-e2e.mjs",
+      "playwright.config.ts"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-redesign if the UI cannot consume the TASK-102 projection/actions without adding a new cross-slice contract, mutation API, persistence source, or authority rule.",
+      "Stop if a browser flow requires trusting client role, center, author, student, scope, or target fields, or if revocation cannot be enforced by a fresh server check before mutation.",
+      "Stop if the Playwright fixture requires study-calendar.db, an existing server, destructive global reset, or cleanup that is not failure-safe."
+    ]
+  }
+}

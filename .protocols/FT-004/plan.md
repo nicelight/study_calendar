@@ -9,9 +9,11 @@ status: active
 Deliver account-owned field comments, five reactions, arbitrary-depth
 discussion branches, bounded recent tabs, retained hidden messages, and
 shared/personal visibility inside the server-resolved center/class/student
-scope. The current planning repair covers only the controlled T3 rebuild after
-the TASK-012 Attempt 2 tier finding; it does not execute implementation or
-verification and does not change product lifecycle state.
+scope, with the complete Collaboration surface available through the existing
+browser Lesson Context UI. The current planning reconciliation adds only the
+missing browser projection, server-authorized form transport, UI controls, and
+disposable Playwright proof; it does not execute implementation or
+verification.
 
 Non-goals are event-bus infrastructure, a second Collaboration writer,
 deletion of retained rows, a reply-depth cap, direct neighbor-slice writes, or
@@ -21,10 +23,14 @@ any change to the accepted modular-monolith graph and shared-database target.
 
 - Feature: [.memory-bank/features/FT-004-day-collaboration.md](../../.memory-bank/features/FT-004-day-collaboration.md)
 - Global readiness: [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md), `Global Backbone Status: complete`, `Planning Revision: 2`.
-- Registry: [.memory-bank/spec-index.md](../../.memory-bank/spec-index.md); no new canonical concern is required.
+- Registry: [.memory-bank/spec-index.md](../../.memory-bank/spec-index.md). The
+  browser projection and mutation transport are recorded in the new subject
+  contract [Collaboration Browser Surface](../../.memory-bank/contracts/collaboration-browser-surface.md).
 - Foundation prerequisite: `TASK-002-T3-FT-000-W1` is the completed final gate, reached transitively through the existing FT-004 dependency chain.
-- Primary owner: Collaboration at `src/lib/server/modules/collaboration/`.
-- Expected affected persistence surface: `src/lib/server/platform/database.ts`.
+- Semantic owner: Collaboration at `src/lib/server/modules/collaboration/`;
+  Lesson Context owns only the scoped composition and browser adapter.
+- Existing Collaboration persistence and public boundary are reused; no new
+  SQLite schema or second backend writer is planned.
 - Public provider contract: [Day Discussion Query Boundary](../../.memory-bank/contracts/boundary-map.md#day-discussion-query-boundary).
 - Consumed boundaries: [Actor Context Boundary](../../.memory-bank/contracts/boundary-map.md#actor-context-boundary) and [Calendar and Membership Query Boundary](../../.memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary).
 - Direct behavior/spec basis: [Access Control — Authority and scope](../../.memory-bank/contracts/access-control.md#authority-and-scope), [Access Control — Data minimization and failure behavior](../../.memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior), [Core Domain — Domain relationships](../../.memory-bank/domains/core-domain.md#domain-relationships), [Core Domain — Persistence and transaction rules](../../.memory-bank/domains/core-domain.md#persistence-and-transaction-rules), and [Lifecycle — Collaboration](../../.memory-bank/states/lifecycle-map.md#collaboration).
@@ -35,6 +41,79 @@ Membership Query. Collaboration remains the sole writer for comments,
 reactions, messages, replies, and branch/tab projection; Lesson Context remains
 a scoped read consumer. No architecture/spec identity or Planning Revision is
 changed.
+
+## Browser surface reconciliation — 2026-09-03
+
+The operator decision is authoritative: FT-004 is implemented only when the
+planned Collaboration behavior is usable through the browser UI. Existing
+`TASK-011`, `TASK-016`, and `TASK-017` done cards and their reports prove
+backend boundary, persistence, and isolation outcomes only; their identity,
+lifecycle, dependencies, and accumulated evidence are preserved and are not
+reclassified as browser proof. `TASK-012` remains the historical failed/
+superseded under-tiered card and is not a dependency.
+
+The browser audit found that `/lesson-context` currently exposes neither the
+Collaboration content nor its mutations: it shows only a personal message
+count, has no field-comment/reaction/day-chat/branch controls, and
+`/api/lesson-context` is GET-only. The accepted minimal route is therefore the
+existing `/lesson-context` composition plus its SvelteKit form actions; no new
+top-level route, mutation API, frontend state layer, Collaboration store, or
+database abstraction is introduced.
+
+The unmerged outcomes were reconciled into two execution-cohesive candidates:
+
+1. **Server-composed browser projection and authorized transport** — extend the
+   existing Lesson Context projection and route actions to expose shared and
+   personal Collaboration data and delegate all mutations through the existing
+   Collaboration public boundary. Server session, role, center/class/lesson/
+   student scope, target ownership, and membership/assignment state remain the
+   authority; client role, center, author, and scope fields are never trusted.
+2. **Complete Lesson Context Collaboration UI and browser proof** — render
+   field comments, own edit controls, author/time, five reactions and reactor
+   participants, common feed, arbitrary-depth replies, branch tabs, shared and
+   personal discussions, and the role/privacy matrix. Prove persistence after
+   reload and hidden-branch reactivation with a disposable SQLite database and
+   the project-owned runner, including cleanup on failure.
+
+The candidates are sequential: the UI cannot be verified against a stable
+projection/action contract before candidate 1, while the transport is
+independently reviewable without merging the independently testable visual
+surface. Both are T3 because they cross protected browser mutations and
+privacy/authority boundaries. Tentative waves are W35 and W36 after the
+existing W6 isolation cards and the accepted shared Lesson Context navigation
+outcome `TASK-039-T3-FT-003-W10`; IDs were assigned after this boundary
+confirmation.
+
+## Current executable queue
+
+| Wave | Task | Owns | Dependencies |
+|---|---|---|---|
+| W35 | [TASK-102-T3-FT-004-W35](../../.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json) | Server-composed shared/personal Collaboration projection, Identity & Access `getParticipantLabels`, and five named, server-authorized `/lesson-context` form actions; owns server-side AC-005/REQ-014 transport proof | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
+| W36 | [TASK-103-T3-FT-004-W36](../../.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json) | Complete Lesson Context Collaboration UI and shared/personal disposable Playwright proof; owns browser-visible AC-001..AC-005 and UI-side AC-005 privacy proof | `TASK-102-T3-FT-004-W35` |
+
+Both cards are new `planned` IDs. `TASK-016`, `TASK-017`, and `TASK-039` are
+completed dependencies; `TASK-012` is intentionally excluded. The first card
+must finish before the second starts. No production-only acceptance card is
+needed because the required browser surface and disposable verification are
+repository/runtime outcomes.
+
+## Bounded shared-contract reconciliation — 2026-09-03
+
+The accepted KISS decision extends the existing `Collaboration -> Identity &
+Access` Actor Context Boundary with one named read-only
+`getParticipantLabels` projection. Identity & Access owns `fullName`; the
+resource-owning Collaboration boundary first resolves the current discussion
+scope and selects author/reactor IDs; Lesson Context only composes the returned
+labels. The projection returns `{accountId, fullName}` and grants no authority.
+
+Impact is `bounded`: the accepted module graph, existing edge, Architecture
+Spine, Foundation path, and Planning Revision `2` remain unchanged. The
+affected canonical consumers are `boundary-map.md`, `access-control.md`, and
+`collaboration-browser-surface.md`; only FT-004 required the bounded planning
+reconciliation. Existing task statuses, completed evidence, and protocols
+remain preserved. The mechanical review corrections
+are incorporated in TASK-102/TASK-103 and require a fresh
+`/review-tasks-plan FT-004`.
 
 ## Controlled re-tier rebuild and preserved history
 
@@ -81,8 +160,8 @@ functional path must prove the row's exact claims; the semantic path must
 independently challenge the row's security-sensitive harm surface. No evidence
 is created by this planning repair.
 
-`TASK-014-T3-FT-003-W8` depends on both replacement cards and retains its
-authoritative `in_progress` status. The planning-time routing was the approved
+`TASK-014-T3-FT-003-W8` depends on both replacement cards and its current
+authoritative status is `done`. The planning-time routing was the approved
 `/review-tasks-plan FT-004` at `Planning Revision: 1`; the current fresh review
 must use `Planning Revision: 2`, followed by the
 applicable readiness gate and sequential execution/verification of the two
@@ -114,11 +193,12 @@ TASK-012 historical `failed`/`superseded` disposition is recorded below.
 
 ## Current lifecycle reconciliation
 
-The fresh FT-004 feature result is `semantic-pass`, backed by the current T3
-functional and semantic evidence on TASK-016 and TASK-017 for AC-001..AC-005.
-TASK-012 is explicitly terminal `failed`/`superseded` by those two replacement
-tasks because its corrected T2 handoff is under-tiered and
-`NEEDS-CLARIFICATION`; its identity, tier, dependencies, Attempt 1/2 evidence,
-and retry history remain preserved. FT-004 document status/lifecycle remains
-`draft`/`planned`; no promotion, architecture change, or Planning Revision
-change is part of this reconciliation.
+The historical feature result is `semantic-pass` only for the backend
+boundary/persistence scope proved by TASK-016 and TASK-017. The operator's
+browser-completion decision makes that evidence insufficient for feature
+closure: FT-004 is currently `active`/`planned` pending the two new browser
+tasks and their independent functional and semantic evidence for AC-001..AC-005.
+TASK-012 remains explicitly terminal `failed`/`superseded`; its identity, tier,
+dependencies, Attempt 1/2 evidence, and retry history are preserved. No
+architecture, Planning Revision, REQ/epic lifecycle, old task status, or old
+evidence is changed by this reconciliation.

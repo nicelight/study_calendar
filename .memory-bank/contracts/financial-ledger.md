@@ -1,7 +1,7 @@
 ---
 description: Financial ledger ownership, exactness, allocation, audit, projection, and replay contract.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-09-03
 source_of_truth:
   - .memory-bank/contracts/financial-ledger.md
 ---
@@ -21,8 +21,10 @@ teacher assignment. Identity & Access supplies the authenticated actor.
 
 ## Financial facts and invariants
 
-- A Charge stores the applied lesson price at charge time. Later class/default
-  or student override changes affect only future charges.
+- A Charge stores the applied lesson price at charge time. One effective-dated
+  class amount serves as both lesson price and default payment amount; a student
+  override changes the applied price for that student. Later setting changes
+  affect only future charges.
 - `absent` creates no charge for either individual or group lessons.
   `absent -> present` creates the historically applicable charge, recalculates
   the affected balance, and records author, time, and financial change.
@@ -52,13 +54,67 @@ boundary is:
 - `editPayment(payment, change, confirmation)`;
 - `cancelPayment(payment, confirmation)`;
 - `getBalanceProjection(student, range)`;
+- `getPriceSettings({ sessionToken, classId })` (Admin-only history query);
+- `getPaymentDefault({ sessionToken, classId })` (authorized current class
+  amount query for the existing payment form);
 - `getPaymentMarkers(student, range)`.
 
 Every command re-checks actor scope through Identity & Access and Center &
 Scheduling at execution time. Admin may create/edit/cancel for any student and
 class in the Admin's center. A Teacher may create only for a student in an
 assigned class and may never edit/cancel. Other roles have no payment command
-authority.
+  authority.
+
+## Admin browser management surface
+
+The Admin financial page is a server-side adapter over the Financial Ledger
+boundary; it does not become a second financial owner.
+
+- The Ledger exposes an authorized `getPriceSettings({ sessionToken, classId })`
+  query for an Admin. A returned price-setting view contains the class,
+  optional student override, exact `amount`, `effectiveFrom`,
+  `createdByAccountId`, and `createdAt`. The result includes the append-only
+  class-default and student-override history for that class in deterministic
+  `effectiveFrom, id` order. For KISS, the class amount is also the default
+  payment amount; there is no second persisted default-amount setting.
+- `setClassPrice` and `setStudentPriceOverride` append a new effective-dated
+  setting. They MUST NOT update or delete an earlier setting or rewrite an
+  existing Charge. The class amount is the default value where the existing
+  payment form needs an initial amount, while the actual payment amount remains
+  editable. An individual override wins for that student's future Charge.
+- `getPaymentDefault` returns the effective current class amount. Lesson Context
+  may use this value only to initialize the existing editable payment amount;
+  the student override remains a future-Charge rule and does not drive a
+  dynamic form update. This does not change `createPayment` semantics or add
+  another payment flow. An Admin or assigned Teacher may read the value for an
+  authorized class; other roles may not.
+- The Admin payment journal composes authorized `getBalanceProjection` results
+  for the server-resolved class/student pairs in the Admin's own Center. Each
+  recorded or cancelled Payment appears once with its exact amount, factual
+  date, status, allocations, current balance/advance, and payment audit
+  history. Class and participant labels are display data from their owning
+  boundaries, not financial persistence reads.
+- Journal edit and cancel forms may invoke only the existing `editPayment` and
+  `cancelPayment` commands and MUST carry an explicit confirmation. A
+  successful command reloads the authoritative projection so deterministic
+  allocation/balance recomputation and the before/after audit are visible.
+  Payment creation remains owned by the existing Lesson Context form and is
+  not duplicated on the journal page.
+- The Admin page MUST reject anonymous, non-Admin, wrong-center, forged-class,
+  forged-student, and forged-payment requests before returning financial data
+  or invoking a command. Hiding a section in the browser is not an access
+  control.
+
+## Personal calendar marker consumer
+
+The personal calendar consumes the named `getPaymentMarkers` projection through
+the Lesson Context adapter for a Student or a Parent's server-resolved linked
+child. For each visible marker it MUST show the exact amount and factual date at
+the projected `markerDate`; multiple markers with the same `markerDate` remain
+separately discoverable. A marker is read-only presentation data: calendar
+navigation, ordering, and rendering MUST NOT write Payment, Payment Allocation,
+Charge, Balance, or Audit state. Shared Admin and Teacher calendars MUST omit
+personal payment markers.
 
 ## Marker projection
 

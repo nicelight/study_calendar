@@ -4,6 +4,13 @@ status: active
 ---
 # Changelog
 
+## [2026-09-03] FT-006 task decomposition approval
+
+- Closed the repaired FT-006 decomposition after the current-revision
+  task-plan `APPROVE`.
+- Preserved TASK-099 → TASK-100 → TASK-101 as planned execution cards; no
+  implementation or feature lifecycle promotion was applied.
+
 ## [2026-08-25] Admin class names stay readable in dark theme
 
 - Class-card headings now set their own foreground color and use a light value
