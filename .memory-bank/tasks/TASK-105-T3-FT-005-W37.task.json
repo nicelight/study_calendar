@@ -1,0 +1,155 @@
+{
+  "id": "TASK-105-T3-FT-005-W37",
+  "title": "Expose homework completion and grading through Lesson Context transport",
+  "status": "planned",
+  "wave": "W37",
+  "feature": "FT-005",
+  "reqs": [
+    "REQ-009",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-018-T3-FT-005-W8",
+    "TASK-042-T3-FT-005-W22"
+  ],
+  "touched_files": [
+    "src/lib/server/modules/learning-progress/",
+    "src/lib/server/modules/lesson-context/",
+    "src/routes/lesson-context/+page.server.ts",
+    "tests/learning-progress/",
+    "tests/lesson-context/",
+    "tests/routes/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    },
+    {
+      "name": "diff",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Learning Progress resolves the single class-scoped homework item for the authorized lesson: no item yields null, one item yields that item, and multiple items fail closed with ambiguous-homework-selection.",
+    "The existing Lesson Context projection exposes the provider-owned homework item and permitted class-visible completion statuses without grades; personal context retains the selected student's completion beside the private grade.",
+    "FT-005-AC-001: named /lesson-context actions let Admin or the assigned Teacher create the missing item from authorized lesson material, let only the session Student complete it, and expose the permitted class-visible status.",
+    "FT-005-AC-002: named /lesson-context actions let only Admin or the assigned Teacher record α, β, γ, or F for an authorized class student while keeping grades out of shared completion data.",
+    "Create proof submits no authoritative homeworkId, proves the persisted ID is a non-empty server-generated opaque value rather than a forged client value, and proves independently created items in distinct authorized class fixtures receive distinct IDs; a repeat-create submission leaves the item count and existing ID unchanged.",
+    "Focused provider and route tests prove invalid, forged, cross-center, unassigned, and wrong-role actions leave Learning Progress state unchanged; the route has no direct database writes and /api/lesson-context remains GET-only.",
+    "Every W37 probe uses isolated or disposable state, records state before and after rejected and repeated actions, safely reruns, closes its database/session resources, and removes only its exact temporary database and sidecars with a cleanup receipt."
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-005.md",
+    ".protocols/FT-005/plan.md",
+    ".memory-bank/contracts/learning-progress-browser-surface.md"
+  ],
+  "evidence_required": [
+    "FT-005-AC-001 / REQ-009 / Learning Progress Browser Surface #server-composed-homework-projection RED: the route cannot render the provider-selected item, completion visibility is outside the server-resolved class/student scope, or repeated create changes the item count/identity; GREEN: isolated provider/route tests prove Admin/assigned-Teacher creation, server-rendered Student completion, class-visible status, zero/one/multiple selection, and repeated-create count/identity equality after reload; artifact: .tasks/TASK-105-T3-FT-005-W37/ and .protocols/TASK-105-T3-FT-005-W37/.",
+    "FT-005-AC-002 / REQ-009 / REQ-014 / Learning Progress Browser Surface #authorized-homework-form-actions RED: a named action trusts client homework/student authority, writes before role/scope validation, bypasses Learning Progress, exposes a grade in shared data, or accepts a non-approved grade; GREEN: isolated action tests prove server-resolved actor/center/class/lesson/role/scope, server-generated opaque ID distinct from forged client input and unique across distinct authorized class fixtures, deny-before-write behavior, delegated grading, accepted α/β/γ/F, corresponding student/linked-family access, and unrelated Student/unlinked-Parent denial; artifact: .tasks/TASK-105-T3-FT-005-W37/ and .protocols/TASK-105-T3-FT-005-W37/.",
+    "TASK-105 T3 isolated-state cleanup / Learning Progress Browser Surface #verification-target RED: the probe leaves an open database/session, cannot rerun safely, or cleanup removes more than its exact disposable database/sidecars; GREEN: the task-owned protocol records state-before/state-after, rerun, resource teardown, cleanup result, and artifact paths for isolated/disposable state; artifact: .tasks/TASK-105-T3-FT-005-W37/ and .protocols/TASK-105-T3-FT-005-W37/."
+  ],
+  "purpose": "Close the server-side Lesson Context gap for the existing Learning Progress homework, completion, and grade facts.",
+  "success_outcome": "The protected Lesson Context route can server-render the provider-owned class-scoped homework/completion projection and accept server-authorized create, complete, and grade actions without adding a lesson relation, mutation API, or direct persistence bypass.",
+  "anti_goals": [
+    "Do not add a lesson_id relation, migration, second homework source, or consumer-owned homework mapping.",
+    "Do not expose grades in the shared Student/Parent completion projection.",
+    "Do not add attendance, payment, or unrelated route behavior."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-001",
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-002",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#server-composed-homework-projection",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#authorized-homework-form-actions",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#cross-slice-orchestration",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/architecture/system-architecture.md#AD-007",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-001",
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-002",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#server-composed-homework-projection",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#authorized-homework-form-actions",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#cross-slice-orchestration",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/architecture/system-architecture.md#AD-007",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#domain-relationships",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#learning-and-finance",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Learning Progress remains the only owner and writer of homework, completion, grade, and class-scoped homework selection facts.",
+    "The route consumes the provider-selected item and existing provider commands; it does not accept or invent homeworkId authority.",
+    "All route actions use the session actor and server-resolved center, class, lesson, role, and student scope; browser selectors remain untrusted.",
+    "Existing attendance, payment, material, API, database, and unrelated Lesson Context behavior remains unchanged."
+  ],
+  "invariants": [
+    "A shared completion projection contains no grade fields.",
+    "A denied or invalid action writes no homework, completion, or grade state.",
+    "Repeated create submission cannot create a second class-scoped homework item.",
+    "Create persists a server-generated opaque ID, never a client-supplied ID; distinct new class items receive distinct IDs.",
+    "No consumer accepts or derives homeworkId."
+  ],
+  "verification_targets": [
+    "FT-005-AC-001 and FT-005-AC-002 transport path: isolated tests cover Admin/assigned Teacher creation and grading, Student completion, permitted completion visibility, accepted grade scale, corresponding student/linked-family access, and unrelated Student/unlinked-Parent denial.",
+    "Provider and route source review confirms Learning Progress owns selection and writes, Lesson Context only adapts, and /api/lesson-context remains GET-only.",
+    "Rejected role, scope, action, and selector cases compare state before and after and are safe to rerun against isolated state."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/lesson-context/",
+      "src/routes/lesson-context/+page.server.ts",
+      "tests/learning-progress/",
+      "tests/lesson-context/",
+      "tests/routes/"
+    ],
+    "forbidden_scope": [
+      "src/routes/lesson-context/+page.svelte",
+      "src/routes/api/lesson-context/",
+      "src/lib/server/platform/database.ts",
+      "src/lib/server/modules/financial-ledger/",
+      "src/lib/server/modules/center-scheduling/",
+      "study-calendar.db",
+      ".memory-bank/tasks/TASK-009-T3-FT-005-W5.task.json",
+      ".memory-bank/tasks/TASK-018-T3-FT-005-W8.task.json",
+      ".memory-bank/tasks/TASK-042-T3-FT-005-W22.task.json"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-redesign if the accepted class-scoped model requires a lesson relation, schema/migration, new public edge, or ownership change.",
+      "Stop if the route cannot delegate through the existing Learning Progress public commands without trusting client authority or writing persistence directly."
+    ]
+  }
+}

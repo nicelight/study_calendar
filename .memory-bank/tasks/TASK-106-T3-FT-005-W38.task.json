@@ -1,0 +1,151 @@
+{
+  "id": "TASK-106-T3-FT-005-W38",
+  "title": "Render homework completion and grading UI with disposable browser proof",
+  "status": "planned",
+  "wave": "W38",
+  "feature": "FT-005",
+  "reqs": [
+    "REQ-009",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-105-T3-FT-005-W37"
+  ],
+  "touched_files": [
+    "src/routes/lesson-context/+page.svelte",
+    "tests/lesson-context/",
+    "tests/routes/",
+    "e2e/ft-005-homework-grading-ui.spec.ts",
+    "tmp/ft-005-homework-grading-ui.db"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    },
+    {
+      "name": "e2e",
+      "command": "node scripts/run-disposable-e2e.mjs --database tmp/ft-005-homework-grading-ui.db --spec e2e/ft-005-homework-grading-ui.spec.ts",
+      "required": true
+    },
+    {
+      "name": "diff",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "The existing Lesson Context page renders the homework item, class-visible completion statuses, the Student completion control, and the Admin/Teacher grade selector using only the server projection and named actions from TASK-105.",
+    "A disposable Playwright flow creates the missing item as Admin or the assigned Teacher, marks it complete as Student, records α, β, γ, and F in permitted Teacher/Admin cases, reloads, and proves the completion status and grade persistence.",
+    "The browser flow proves class-visible completion without shared grade leakage and proves corresponding student/linked-family grade access plus unrelated Student/unlinked-Parent denial through fresh server responses.",
+    "The disposable runner uses only tmp/ft-005-homework-grading-ui.db and exact sidecars, cleans up on success and failure, and never uses study-calendar.db."
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-005.md",
+    ".protocols/FT-005/plan.md",
+    ".memory-bank/contracts/learning-progress-browser-surface.md"
+  ],
+  "evidence_required": [
+    "FT-005-AC-001 / REQ-009 RED: the browser cannot create the missing item as Admin/assigned Teacher, cannot complete it as Student, loses the completion after reload, or fails to show the class-visible status; GREEN: disposable Playwright proves Admin/assigned-Teacher creation, the Student completion action, and fresh server-rendered status for permitted class viewers after reload; artifact: .tasks/TASK-106-T3-FT-005-W38/ and .protocols/TASK-106-T3-FT-005-W38/.",
+    "FT-005-AC-002 / REQ-009 / REQ-014 RED: the UI omits α/β/γ/F, loses a recorded grade, shows a grade in shared completion data, or exposes it to an unrelated Student/unlinked Parent; GREEN: disposable Playwright proves permitted Teacher/Admin entry, persistence, corresponding student/linked-family visibility, and unrelated Student/unlinked-Parent denial; artifact: .tasks/TASK-106-T3-FT-005-W38/ and .protocols/TASK-106-T3-FT-005-W38/."
+  ],
+  "purpose": "Close the browser-facing homework completion and grading gap in the existing Lesson Context page and provide the requested Playwright proof.",
+  "success_outcome": "Students can mark homework complete, permitted class viewers can see completion status, and Admin/assigned Teacher can set α/β/γ/F with persisted privacy-correct display through the existing Lesson Context page.",
+  "anti_goals": [
+    "Do not create a new homework page, route, client-wide store, browser persistence, mutation API, or direct database access.",
+    "Do not implement authorization or student/homework identity resolution in the Svelte component; consume TASK-105's server projection and actions.",
+    "Do not expose grades in shared Student/Parent completion UI or change attendance, payment, schema, or unrelated browser surfaces.",
+    "Do not run the browser flow against study-calendar.db or leave disposable database sidecars after the run."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-001",
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-002",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#browser-user-surface-and-persistence",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#verification-target",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#server-composed-homework-projection",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#authorized-homework-form-actions",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-001",
+    ".memory-bank/features/FT-005-learning-progress.md#FT-005-AC-002",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#browser-user-surface-and-persistence",
+    ".memory-bank/contracts/learning-progress-browser-surface.md#verification-target",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/contracts/boundary-map.md#personal-progress-query-boundary",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Use only the existing /lesson-context page and the server projection/actions supplied by TASK-105; /api/lesson-context remains GET-only.",
+    "Keep browser state at the page level and rely on fresh server data after actions; do not add a client-wide homework store or browser persistence.",
+    "Render server-provided student labels and status data without trusting client role, center, class, lesson, student, or homework identifiers.",
+    "Run Playwright with scripts/run-disposable-e2e.mjs and a separate tmp/ft-005-homework-grading-ui.db; never use study-calendar.db.",
+    "Capture state before and after denied privacy/action cases and clean up in failure-safe paths."
+  ],
+  "invariants": [
+    "Student completion remains class-visible only within the server-authorized scope.",
+    "Shared completion UI contains no grade data.",
+    "Grades display only for the corresponding student/family, assigned Teacher, or Admin.",
+    "Reload reads persisted server state rather than a client-only optimistic result."
+  ],
+  "verification_targets": [
+    "FT-005-AC-001: disposable browser proof covers Student completion, class-visible status, server response, reload persistence, and permitted scope.",
+    "FT-005-AC-002: disposable browser proof covers Admin/assigned Teacher grade entry for α/β/γ/F, persistence, corresponding student/linked-family display, and unrelated Student/unlinked-Parent denial without grade leakage.",
+    "Component/route review proves the UI contains no direct database access, authority resolution, new route, mutation API, or unrelated feature change."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/routes/lesson-context/+page.svelte",
+      "tests/lesson-context/",
+      "tests/routes/",
+      "e2e/ft-005-homework-grading-ui.spec.ts",
+      "tmp/ft-005-homework-grading-ui.db"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/lesson-context/",
+      "src/routes/lesson-context/+page.server.ts",
+      "src/routes/api/lesson-context/",
+      "src/lib/server/platform/database.ts",
+      "src/lib/server/modules/financial-ledger/",
+      "src/lib/server/modules/center-scheduling/",
+      "study-calendar.db",
+      ".memory-bank/tasks/TASK-009-T3-FT-005-W5.task.json",
+      ".memory-bank/tasks/TASK-018-T3-FT-005-W8.task.json",
+      ".memory-bank/tasks/TASK-042-T3-FT-005-W22.task.json",
+      "scripts/run-disposable-e2e.mjs",
+      "playwright.config.ts"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-redesign if the UI requires a new route, mutation API, persistence source, lesson relation, or authority rule beyond TASK-105.",
+      "Stop if the browser flow requires trusting client role, center, student, homework, or scope claims, or if denied grade privacy cannot be proved after a fresh server response.",
+      "Stop if Playwright requires study-calendar.db, an existing server, destructive shared reset, or cleanup that is not failure-safe."
+    ]
+  }
+}

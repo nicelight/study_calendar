@@ -8,7 +8,9 @@ status: active
 
 Implement center-scoped participants, class modes, assignments, Admin-owned
 recurring schedules, Admin/assigned-Teacher single-lesson operations, stable
-lesson identity, and a scoped browser draft for the class schedule form.
+lesson identity, and a scoped browser draft for the class schedule form. The
+protected Admin surface must also expose the existing Admin single-lesson
+commands in the browser.
 
 ## Scope / non-goals
 
@@ -45,6 +47,7 @@ sentinel because no Teacher schedule HTTP adapter exists in this scope.
 | W16 | TASK-032-T2-FT-002-W16 | reject valid zero-occurrence schedules before Schedule/Lesson mutation with existing invalid_schedule failure | TASK-026-T3-FT-002-W12; TASK-031-T2-FT-002-W15 |
 | W18 | TASK-034-T1-FT-002-W18 | strict `dd/mm/yyyy` schedule date presentation with unchanged ISO wire/storage/draft values | TASK-032-T2-FT-002-W16 |
 | W19 | TASK-035-T3-FT-002-W19 | role-scoped Admin/Teacher/Student/Parent class entry shell at `/center/{centerId}/class/{classId}` | TASK-032-T2-FT-002-W16 |
+| W20 | TASK-104-T3-FT-002-W20 | protected Admin projection and browser actions for adding, transferring, and cancelling one selected lesson | TASK-006-T2-FT-002-W4; TASK-026-T3-FT-002-W12 |
 
 ## Gates and verification
 
@@ -60,6 +63,17 @@ success cleanup while observing submitted weekday Form Data. AC-010 is verified
 on TASK-034 with strict user-facing date parsing plus unchanged ISO Form Data
 and draft assertions. AC-011 is verified on T3 TASK-035 with the
 role/principal SSR matrix and denial checks before protected class rendering.
+The W20 browser task verifies the existing AC-003/AC-004 single-lesson
+commands through the protected Admin adapter, including lesson projection,
+identity preservation, unaffected repetitions, and denial/state-equality cases.
+Its T3 evidence must explicitly prove that every submitted `classId` and
+`scheduleId` pair matches the same server-resolved own-center class before the
+owner call; forged, missing, out-of-scope, or mismatched selectors are denied
+with an unchanged full Schedule/Lesson snapshot. The add action must ignore any
+browser-provided identity and generate a fresh server-side `lessonId`, with the
+request and returned identity captured. A completed-lesson cancellation must be
+shown as a rejected owner result with the complete Schedule/Lesson snapshot
+unchanged, including status and timestamps.
 Lesson Context,
 Collaboration, and Learning Progress projections remain downstream
 consumer-owned outcomes; adding dependencies on those consumers would create
@@ -197,3 +211,27 @@ The fresh feature-level adversarial report records exactly one
 finding. The explicit owner reconciles FT-002, REQ-003, REQ-004, shared
 REQ-014, and EP-001 to `verified`; task identities and evidence remain
 unchanged, and FT-003 remains outside this boundary.
+
+## W20 Admin single-lesson browser reconciliation — 2026-09-03
+
+The source review found a real gap after the prior feature closure: the owner
+commands exist and are domain-tested, but `/admin/{centerId}` does not project
+lessons or expose Admin actions for `addLesson`, `transferLesson`, and
+`cancelLesson`. The operator accepted one cohesive protected browser outcome
+covering the server-resolved lesson projection, three route actions, and the
+existing class-card controls. These pieces are inseparable for a usable Admin
+result and share the Center & Scheduling owner boundary, so no split task is
+created.
+
+The new task is `TASK-104-T3-FT-002-W20`, now `done` after the
+current-revision task-plan `APPROVE`, strict doctor gate, independent functional
+`PASS`, and required T3 `semantic-pass`. It depends on the
+completed owner/domain task and Admin dashboard task,
+extends the existing Authentication Transport Browser/API path and Calendar
+and Membership Query Boundary, and keeps the add identity server-generated.
+The task now uses exact `#FT-002-AC-003` and `#FT-002-AC-004` locators and
+claim-linked T3 proof for class/schedule selector consistency, server-generated
+add identity, completed-cancel rejection, and full state equality on every
+denial/failure path. No Teacher HTTP transport, Lesson Context/calendar
+content, persistence owner, financial behavior, schema migration, or Planning
+Revision change is in scope.

@@ -24,6 +24,9 @@ type AdminCenterPort = Pick<
 	| 'updateClass'
 	| 'deleteClass'
 	| 'createRecurringSchedule'
+	| 'addLesson'
+	| 'transferLesson'
+	| 'cancelLesson'
 	| 'assignTeacher'
 	| 'removeTeacherAssignment'
 	| 'addStudentToClass'
@@ -38,6 +41,9 @@ type SuccessMessage =
 	| 'class_updated'
 	| 'class_deleted'
 	| 'schedule_created'
+	| 'lesson_added'
+	| 'lesson_transferred'
+	| 'lesson_cancelled'
 	| 'teacher_assigned'
 	| 'teacher_removed'
 	| 'student_added'
@@ -84,6 +90,9 @@ export type AdminDashboardActions = {
 	updateClass: DashboardAction;
 	deleteClass: DashboardAction;
 	createSchedule: DashboardAction;
+	addLesson: DashboardAction;
+	transferLesson: DashboardAction;
+	cancelLesson: DashboardAction;
 	assignTeacher: DashboardAction;
 	removeTeacher: DashboardAction;
 	addStudent: DashboardAction;
@@ -160,6 +169,51 @@ function requireClass(center: AdminCenterView, classId: string | null): string {
 		throw new Error('not-authorized');
 	}
 	return classId;
+}
+
+function requireClassView(center: AdminCenterView, classId: string | null) {
+	const resolvedClassId = requireClass(center, classId);
+	const classView = center.classes.find((candidate) => candidate.classId === resolvedClassId);
+	if (!classView) {
+		throw new Error('not-authorized');
+	}
+	return classView;
+}
+
+function requireSchedule(
+	center: AdminCenterView,
+	classId: string | null,
+	scheduleId: string | null
+): string {
+	const classView = requireClassView(center, classId);
+	const schedule = classView.schedules.find(
+		(candidate) =>
+			candidate.scheduleId === scheduleId &&
+			candidate.classId === classView.classId &&
+			candidate.centerId === center.centerId
+	);
+	if (!schedule) {
+		throw new Error('not-authorized');
+	}
+	return schedule.scheduleId;
+}
+
+function requireLesson(
+	center: AdminCenterView,
+	classId: string | null,
+	lessonId: string | null
+): string {
+	const classView = requireClassView(center, classId);
+	const lesson = classView.lessons.find(
+		(candidate) =>
+			candidate.lessonId === lessonId &&
+			candidate.classId === classView.classId &&
+			candidate.centerId === center.centerId
+	);
+	if (!lesson) {
+		throw new Error('not-authorized');
+	}
+	return lesson.lessonId;
 }
 
 function requireTeacher(center: AdminCenterView, accountId: string | null): string {
@@ -311,6 +365,50 @@ export function createAdminDashboardActions(
 					weekdays
 				});
 				return { ok: true, message: 'schedule_created' };
+			}),
+
+		addLesson: (event) =>
+			authorizedAction(event, centerScheduling, (center, formData) => {
+				const classId = requireClass(center, field(formData, 'classId'));
+				const scheduleId = requireSchedule(center, classId, field(formData, 'scheduleId'));
+				const lessonDate = field(formData, 'lessonDate');
+				if (!lessonDate) {
+					throw new Error('invalid-iso-date');
+				}
+				centerScheduling.addLesson({
+					sessionToken: sessionToken(event),
+					scheduleId,
+					lessonId: randomUUID(),
+					lessonDate
+				});
+				return { ok: true, message: 'lesson_added' };
+			}),
+
+		transferLesson: (event) =>
+			authorizedAction(event, centerScheduling, (center, formData) => {
+				const classId = requireClass(center, field(formData, 'classId'));
+				const lessonId = requireLesson(center, classId, field(formData, 'lessonId'));
+				const lessonDate = field(formData, 'lessonDate');
+				if (!lessonDate) {
+					throw new Error('invalid-iso-date');
+				}
+				centerScheduling.transferLesson({
+					sessionToken: sessionToken(event),
+					lessonId,
+					lessonDate
+				});
+				return { ok: true, message: 'lesson_transferred' };
+			}),
+
+		cancelLesson: (event) =>
+			authorizedAction(event, centerScheduling, (center, formData) => {
+				const classId = requireClass(center, field(formData, 'classId'));
+				const lessonId = requireLesson(center, classId, field(formData, 'lessonId'));
+				centerScheduling.cancelLesson({
+					sessionToken: sessionToken(event),
+					lessonId
+				});
+				return { ok: true, message: 'lesson_cancelled' };
 			}),
 
 		assignTeacher: (event) =>

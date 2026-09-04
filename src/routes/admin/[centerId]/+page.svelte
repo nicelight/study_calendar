@@ -232,6 +232,14 @@
 		return student ? participantLabel(student) : 'Ученик без профиля';
 	}
 
+	function lessonStatusLabel(status: string): string {
+		return {
+			planned: 'Запланирован',
+			completed: 'Завершён',
+			cancelled: 'Отменён'
+		}[status] ?? status;
+	}
+
 	function selectParticipantRole(event: Event): void {
 		const value = (event.currentTarget as HTMLSelectElement).value;
 		if (value === 'teacher' || value === 'student' || value === 'parent') {
@@ -245,6 +253,9 @@
 			class_updated: 'Класс обновлён.',
 			class_deleted: 'Класс удалён.',
 			schedule_created: 'Расписание создано; пересекающиеся запланированные даты заменены.',
+			lesson_added: 'Отдельный урок добавлен.',
+			lesson_transferred: 'Урок перенесён.',
+			lesson_cancelled: 'Урок отменён.',
 			teacher_assigned: 'Учитель назначен на класс.',
 			teacher_removed: 'Доступ учителя к классу отозван.',
 			student_added: 'Ученик добавлен в класс.',
@@ -534,6 +545,68 @@
 								{/if}
 							</div>
 
+								<div class="subsection lesson-subsection">
+									<h4>Отдельные уроки</h4>
+									<form method="POST" action="?/addLesson" class="lesson-form">
+										<input type="hidden" name="classId" value={classView.classId} />
+										<label>
+											<span>Расписание</span>
+											<select name="scheduleId" required disabled={classView.schedules.length === 0}>
+												<option value="">Выберите расписание</option>
+												{#each classView.schedules as schedule}
+													<option value={schedule.scheduleId}>
+														{formatScheduleDate(schedule.startDate)} — {formatScheduleDate(schedule.endDate)}
+													</option>
+												{/each}
+											</select>
+										</label>
+										<label>
+											<span>Дата урока</span>
+											<input type="date" name="lessonDate" required disabled={classView.schedules.length === 0} />
+										</label>
+										<button class="button secondary" type="submit" disabled={classView.schedules.length === 0}>
+											Добавить урок
+										</button>
+									</form>
+									{#if classView.schedules.length === 0}
+										<p class="muted">Сначала создайте расписание.</p>
+									{/if}
+									{#if classView.lessons.length > 0}
+										<ul class="lesson-list">
+											{#each classView.lessons as lesson (lesson.lessonId)}
+												<li class="lesson-row">
+													<div class="lesson-summary">
+														<strong>{formatDisplayDate(lesson.lessonDate)}</strong>
+														<span class="lesson-meta">{lessonStatusLabel(lesson.status)} · {lesson.lessonId}</span>
+													</div>
+													{#if lesson.status === 'planned'}
+														<div class="lesson-actions">
+															<form method="POST" action="?/transferLesson" class="lesson-form">
+																<input type="hidden" name="classId" value={classView.classId} />
+																<input type="hidden" name="lessonId" value={lesson.lessonId} />
+																<label>
+																	<span class="sr-only">Новая дата урока</span>
+																	<input type="date" name="lessonDate" value={lesson.lessonDate} required />
+																</label>
+																<button class="button secondary" type="submit">Перенести</button>
+															</form>
+															<form method="POST" action="?/cancelLesson">
+																<input type="hidden" name="classId" value={classView.classId} />
+																<input type="hidden" name="lessonId" value={lesson.lessonId} />
+																<button class="text-button danger" type="submit">Отменить</button>
+															</form>
+														</div>
+													{:else if lesson.status === 'completed'}
+														<span class="muted">Завершённое занятие нельзя отменить.</span>
+													{/if}
+												</li>
+											{/each}
+										</ul>
+									{:else}
+										<p class="muted">Отдельных уроков пока нет.</p>
+									{/if}
+								</div>
+
 							<form method="POST" action="?/deleteClass" class="delete-form">
 								<input type="hidden" name="classId" value={classView.classId} />
 								<p>Удаление класса также удалит его расписание и уроки.</p>
@@ -704,6 +777,7 @@
 	.text-button.danger { color: var(--danger); }
 	.inline-form { display: grid; gap: .65rem; }
 	.schedule-form { display: grid; gap: .9rem; padding: 1rem; border-radius: .8rem; background: var(--surface-soft); }
+	.lesson-form { display: grid; gap: .65rem; }
 	.date-grid { display: grid; gap: .75rem; }
 	.date-error { color: var(--danger); }
 	:global([data-schedule-date-field][aria-invalid="true"]) { border-color: var(--danger); }
@@ -715,6 +789,12 @@
 	.weekday-grid input:checked + span { border-color: var(--accent); background: var(--accent); color: #fff; }
 	.weekday-grid input:focus-visible + span { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
 	.schedule-list { display: grid; gap: .4rem; color: var(--muted); font-size: .82rem; }
+	.lesson-list { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
+	.lesson-row { display: grid; gap: .75rem; padding: .8rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface-soft); }
+	.lesson-summary { display: grid; gap: .2rem; min-width: 0; }
+	.lesson-meta { color: var(--muted); font-size: .75rem; overflow-wrap: anywhere; }
+	.lesson-actions { display: grid; gap: .6rem; }
+	.lesson-actions .button { width: auto; }
 	.delete-form { display: grid; gap: .6rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 	.delete-form p { margin: 0; color: var(--muted); font-size: .82rem; }
 	.empty-state { padding: 2.5rem 1rem; border: 1px dashed var(--line); border-radius: 1rem; text-align: center; }
@@ -731,6 +811,8 @@
 		.compact-form { grid-template-columns: minmax(0, 1.6fr) minmax(10rem, .8fr) auto; align-items: end; }
 		.compact-form .button { width: auto; }
 		.date-grid, .inline-form { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; }
+		.lesson-form { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+		.lesson-actions { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
 		.weekday-grid { grid-template-columns: repeat(7, 1fr); }
 	}
 

@@ -1,7 +1,7 @@
 ---
 description: Pure SDD spec registry and planned-spec index.
 status: active
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 source_of_truth:
   - .memory-bank/spec-index.md
 ---
@@ -23,7 +23,8 @@ source_of_truth:
 | contract | [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md) | active | Canonical capability-slice inventory, dependency graph, public boundaries, and write ownership. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/access-control.md](contracts/access-control.md) | active | Server-side authentication, authorization scope, privacy, and provider-binding contract. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/collaboration-browser-surface.md](contracts/collaboration-browser-surface.md) | active | Lesson Context browser projection, form mutation transport, privacy, and disposable browser proof for Collaboration. | /feature-to-tasks |
-| contract | [.memory-bank/contracts/authentication-transport.md](contracts/authentication-transport.md) | active | Minimal SvelteKit browser/HTTP path for authentication, sessions, protected Admin provisioning, and scoped schedule-form drafts. | /feature-to-tasks |
+| contract | [.memory-bank/contracts/learning-progress-browser-surface.md](contracts/learning-progress-browser-surface.md) | active | Lesson Context browser projection, completion/grading form transport, privacy, and disposable browser proof for Learning Progress. | /feature-to-tasks |
+| contract | [.memory-bank/contracts/authentication-transport.md](contracts/authentication-transport.md) | active | Minimal SvelteKit browser/HTTP path for authentication, sessions, protected Admin provisioning, single-lesson actions, and scoped schedule-form drafts. | /feature-to-tasks |
 | contract | [.memory-bank/contracts/financial-ledger.md](contracts/financial-ledger.md) | active | Financial ownership, exactness, allocation, audit, replay, Admin management, authorized payment-form default consumption, and personal marker consumption. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/provider-adapters.md](contracts/provider-adapters.md) | active | Server-only normalized verification boundary for Telegram Login and Google OAuth adapters. | /feature-to-tasks |
 | contract | [.memory-bank/contracts/statistics-projection.md](contracts/statistics-projection.md) | active | Read-only role-scoped registry shape, attendance/payment metric formulas, sorting, and composition rules for FT-007. | /feature-to-tasks |

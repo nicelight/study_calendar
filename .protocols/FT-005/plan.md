@@ -9,13 +9,16 @@ status: active
 Deliver class-visible homework completion, private accepted-scale grades, the
 authorized lesson-scoped personal grade query, attendance with financially
 correct absent-to-present reconciliation, and assigned-Teacher lesson-day
-attendance entry.
+attendance entry. The remaining browser gap is limited to the existing
+`/lesson-context` surface: create the single class-scoped homework item,
+student completion, class-visible completion status, and Teacher/Admin grading.
 
 ## Canonical inputs and ownership
 
 - Feature: [.memory-bank/features/FT-005-learning-progress.md](../../.memory-bank/features/FT-005-learning-progress.md)
 - Primary owner: Learning Progress at `src/lib/server/modules/learning-progress/`.
 - Boundaries: [Personal Progress Query](../../.memory-bank/contracts/boundary-map.md#personal-progress-query-boundary) and [Attendance Charge Reconciliation](../../.memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary).
+- Browser boundary: [Learning Progress Browser Surface](../../.memory-bank/contracts/learning-progress-browser-surface.md#server-composed-homework-projection).
 - Financial rules: [.memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants](../../.memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants)
 - Planning authority: [.memory-bank/spec-backbone.md](../../.memory-bank/spec-backbone.md), Global Backbone `complete`, Planning Revision `2`.
 
@@ -29,8 +32,27 @@ attendance entry.
 4. `TASK-042-T3-FT-005-W22` owns the assigned-Teacher lesson-day attendance
    list and atomic absent-subset/default-present save, after TASK-010 and
    TASK-041.
+5. `TASK-105-T3-FT-005-W37` will own the server-composed `/lesson-context`
+   homework projection and named, server-authorized create, completion, and
+   grading actions.
+6. `TASK-106-T3-FT-005-W38` will own the corresponding UI and disposable
+   Playwright proof after TASK-105.
 
 Learning Progress owns attendance; Financial Ledger owns charge, allocation, balance, and audit writes.
+
+## Browser completion and grading boundary — 2026-09-04
+
+The operator accepted the minimal class-scoped model: reuse the existing
+`learning_homework` shape, resolve the single item for the current authorized
+class in Learning Progress, and do not add a `lesson_id` relation, migration,
+new API, or consumer-owned mapping. Existing `FT-005-AC-001` and
+`FT-005-AC-002` remain the only product acceptance criteria; no additional
+non-critical AC is introduced.
+
+The work is split into two sequential T3 outcomes because the route transport
+must be stable before the browser surface can prove it. No production-only
+task is needed: the current repository has no production-specific configuration
+for this feature.
 
 ## Verification
 
@@ -41,6 +63,17 @@ reconciliation/audit/isolation, and AC-005 assigned-Teacher lesson-day
 attendance entry for individual and group classes. TASK-009 and TASK-010
 evidence remains evidence for their original outcomes only; TASK-042 owns the
 new browser/integration contour.
+
+The current browser completion/grading contour is owned by the two planned
+cards listed above. W37 is limited to server composition and named form
+actions; W38 is limited to the existing page UI and one disposable Playwright
+flow. The canonical shape, privacy rules, and cleanup target are defined by
+[Learning Progress Browser Surface](../../.memory-bank/contracts/learning-progress-browser-surface.md).
+W37's claim-linked proof explicitly covers AC-001/AC-002, repeat-create
+count/identity equality, server-generated opaque ID generation and uniqueness,
+and isolated teardown. W38's AC-001 proof explicitly covers Admin/assigned-
+Teacher creation before Student completion. FT-005, EP-004, and REQ-009 are
+all `planned` until this browser contour is independently verified.
 
 ## W8 card completeness correction
 
@@ -67,6 +100,16 @@ The task card carries the exact `FT-005-AC-002` RED/GREEN evidence handoff,
 isolated state-before/state-after, safe rerun/cleanup, native gates, and
 verifier artifact paths; no implementation, execute/verify, lifecycle, or
 retry-budget action is included here.
+
+## Task-plan approval and decomposition closure — 2026-09-04
+
+The fresh `/review-tasks-plan FT-005` returned `APPROVE` at Planning Revision
+`2` ([review report](../../.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-005-R5-final-report-docs-01.md)).
+The final sequential queue is `TASK-105-T3-FT-005-W37` →
+`TASK-106-T3-FT-005-W38`; decomposition is closed for this revision. The
+cards, FT-005, EP-004, and REQ-009 remain `planned` until the applicable
+readiness/promotion and execution owners act. No implementation, verification,
+or product lifecycle promotion is implied by this approval.
 
 ## Revision 2 reconciliation
 

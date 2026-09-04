@@ -149,12 +149,12 @@ status: draft
 | REQ-001 | EP-001 | FT-001 | test:FT-001-AC-001..013 | planned |
 | REQ-002 | EP-001 | FT-001 | test:FT-001-AC-003..008 | verified |
 | REQ-003 | EP-001 | FT-001, FT-002 | test:FT-001-AC-009;test:FT-002-AC-001..002;FT-002-AC-011 | verified |
-| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..010 | verified |
+| REQ-004 | EP-001 | FT-002 | test:FT-002-AC-003..004;FT-002-AC-008..010 | planned |
 | REQ-005 | EP-002 | FT-003 | test:FT-003-AC-001..004;FT-003-AC-007..008 | verified |
 | REQ-006 | EP-002, EP-003 | FT-003, FT-004 | test:FT-003-AC-003..006;FT-003-AC-008;FT-004-AC-001;FT-004-AC-005 | planned |
 | REQ-007 | EP-003 | FT-004 | test:FT-004-AC-001..002 | planned |
 | REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | planned |
-| REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | verified |
+| REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | planned |
 | REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..005;FT-006-AC-004 | verified |
 | REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
 | REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
@@ -402,6 +402,34 @@ all unrelated feature/requirement lifecycles are unchanged.
 - [semantic report](../.tasks/FT-002/FT-002-S-RED-VERIFY-final-report-docs-01.md)
 - [feature sync report](../.tasks/FT-002/FT-002-S-MB-SYNC-final-report-docs-02.md)
 
+## FT-002 Admin single-lesson browser reconciliation — 2026-09-03
+
+The accepted REQ-004 single-lesson commands already exist in Center &
+Scheduling, but the protected Admin browser surface exposes only recurring
+schedule creation. The missing projection/actions/controls are therefore a new
+browser-boundary outcome for the existing `FT-002-AC-003` and `FT-002-AC-004`
+claims. FT-002 and REQ-004 are reconciled from `verified` to `planned` until
+the new task is implemented and independently verified; completed task records,
+dependencies, and historical evidence remain unchanged.
+
+- [FT-002 feature](features/FT-002-center-and-scheduling.md)
+- [FT-002 implementation plan](tasks/plans/IMPL-FT-002.md)
+- [TASK-104 card](tasks/TASK-104-T3-FT-002-W20.task.json)
+- [Authentication Transport](contracts/authentication-transport.md#browserapi-path)
+- [Calendar and Membership Query Boundary](contracts/boundary-map.md#calendar-and-membership-query-boundary)
+
+## TASK-104 closure — 2026-09-04
+
+`TASK-104-T3-FT-002-W20` is now `done` after independent functional `PASS` and
+the required T3 `semantic-pass` for the protected Admin single-lesson
+projection and actions. The RTM lifecycle for REQ-004 and shared REQ-014 stays
+`planned` because this is task closure only; a fresh feature-level aggregate
+semantic gate is still required before promoting FT-002 or its requirements.
+
+- [TASK-104 card](tasks/TASK-104-T3-FT-002-W20.task.json)
+- [functional verification](../.protocols/TASK-104-T3-FT-002-W20/verification.md)
+- [semantic verification](../.protocols/TASK-104-T3-FT-002-W20/red-verification.md)
+
 ## FT-003 W9 accepted calendar-route scope — 2026-08-15
 
 The accepted FT-003-AC-007/AC-008 scope adds a protected DB-backed `/calendar`
@@ -546,3 +574,13 @@ therefore mechanically reconciled from `planned` to `implemented`. Shared
 REQ-014 remains `planned`: its RTM maps FT-001 through FT-007, and this W31
 boundary does not establish complete shared-feature coverage or a `verified`
 owner decision.
+
+## FT-005 browser-surface reconciliation — 2026-09-04
+
+The RTM lifecycle for `REQ-009` is `planned`, not `verified`: the accepted
+requirement includes a browser-usable homework completion and grading surface,
+while the existing evidence covers only backend storage/query outcomes. The
+planned `TASK-105-T3-FT-005-W37` and `TASK-106-T3-FT-005-W38` cards close this
+remaining projection, action, UI, and Playwright contour. Historical backend
+task identities and evidence remain unchanged; no requirement target or AC was
+changed.

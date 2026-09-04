@@ -18,7 +18,8 @@ const data = {
 			studentAccountIds: [],
 			studentCount: 0,
 			teacherAccountIds: [],
-			schedules: []
+			schedules: [],
+			lessons: []
 		}
 	]
 };

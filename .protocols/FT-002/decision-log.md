@@ -166,3 +166,39 @@ finding or unresolved operator decision. The explicit owner reconciled FT-002,
 REQ-003, REQ-004, shared REQ-014, and EP-001 to `verified`. TASK-026, TASK-031,
 TASK-032, TASK-034, and TASK-035 remain `done`; FT-003 and unrelated lifecycle
 surfaces are unchanged.
+
+## 2026-09-03 — Admin single-lesson browser gap
+
+The operator reported that Admin has no UI for adding, transferring, or
+cancelling one lesson even though Center & Scheduling already exposes and
+tests `addLesson`, `transferLesson`, and `cancelLesson`. Source inspection
+confirmed that the Admin port/action map includes only recurring schedule
+creation, `getAdminCenter` returns schedules without lessons, and the class card
+renders no single-lesson controls.
+
+The operator accepted one cohesive T3 browser-boundary outcome: extend the
+server-resolved Admin projection, wire protected `addLesson`, `transferLesson`,
+and `cancelLesson` actions, and render the three controls in the existing
+`/admin/{centerId}` class card. The add action generates `lessonId` on the
+server; transfer/cancel revalidate the selected lesson against the Admin's own
+center/class projection before calling the owner command. Proof must use the
+actual protected path and preserve identity, unaffected repetitions, and
+state-before/state-after equality on denial/failure paths.
+
+This is `rebuild_required`, not repair of completed TASK-006 or TASK-026.
+Create `TASK-104-T3-FT-002-W20` after this boundary, depending on those existing
+owner and Admin-surface outcomes. Extend Authentication Transport and Calendar
+and Membership Query Boundary in place; no new SDD spec, Teacher transport,
+Lesson Context/calendar content, financial behavior, schema migration, or
+Planning Revision change is accepted. FT-002 and REQ-004 return to `planned`
+until the follow-up task and fresh feature-level semantic gate pass.
+
+## 2026-09-04 — TASK-104 lifecycle closure
+
+The explicit owner consumed the independent functional `VERDICT: PASS` and the
+required T3 `SEMANTIC_VERDICT: semantic-pass`, then recorded
+`TASK-104-T3-FT-002-W20` as `done`. The task identity, dependencies, accepted
+scope, implementation, and all prior execution/verification evidence remain
+unchanged. FT-002, REQ-004, and shared REQ-014 remain `planned` pending a fresh
+feature-level aggregate semantic gate; no feature or requirement promotion is
+included in this task-only closure.

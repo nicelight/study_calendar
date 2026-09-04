@@ -37,6 +37,7 @@ export type AdminClassView = {
 	studentAccountIds: string[];
 	studentCount: number;
 	schedules: ScheduleView[];
+	lessons: LessonView[];
 };
 
 export type RegistryMembershipFact = {
@@ -322,7 +323,8 @@ export class CenterSchedulingBoundary {
 					teacherAccountIds: this.getClassTeacherIds(classRow.id),
 					studentAccountIds,
 					studentCount: studentAccountIds.length,
-					schedules: this.getScheduleViewsForClass(classRow.id)
+					schedules: this.getScheduleViewsForClass(classRow.id),
+					lessons: this.getLessonViewsForClass(classRow.id)
 				};
 			})
 		};

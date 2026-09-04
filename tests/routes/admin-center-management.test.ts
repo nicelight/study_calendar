@@ -467,4 +467,131 @@ describe('FT-002-AC-007 Admin center management surface', () => {
 			lessons: root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()
 		}).toEqual(before);
 	});
+
+	it('exposes a projected lesson list and protected single-lesson operations', async () => {
+		root.centerScheduling.createClass({
+			sessionToken: 'session-admin-own',
+			centerId: 'center-own',
+			classId: 'class-lesson',
+			name: 'Уроки',
+			mode: 'group'
+		});
+		root.centerScheduling.createRecurringSchedule({
+			sessionToken: 'session-admin-own',
+			classId: 'class-lesson',
+			scheduleId: 'schedule-lesson',
+			startDate: '2026-09-07',
+			endDate: '2026-09-14',
+			weekdays: [1]
+		});
+
+		const api = actions() as any;
+		const load = createAdminDashboardPageLoad(root.centerScheduling);
+		const initial = load(event(root, 'center-own', 'session-admin-own'));
+		const classView = initial.classes.find((candidate) => candidate.classId === 'class-lesson') as any;
+		const initialLessons = classView.lessons;
+		expect(initialLessons).toHaveLength(2);
+		const rendered = render(AdminCenterPage, { props: { data: initial, form: null } } as any).body;
+		expect(rendered).toContain('Добавить урок');
+		expect(rendered).toContain('?/addLesson');
+		expect(rendered).toContain('?/transferLesson');
+		expect(rendered).toContain('?/cancelLesson');
+		expect(typeof api.addLesson).toBe('function');
+		expect(typeof api.transferLesson).toBe('function');
+		expect(typeof api.cancelLesson).toBe('function');
+
+		const siblingBefore = root.database.sqlite
+			.prepare('SELECT id, class_id, schedule_id, lesson_date, status FROM lessons ORDER BY id')
+			.all();
+		const added = await api.addLesson(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-lesson'],
+				['scheduleId', 'schedule-lesson'],
+				['lessonDate', '2026-09-21'],
+				['lessonId', 'client-chosen-id']
+			])
+		);
+		expect(added).toMatchObject({ ok: true, message: 'lesson_added' });
+		const addedRow = root.database.sqlite
+			.prepare('SELECT id, class_id, schedule_id, lesson_date, status FROM lessons WHERE lesson_date = ?')
+			.get('2026-09-21') as { id: string; class_id: string; schedule_id: string; lesson_date: string; status: string };
+		expect(addedRow).toMatchObject({ class_id: 'class-lesson', schedule_id: 'schedule-lesson', lesson_date: '2026-09-21', status: 'planned' });
+		expect(addedRow.id).not.toBe('client-chosen-id');
+
+		const transferTarget = siblingBefore[0] as { id: string; class_id: string; schedule_id: string; lesson_date: string; status: string };
+		const transferSibling = siblingBefore.find((lesson: any) => lesson.id !== transferTarget.id) as any;
+		const transferred = await api.transferLesson(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-lesson'],
+				['lessonId', transferTarget.id],
+				['lessonDate', '2026-09-28']
+			])
+		);
+		expect(transferred).toMatchObject({ ok: true, message: 'lesson_transferred' });
+		expect(root.database.sqlite.prepare('SELECT id, schedule_id, lesson_date, status FROM lessons WHERE id = ?').get(transferTarget.id))
+			.toEqual({ id: transferTarget.id, schedule_id: transferTarget.schedule_id, lesson_date: '2026-09-28', status: 'planned' });
+		expect(root.database.sqlite.prepare('SELECT id, schedule_id, lesson_date, status FROM lessons WHERE id = ?').get(transferSibling.id))
+			.toEqual({ id: transferSibling.id, schedule_id: transferSibling.schedule_id, lesson_date: transferSibling.lesson_date, status: transferSibling.status });
+
+		const beforeDenied = root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all();
+		const unauthenticated = await api.cancelLesson(
+			event(root, 'center-own', undefined, [
+				['classId', 'class-lesson'],
+				['lessonId', transferSibling.id]
+			])
+		);
+		expect(unauthenticated).toMatchObject({ status: 401, data: { error: 'unauthorized' } });
+		expect(root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()).toEqual(beforeDenied);
+
+		const nonAdmin = await api.transferLesson(
+			event(root, 'center-own', 'session-teacher-own', [
+				['classId', 'class-lesson'],
+				['lessonId', transferSibling.id],
+				['lessonDate', '2026-10-05']
+			])
+		);
+		expect(nonAdmin).toMatchObject({ status: 403, data: { error: 'forbidden' } });
+		expect(root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()).toEqual(beforeDenied);
+
+		const crossCenter = await api.transferLesson(
+			event(root, 'center-other', 'session-admin-own', [
+				['classId', 'class-lesson'],
+				['lessonId', transferSibling.id],
+				['lessonDate', '2026-10-05']
+			])
+		);
+		expect(crossCenter).toMatchObject({ status: 403, data: { error: 'forbidden' } });
+		expect(root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()).toEqual(beforeDenied);
+
+		const forgedLesson = await api.cancelLesson(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-lesson'],
+				['lessonId', 'forged-lesson']
+			])
+		);
+		expect(forgedLesson).toMatchObject({ status: 403, data: { error: 'forbidden' } });
+		expect(root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()).toEqual(beforeDenied);
+
+		const beforeForged = root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all();
+		const forged = await api.addLesson(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-lesson'],
+				['scheduleId', 'missing-schedule'],
+				['lessonDate', '2026-10-05']
+			])
+		);
+		expect(forged).toMatchObject({ status: 403, data: { error: 'forbidden' } });
+		expect(root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()).toEqual(beforeForged);
+
+		root.database.sqlite.prepare("UPDATE lessons SET status = 'completed' WHERE id = ?").run(transferTarget.id);
+		const beforeCompletedCancel = root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all();
+		const completedCancel = await api.cancelLesson(
+			event(root, 'center-own', 'session-admin-own', [
+				['classId', 'class-lesson'],
+				['lessonId', transferTarget.id]
+			])
+		);
+		expect(completedCancel).toMatchObject({ status: 500, data: { error: 'operation_failed' } });
+		expect(root.database.sqlite.prepare('SELECT * FROM lessons ORDER BY id').all()).toEqual(beforeCompletedCancel);
+	});
 });

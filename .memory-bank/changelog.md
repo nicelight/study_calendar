@@ -4,6 +4,15 @@ status: active
 ---
 # Changelog
 
+## [2026-09-04] Wave W20 — TASK-104 closure
+
+- Reconciled `TASK-104-T3-FT-002-W20` to `done` after independent functional
+  `PASS` and the required per-task T3 `semantic-pass`.
+- Preserved task identity, dependencies, implementation scope, and all prior
+  evidence; no feature, requirement, epic, or dependency promotion was made.
+- Updated FT-002 planning/RTM navigation and task protocol handoff; the fresh
+  feature-level aggregate semantic gate remains the next boundary for FT-002.
+
 ## [2026-09-03] FT-006 task decomposition approval
 
 - Closed the repaired FT-006 decomposition after the current-revision

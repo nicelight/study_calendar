@@ -3,7 +3,14 @@ description: Product feature for homework status, grading, and attendance.
 status: active
 type: feature
 id: FT-005
-lifecycle: verified
+lifecycle: planned
+last_updated: 2026-09-04
+source_of_truth:
+  - .memory-bank/features/FT-005-learning-progress.md
+  - .memory-bank/contracts/learning-progress-browser-surface.md
+clarification_status: complete
+last_clarified: 2026-09-04
+clarification_questions: 0
 epic: EP-004
 requirements: [REQ-009, REQ-010, REQ-014, REQ-015]
 spec_design_status: complete
@@ -11,6 +18,9 @@ spec_design_links:
   - .memory-bank/contracts/boundary-map.md#cross-slice-orchestration
   - .memory-bank/contracts/boundary-map.md#attendance-charge-reconciliation-boundary
   - .memory-bank/contracts/access-control.md
+  - .memory-bank/contracts/learning-progress-browser-surface.md#server-composed-homework-projection
+  - .memory-bank/contracts/learning-progress-browser-surface.md#authorized-homework-form-actions
+  - .memory-bank/contracts/learning-progress-browser-surface.md#browser-user-surface-and-persistence
   - .memory-bank/contracts/financial-ledger.md#financial-facts-and-invariants
   - .memory-bank/domains/core-domain.md#ownership-map
   - .memory-bank/states/lifecycle-map.md#learning-and-finance
@@ -112,6 +122,50 @@ remain owned by `TASK-009-T3-FT-005-W5`; the provider-compatible query outcome i
 planned separately in `TASK-018-T3-FT-005-W8` so historical TASK-009 evidence is
 not broadened retroactively. Lesson Context consumes the named query and does
 not persist or resolve a competing `lessonId -> homeworkId` mapping.
+
+## Browser completion and grading reconciliation — 2026-09-04
+
+The operator accepted the minimal browser scope for the missing homework
+surface. The existing class-scoped `learning_homework` model is reused: the
+provider resolves the single item for the current authorized class, while zero
+items produce no item and multiple items fail closed. No `lesson_id` relation,
+migration, new mutation API, or consumer-owned homework mapping is added.
+
+The existing `FT-005-AC-001` and `FT-005-AC-002` remain the only product
+acceptance criteria for this scope. No additional non-critical AC is
+introduced. The work is split into two sequential T3 outcomes: server
+projection/actions first, then UI and disposable Playwright proof.
+
+- [TASK-105-T3-FT-005-W37](../tasks/TASK-105-T3-FT-005-W37.task.json) will
+  close the server-side `/lesson-context` projection and named form-action
+  transport.
+- [TASK-106-T3-FT-005-W38](../tasks/TASK-106-T3-FT-005-W38.task.json) will
+  close the browser UI and persistence/privacy proof after W37.
+
+Feature lifecycle is kept `planned` until these planned outcomes receive their
+own execution and verification evidence; no product promotion is inferred by
+task planning.
+
+## Task-plan approval and decomposition closure — 2026-09-04
+
+The fresh `/review-tasks-plan FT-005` returned `APPROVE` at Planning Revision
+`2` ([review report](../../.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-005-R5-final-report-docs-01.md)).
+The final sequential queue is `TASK-105-T3-FT-005-W37` →
+`TASK-106-T3-FT-005-W38`; decomposition is closed for this revision. The
+cards remain `planned` until execution ownership proceeds, and the feature,
+EP-004, and REQ-009 remain `planned` until browser outcomes are independently
+verified.
+
+## Clarifications
+
+On 2026-09-04, the fresh task-plan review was validated against the accepted
+feature intent. The W37/W38 proof contracts must explicitly cover the existing
+AC-001/AC-002 paths, duplicate create prevention, server-generated opaque IDs,
+isolated-state cleanup, and Admin/assigned-Teacher creation in the browser.
+These are execution-proof repairs, not new product behavior. The feature,
+EP-004, and REQ-009 therefore remain `planned` until the new browser outcomes
+are executed and independently verified; historical backend evidence remains
+unchanged.
 
 ## Task Coverage at W5 Boundary
 

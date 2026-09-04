@@ -179,8 +179,14 @@ remain implementation details.
   class list (including the server-resolved class identity, center, name, and
   mode needed to choose a permitted calendar destination) and read-only
   Students/Teachers/Classes registry facts required by the Statistics
-  Projection; accept owner-side center, membership, assignment, and schedule
-  commands.
+  Projection; accept owner-side center, membership, assignment, recurring
+  schedule, and named single-lesson `addLesson`, `transferLesson`, and
+  `cancelLesson` commands.
+- The Admin class projection may include server-selected `LessonView` entries
+  carrying `lessonId`, `classId`, `scheduleId`, `lessonDate`, `status`, and
+  authored timestamps. A browser adapter may render those entries and submit
+  only the named command selectors; the projection is read-only and never
+  grants authority beyond the Admin scope check.
 - **Role-scoped class entry:** the protected
   `/center/{centerId}/class/{classId}` route consumes this boundary with the
   server-resolved actor. Admin, Teacher, Student, and Parent receive a class
@@ -201,15 +207,19 @@ remain implementation details.
   out-of-scope actor receives no accessible class list; removed assignments or
   memberships are excluded at the next authorization check without revealing
   unrelated class existence. Moved lessons retain identity and context;
-  unrelated recurring lessons remain unchanged. A valid ISO date range and
-  valid weekday selection whose inclusive range yields zero recurring dates is
-  rejected before any Schedule or Lesson write, using the existing Admin
-  transport failure envelope `400 { error: 'invalid_schedule' }`.
+  unrelated recurring lessons remain unchanged. Single-lesson add/transfer/
+  cancel operations reject a missing or out-of-scope schedule/lesson and do not
+  mutate unrelated lessons; completed lessons remain protected from
+  cancellation. A valid ISO date range and valid weekday selection whose
+  inclusive range yields zero recurring dates is rejected before any Schedule or
+  Lesson write, using the existing Admin transport failure envelope
+  `400 { error: 'invalid_schedule' }`.
 - **Forbidden bypasses:** no consumer writes membership, assignment, lesson,
   or schedule tables, reconstructs class authorization from a UI route, or
   turns a caller-supplied `classId` into authorization for a bare canonical
   destination.
-- **Verification:** individual/group scheduling lifecycle, transfer identity,
+- **Verification:** individual/group scheduling lifecycle, Admin single-lesson
+  add/transfer/cancel through the protected adapter, transfer identity,
   cross-center membership, assignment removal, historical access, and bare
   Home/Classes accessible-list scenarios;
   a no-occurrence rejection probe compares schedule/Lesson state before and

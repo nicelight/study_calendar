@@ -3,7 +3,10 @@ description: Product feature for center membership, classes, and lesson scheduli
 status: active
 type: feature
 id: FT-002
-lifecycle: verified
+lifecycle: planned
+last_updated: 2026-09-04
+source_of_truth:
+  - .memory-bank/features/FT-002-center-and-scheduling.md
 epic: EP-001
 requirements: [REQ-003, REQ-004, REQ-014]
 spec_design_status: complete
@@ -12,6 +15,7 @@ spec_design_links:
   - .memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary
   - .memory-bank/contracts/access-control.md
   - .memory-bank/contracts/authentication-transport.md#class-schedule-draft-retention
+  - .memory-bank/contracts/authentication-transport.md#browserapi-path
   - .memory-bank/domains/core-domain.md#ownership-map
   - .memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context
 ---
@@ -317,3 +321,44 @@ both server-owned profile facts are available. It falls back to whichever
 human-readable value exists, and only then to the technical account ID. The
 submitted `teacherAccountId`, authorization checks, and assignment commands are
 unchanged; this is a presentation correction inside FT-002-AC-007.
+
+## Admin single-lesson browser operations — 2026-09-03
+
+The current source review found that the accepted `FT-002-AC-003` and
+`FT-002-AC-004` owner commands (`addLesson`, `transferLesson`, and
+`cancelLesson`) are present and covered by domain tests, but the protected Admin
+surface still exposes only recurring schedule creation. The existing
+`getAdminCenter` projection has no lesson list, `center-dashboard.server.ts`
+does not export the three form actions, and the Admin class card renders no
+single-lesson controls. This is a new browser-boundary implementation outcome,
+not a repair of the completed owner tasks.
+
+The accepted reconciliation adds one protected Admin browser task that loads
+server-resolved lessons, wires the three actions to Center & Scheduling with
+server-generated identity for add, and renders per-lesson add/transfer/cancel
+controls while preserving lesson identity, unaffected repetitions, and
+authorization. The Authentication Transport Browser/API path and Calendar and
+Membership Query Boundary are extended in place; no new spec or Planning
+Revision is required. The queue action is `rebuild_required`; all completed
+FT-002 task identities and evidence remain unchanged. FT-002 and REQ-004 stay
+`planned` until the new task and a fresh feature-level semantic gate pass. The
+current-revision task-plan review returned `APPROVE`, the strict doctor gate
+passed, and TASK-104 is now `done` after independent functional `PASS` and the
+required T3 `semantic-pass`; FT-002 and REQ-004 remain `planned` until a fresh
+feature-level aggregate gate covers this reopened boundary.
+
+- [TASK-104 card](../tasks/TASK-104-T3-FT-002-W20.task.json)
+
+## TASK-104 lifecycle closure — 2026-09-04
+
+The explicit owner closed `TASK-104-T3-FT-002-W20` as `done` after the
+independent `/verify` `PASS`, required per-task T3
+`SEMANTIC_VERDICT: semantic-pass`, and project gates. Task identity,
+dependencies, implementation evidence, and prior task records remain
+unchanged. FT-002, REQ-004, and shared REQ-014 remain `planned` pending the
+fresh feature-level aggregate semantic gate; this task closure does not promote
+the feature or its requirements.
+
+- [TASK-104 functional verification](../../.protocols/TASK-104-T3-FT-002-W20/verification.md)
+- [TASK-104 semantic verification](../../.protocols/TASK-104-T3-FT-002-W20/red-verification.md)
+- [TASK-104 closure evidence](../../.tasks/TASK-104-T3-FT-002-W20/TASK-104-T3-FT-002-W20-S-RED-VERIFY-final-report-docs-01.md)

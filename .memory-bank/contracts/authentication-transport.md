@@ -1,7 +1,7 @@
 ---
-description: Minimal SvelteKit browser and HTTP transport for authentication, sessions, Admin provisioning, and schedule-form drafts.
+description: Minimal SvelteKit browser and HTTP transport for authentication, sessions, Admin provisioning, single-lesson actions, and schedule-form drafts.
 status: active
-last_updated: 2026-08-14
+last_updated: 2026-09-03
 source_of_truth:
   - .memory-bank/contracts/authentication-transport.md
 ---
@@ -36,9 +36,14 @@ Center & Scheduling. The minimum real path is:
    without center membership may create the first center in the browser; the
    server then creates the Admin membership and redirects to
    `GET/POST /admin/{centerId}`, the protected own-center surface for class
-   CRUD, recurring schedules, participant invitations, and teacher
-   assignment/removal. The narrower `/admin/{centerId}/participants` transport
-   remains available for participant provisioning.
+   CRUD, recurring schedules, single-lesson add/transfer/cancel operations,
+   participant invitations, and teacher assignment/removal. For a single-lesson
+   add, the adapter generates the lesson identity server-side; transfer and
+   cancel accept only a lesson selected from the server-resolved own-center
+   projection. All three actions call Center & Scheduling owner commands and
+   return a safe success/error result without direct persistence. The narrower
+   `/admin/{centerId}/participants` transport remains available for participant
+   provisioning.
 9. `GET /center/{centerId}/class/{classId}` is the protected role-scoped class
    entry shell. The server resolves the actor and permitted class scope through
    Center & Scheduling; Admin, Teacher, Student, and Parent members may receive
@@ -135,7 +140,16 @@ database writes.
   assignments, and schedules only through an authorized Center & Scheduling
   query. Its form actions generate class/schedule identities server-side and
   call owner commands; submitted role, center, or Admin fields cannot widen
-  access.
+  access. The same surface may expose single-lesson forms for a selected class:
+  `addLesson` accepts a server-validated schedule and canonical ISO lesson date,
+  while `transferLesson` and `cancelLesson` accept a server-validated lesson
+  identity. The adapter rechecks Admin/center/class scope for every action,
+  generates the add identity itself, and maps owner failures to the existing
+  safe dashboard failure envelope; no route or component writes scheduling
+  persistence. The form selectors are `classId` plus `scheduleId` and
+  canonical ISO `lessonDate` for add, and `classId` plus `lessonId` (and the
+  new canonical ISO `lessonDate` for transfer) for the other actions; all
+  selectors are checked against the server projection before the owner call.
 
 ## Class schedule draft retention
 

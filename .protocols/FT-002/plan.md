@@ -186,3 +186,31 @@ The current feature-level report has exactly one `SEMANTIC_VERDICT:
 semantic-pass` across AC-001..AC-011 and no material finding. The explicit
 owner reconciles FT-002, REQ-003, REQ-004, shared REQ-014, and EP-001 to
 `verified`; TASK-026/031/032/034/035 remain `done`, and FT-003 is unchanged.
+
+## W20 Admin single-lesson browser reconciliation — 2026-09-03
+
+The source review found a real gap after the prior feature closure: the owner
+commands exist and are domain-tested, but `/admin/{centerId}` does not project
+lessons or expose Admin actions for `addLesson`, `transferLesson`, and
+`cancelLesson`. The operator accepted one cohesive protected browser outcome
+covering the server-resolved lesson projection, three route actions, and the
+existing class-card controls. These pieces are inseparable for a usable Admin
+result and share the Center & Scheduling owner boundary, so no split task is
+created.
+
+The new task is `TASK-104-T3-FT-002-W20`, now `done` after the
+current-revision task-plan `APPROVE`, strict doctor gate, independent functional
+`PASS`, and required T3 `semantic-pass`. It depends on the
+completed owner/domain task and Admin dashboard task,
+extends the existing Authentication Transport Browser/API path and Calendar
+and Membership Query Boundary, and keeps the add identity server-generated.
+The card's claim-linked T3 proof must use exact `#FT-002-AC-003` and
+`#FT-002-AC-004` locators and explicitly compare the server-resolved class and
+schedule before every owner call. Forged, missing, out-of-scope, or mismatched
+`classId`/`scheduleId` selectors must be rejected before mutation with full
+Schedule/Lesson state equality; the add adapter must ignore browser identity
+and capture a fresh server-generated `lessonId`; and a completed cancellation
+must be rejected with the full snapshot unchanged, including status and
+timestamps. No Teacher HTTP transport, Lesson Context/calendar content,
+persistence owner, financial behavior, schema migration, or Planning Revision
+change is in scope.

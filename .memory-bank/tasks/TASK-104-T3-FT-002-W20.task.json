@@ -1,0 +1,155 @@
+{
+  "id": "TASK-104-T3-FT-002-W20",
+  "title": "Expose Admin single-lesson operations in the center dashboard",
+  "status": "done",
+  "wave": "W20",
+  "feature": "FT-002",
+  "reqs": ["REQ-004", "REQ-014"],
+  "depends_on": ["TASK-006-T2-FT-002-W4", "TASK-026-T3-FT-002-W12"],
+  "touched_files": [
+    "src/lib/server/modules/center-scheduling/public.ts",
+    "src/routes/admin/center-dashboard.server.ts",
+    "src/routes/admin/[centerId]/+page.svelte",
+    "tests/routes/admin-center-management.test.ts",
+    "tests/routes/admin-schedule-draft.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "check", "command": "npm run check", "required": true},
+    {"name": "build", "command": "npm run build", "required": true},
+    {"name": "test", "command": "npm run test", "required": true},
+    {"name": "diff_check", "command": "git diff --check", "required": true}
+  ],
+  "verify": [
+    "A disposable protected Admin browser/HTTP flow reaches the actual dashboard, renders server-resolved lessons, and completes add, transfer, and cancel for one selected lesson while leaving sibling repetitions unchanged.",
+    "Independent /verify must return PASS and the required T3 per-task /red-verify must return semantic-pass; source review must show owner-boundary calls, server-generated add identity, and no route/component persistence or authorization bypass.",
+    "Independent /verify attempt 1: VERDICT: PASS. Verifier-owned disposable probe `.tasks/TASK-104-T3-FT-002-W20/verify-attempt-1.md` proves SSR lesson projection, add/transfer/cancel behavior, server-generated lessonId, class/schedule selector consistency, non-Admin denial, completed-cancel rejection, and full Schedule/Lesson state equality; repeated check/build/test/diff gates passed. Next required step: `/red-verify TASK-104-T3-FT-002-W20`.",
+    {
+      "stage": "functional",
+      "attempt": "Independent verifier Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-104-T3-FT-002-W20/verification.md",
+      "artifact": ".tasks/TASK-104-T3-FT-002-W20/verify-browser-attempt-2.md",
+      "evidence": [
+        "Fresh disposable real-browser/HTTP probe passed 1/1 on Desktop Chrome: the protected Admin dashboard rendered server-resolved lessons and completed add, transfer, and cancel while preserving sibling rows.",
+        "The probe preserved transfer lessonId, authored context, attendance, and charge identity; ignored an injected browser lessonId for add; and denied unauthenticated, non-Admin, cross-center, forged, mismatched, invalid-date, and completed-cancel requests with complete snapshot equality.",
+        "Current npm run check, npm run build, npm run test (69 files / 240 tests), and git diff --check all passed; route/component source contains no direct persistence or client-owned authorization. Prior executor and semantic artifacts remain supporting evidence; lifecycle was not changed."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "owner_lifecycle_closure",
+      "decision": "done",
+      "cause": "explicit operator instruction to close TASK-104 after functional PASS and required T3 semantic-pass",
+      "accepted_evidence": [
+        ".protocols/TASK-104-T3-FT-002-W20/verification.md",
+        ".protocols/TASK-104-T3-FT-002-W20/red-verification.md",
+        ".tasks/TASK-104-T3-FT-002-W20/verify-browser-attempt-2.md",
+        ".tasks/TASK-104-T3-FT-002-W20/TASK-104-T3-FT-002-W20-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "judge": "explicit operator request: close the task as done",
+      "next_action": "/mb-sync",
+      "lifecycle_changed": true
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md"
+  ],
+  "evidence_required": [
+    "FT-002-AC-003 / REQ-004 RED: the protected Admin dashboard exposes only recurring schedule creation and cannot submit an individual add/transfer/cancel operation; GREEN: the actual protected browser/HTTP path renders the server-resolved lesson list and each of the three actions changes only the selected lesson or adds exactly the requested lesson. Decisive comparison: pre/post lesson identity, date, status, sibling repetitions, and action result; artifact under `.tasks/TASK-104-T3-FT-002-W20/` and `.protocols/TASK-104-T3-FT-002-W20/`.",
+    "FT-002-AC-004 / REQ-004 RED: an Admin transfer through the browser changes lesson identity/context or creates a duplicate chargeable lesson; GREEN: transfer preserves the same `lessonId`, scheduling-owned context, and existing chargeable identity while changing only the selected date. Decisive comparison: lesson row identity/context and disposable financial-identity count before/after; artifact under `.tasks/TASK-104-T3-FT-002-W20/` and `.protocols/TASK-104-T3-FT-002-W20/`.",
+    "FT-002-AC-003 / REQ-014 RED: unauthenticated, non-Admin, cross-center, forged-class, or forged-lesson submissions can reach a single-lesson mutation or change state; GREEN: server-side Admin/center/class and selected-lesson checks deny them before mutation with state-before/state-after equality. Decisive comparison: HTTP/action result plus complete Schedule/Lesson snapshot; artifact under `.tasks/TASK-104-T3-FT-002-W20/` and `.protocols/TASK-104-T3-FT-002-W20/`.",
+    "FT-002-AC-003 / REQ-004 RED: the adapter accepts a submitted `classId` with a server-resolved `scheduleId` from another class, or lets the browser choose the `lessonId` for add, and the owner call or mutation proceeds; GREEN: before every owner call the adapter proves `schedule.classId === classId` in the own-center server projection, rejects missing/out-of-scope/mismatched class/schedule selectors with complete Schedule/Lesson state-before/state-after equality, ignores any submitted add identity, and generates a fresh server-side `lessonId` that was absent from Form Data and is unique. Decisive comparison: selector-to-projection match, request payload, returned identity, and state snapshot; artifact under `.tasks/TASK-104-T3-FT-002-W20/` and `.protocols/TASK-104-T3-FT-002-W20/`.",
+    "FT-002-AC-003 / REQ-004 RED: cancelling a completed lesson succeeds, changes its status/timestamps, or mutates any sibling Schedule/Lesson row; GREEN: the protected Admin cancellation is rejected with the existing safe dashboard failure mapping for the owner `lesson-not-cancellable` result before a write, and the complete Schedule/Lesson snapshot is byte-for-byte/state-for-state equal, including the completed lesson status and timestamps. Decisive comparison: action result plus full pre/post snapshot; artifact under `.tasks/TASK-104-T3-FT-002-W20/` and `.protocols/TASK-104-T3-FT-002-W20/`."
+  ],
+  "purpose": "Complete the accepted REQ-004 browser path by exposing the existing Center & Scheduling single-lesson commands through the protected own-center Admin dashboard.",
+  "success_outcome": "An authenticated own-center Admin can see the server-resolved lessons for a class and add one lesson, transfer one planned lesson, or cancel one eligible lesson from the browser; transfer preserves lesson identity and unrelated lessons, add identity is generated server-side, and denied or invalid requests do not mutate scheduling state.",
+  "anti_goals": [
+    "Do not change the existing Center & Scheduling owner semantics or recurring schedule replacement rules.",
+    "Do not add a Teacher schedule HTTP transport, Lesson Context/calendar content, or financial write behavior.",
+    "Do not trust client-supplied role, center, class, schedule, or lesson authority and do not write scheduling tables from routes or components.",
+    "Do not change completed TASK-006 or TASK-026 records, dependencies, evidence, or lifecycle."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "src/lib/server/modules/center-scheduling/public.ts",
+      "src/routes/admin/center-dashboard.server.ts",
+      "src/routes/admin/[centerId]/+page.svelte",
+      "tests/routes/"
+    ],
+    "forbidden_scope": [
+      "src/lib/server/platform/database.ts",
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/lesson-context/",
+      "src/lib/server/modules/collaboration/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/modules/financial-ledger/",
+      "src/routes/center/",
+      "src/routes/calendar/",
+      "src/routes/lesson-context/",
+      ".memory-bank/tasks/TASK-006-T2-FT-002-W4.task.json",
+      ".memory-bank/tasks/TASK-026-T3-FT-002-W12.task.json",
+      ".protocols/TASK-006-T2-FT-002-W4/",
+      ".protocols/TASK-026-T3-FT-002-W12/",
+      ".tasks/TASK-006-T2-FT-002-W4/",
+      ".tasks/TASK-026-T3-FT-002-W12/"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-redesign if the Admin path requires a new ownership edge, a new persistence owner, or a public contract beyond the accepted Center & Scheduling boundary.",
+      "Stop if implementing the browser controls requires changing Teacher transport, Lesson Context/calendar behavior, financial state, recurring schedule semantics, or the existing authorization model.",
+      "Stop if a route or component would need direct database access or client-owned role, center, class, schedule, or lesson authorization."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-003",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-004",
+    ".memory-bank/requirements.md#req-004--lesson-scheduling-lifecycle",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/contracts/authentication-transport.md#protected-admin-provisioning-path",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-003",
+    ".memory-bank/features/FT-002-center-and-scheduling.md#FT-002-AC-004",
+    ".memory-bank/requirements.md#req-004--lesson-scheduling-lifecycle",
+    ".memory-bank/requirements.md#req-014--role-and-context-privacy",
+    ".memory-bank/architecture/system-architecture.md#1-sveltekit-application-shell",
+    ".memory-bank/architecture/system-architecture.md#2-capability-module-runtime",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#accepted-permission-matrix",
+    ".memory-bank/contracts/authentication-transport.md#browserapi-path",
+    ".memory-bank/domains/core-domain.md#ownership-map",
+    ".memory-bank/states/lifecycle-map.md#scheduling-and-lesson-context",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "The Admin route resolves the existing server actor and own-center class/lesson projection before every mutation; hidden client fields are selectors, not authority.",
+    "Center & Scheduling remains the sole writer of Schedule and Lesson state; routes and components only adapt Form Data and owner results.",
+    "The add action generates a fresh lesson identity server-side and supplies a canonical ISO lesson date to the owner command; transfer and cancel target only server-resolved lessons for the selected class.",
+    "Preserve the existing recurring schedule, zero-occurrence, transfer identity, and charge-identity semantics and keep the existing safe dashboard error envelope."
+  ],
+  "invariants": [
+    "Only the selected lesson changes during transfer or cancellation; unrelated recurring lessons retain identity, date, and status.",
+    "A transferred lesson keeps its `lessonId`, scheduling-owned context, and existing chargeable identity; adding a lesson does not duplicate another lesson identity.",
+    "Completed lessons remain protected from cancellation and invalid or out-of-scope requests leave Schedule/Lesson state unchanged.",
+    "The browser surface never chooses or changes actor role, center membership, class scope, or ownership."
+  ],
+  "verification_targets": [
+    "FT-002-AC-003 / REQ-004: disposable real protected Admin browser/HTTP flow renders the server-resolved lesson projection and proves add, transfer, and cancel for one selected lesson with unaffected sibling repetitions.",
+    "FT-002-AC-004 / REQ-004: transfer identity/context and disposable chargeable-lesson identity remain stable, with no duplicate lesson or chargeable row created by the browser path.",
+    "FT-002-AC-003 / REQ-004: the same disposable flow proves every submitted `classId`/`scheduleId` pair is matched against the server projection, mismatched selectors are rejected before mutation with full state equality, and the add adapter creates a fresh server-generated `lessonId` rather than accepting a browser-selected identity.",
+    "FT-002-AC-003 / REQ-004: a completed lesson cancellation is rejected before persistence and the full Schedule/Lesson state snapshot is unchanged, including completed status and timestamps.",
+    "REQ-014: unauthenticated, non-Admin, cross-center, forged-class, forged-lesson, completed-cancel, and invalid-date requests fail at the server boundary and preserve a complete Schedule/Lesson state snapshot.",
+    "Boundary/source proof: `src/routes/admin/center-dashboard.server.ts` and `src/routes/admin/[centerId]/+page.svelte` contain no direct persistence or client-owned authorization, and the owner calls remain on the registered Calendar and Membership Query Boundary.",
+    "Project gates: `npm run check`, `npm run build`, `npm run test`, and `git diff --check`; independent `/verify` PASS and required T3 per-task `/red-verify` semantic-pass."
+  ]
+}
