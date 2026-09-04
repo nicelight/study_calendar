@@ -99,6 +99,17 @@ new payment-creation or paid/unpaid-label task is introduced.
 The fresh `/review-tasks-plan FT-006` returned `APPROVE` at Planning Revision
 `2`. The repaired queue is accepted as `rebuild_required` with final planned
 cards `TASK-099` → `TASK-100` → `TASK-101`. Decomposition is closed for this
-revision. The cards remain `planned` until the applicable readiness/promotion
-owner acts; this boundary does not claim implementation, verification, or
-feature lifecycle promotion.
+revision. At this planning boundary the cards remained `planned`; the later
+W32 reconciliation below supersedes only that status snapshot.
+
+## W32 task closure reconciliation — 2026-09-04
+
+The authoritative indexed `TASK-099-T3-FT-006-W32` card is `done` from the
+current functional `PASS`, required T3 `semantic-pass`, and scheduler closure
+for AC-009 / REQ-011 / REQ-014. Its Attempt 1 result and F-001 remain
+historical correction basis; the corrected Attempt 2 exact-decimal evidence is
+current.
+
+TASK-100 and TASK-101 remain `planned`, so FT-006 remains `planned`. Planning
+Revision `2`, the current task-plan `APPROVE`, dependencies, promotion state,
+and scheduler checkpoint are unchanged by this sync.

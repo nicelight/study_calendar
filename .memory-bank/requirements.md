@@ -156,10 +156,10 @@ status: draft
 | REQ-008 | EP-003 | FT-004 | test:FT-004-AC-003..004 | planned |
 | REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | planned |
 | REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..005;FT-006-AC-004 | verified |
-| REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001 | verified |
+| REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001;FT-006-AC-009 | verified |
 | REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
 | REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006;FT-006-AC-008 | verified |
-| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-007-AC-002..003;FT-007-AC-007..009 | planned |
+| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-006-AC-009;FT-007-AC-002..003;FT-007-AC-007..009 | planned |
 | REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
 | REQ-016 | Product release gate | — | test:product-release-acceptance after mapped feature checks | planned |
 | REQ-017 | EP-006 | FT-007 | test:FT-007-AC-001..009 | implemented |
@@ -177,6 +177,25 @@ boundary, persistence, and isolation evidence remains historical supporting
 evidence and is not browser proof. TASK-102 and TASK-103 provide the planned
 projection/transport and UI/browser outcomes; REQ-006 and shared REQ-014
 remain governed by their existing mapped feature coverage.
+
+## FT-006 W32 task evidence route — 2026-09-04
+
+`TASK-099-T3-FT-006-W32` is `done` from the current independent functional
+`PASS`, required T3 `semantic-pass`, and scheduler closure for
+`FT-006-AC-009 / REQ-011 / REQ-014`. The evidence covers own-center Admin
+class/default and student-override settings, deterministic history, the
+existing editable Lesson Context payment default, full exact decimal input,
+future-Charge application, historical-Charge immutability, and denied-scope
+non-mutation.
+
+- [TASK-099 card](tasks/TASK-099-T3-FT-006-W32.task.json)
+- [functional evidence](../.protocols/TASK-099-T3-FT-006-W32/verification.md)
+- [semantic evidence](../.protocols/TASK-099-T3-FT-006-W32/red-verification.md)
+- [W32 sync evidence](../.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-MB-SYNC-final-report-docs-01.md)
+
+REQ-011 retains its existing `verified` lifecycle and shared REQ-014 remains
+`planned`; this task-level boundary does not make a new requirement lifecycle
+decision. `TASK-100` and `TASK-101` remain planned under FT-006.
 
 ## W10 task evidence route
 

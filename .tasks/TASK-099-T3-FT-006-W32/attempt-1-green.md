@@ -39,3 +39,10 @@ The remaining lint/doctor warnings are pre-existing and unrelated to this task: 
 - Changed implementation and proof files are task-listed and inside the hard write boundary.
 - Forbidden calendar routes, Center & Scheduling module, real database, Playwright config, and disposable runner were not changed.
 - The disposable runner removed only the exact `tmp/ft-006-admin-pricing.db` state and sidecars after the browser run.
+
+## Retry disposition
+
+- attempt: 1
+- receipt_status: superseded
+- This GREEN predates the confirmed `F-001` correction and remains supporting
+  historical evidence only; it does not cover the changed browser constraints.

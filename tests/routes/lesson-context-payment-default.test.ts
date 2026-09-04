@@ -96,7 +96,7 @@ describe('TASK-099 Lesson Context payment default', () => {
 			defaultAmount: '24.5'
 		});
 		expect(render(LessonContextPage, { props: { data, form: null } } as any).body).toContain(
-			'name="amount" type="number" min="0.01" step="0.01" required="" value="24.5"'
+			'name="amount" type="number" min="0.01" step="any" required="" value="24.5"'
 		);
 
 		const result = await lessonContextActions.default(event(root, 'session-admin-default-099', 'POST', {

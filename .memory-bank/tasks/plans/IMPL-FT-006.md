@@ -50,11 +50,12 @@ task DAG ending at `TASK-002-T3-FT-000-W1`.
 
 ## Boundary pass and ordered tasks
 
-The three unmerged implementation outcomes are independently completable:
+The three accepted implementation outcomes are independently completable.
+W32 is closed; W33 and W34 remain planned:
 
-1. Admin pricing settings/history: the command path exists, but the price
-   history query and protected browser surface do not; the existing payment
-   form also does not initialize its amount from the class value.
+1. Admin pricing settings/history: TASK-099 now supplies the price-history
+   query, protected browser surface, and existing payment-form initialization
+   from the class value.
 2. Admin payment journal/correction: payment edit/cancel/replay exists, but no
    center-scoped journal read or server/UI adapter exposes it.
 3. Personal markers: marker calculation exists, but Calendar does not consume
@@ -66,11 +67,11 @@ shell from pricing; marker rendering remains a separate Lesson Context/Calendar
 consumer outcome. Existing payment creation and paid/unpaid labels are
 dependencies/regression inputs, not new task claims.
 
-| Wave | Task | Outcome | Dependency |
-|---|---|---|---|
-| W32 | TASK-099-T3-FT-006-W32 | Admin class price/student override settings, append-only history, and existing payment-form initial amount (AC-009) | TASK-043-T3-FT-006-W22; TASK-005-T3-FT-002-W3; TASK-049-T3-FT-006-W25 |
-| W33 | TASK-100-T3-FT-006-W33 | Admin payment journal with edit/cancel actions, refreshed allocations/balance, and audit UI (AC-010) | TASK-099-T3-FT-006-W32; TASK-046-T3-FT-006-W23; TASK-048-T3-FT-006-W24 |
-| W34 | TASK-101-T3-FT-006-W34 | Personal calendar payment-marker consumption and rendering (AC-011) | TASK-047-T3-FT-006-W23; TASK-050-T3-FT-006-W26; TASK-039-T3-FT-003-W10 |
+| Wave | Task | Status | Outcome | Dependency |
+|---|---|---|---|---|
+| W32 | TASK-099-T3-FT-006-W32 | done | Admin class price/student override settings, append-only history, and existing payment-form initial amount (AC-009) | TASK-043-T3-FT-006-W22; TASK-005-T3-FT-002-W3; TASK-049-T3-FT-006-W25 |
+| W33 | TASK-100-T3-FT-006-W33 | planned | Admin payment journal with edit/cancel actions, refreshed allocations/balance, and audit UI (AC-010) | TASK-099-T3-FT-006-W32; TASK-046-T3-FT-006-W23; TASK-048-T3-FT-006-W24 |
+| W34 | TASK-101-T3-FT-006-W34 | planned | Personal calendar payment-marker consumption and rendering (AC-011) | TASK-047-T3-FT-006-W23; TASK-050-T3-FT-006-W26; TASK-039-T3-FT-003-W10 |
 
 No production-only configuration or checks are introduced, so no extra final
 production-acceptance task is needed.
@@ -149,6 +150,19 @@ The fresh `/review-tasks-plan FT-006` returned `APPROVE` at Planning Revision
 `2` ([review report](../../../.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-006-20260903-final-report-docs-01.md)).
 The queue action remains `rebuild_required` because the rejected planned cards
 were materially repaired; the final identities are `TASK-099`, `TASK-100`, and
-`TASK-101`. The decomposition is closed. These T3 cards remain `planned` until
-the applicable readiness/promotion owner acts; FT-006 and its requirements
-remain `planned`, and no implementation or verification status is implied.
+`TASK-101`. The decomposition is closed. At this planning boundary all three T3
+cards were `planned`; the later W32 reconciliation below supersedes only that
+task-status snapshot.
+
+## W32 implementation reconciliation — 2026-09-04
+
+`TASK-099-T3-FT-006-W32` is now `done` under the scheduler-written closure,
+with current independent functional `PASS` and T3 `semantic-pass` evidence for
+AC-009 / REQ-011 / REQ-014. The task index, identity, dependencies, tier,
+verification array, and approval remain owned by their existing artifacts and
+were not changed by `/mb-sync`.
+
+`TASK-100-T3-FT-006-W33` and `TASK-101-T3-FT-006-W34` remain `planned`.
+FT-006 therefore remains `planned`; this status/evidence reconciliation does
+not introduce a fresh task-plan review trigger or any promotion/dependency
+transition.

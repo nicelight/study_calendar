@@ -4,6 +4,22 @@ status: active
 ---
 # Changelog
 
+## [2026-09-04] Wave W32 — TASK-099 Admin pricing closure
+
+- Reconciled `TASK-099-T3-FT-006-W32` as `done` from its current Attempt 2
+  implementation, independent functional `PASS`, required T3 `semantic-pass`,
+  and scheduler closure for `FT-006-AC-009 / REQ-011 / REQ-014`.
+- Updated FT-006, EP-005, REQ-011/REQ-014 evidence routes, the FT-006
+  implementation plan, and its durable protocol plan; the task index already
+  resolves TASK-099 and required no change.
+- Preserved Attempt 1/F-001 as historical correction evidence, FT-006 and
+  current RTM/epic lifecycle values, Planning Revision `2`, task-plan
+  `APPROVE`, TASK-100/TASK-101 `planned` state, dependencies, promotion,
+  scheduler checkpoint, Judge state, implementation, tests, and verification
+  artifacts.
+- Handoff: scheduler owns post-sync `mb-lint`, strict `mb-doctor`, any separate
+  promotion/dependency pass, and the remaining W32 boundary actions.
+
 ## [2026-09-04] Wave W20 — TASK-104 closure
 
 - Reconciled `TASK-104-T3-FT-002-W20` to `done` after independent functional

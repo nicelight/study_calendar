@@ -12,3 +12,10 @@
 - Result: `exit_code=1`.
 - Observation: `AssertionError [ERR_ASSERTION]: FT-006-AC-009 finance route is missing`.
 - Interpretation: the accepted protected Admin pricing/history surface was absent before implementation. This was a real claim-specific absence probe, not a setup or syntax failure.
+
+## Retry disposition
+
+- attempt: 1
+- receipt_status: supporting-only
+- The original claim-specific RED remains the durable pre-correction baseline
+  for Attempt 2 and is not backfilled or replayed as a new RED.

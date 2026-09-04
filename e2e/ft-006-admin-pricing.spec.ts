@@ -105,28 +105,50 @@ test('disposable Admin pricing history and future-charge proof', async ({ page }
 
 	const classPriceForm = classCard.locator('form[action="?/setClassPrice"]');
 	await classPriceForm.locator('input[name="effectiveFrom"]').fill('2026-01-01');
-	await classPriceForm.locator('input[name="amount"]').fill('20');
-	await expect(classPriceForm.locator('input[name="amount"]')).toHaveValue('20');
+	const classAmount = classPriceForm.locator('input[name="amount"]');
+	await classAmount.fill('10.125');
+	await expect(classAmount).toHaveValue('10.125');
+	expect(await classAmount.evaluate((element) => {
+		const input = element as HTMLInputElement;
+		return {
+			step: input.getAttribute('step'),
+			valid: input.validity.valid,
+			stepMismatch: input.validity.stepMismatch,
+			formValid: input.form?.checkValidity() ?? false
+		};
+	})).toEqual({ step: 'any', valid: true, stepMismatch: false, formValid: true });
 	await classPriceForm.getByRole('button', { name: 'Сохранить цену класса' }).click();
 	await expect(page.getByText('Цена класса сохранена.')).toBeVisible();
 
 	const overrideForm = classCard.locator('form[action="?/setStudentPriceOverride"]');
 	await overrideForm.locator('select[name="studentAccountId"]').selectOption('student-e2e-099');
-	await overrideForm.locator('input[name="amount"]').fill('15');
+	const overrideAmount = overrideForm.locator('input[name="amount"]');
+	await overrideAmount.fill('15.125');
 	await overrideForm.locator('input[name="effectiveFrom"]').fill('2026-01-01');
+	await expect(overrideAmount).toHaveValue('15.125');
+	expect(await overrideAmount.evaluate((element) => {
+		const input = element as HTMLInputElement;
+		return { step: input.getAttribute('step'), valid: input.validity.valid, stepMismatch: input.validity.stepMismatch, formValid: input.form?.checkValidity() ?? false };
+	})).toEqual({ step: 'any', valid: true, stepMismatch: false, formValid: true });
 	await overrideForm.getByRole('button', { name: 'Сохранить override' }).click();
 	await expect(page.getByText('Цена ученика сохранена.')).toBeVisible();
 	await expect(classCard.locator('[data-price-history]')).toContainText('Student One TASK-099');
 	await expect(classCard.locator('[data-price-history]')).toContainText('admin-e2e-099');
-	await expect(classCard.locator('[data-price-history]')).toContainText('20');
-	await expect(classCard.locator('[data-price-history]')).toContainText('15');
+	await expect(classCard.locator('[data-price-history]')).toContainText('10.125');
+	await expect(classCard.locator('[data-price-history]')).toContainText('15.125');
 	await expect(classCard.locator('[data-price-history] time')).toHaveCount(2);
 
 	await page.goto('/lesson-context?classId=class-e2e-099&lessonId=lesson-future-e2e-099');
 	const paymentForm = page.getByRole('form', { name: 'Оплата занятия' });
-	await expect(paymentForm.locator('input[name="amount"]')).toHaveValue('20');
-	await paymentForm.locator('input[name="amount"]').fill('7.25');
-	await expect(paymentForm.locator('input[name="amount"]')).toHaveValue('7.25');
+	const paymentAmount = paymentForm.locator('input[name="amount"]');
+	await expect(paymentAmount).toHaveValue('10.125');
+	await paymentForm.locator('input[name="confirmation"]').fill('precision-validity-probe');
+	expect(await paymentAmount.evaluate((element) => {
+		const input = element as HTMLInputElement;
+		return { step: input.getAttribute('step'), valid: input.validity.valid, stepMismatch: input.validity.stepMismatch, formValid: input.form?.checkValidity() ?? false };
+	})).toEqual({ step: 'any', valid: true, stepMismatch: false, formValid: true });
+	await paymentAmount.fill('7.25');
+	await expect(paymentAmount).toHaveValue('7.25');
 
 	await page.goto('/admin/center-e2e-099');
 	await page.getByRole('button', { name: 'Выйти' }).click();
@@ -148,8 +170,8 @@ test('disposable Admin pricing history and future-charge proof', async ({ page }
 		expect(database.prepare(
 			'SELECT student_account_id, applied_price FROM financial_lesson_charges WHERE lesson_id = ? ORDER BY student_account_id'
 		).all('lesson-future-e2e-099')).toEqual([
-			{ student_account_id: 'student-e2e-099', applied_price: '15' },
-			{ student_account_id: 'student-two-e2e-099', applied_price: '20' }
+			{ student_account_id: 'student-e2e-099', applied_price: '15.125' },
+			{ student_account_id: 'student-two-e2e-099', applied_price: '10.125' }
 		]);
 	});
 });

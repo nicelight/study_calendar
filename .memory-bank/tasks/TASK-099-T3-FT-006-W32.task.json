@@ -1,7 +1,7 @@
 {
   "id": "TASK-099-T3-FT-006-W32",
   "title": "Expose Admin class price, override, history, and payment-form default",
-  "status": "in_progress",
+  "status": "done",
   "wave": "W32",
   "feature": "FT-006",
   "reqs": ["REQ-011", "REQ-014"],
@@ -34,7 +34,54 @@
     "The existing Lesson Context payment form initializes its editable amount input from the authorized current class value; changing that input still submits the existing createPayment action and remains user-editable.",
     "After each Admin setting action, a future lesson reconciled through the existing reconcileLessonCharge path receives the new class value or student override in applied_price, while a pre-existing Charge remains byte-for-byte unchanged.",
     "Validation or anonymous, non-Admin, wrong-center, forged-class, and forged-student requests fail before mutation.",
-    "Disposable Playwright proof uses the project-owned temporary database/server and removes only its exact temporary state."
+    "Disposable Playwright proof uses the project-owned temporary database/server and removes only its exact temporary state.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 3",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-099-T3-FT-006-W32/verification.md",
+      "artifact": ".tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned exact probe passed: 1 file and 1 test, exit 0. It covered exact browser validity for 10.125/15.125, current Lesson Context default, deterministic Admin history, future class/override applied_price, historical Charge equality, and authorization/forged-scope denial non-mutation in isolated in-memory state.",
+        "Attempt 2 supporting evidence records focused tests, disposable Playwright, npm run check, npm run test, npm run build, git diff --check, mb-lint, and strict mb-doctor all exiting 0.",
+        "Source review confirmed only step=any input corrections in the current implementation surface, existing createPayment form semantics, Financial Ledger ownership, server-resolved scope, and unchanged forbidden paths.",
+        "Current functional verification report: .tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-VERIFY-final-report-docs-01.md."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-099-T3-FT-006-W32/red-verification.md",
+      "artifact": ".tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh independent semantic review confirms the Attempt 2 exact-decimal correction resolves F-001; no new material semantic finding was found.",
+        "The required verifier-owned exact probe passed 1 file / 1 test and confirmed valid exact values, deterministic history, future applied_price, historical Charge immutability, and authorization/non-mutation in isolated state.",
+        "The semantic protocol contains exactly one SEMANTIC_VERDICT: semantic-pass; unavailable co-review output was not treated as evidence."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 2",
+      "cause": "current functional PASS and required T3 semantic-pass satisfy FT-006-AC-009 / REQ-011 / REQ-014",
+      "evidence": [
+        ".tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-EXE-final-report-code-02.md",
+        ".protocols/TASK-099-T3-FT-006-W32/verification.md",
+        ".tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-099-T3-FT-006-W32/red-verification.md",
+        ".tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "historical_evidence_only": [
+        ".tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-EXE-final-report-code-01.md",
+        ".tasks/TASK-099-T3-FT-006-W32/attempt-1-red.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; close TASK-099, complete W32 boundary gates, then continue the normal sequential queue",
+      "next_action": "/mb-sync at W32 boundary",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
   "evidence_required": [

@@ -10,9 +10,20 @@ Execute the selected T3 owner for `FT-006-AC-009 / REQ-011 / REQ-014`:
 protected Admin class pricing, student override, deterministic history, and
 the existing Lesson Context payment-form initial amount.
 
-## Execution Attempt
+## Execution Attempts
+
+### Attempt 1
 - attempt: 1
 - started: 2026-09-04 11:15 +0500
+- reconciled: implementation and executor handoff completed; later independent
+  semantic review recorded `F-001` (`semantic-concern`) for browser rejection
+  of supported exact decimal values.
+
+### Attempt 2
+- attempt: 2
+- started: 2026-09-04 19:07 +0500
+- correction basis: confirmed `F-001` and completed `/feature-doctor FT-006`
+  clarification; preserve the existing Attempt 1 implementation and evidence.
 
 ## Inputs (what drives this task)
 - Task record: `.memory-bank/tasks/TASK-099-T3-FT-006-W32.task.json`
@@ -60,10 +71,15 @@ the existing Lesson Context payment-form initial amount.
 - `git status --short --branch` → clean source baseline except scheduler-owned task/status artifacts.
 - `node .memory-bank/scripts/mb-doctor.mjs --strict` → PASS, 0 errors, 3 warnings, 2 info.
 - Read-only source/spec inspection → current price commands exist; target browser surface/tests are absent.
+- Attempt 2 correction inspection → the only required production change is
+  the browser `step` constraint on the existing Admin and Lesson Context
+  amount inputs; no Ledger, authorization, ownership, or payment-path change
+  is needed.
 
 ## Open questions / blockers
 - None at preflight.
 
 ## Next session
 - Start by reading: `context.md`, `plan.md`, `progress.md`.
-- Next action: hand the completed Attempt 1 to `/verify TASK-099-T3-FT-006-W32`.
+- Next action: hand the completed correction Attempt 2 to `/verify
+  TASK-099-T3-FT-006-W32`.

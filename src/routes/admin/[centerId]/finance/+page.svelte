@@ -15,7 +15,9 @@
 	function messageLabel(message: string): string {
 		return {
 			class_price_saved: 'Цена класса сохранена.',
-			student_price_saved: 'Цена ученика сохранена.'
+			student_price_saved: 'Цена ученика сохранена.',
+			payment_edited: 'Платёж изменён.',
+			payment_cancelled: 'Платёж отменён.'
 		}[message] ?? 'Настройка сохранена.';
 	}
 
@@ -27,8 +29,36 @@
 			invalid_price_amount: 'Укажите положительную сумму.',
 			invalid_price_date: 'Укажите корректную дату начала действия.',
 			price_forbidden: 'Настройка недоступна для выбранного класса или ученика.',
-			price_operation_failed: 'Не удалось сохранить настройку.'
+			price_operation_failed: 'Не удалось сохранить настройку.',
+			invalid_payment_request: 'Проверьте данные платежа.',
+			invalid_payment_amount: 'Укажите положительную сумму платежа.',
+			invalid_payment_date: 'Укажите корректную дату платежа.',
+			payment_confirmation_required: 'Подтвердите операцию.',
+			payment_forbidden: 'Платёж недоступен в этом центре.',
+			payment_not_editable: 'Отменённый платёж нельзя изменить.',
+			payment_not_cancellable: 'Этот платёж уже отменён.',
+			payment_confirmation_conflict: 'Подтверждение уже связано с другими данными.',
+			payment_operation_failed: 'Не удалось изменить платёж.'
 		}[error] ?? 'Не удалось выполнить операцию.';
+	}
+
+	function paymentStatusLabel(status: 'recorded' | 'cancelled'): string {
+		return status === 'recorded' ? 'Проведён' : 'Отменён';
+	}
+
+	function auditActionLabel(action: string): string {
+		return {
+			'payment-created': 'Создан',
+			'payment-edited': 'Изменён',
+			'payment-cancelled': 'Отменён'
+		}[action] ?? action;
+	}
+
+	function paymentSnapshot(
+		payment: AdminFinancePageData['journal'][number]['audit'][number]['before']
+	): string {
+		if (!payment) return '—';
+		return `${payment.amount} · ${payment.factualDate} · ${paymentStatusLabel(payment.status)}`;
 	}
 </script>
 
@@ -82,7 +112,7 @@
 							<input type="hidden" name="classId" value={classView.classId} />
 							<label>
 								<span>Сумма</span>
-								<input name="amount" type="number" min="0.01" step="0.01" required value={classView.currentAmount ?? ''} />
+								<input name="amount" type="number" min="0.01" step="any" required value={classView.currentAmount ?? ''} />
 							</label>
 							<label>
 								<span>Действует с</span>
@@ -105,7 +135,7 @@
 							</label>
 							<label>
 								<span>Сумма</span>
-								<input name="amount" type="number" min="0.01" step="0.01" required disabled={classView.students.length === 0} />
+								<input name="amount" type="number" min="0.01" step="any" required disabled={classView.students.length === 0} />
 							</label>
 							<label>
 								<span>Действует с</span>
@@ -147,8 +177,101 @@
 				</section>
 			{/each}
 		</div>
-	{/if}
-</main>
+		{/if}
+
+		<section class="journal" data-payment-journal>
+			<header class="journal-heading">
+				<div>
+					<p class="eyebrow">Ledger projection</p>
+					<h2>Журнал платежей</h2>
+				</div>
+				<p>Проведённые и отменённые платежи центра с результатом перерасчёта.</p>
+			</header>
+
+			{#if data.journal.length === 0}
+				<p class="empty-history">Платежей пока нет.</p>
+			{:else}
+				<div class="journal-list">
+					{#each data.journal as entry (entry.paymentId)}
+						<article class="journal-card" data-payment-id={entry.paymentId}>
+							<header class="journal-card-heading">
+								<div>
+									<p class="eyebrow">Платёж</p>
+									<h3>{entry.studentLabel}</h3>
+									<p>{entry.className} · <code>{entry.paymentId}</code></p>
+								</div>
+								<strong class:cancelled={entry.status === 'cancelled'} class="payment-status" data-payment-status={entry.status}>
+									{paymentStatusLabel(entry.status)}
+								</strong>
+							</header>
+
+							<dl class="payment-facts">
+								<div><dt>Сумма</dt><dd data-payment-amount>{entry.amount}</dd></div>
+								<div><dt>Фактическая дата</dt><dd><time datetime={entry.factualDate}>{entry.factualDate}</time></dd></div>
+								<div><dt>Баланс</dt><dd data-payment-balance>{entry.balance}</dd></div>
+								<div><dt>Аванс</dt><dd data-payment-advance>{entry.advance}</dd></div>
+							</dl>
+
+							<div class="journal-details">
+								<section>
+									<h4>Распределение</h4>
+									{#if entry.allocations.length > 0}
+										<ul class="fact-list" data-payment-allocations>
+											{#each entry.allocations as allocation}
+												<li><code>{allocation.lessonId}</code><span>{allocation.amount}</span></li>
+											{/each}
+										</ul>
+									{:else}
+										<p class="muted">Нет распределения.</p>
+									{/if}
+								</section>
+								<section>
+									<h4>История аудита</h4>
+									{#if entry.audit.length > 0}
+										<ul class="audit-list" data-payment-audit>
+											{#each entry.audit as audit}
+												<li>
+													<strong>{auditActionLabel(audit.action)}</strong>
+													<span>{audit.actorAccountId} · {audit.changedAt}</span>
+													<small>До: {paymentSnapshot(audit.before)} · После: {paymentSnapshot(audit.after)}</small>
+												</li>
+											{/each}
+										</ul>
+									{:else}
+										<p class="muted">Аудит отсутствует.</p>
+									{/if}
+								</section>
+							</div>
+
+							{#if entry.status === 'recorded'}
+								<div class="payment-actions">
+									<form method="POST" action="?/editPayment" class="payment-form" aria-label={`Изменить платёж ${entry.paymentId}`}>
+										<h4>Изменить платёж</h4>
+										<input type="hidden" name="classId" value={entry.classId} />
+										<input type="hidden" name="studentAccountId" value={entry.studentAccountId} />
+										<input type="hidden" name="paymentId" value={entry.paymentId} />
+										<label><span>Сумма</span><input name="amount" type="number" min="0.01" step="any" required value={entry.amount} /></label>
+										<label><span>Фактическая дата</span><input name="factualDate" type="date" required value={entry.factualDate} /></label>
+										<label class="confirmation"><input name="confirmation" type="checkbox" value="confirm-edit" required /><span>Подтверждаю изменение платежа</span></label>
+										<button type="submit">Сохранить изменение</button>
+									</form>
+									<form method="POST" action="?/cancelPayment" class="payment-form cancel-form" aria-label={`Отменить платёж ${entry.paymentId}`}>
+										<h4>Отменить платёж</h4>
+										<input type="hidden" name="classId" value={entry.classId} />
+										<input type="hidden" name="studentAccountId" value={entry.studentAccountId} />
+										<input type="hidden" name="paymentId" value={entry.paymentId} />
+										<p>Платёж останется в журнале как отменённый, а распределение будет пересчитано.</p>
+										<label class="confirmation"><input name="confirmation" type="checkbox" value="confirm-cancel" required /><span>Подтверждаю отмену платежа</span></label>
+										<button type="submit">Отменить платёж</button>
+									</form>
+								</div>
+							{/if}
+						</article>
+					{/each}
+				</div>
+			{/if}
+		</section>
+	</main>
 
 <style>
 	:global(*) { box-sizing: border-box; }
@@ -156,7 +279,7 @@
 	.finance-shell { width: min(100% - 2rem, 76rem); margin: 0 auto; padding: 3rem 0 5rem; }
 	.hero { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
 	.hero h1 { margin: .4rem 0 1rem; font-size: clamp(2.8rem, 8vw, 5.5rem); letter-spacing: -.07em; line-height: .95; }
-	.hero p:not(.eyebrow), .history-heading p, .empty p { color: #6d7a73; line-height: 1.6; }
+	.hero p:not(.eyebrow), .history-heading p, .journal-heading p, .empty p, .cancel-form p { color: #6d7a73; line-height: 1.6; }
 	.eyebrow { margin: 0; color: #3f765d; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 	nav { display: flex; flex-wrap: wrap; gap: .65rem; }
 	nav a { color: #25332e; font-weight: 800; }
@@ -189,5 +312,36 @@
 	th { color: #3f765d; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
 	tbody tr:last-child td { border-bottom: 0; }
 	.empty-history { margin: 0; padding: 1rem; border: 1px dashed #b8c8ba; border-radius: .7rem; color: #6d7a73; }
-	@media (max-width: 48rem) { .hero, .class-header, .history-heading { align-items: start; flex-direction: column; } .current-price { text-align: left; } .forms { grid-template-columns: 1fr; } }
+	.journal { margin-top: 2rem; padding: clamp(1rem, 3vw, 2rem); border: 1px solid #d9e0d8; border-radius: 1rem; background: #eff5ed; }
+	.journal-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.25rem; }
+	.journal-heading h2 { margin-bottom: 0; }
+	.journal-heading p { margin: 0; font-size: .85rem; }
+	.journal-list { display: grid; gap: 1rem; }
+	.journal-card { padding: 1rem; border: 1px solid #d9e0d8; border-radius: .8rem; background: #fffdf8; }
+	.journal-card-heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+	.journal-card-heading h3 { margin-bottom: .2rem; }
+	.journal-card-heading p { margin: 0; color: #6d7a73; }
+	.payment-status { padding: .4rem .65rem; border-radius: 999px; background: #dcebdd; color: #2f6b4f; font-size: .78rem; white-space: nowrap; }
+	.payment-status.cancelled { background: #f8e2dd; color: #8e3f2b; }
+	.payment-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; margin: 1rem 0 0; }
+	.payment-facts div { padding: .7rem; border-radius: .65rem; background: #f3f7f0; }
+	.payment-facts dt { color: #6d7a73; font-size: .72rem; font-weight: 800; }
+	.payment-facts dd { margin: .25rem 0 0; font-weight: 800; }
+	.journal-details { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 1rem; margin-top: 1rem; }
+	.journal-details section { padding-top: .8rem; border-top: 1px solid #e5e9e2; }
+	.journal-details h4, .payment-form h4 { margin: 0 0 .6rem; letter-spacing: -.02em; }
+	.fact-list, .audit-list { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+	.fact-list li { display: flex; justify-content: space-between; gap: .75rem; }
+	.audit-list li { display: grid; gap: .15rem; padding: .5rem .65rem; border-radius: .55rem; background: #f3f7f0; font-size: .8rem; }
+	.audit-list span, .audit-list small, .muted { color: #6d7a73; }
+	.payment-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+	.payment-form { display: grid; gap: .7rem; padding: 1rem; border: 1px solid #d9e0d8; border-radius: .7rem; background: #f7faf5; }
+	.payment-form label:not(.confirmation) { display: grid; gap: .35rem; color: #6d7a73; font-size: .8rem; font-weight: 800; }
+	.payment-form input[type="number"], .payment-form input[type="date"], .payment-form button { min-height: 2.6rem; border: 1px solid #b8c8ba; border-radius: .6rem; padding: .6rem .7rem; font: inherit; }
+	.payment-form input[type="number"], .payment-form input[type="date"] { background: #fffdf8; color: #25332e; }
+	.payment-form button { border-color: #3f765d; background: #3f765d; color: white; font-weight: 800; cursor: pointer; }
+	.cancel-form button { border-color: #a94d36; background: #a94d36; }
+	.confirmation { display: flex; align-items: start; gap: .5rem; color: #25332e; font-size: .8rem; font-weight: 700; }
+	.confirmation input { margin-top: .15rem; }
+	@media (max-width: 48rem) { .hero, .class-header, .history-heading, .journal-heading, .journal-card-heading { align-items: start; flex-direction: column; } .current-price { text-align: left; } .forms, .payment-actions, .journal-details { grid-template-columns: 1fr; } .payment-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>

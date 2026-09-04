@@ -1,7 +1,7 @@
 {
   "id": "TASK-105-T3-FT-005-W37",
   "title": "Expose homework completion and grading through Lesson Context transport",
-  "status": "planned",
+  "status": "ready",
   "wave": "W37",
   "feature": "FT-005",
   "reqs": [

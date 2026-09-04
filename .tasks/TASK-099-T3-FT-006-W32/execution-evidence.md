@@ -39,6 +39,13 @@
 - Route code uses the Financial Ledger public boundary and server-resolved scope; it adds no direct financial SQL.
 - The disposable runner cleaned only `tmp/ft-006-admin-pricing.db` and its sidecars; no persistent temporary database remains.
 
+## Retry disposition
+
+- attempt: 1
+- receipt_status: supporting-only
+- This consolidated Attempt 1 record is preserved for the prior implementation
+  and boundary evidence; Attempt 2 owns fresh correction evidence.
+
 ### Routing
 
 - GREEN is executor evidence, not final closure. Route to `/verify TASK-099-T3-FT-006-W32`, then to T3 `/red-verify TASK-099-T3-FT-006-W32` if functional verification passes.

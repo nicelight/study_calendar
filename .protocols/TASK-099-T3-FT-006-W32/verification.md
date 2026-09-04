@@ -5,78 +5,128 @@ status: active
 # Verification — TASK-099-T3-FT-006-W32
 
 ## What was verified
-- No verifier-owned final verdict was produced during the permitted recovery
-  window. `/exe` records implementation evidence only.
 
-## Recovery audit — 2026-09-04 11:58 +0500
-
-- The final recovery verifier window ended without a durable final handoff.
-- Post-stop inspection found no matching TASK-099 verifier process after the
-  exact remaining process groups were stopped with `TERM`.
-- This file contains zero final verdict markers. The partial verifier probe and
-  its config under `.tasks/TASK-099-T3-FT-006-W32/` are preserved as
-  non-verdict evidence; the probe's intermediate state does not establish
-  completion of every required functional, negative, ownership, and
-  isolation proof.
-- The scheduler therefore applies `HALT_QUALITY_GATES`. No verdict is
-  inferred from code presence, executor `GREEN`, focused tests, disposable
-  E2E, or other gate reports.
+- Task outcome: protected Admin class pricing/student override history and the
+  existing Lesson Context payment-form default for `FT-006-AC-009`.
+- Task-scoped requirements: `REQ-011` and `REQ-014`.
+- Task state observed: `in_progress`; lifecycle and scheduler ownership remain
+  unchanged.
+- Current implementation correction: `step="any"` on the two Admin pricing
+  amount inputs and the existing Lesson Context payment amount input.
 
 ## Verification basis
-- Task outcome: `FT-006-AC-009 / REQ-011 / REQ-014`.
-- Direct task-linked contracts: Financial Ledger, Boundary Map, Access Control, system architecture, core-domain persistence rules.
-- Required checks: card gates plus disposable browser proof.
-- Executor RED/GREEN path: `.protocols/TASK-099-T3-FT-006-W32/progress.md`.
 
-## Task-scoped checklist
-- [ ] Protected Admin pricing/history and validation.
-- [ ] Existing editable Lesson Context payment form initial amount.
-- [ ] Future Charge setting effect and historical Charge equality.
-- [ ] Unauthorized role/center/forged-scope non-mutation.
-- [ ] Ownership and hard-boundary review.
+- Direct canonical basis: `.memory-bank/features/FT-006-financial-ledger.md#FT-006-AC-009`,
+  `.memory-bank/contracts/financial-ledger.md#admin-browser-management-surface`,
+  `.memory-bank/contracts/financial-ledger.md#public-commands-and-queries`,
+  `.memory-bank/contracts/boundary-map.md#financial-projection-query-boundary`,
+  `.memory-bank/contracts/access-control.md#authority-and-scope`,
+  `.memory-bank/architecture/system-architecture.md#composition-and-request-data-flow`,
+  `.memory-bank/domains/core-domain.md#persistence-and-transaction-rules`.
+- Task basis: purpose, success outcome, anti-goals, constraints, invariants,
+  verification targets, hard `runtime_context.write_boundary`, and required
+  gates in `.memory-bank/tasks/TASK-099-T3-FT-006-W32.task.json`.
+- Testing/workflow basis: `.memory-bank/testing/strategy.md#disposable-browser-proof`,
+  `.memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary`,
+  `.memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3`,
+  `.memory-bank/workflows/tier-policy.md#tier-obligations`.
 
-## Regression / non-goals
-- [ ] Existing payment creation, allocation, replay, and paid/unpaid behavior unaffected.
-- [ ] No direct financial SQL outside Financial Ledger.
+## Executor claim path
 
-## Quality gates evidence
-- Executor gate results are supporting evidence only and remain recorded in
-  `.tasks/TASK-099-T3-FT-006-W32/attempt-1-green.md` and
-  `.tasks/TASK-099-T3-FT-006-W32/execution-evidence.md`; no verifier-owned
-  final gate handoff exists.
+- Attempt 2 retained the original claim-linked RED for the confirmed browser
+  precision defect and supplied correction GREEN in
+  `.tasks/TASK-099-T3-FT-006-W32/attempt-2-red.md` and
+  `.tasks/TASK-099-T3-FT-006-W32/attempt-2-green.md`.
+- Durable executor handoff: `.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-EXE-final-report-code-02.md`.
+- Attempt 2 GREEN is supporting evidence only; it is not reused as the
+  verifier-owned proof.
 
 ## Reused execute evidence
-- Supporting `/exe` handoff is preserved at
-  `.protocols/TASK-099-T3-FT-006-W32/handoff.md`; it cannot substitute for the
-  missing independent verifier verdict.
+
+- No execute gate was reused as independent proof. The current handoff offered
+  no reuse candidate and the worktree contains unrelated workflow artifacts.
+- Attempt 2 gate results are cited as supporting evidence: focused tests,
+  disposable Playwright, `npm run check`, `npm run test`, `npm run build`,
+  `git diff --check`, `mb-lint`, and strict `mb-doctor` all exited `0` as
+  recorded in `attempt-2-green.md`.
 
 ## Repeated checks
-- No durable verifier decision was written during the recovery window.
 
-## New targeted probes
-- Partial verifier-owned probe files are preserved under
-  `.tasks/TASK-099-T3-FT-006-W32/`, but they do not prove completion of the
-  full required checklist and have no final verdict.
+- No additional project-wide process was launched in this verification turn.
+  The requested fresh verifier-owned probe was the cheapest sufficient
+  independent check for the complete task claim; the listed Attempt 2 gates
+  remain supporting evidence.
 
-## Handoff
-- Owner/action: `/verify TASK-099-T3-FT-006-W32` from the scheduler checkpoint
-  after this quality halt is explicitly resumed.
-- Tier escalation or planning repair: none currently.
-- BUG/follow-up recommendation: none currently.
-- Task lifecycle changed by verifier: no.
+## New targeted probe
 
-## Notes
-- This file intentionally contains no final `VERDICT`; `/verify` owns it.
+- Verifier-owned artifact:
+  `.tasks/TASK-099-T3-FT-006-W32/verifier-attempt-3-probe.test.ts`.
+- Exact command:
+  `timeout 180s npx vitest run --config .tasks/TASK-099-T3-FT-006-W32/verifier-vitest.config.ts .tasks/TASK-099-T3-FT-006-W32/verifier-attempt-3-probe.test.ts`
+- Current observation: exit `0`; `1 file passed`, `1 test passed`; Vitest
+  started at `19:45:45`, duration `1.93s`.
+- Fixture/isolation: the probe creates a fresh in-memory Composition Root and
+  closes it in `afterEach`; no real database or persistent product state is
+  used.
 
-## Current verifier handoff — 2026-09-04 15:34 +0500
+## Task-scoped claim mapping
 
-- Owned claim: `FT-006-AC-009 / REQ-011 / REQ-014`.
-- New targeted probe: `timeout 300s npx vitest run --config .tasks/TASK-099-T3-FT-006-W32/verifier-vitest.config.ts .tasks/TASK-099-T3-FT-006-W32/verifier-probe.test.ts` exited `0`; one file and one test passed in an isolated in-memory database.
-- Claim coverage: protected own-center Admin class/default and student-override writes; deterministic exact history with author/time; rendered editable Lesson Context default; future class/override Charge values; byte-for-byte historical Charge equality; validation plus anonymous/non-Admin/wrong-center/forged-class/forged-student denial with persisted-state equality.
-- Architecture/scope: direct source inspection confirmed the registered Financial Ledger projection and Center & Scheduling scope boundaries, Ledger-only financial writes, no second persisted default/payment flow, and no forbidden-path change.
-- Supporting evidence: executor RED/GREEN, full gates, and disposable Playwright/cleanup records remain at `.tasks/TASK-099-T3-FT-006-W32/`; they were not reused as independent proof.
-- Co-review: two fresh `gpt-5.6-luna` `xhigh` read-only focus launches succeeded and inspected the task for the full five-minute window; neither returned a final candidate-finding report before internal `collab: Wait`, so the result rests on the verifier-owned probe and direct inspection.
-- Full receipt: `.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-VERIFY-final-report-docs-01.md`.
-- Lifecycle/scheduler changes: none. Next T3 route remains separately owned `/red-verify TASK-099-T3-FT-006-W32`.
+- `FT-006-AC-009 / REQ-011 / REQ-014` Admin pricing/history: the fresh probe
+  submits the protected class and student-override actions with exact
+  `10.125`/`15.125`, loads server-resolved class/student labels, and observes
+  deterministic history ordered by `effectiveFrom, id` with exact amounts,
+  author ID, and ISO timestamps. The rendered finance surface is also
+  inspected. Supporting E2E evidence is in `attempt-2-green.md`.
+- Single setting/default and ownership: the fresh probe observes the class
+  value as `10.125` in `getPaymentDefault` and the Lesson Context rendered
+  form. Source review confirms the Admin adapter delegates to
+  `setClassPrice`/`setStudentPriceOverride` and the authorized queries, while
+  Financial Ledger owns financial SQL/write state (`src/routes/admin/[centerId]/finance/+page.server.ts:94-101,186-235`; `src/lib/server/modules/financial-ledger/public.ts:226-294`).
+  No second persisted default is introduced.
+- Existing payment form: the fresh probe renders the existing form with
+  `name="amount" type="number" min="0.01" step="any" required="" value="10.125"`
+  and checks exact values `10.125`, `15.125`, and `10.125` as valid with
+  `stepMismatch=false` and `formValid=true`. The existing form retains
+  `action=createPayment` (`src/routes/lesson-context/+page.svelte:220-232`),
+  and Attempt 2's disposable browser check confirms edited `7.25` remains
+  accepted.
+- Future versus historical charges: the fresh probe reconciles a future lesson
+  for both students and observes `applied_price` `15.125` for the override and
+  `10.125` for the class default; it compares the complete pre-existing
+  Charge row before and after and observes byte-for-byte equality.
+- Authorization and non-mutation: the fresh probe rejects Teacher and Student
+  price-history reads, forged class/default reads, anonymous/non-Admin/wrong-
+  center/forged-class/forged-student setting actions, invalid amount, and
+  invalid date. Price-setting and Charge snapshots remain exactly equal after
+  all denials.
+- T3 disposable isolation and hard scope: Attempt 2's disposable browser gate
+  used only `tmp/ft-006-admin-pricing.db`, owned its server, and cleaned the
+  exact database/sidecars. The current source diff is limited to the three
+  `step="any"` input changes and their focused regression assertions; no
+  forbidden Calendar, Center & Scheduling, real DB, Playwright-config, or
+  runner path was changed.
+
+## Architecture / non-goals
+
+- The accepted `Lesson Context -> Financial Ledger` projection edge and
+  `Financial Ledger -> Center & Scheduling` scope edge remain in use.
+- Routes remain adapters; no direct financial SQL or consumer-owned financial
+  write appeared in the current change surface.
+- No second payment flow, payment-action semantic change, allocation/replay
+  change, paid/unpaid label change, deletion UI, or historical-charge rewrite
+  was observed.
+- The requested `Codex Luna` `xhigh` co-review was attempted once and returned
+  immediately with an unsupported-model error; it supplied no candidate
+  finding and was not used for the verdict.
+
+## Verdict
 
 VERDICT: PASS
+
+## Handoff
+
+- Recommended next action: `/red-verify TASK-099-T3-FT-006-W32`.
+- Lifecycle/scheduler status changed by verifier: no; task remains
+  `in_progress`.
+- No tier escalation, planning repair, `/debug`, `/mb-sync`, or follow-up task
+  is required by this functional result.

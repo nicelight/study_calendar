@@ -1,7 +1,7 @@
 {
   "id": "TASK-101-T3-FT-006-W34",
   "title": "Render personal-calendar payment markers",
-  "status": "planned",
+  "status": "ready",
   "wave": "W34",
   "feature": "FT-006",
   "reqs": ["REQ-013", "REQ-014"],

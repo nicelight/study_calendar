@@ -4,7 +4,7 @@ status: active
 type: feature
 id: FT-006
 lifecycle: planned
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 epic: EP-005
 requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015]
 spec_design_status: complete
@@ -16,6 +16,9 @@ spec_design_links:
   - .memory-bank/domains/core-domain.md#persistence-and-transaction-rules
   - .memory-bank/states/lifecycle-map.md#learning-and-finance
   - .memory-bank/runbooks/mvp-verification.md#required-pre-real-data-checks
+clarification_status: complete
+last_clarified: 2026-09-04
+clarification_questions: 0
 ---
 # FT-006 — Financial Ledger
 
@@ -32,6 +35,9 @@ spec_design_links:
 ## Edge / Failure Behavior
 - Price changes do not rewrite historical charges.
 - Full, partial, and excess payments retain exact amounts and deterministic order.
+- Supported Admin pricing and Lesson Context amount inputs accept the full exact
+  decimal precision supported by Financial Ledger; no browser-only cents
+  constraint or silent rounding narrows a financial value.
 - Repeated financial submission does not create a second payment without a new
   explicit confirmation.
 - Marker placement across week/month boundaries and multiple markers on one day
@@ -114,14 +120,18 @@ spec_design_links:
   the deterministic history with author and timestamp. The single class value
   is the lesson price and the default value for the existing editable payment
   form; the existing form's initial amount is proved from that same value. A
-  later setting affects only future charges. The UI does not offer deletion or
-  historical-charge rewrite.
+  later setting affects only future charges. The pricing and existing payment
+  amount inputs accept the full exact decimal precision supported by Financial
+  Ledger, including values such as `10.125`; browser validation does not impose
+  a cents-only step and no silent rounding occurs. The UI does not offer
+  deletion or historical-charge rewrite.
   Teacher, Student, Parent, cross-center, forged-class, and forged-student
   requests do not return pricing data or mutate settings.
 - Verification: protected route/action tests plus disposable Playwright E2E
   cover default and override history, validation, own-center Admin writes,
-  existing payment-form initial amount, future-Charge effect, denied
-  roles/scope, and unchanged historical charge rows.
+  existing payment-form initial amount, full-precision values in both supported
+  amount inputs, future-Charge effect, denied roles/scope, and unchanged
+  historical charge rows.
 
 ### FT-006-AC-010 — Admin payment journal and correction controls
 - REQ: REQ-012, REQ-013, REQ-014, REQ-015
@@ -366,3 +376,77 @@ The fresh `/review-tasks-plan FT-006` returned `APPROVE` at Planning Revision
 planned cards TASK-099, TASK-100, and TASK-101. The decomposition is closed for
 this revision; implementation, task verification, and FT-006 lifecycle
 promotion remain future execution decisions.
+
+## Clarifications
+
+### 2026-09-04 — Preserve full exact decimal precision at supported amount inputs
+
+The fresh semantic verification for `TASK-099-T3-FT-006-W32` confirmed that
+`step="0.01"` makes the supported Admin pricing and Lesson Context amount
+inputs reject `10.125`, although Financial Ledger accepts and preserves exact
+decimal values beyond two fractional digits. The existing Financial Ledger
+contract, PRD, and `FT-006-AC-003` already establish full exact precision as
+accepted intent, so no cents-only decision, new AC, REQ change, or canonical
+design change is introduced.
+
+The defect is routed to the existing task execution owner. The task removes
+the artificial browser constraint and adds the focused higher-precision browser
+regression within its current hard boundary; existing Ledger commands,
+ownership, payment semantics, and historical-charge behavior remain unchanged.
+`Design impact: none`. `Behavior spec impact: none`. Immediate route:
+`/exe TASK-099-T3-FT-006-W32`, then `/verify TASK-099-T3-FT-006-W32`, then
+`/red-verify TASK-099-T3-FT-006-W32`.
+
+The correction and both independent verification stages are now complete:
+Attempt 2 changed only the browser precision constraint and its regression;
+functional verification is `PASS` and semantic verification is
+`semantic-pass`. The original F-001 concern is retained as historical
+correction basis, not as a current blocker. At this clarification handoff,
+scheduler-owned lifecycle closure and boundary synchronization were still
+pending; the later W32 section records their resolved state.
+
+## W32 Admin pricing and payment-default closure — 2026-09-04
+
+`TASK-099-T3-FT-006-W32` is durably `done` from its current Attempt 2
+implementation, independent functional `PASS`, required T3 `semantic-pass`,
+and scheduler closure for `FT-006-AC-009 / REQ-011 / REQ-014`. The protected
+own-center Admin page exposes append-only class/default and student-override
+settings with deterministic history, and the existing editable Lesson Context
+payment form initializes from the same authorized current class value. Exact
+values such as `10.125` remain browser-valid and reach future Charges without
+rewriting an existing Charge; denied roles and forged scope leave financial
+state unchanged.
+
+- [TASK-099 card](../tasks/TASK-099-T3-FT-006-W32.task.json)
+- [current functional verification](../../.protocols/TASK-099-T3-FT-006-W32/verification.md)
+- [current functional report](../../.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-VERIFY-final-report-docs-01.md)
+- [current semantic verification](../../.protocols/TASK-099-T3-FT-006-W32/red-verification.md)
+- [current semantic report](../../.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-RED-VERIFY-final-report-docs-01.md)
+- [W32 boundary sync](../../.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-MB-SYNC-final-report-docs-01.md)
+
+Attempt 1 and the initial F-001 semantic finding remain historical correction
+basis only. `TASK-100-T3-FT-006-W33` and `TASK-101-T3-FT-006-W34` remain
+`planned`; FT-006 therefore remains `lifecycle: planned`. This sync changes no
+feature, epic, or requirement lifecycle, dependency, promotion, task-plan
+approval, Planning Revision, or scheduler state.
+
+## W33 Admin payment-journal execution handoff — 2026-09-04
+
+`TASK-100-T3-FT-006-W33` has completed its executor Attempt 1 after the
+preserved claim-specific RED. The Admin finance route now composes the
+server-resolved own-center payment journal from the Financial Ledger balance
+projection and invokes only the existing `editPayment` / `cancelPayment`
+commands with explicit confirmation. The page shows exact payment facts,
+allocations, balance/advance, and audit before/after history; cancelled
+payments remain visible and no payment-creation form is added.
+
+Focused route/action coverage and the disposable browser proof passed. The
+task remains `in_progress` pending fresh `/verify`, required T3
+`/red-verify`, and scheduler-owned closure. No Financial Ledger ownership,
+feature lifecycle, Planning Revision, dependency, or scheduler decision
+changed during execution.
+
+- [TASK-100 card](../tasks/TASK-100-T3-FT-006-W33.task.json)
+- [Attempt 1 RED](../../.tasks/TASK-100-T3-FT-006-W33/attempt-1-red.md)
+- [Attempt 1 GREEN](../../.tasks/TASK-100-T3-FT-006-W33/attempt-1-green.md)
+- [executor report](../../.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-EXE-final-report-code-01.md)
