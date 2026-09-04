@@ -26,18 +26,24 @@ status: active
   `.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-RED-VERIFY-final-report-docs-01.md`.
   The authoritative lifecycle remains `in_progress` in
   `.memory-bank/tasks/TASK-100-T3-FT-006-W33.task.json:4`.
-- Scheduler next action: restore access to the existing Judge session
-  `01a06cfe-3051-7b61-82ec-087cbbc61f19` and resend the compact Judge brief;
-  then follow its accepted route, which is expected to be the bounded
-  same-task `/exe` correction/retry for F-001. Do not launch/replace/reset a
-  Judge, close TASK-100, or select another task while this policy halt holds.
-- Current halt: `HALT_POLICY_VIOLATION` because the required existing Judge
-  target is unavailable to the active runtime (`agent ... not found`). The
+- Scheduler next action: obtain a valid `JUDGE_ASSESSMENT` from the existing
+  Judge session `01a06cfe-3051-7b61-82ec-087cbbc61f19` and then follow its
+  accepted route, expected to be the bounded same-task `/exe` correction/retry
+  for F-001. A compact brief was delivered and its turn completed, but no
+  assessment was returned. Do not launch/replace/reset a Judge, close TASK-100,
+  or select another task while this policy halt holds.
+- Current halt: `HALT_POLICY_VIOLATION` remains because the required Judge
+  consultation cannot be reconciled without its mandatory assessment. The
   semantic-fail evidence remains authoritative at
   `.protocols/TASK-100-T3-FT-006-W33/red-verification.md:50-62`; task status
   remains `in_progress` at
   `.memory-bank/tasks/TASK-100-T3-FT-006-W33.task.json:4`. Resume owner:
-  `/multipilot` after restoring the same Judge bridge/session.
+  `/multipilot` using the same Judge session; no child scheduler stage may run
+  until the compact assessment is durable.
+- 2026-09-05 recovery: `node .memory-bank/scripts/mb-doctor.mjs --strict`
+  passed with 0 errors. The same Judge session accepted the compact brief and
+  returned an idle completed turn, but `read_thread` exposed no
+  `JUDGE_ASSESSMENT`; no route or lifecycle decision was inferred.
 - W32 `/mb-sync` child handoff is `PASS` at
   `.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-MB-SYNC-final-report-docs-01.md`;
   the sync reconciled bounded evidence routes only. Scheduler-owned next
