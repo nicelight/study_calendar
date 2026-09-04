@@ -229,7 +229,7 @@
 				</label>
 				<label>
 					<span>Сумма</span>
-					<input name="amount" type="number" min="0.01" step="0.01" required />
+					<input name="amount" type="number" min="0.01" step="0.01" required value={payment.defaultAmount ?? ''} />
 				</label>
 				<label>
 					<span>Фактическая дата (дд.мм.гггг)</span>

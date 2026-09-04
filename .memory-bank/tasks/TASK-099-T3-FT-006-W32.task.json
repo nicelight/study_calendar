@@ -1,7 +1,7 @@
 {
   "id": "TASK-099-T3-FT-006-W32",
   "title": "Expose Admin class price, override, history, and payment-form default",
-  "status": "planned",
+  "status": "in_progress",
   "wave": "W32",
   "feature": "FT-006",
   "reqs": ["REQ-011", "REQ-014"],

@@ -2086,3 +2086,93 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
   `current stage: wave-boundary`, and `next action: none`. This is exhausted
   reviewed product-task queue closure, not feature-level `verified`, human
   acceptance, deployment, or production-use approval.
+## 2026-09-04 — New product cards reconciled after prior terminal checkpoint
+
+- Recovery-first audit found the prior `STATE: SUCCESS` checkpoint dated
+  2026-08-24 inconsistent with the current authoritative index: seven new
+  product cards (`TASK-099..103`, `TASK-105..106`) are indexed and unfinished.
+- Global Backbone remains complete at Planning Revision 2; Foundation gate
+  remains done and FT-000 records were not changed.
+- Current task-plan eligibility is FT-006 `APPROVE`, FT-005 `APPROVE`, and
+  FT-004 latest `REJECT`; FT-004 remains ineligible with its planned cards
+  unchanged and its named repair owner `/feature-to-tasks FT-004` preserved.
+- Promotion pass changed only `TASK-099-T3-FT-006-W32` from `planned` to
+  `ready`, because it is the earliest eligible task with all dependencies done.
+  Scheduler next action is a fresh `/exe TASK-099-T3-FT-006-W32` context.
+- Judge consultation delivery was attempted against the existing target
+  `01a06b05-47a8-7552-8056-924bb79b6f2e`; the local session bridge reported
+  that direct input to the unloaded spawned sub-agent is not allowed, so no
+  assessment is inferred or recorded. The existing Judge was not replaced,
+  reset, or duplicated. At the next due wave boundary, the outer multipilot
+  wrapper must send the compact brief through its owning Judge bridge before
+  progressing to the next wave or terminal disposition.
+## 2026-09-04 — TASK-099 verifier safe recovery
+
+- The interrupted `/verify TASK-099-T3-FT-006-W32` child had no durable
+  `VERDICT` marker. Its partial artifacts are not treated as functional proof.
+- Recovery-first action: stopped that child, preserved the completed `/exe`
+  Attempt 1 GREEN handoff and implementation, and launched one fresh
+  independent `/verify TASK-099-T3-FT-006-W32` child.
+- Authoritative task state remains `in_progress`; scheduler route remains
+  `verify`. No Judge consultation was due at this recovery action; the next
+  due consultation will be sent to the existing target
+  `01a06b05-47a8-7552-8056-924bb79b6f2e` with a compact `JUDGE_BRIEF`, and no
+  assessment will be inferred if delivery fails.
+
+## 2026-09-04 — TASK-099 verifier safe recovery 2
+
+- The recovery replacement `/verify TASK-099-T3-FT-006-W32` stopped reporting
+  before completion. It was interrupted after durable inspection found no new
+  substantive verifier artifact and no `VERDICT` marker.
+- No functional verdict is inferred from code presence, executor GREEN, or
+  gate results. The full `/exe` Attempt 1 handoff remains valid supporting
+  evidence and the task remains `in_progress`.
+- Recovery route: launch one fresh independent `/verify` in a recoverable
+  child. If completion cannot be proven, halt at the quality/blocking owner
+  route `/verify TASK-099-T3-FT-006-W32`, preserving this checkpoint; do not
+  proceed to T3 red-verification or Judge closure without a durable verdict.
+
+## 2026-09-04 — TASK-099 verifier recovery 2 replacement active
+
+- After recording the absent-artifact recovery and stopping the non-reporting
+  child, the scheduler launched one fresh independent `/verify` child.
+- Completion remains unproven until the child writes exactly one durable
+  `VERDICT` marker and matching evidence. TASK-099 remains `in_progress` at
+  `verify`; if this final replacement cannot complete durably, use the
+  quality/blocking owner route `/verify TASK-099-T3-FT-006-W32` and do not
+  continue to T3 red-verification or closure.
+
+## 2026-09-04 — TASK-099 final verifier recovery quality halt
+
+- The permitted final recovery window ended without a durable verifier handoff
+  and without any `VERDICT:` marker; the marker count in
+  `.protocols/TASK-099-T3-FT-006-W32/verification.md` is `0`.
+- The two remaining exact verifier process groups (`1909713` and `1913109`)
+  were stopped with `TERM`; post-stop inspection found no matching verifier
+  process. Partial probe files are preserved but do not establish a verdict.
+- `TASK-099-T3-FT-006-W32` remains `in_progress` at `verify`. No inference is
+  made from implementation presence, executor `GREEN`, focused tests,
+  disposable E2E, or gate reports. No new verifier, `red-verify`, closure,
+  promotion, or Judge session was launched.
+- Scheduler state is `HALT_QUALITY_GATES`. Exact owner and resume route:
+  `/verify TASK-099-T3-FT-006-W32`.
+
+## 2026-09-04 — TASK-099 current NEEDS-CLARIFICATION reconciled
+
+- Recovery from the named owner route found exactly one current functional
+  marker, `VERDICT: NEEDS-CLARIFICATION`, at
+  `.protocols/TASK-099-T3-FT-006-W32/verification.md:82`.
+- The current verifier's concrete gap is missing durable independent proof for
+  the complete T3 claim set `FT-006-AC-009 / REQ-011 / REQ-014`, including the
+  full authorization/non-mutation and disposable-isolation boundary. It also
+  records that the required fresh `Codex Luna` `xhigh` co-review was not
+  obtained after its permitted retry.
+- Under scheduler failure handling, `NEEDS-CLARIFICATION` is inconclusive and
+  does not count as an unsuccessful attempt. TASK-099 remains `in_progress`;
+  retry/consecutive-failure counters remain `0`, and no dependents are blocked.
+  T3 `/red-verify`, closure, and promotion remain gated on a later functional
+  `PASS`.
+- Scheduler state remains `HALT_QUALITY_GATES`. Exact evidence owner/resume
+  route: `/verify TASK-099-T3-FT-006-W32`. No new verifier, implementation,
+  red-verification, or Judge session was launched; existing Judge target
+  `01a06b05-47a8-7552-8056-924bb79b6f2e` is preserved.

@@ -301,6 +301,9 @@
 			<h1>{data.name}</h1>
 			<p class="intro">Классы, расписания, участники и доступ учителей — в одном месте.</p>
 		</div>
+		<nav aria-label="Разделы Admin">
+			<a class="button secondary" href={`/admin/${data.centerId}/finance`}>Финансы</a>
+		</nav>
 		<form method="POST" action="/auth/logout" class="logout-form">
 			<button class="button secondary" type="submit">Выйти</button>
 		</form>

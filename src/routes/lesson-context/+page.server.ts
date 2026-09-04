@@ -16,6 +16,7 @@ export type PaymentFormData = {
 	studentAccountIds: string[];
 	studentLabels: Record<string, string>;
 	factualDate: string;
+	defaultAmount: string | null;
 };
 
 type AttendanceFormEntry = AttendanceView & {
@@ -49,13 +50,19 @@ function canEditMaterial(role: string | undefined): boolean {
 }
 
 function paymentForm(
+	root: ReturnType<typeof getCompositionRoot>,
+	sessionToken: string | undefined,
 	scope: ReturnType<ReturnType<typeof getCompositionRoot>['centerScheduling']['getAuthorizedClassScope']>,
 	lessonDate: string,
 	labels: Record<string, string>
 ): PaymentFormData | null {
-	return scope && (scope.role === 'admin' || scope.role === 'teacher')
-		? { studentAccountIds: scope.studentAccountIds, studentLabels: labels, factualDate: lessonDate }
-		: null;
+	if (!scope || (scope.role !== 'admin' && scope.role !== 'teacher')) return null;
+	return {
+		studentAccountIds: scope.studentAccountIds,
+		studentLabels: labels,
+		factualDate: lessonDate,
+		defaultAmount: root.financialLedger.getPaymentDefault({ sessionToken, classId: scope.classId })
+	};
 }
 
 function attendanceForm(
@@ -95,7 +102,7 @@ function lessonSummary(
 		canEditMaterial: canEditMaterial(scope.role),
 		canEditAttendance: scope.role === 'teacher',
 		attendance: attendanceForm(root, sessionToken, scope, lesson.lessonId, labels),
-		payment: paymentForm(scope, lesson.lessonDate, labels),
+		payment: paymentForm(root, sessionToken, scope, lesson.lessonDate, labels),
 		studentLabels: labels
 	};
 }
@@ -130,14 +137,15 @@ export const load: ServerLoad = ({ cookies, url }) => {
 		const attendance = scope
 			? attendanceForm(root, sessionToken, scope, dayContext.lesson.lessonId, labels)
 			: null;
+		const payment = paymentForm(root, sessionToken, scope, dayContext.lesson.lessonDate, labels);
 		return {
 			dayContext,
 			lesson: null,
 			canEditMaterial: canEditMaterial(scope?.role),
 			canEditAttendance: scope?.role === 'teacher',
 			attendance,
-			canCreatePayment: paymentForm(scope, dayContext.lesson.lessonDate, labels) !== null,
-			payment: paymentForm(scope, dayContext.lesson.lessonDate, labels),
+			canCreatePayment: payment !== null,
+			payment,
 			studentLabels: labels
 		};
 	} catch (cause) {

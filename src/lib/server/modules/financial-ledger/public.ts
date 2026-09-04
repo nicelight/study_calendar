@@ -92,6 +92,17 @@ export type PaymentMarkerView = {
 	amount: string;
 };
 
+export type PriceSettingView = {
+	id: number;
+	centerId: string;
+	classId: string;
+	studentAccountId: string | null;
+	amount: string;
+	effectiveFrom: string;
+	createdByAccountId: string;
+	createdAt: string;
+};
+
 export type FinancialProjectionRange = {
 	from?: string;
 	to?: string;
@@ -210,6 +221,78 @@ export class FinancialLedgerBoundary {
 		request: PriceSettingRequest & { studentAccountId: string }
 	): void {
 		this.setPrice(request, request.studentAccountId);
+	}
+
+	getPriceSettings(request: { sessionToken?: string; classId: string }): PriceSettingView[] {
+		return this.database.transaction(() => {
+			const actor = this.requireActor(request.sessionToken);
+			if (actor.role !== 'admin') {
+				throw new Error('not-authorized');
+			}
+			const scope = this.scope.getFinancialClassScope(actor, request.classId);
+			if (!scope || scope.classId !== request.classId) {
+				throw new Error('not-authorized');
+			}
+
+			const rows = this.database.sqlite
+				.prepare(
+					`SELECT id, center_id, class_id, student_account_id, amount,
+							effective_from, created_by_account_id, created_at
+					 FROM financial_price_settings
+					 WHERE center_id = ? AND class_id = ?
+					 ORDER BY effective_from, id`
+				)
+				.all(scope.centerId, request.classId) as Array<{
+					id: number;
+					center_id: string;
+					class_id: string;
+					student_account_id: string | null;
+					amount: string;
+					effective_from: string;
+					created_by_account_id: string;
+					created_at: string;
+				}>;
+
+			return rows.map((row) => ({
+				id: row.id,
+				centerId: row.center_id,
+				classId: row.class_id,
+				studentAccountId: row.student_account_id,
+				amount: row.amount,
+				effectiveFrom: row.effective_from,
+				createdByAccountId: row.created_by_account_id,
+				createdAt: row.created_at
+			}));
+		});
+	}
+
+	getPaymentDefault(request: { sessionToken?: string; classId: string }): string | null {
+		return this.database.transaction(() => {
+			const actor = this.requireActor(request.sessionToken);
+			if (actor.role !== 'admin' && actor.role !== 'teacher') {
+				throw new Error('not-authorized');
+			}
+			const scope = this.scope.getFinancialClassScope(actor, request.classId);
+			if (!scope || scope.classId !== request.classId) {
+				throw new Error('not-authorized');
+			}
+
+			const row = this.database.sqlite
+				.prepare(
+					`SELECT amount
+					 FROM financial_price_settings
+					 WHERE center_id = ?
+					   AND class_id = ?
+					   AND student_account_id IS NULL
+					   AND effective_from <= ?
+					 ORDER BY effective_from DESC, id DESC
+					 LIMIT 1`
+				)
+				.get(scope.centerId, request.classId, this.now().toISOString().slice(0, 10)) as
+				{ amount: string } | undefined;
+
+			return row?.amount ?? null;
+		});
 	}
 
 	reconcileLessonCharge(request: {
