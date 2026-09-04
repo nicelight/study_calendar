@@ -2321,3 +2321,23 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
   current stage `verify`, preserving TASK-100 `in_progress`. Exact next action
   is a fresh `/verify TASK-100-T3-FT-006-W33`; no lifecycle closure or further
   task selection occurs before its functional and T3 semantic verdicts.
+## 2026-09-04 — TASK-100 semantic failure and Judge access halt
+
+- Fresh functional verification returned `VERDICT: PASS` at
+  `.protocols/TASK-100-T3-FT-006-W33/verification.md:139`.
+- Fresh independent T3 semantic verification returned
+  `SEMANTIC_VERDICT: semantic-fail` at
+  `.protocols/TASK-100-T3-FT-006-W33/red-verification.md:50-70`.
+  F-001 proves that the journal hard-codes `confirm-edit` and `confirm-cancel`
+  while the Financial Ledger rejects a second different payment/payload for
+  the same actor/operation/confirmation at
+  `src/lib/server/modules/financial-ledger/public.ts:459-464,502-507`.
+- Before selecting correction/retry, the scheduler sent the required compact
+  brief to the retained Judge target
+  `01a06cfe-3051-7b61-82ec-087cbbc61f19`; the active runtime returned
+  `agent ... not found`. No Judge was launched, replaced, or reset, and no
+  correction, closure, or task-status write was performed.
+- Per `/multipilot` and the Judge overlay, this is
+  `HALT_POLICY_VIOLATION`. Resume owner/route: `/multipilot` after restoring
+  access to that same Judge session, resend the brief, then apply the accepted
+  repair/retry route. TASK-100 remains `in_progress`.

@@ -6,26 +6,38 @@ status: active
 
 ## Checkpoint
 
-- STATE: `RUNNING`
+- STATE: `HALT_POLICY_VIOLATION`
 - command: `/autopilot`
 - role: `ORCHESTRATOR/SCHEDULER`
 - planning revision: `2`
 - current phase: `product queue`
 - current task: `TASK-100-T3-FT-006-W33`
-- current stage: `verify`
+- current stage: `red-verify`
 - queue summary: product `53 done / 3 failed / 2 ready / 3 planned /
   1 in_progress / 0 blocked`; full index `55 done / 3 failed / 2 ready / 3
   planned / 1 in_progress`.
-- last durable child verdict/handoff: TASK-100 Attempt 1 `/exe` completed with
-  claim-linked GREEN and a forward handoff at
-  `.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-EXE-final-report-code-01.md`;
-  the honest RED remains preserved at
-  `.tasks/TASK-100-T3-FT-006-W33/attempt-1-red.md`. The authoritative
-  lifecycle remains `in_progress` in
+- last durable child verdict/handoff: TASK-100 Attempt 1 functional verification
+  is `VERDICT: PASS` at
+  `.protocols/TASK-100-T3-FT-006-W33/verification.md:139`; its canonical
+  report is
+  `.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-VERIFY-final-report-docs-01.md`.
+  The subsequent T3 semantic review is `SEMANTIC_VERDICT: semantic-fail` at
+  `.protocols/TASK-100-T3-FT-006-W33/red-verification.md:70`, with report at
+  `.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-RED-VERIFY-final-report-docs-01.md`.
+  The authoritative lifecycle remains `in_progress` in
   `.memory-bank/tasks/TASK-100-T3-FT-006-W33.task.json:4`.
-- Scheduler next action: fresh `/verify TASK-100-T3-FT-006-W33`; after
-  functional PASS, fresh T3 `/red-verify TASK-100-T3-FT-006-W33`, then
-  scheduler closure and W33 boundary sync. No other task may be selected.
+- Scheduler next action: restore access to the existing Judge session
+  `01a06cfe-3051-7b61-82ec-087cbbc61f19` and resend the compact Judge brief;
+  then follow its accepted route, which is expected to be the bounded
+  same-task `/exe` correction/retry for F-001. Do not launch/replace/reset a
+  Judge, close TASK-100, or select another task while this policy halt holds.
+- Current halt: `HALT_POLICY_VIOLATION` because the required existing Judge
+  target is unavailable to the active runtime (`agent ... not found`). The
+  semantic-fail evidence remains authoritative at
+  `.protocols/TASK-100-T3-FT-006-W33/red-verification.md:50-62`; task status
+  remains `in_progress` at
+  `.memory-bank/tasks/TASK-100-T3-FT-006-W33.task.json:4`. Resume owner:
+  `/multipilot` after restoring the same Judge bridge/session.
 - W32 `/mb-sync` child handoff is `PASS` at
   `.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006-W32-S-MB-SYNC-final-report-docs-01.md`;
   the sync reconciled bounded evidence routes only. Scheduler-owned next

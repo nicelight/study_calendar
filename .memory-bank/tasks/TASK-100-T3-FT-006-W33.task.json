@@ -26,7 +26,8 @@
     "FT-006-AC-010 / REQ-012 / REQ-013 / REQ-014 / REQ-015: the protected own-center Admin journal lists each recorded or cancelled Payment once with server-resolved class/student, exact amount, factual date, status, allocations, current balance/advance, and audit history.",
     "The journal's edit and cancel actions require explicit confirmation and invoke only the existing Financial Ledger editPayment and cancelPayment commands; after success the authoritative allocation, balance, status, and before/after audit are reloaded.",
     "The journal contains no payment-creation form. Anonymous, Teacher, Student, Parent, wrong-center, forged class/student, and forged payment requests are rejected before mutation.",
-    "Disposable Playwright proof uses the project-owned temporary database/server and removes only its exact temporary state."
+    "Disposable Playwright proof uses the project-owned temporary database/server and removes only its exact temporary state.",
+    "Current independent functional verification passed; see .protocols/TASK-100-T3-FT-006-W33/verification.md and .tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-VERIFY-final-report-docs-01.md. Lifecycle remains scheduler-owned and unchanged."
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
   "evidence_required": [
