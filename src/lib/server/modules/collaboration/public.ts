@@ -17,6 +17,9 @@ export const STANDARD_REACTIONS = [
 	'question'
 ] as const;
 
+export const SUPPORTED_FIELD_KEYS = ['topic', 'practicalWork', 'homework'] as const;
+export type SupportedFieldKey = (typeof SUPPORTED_FIELD_KEYS)[number];
+
 export type Reaction = (typeof STANDARD_REACTIONS)[number];
 export type DiscussionScope = 'shared' | 'personal';
 export type ReactionTargetType = 'field' | 'comment' | 'message';
@@ -72,6 +75,28 @@ export type BranchTabView = {
 export type DayDiscussionView = {
 	commonMessages: MessageView[];
 	recentBranchTabs: BranchTabView[];
+};
+
+export type BrowserReactionView = ReactionView & {
+	reactorLabel: string;
+};
+
+export type BrowserFieldCommentView = FieldCommentView & {
+	authorLabel: string;
+	reactions: BrowserReactionView[];
+};
+
+export type BrowserMessageView = MessageView & {
+	authorLabel: string;
+	reactions: BrowserReactionView[];
+};
+
+export type CollaborationBrowserProjection = Omit<DayDiscussionView, 'commonMessages'> & {
+	fieldComments: Record<SupportedFieldKey, BrowserFieldCommentView[]>;
+	fieldReactions: Record<SupportedFieldKey, BrowserReactionView[]>;
+	reactions: BrowserReactionView[];
+	commonMessages: BrowserMessageView[];
+	branchMessages: Record<string, BrowserMessageView[]>;
 };
 
 type CommentRow = {
@@ -146,7 +171,10 @@ export class CollaborationBoundary {
 
 	constructor(
 		private readonly database: SharedDatabase,
-		private readonly identityAccess: Pick<IdentityAccessBoundary, 'resolveActor'>,
+		private readonly identityAccess: Pick<
+			IdentityAccessBoundary,
+			'resolveActor' | 'getParticipantLabels'
+		>,
 		private readonly centerScheduling: Pick<
 			CenterSchedulingBoundary,
 			'getAuthorizedClassScope' | 'getLessons'
@@ -169,6 +197,7 @@ export class CollaborationBoundary {
 		return this.database.transaction(() => {
 			const target = this.requireDiscussionScope(request);
 			const fieldKey = this.requireText(request.fieldKey, 'invalid-field-key');
+			this.requireSupportedFieldKey(fieldKey);
 			const body = this.requireText(request.body, 'invalid-comment-body');
 			const commentId = this.requireText(request.commentId, 'invalid-comment-id');
 			const createdAt = this.now().toISOString();
@@ -207,23 +236,32 @@ export class CollaborationBoundary {
 
 	editFieldComment(request: {
 		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+		studentAccountId?: string;
 		commentId: string;
 		body: string;
 	}): FieldCommentView {
 		return this.database.transaction(() => {
-			const comment = this.getComment(request.commentId);
+			const commentId = this.requireText(request.commentId, 'invalid-comment-id');
+			const comment = this.getComment(commentId);
 			if (!comment) {
 				throw new Error('not-authorized');
 			}
+			const scope: DiscussionScope = request.studentAccountId === undefined ? 'shared' : 'personal';
 			const target = this.requireDiscussionScope({
 				sessionToken: request.sessionToken,
-				classId: comment.class_id,
-				lessonId: comment.lesson_id,
-				scope: comment.scope,
-				studentAccountId: comment.student_account_id ?? undefined
+				classId: request.classId,
+				lessonId: request.lessonId,
+				scope,
+				studentAccountId: request.studentAccountId
 			});
 			if (
 				comment.center_id !== target.lesson.centerId ||
+				comment.class_id !== target.classScope.classId ||
+				comment.lesson_id !== target.lesson.lessonId ||
+				comment.scope !== scope ||
+				(comment.student_account_id ?? null) !== target.studentAccountId ||
 				comment.author_account_id !== target.actor.accountId
 			) {
 				throw new Error('not-authorized');
@@ -237,9 +275,9 @@ export class CollaborationBoundary {
 					 SET body = ?, last_changed_at = ?
 					 WHERE id = ? AND center_id = ?`
 				)
-				.run(body, lastChangedAt, comment.id, target.lesson.centerId);
+				.run(body, lastChangedAt, commentId, target.lesson.centerId);
 
-			return this.requireCommentView(comment.id, target.lesson.centerId);
+			return this.requireCommentView(commentId, target.lesson.centerId);
 		});
 	}
 
@@ -376,6 +414,91 @@ export class CollaborationBoundary {
 				messageCount: tab.message_count,
 				lastActivityAt: tab.last_activity_at
 			}))
+		};
+	}
+
+	getBrowserProjection(request: DiscussionRequest): CollaborationBrowserProjection {
+		const target = this.requireDiscussionScope(request);
+		const comments = this.getScopedComments(target, request.scope);
+		const messageRows = this.getScopedMessageRows(target, request.scope);
+		const messages = messageRows.map((row) => this.toMessageView(row));
+		const reactions = this.getScopedReactions(target, request.scope);
+		const participantAccountIds = [
+			...new Set([
+				...comments.map((comment) => comment.author_account_id),
+				...messageRows.map((message) => message.author_account_id),
+				...reactions.map((reaction) => reaction.reactor_account_id)
+			])
+		];
+		const labels = this.identityAccess.getParticipantLabels(participantAccountIds);
+		const labelsByAccountId = new Map(
+			labels.map((label) => [label.accountId, label] as const)
+		);
+		if (labelsByAccountId.size !== participantAccountIds.length) {
+			throw new Error('not-authorized');
+		}
+
+		const labelFor = (accountId: string): string => {
+			const label = labelsByAccountId.get(accountId);
+			if (!label) throw new Error('not-authorized');
+			return label.fullName;
+		};
+		const browserReactions = reactions
+			.filter((reaction) =>
+				reaction.target_type === 'field'
+					? (SUPPORTED_FIELD_KEYS as readonly string[]).includes(reaction.target_id)
+					: reaction.target_type === 'comment'
+						? comments.some((comment) => comment.id === reaction.target_id)
+						: messageRows.some((message) => message.id === reaction.target_id)
+			)
+			.map((reaction) => this.toBrowserReactionView(reaction, labelFor(reaction.reactor_account_id)));
+		const reactionsByTarget = new Map<string, BrowserReactionView[]>();
+		for (const reaction of browserReactions) {
+			const key = `${reaction.targetType}:${reaction.targetId}`;
+			const values = reactionsByTarget.get(key) ?? [];
+			values.push(reaction);
+			reactionsByTarget.set(key, values);
+		}
+
+		const browserComments = comments.map((comment) => ({
+			...this.toCommentView(comment),
+			authorLabel: labelFor(comment.author_account_id),
+			reactions: reactionsByTarget.get(`comment:${comment.id}`) ?? []
+		}));
+		const browserMessages = messageRows.map((message) => ({
+			...this.toMessageView(message),
+			authorLabel: labelFor(message.author_account_id),
+			reactions: reactionsByTarget.get(`message:${message.id}`) ?? []
+		}));
+		const fieldComments = Object.fromEntries(
+			SUPPORTED_FIELD_KEYS.map((fieldKey) => [
+				fieldKey,
+				browserComments.filter((comment) => comment.fieldKey === fieldKey)
+			])
+		) as Record<SupportedFieldKey, BrowserFieldCommentView[]>;
+		const fieldReactions = Object.fromEntries(
+			SUPPORTED_FIELD_KEYS.map((fieldKey) => [
+				fieldKey,
+				browserReactions.filter(
+					(reaction) => reaction.targetType === 'field' && reaction.targetId === fieldKey
+				)
+			])
+		) as Record<SupportedFieldKey, BrowserReactionView[]>;
+		const recentBranchTabs = this.getRecentBranchTabs(target, request.scope);
+		const branchMessages = Object.fromEntries(
+			recentBranchTabs.map((tab) => [
+				tab.rootMessageId,
+				browserMessages.filter((message) => message.rootMessageId === tab.rootMessageId)
+			])
+		);
+
+		return {
+			fieldComments,
+			fieldReactions,
+			reactions: browserReactions,
+			commonMessages: browserMessages,
+			recentBranchTabs,
+			branchMessages
 		};
 	}
 
@@ -533,9 +656,9 @@ export class CollaborationBoundary {
 		target: AuthorizedDiscussionScope
 	): void {
 		const targetId = this.requireText(request.targetId, 'invalid-reaction-target');
-		switch (request.targetType) {
+			switch (request.targetType) {
 			case 'field':
-				this.requireText(targetId, 'invalid-field-key');
+				this.requireSupportedFieldKey(targetId);
 				return;
 			case 'comment': {
 				const comment = this.getComment(targetId);
@@ -561,6 +684,12 @@ export class CollaborationBoundary {
 		}
 	}
 
+	private requireSupportedFieldKey(fieldKey: string): void {
+		if (!(SUPPORTED_FIELD_KEYS as readonly string[]).includes(fieldKey)) {
+			throw new Error('invalid-field-key');
+		}
+	}
+
 	private messageTableContainsTarget(
 		target: AuthorizedDiscussionScope,
 		scope: DiscussionScope,
@@ -574,6 +703,13 @@ export class CollaborationBoundary {
 		target: AuthorizedDiscussionScope,
 		scope: DiscussionScope
 	): MessageView[] {
+		return this.getScopedMessageRows(target, scope).map((row) => this.toMessageView(row));
+	}
+
+	private getScopedMessageRows(
+		target: AuthorizedDiscussionScope,
+		scope: DiscussionScope
+	): MessageRow[] {
 		const rows = this.database.sqlite
 			.prepare(
 				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
@@ -590,7 +726,82 @@ export class CollaborationBoundary {
 				scope,
 				target.studentAccountId
 			) as MessageRow[];
-		return rows.map((row) => this.toMessageView(row));
+		return rows;
+	}
+
+	private getScopedComments(
+		target: AuthorizedDiscussionScope,
+		scope: DiscussionScope
+	): CommentRow[] {
+		return this.database.sqlite
+			.prepare(
+				`SELECT id, center_id, class_id, lesson_id, scope, student_account_id,
+						field_key, body, author_account_id, created_at, last_changed_at
+					 FROM collaboration_comments
+					 WHERE center_id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
+					   AND COALESCE(student_account_id, '') = COALESCE(?, '')
+					 ORDER BY created_at, id`
+			)
+			.all(
+				target.lesson.centerId,
+				target.classScope.classId,
+				target.lesson.lessonId,
+				scope,
+				target.studentAccountId
+			) as CommentRow[];
+	}
+
+	private getScopedReactions(
+		target: AuthorizedDiscussionScope,
+		scope: DiscussionScope
+	): ReactionRow[] {
+		return this.database.sqlite
+			.prepare(
+				`SELECT target_type, target_id, center_id, class_id, lesson_id, scope,
+						student_account_id, reaction, reactor_account_id, created_at, last_changed_at
+					 FROM collaboration_reactions
+					 WHERE center_id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
+					   AND COALESCE(student_account_id, '') = COALESCE(?, '')
+					 ORDER BY target_type, target_id, reaction, reactor_account_id`
+			)
+			.all(
+				target.lesson.centerId,
+				target.classScope.classId,
+				target.lesson.lessonId,
+				scope,
+				target.studentAccountId
+			) as ReactionRow[];
+	}
+
+	private getRecentBranchTabs(
+		target: AuthorizedDiscussionScope,
+		scope: DiscussionScope
+	): BranchTabView[] {
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT root_message_id,
+						COUNT(*) AS message_count,
+						MAX(created_at) AS last_activity_at
+					 FROM collaboration_messages
+					 WHERE center_id = ? AND class_id = ? AND lesson_id = ? AND scope = ?
+					   AND COALESCE(student_account_id, '') = COALESCE(?, '')
+					 GROUP BY root_message_id
+					 HAVING COUNT(*) > 1
+					 ORDER BY MAX(rowid) DESC
+					 LIMIT 10`
+			)
+			.all(
+				target.lesson.centerId,
+				target.classScope.classId,
+				target.lesson.lessonId,
+				scope,
+				target.studentAccountId
+			) as BranchTabRow[];
+		return rows.map((tab) => ({
+			rootMessageId: tab.root_message_id,
+			messageCount: tab.message_count,
+			lastActivityAt: tab.last_activity_at
+		}));
 	}
 
 	private getMessage(messageId: string): MessageRow | undefined {
@@ -723,6 +934,10 @@ export class CollaborationBoundary {
 			createdAt: row.created_at,
 			lastChangedAt: row.last_changed_at
 		};
+	}
+
+	private toBrowserReactionView(row: ReactionRow, reactorLabel: string): BrowserReactionView {
+		return { ...this.toReactionView(row), reactorLabel };
 	}
 
 	private toMessageView(row: MessageRow): MessageView {

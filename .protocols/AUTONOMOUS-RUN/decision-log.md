@@ -4,6 +4,47 @@ status: active
 ---
 # Autonomous Run Decision Log
 
+## 2026-09-05 — Judge assessment resolves TASK-100 policy halt
+
+- The operator supplied the durable `JUDGE_ASSESSMENT: SUPPORT` from the exact
+  existing Judge target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`. Its basis is a
+  task-local defect against fixed accepted semantics, with no authority or
+  contract contradiction; trajectory is `progress`.
+- Accepted route: record the correction basis, run bounded
+  `/exe TASK-100-T3-FT-006-W33`, then fresh `/verify` and required fresh
+  `/red-verify`. Conditions preserve task identity, outcome, scope, T3 tier,
+  dependencies, specs, hard runtime boundaries, and FT-000 read-only status;
+  use a fresh confirmation value for each new submission and reuse it only for
+  an exact retry; rerun every required gate.
+- This authorizes retry `1/2` after the first unsuccessful Attempt 1 semantic
+  failure; no lifecycle closure, dependent promotion, or alternative Judge
+  action is authorized by this assessment.
+- The first child launch request was rejected before `/exe` started because an
+  explicit `gpt-5` model is unsupported by the Codex account. This is not an
+  execution attempt, caused no task/protocol/source mutation, and does not
+  change retry or failure counters. Recovery is a fresh child `/exe` launch
+  without a model override.
+
+## 2026-09-05 — required Judge assessment unavailable
+
+- Recovery input validation passed: Global Backbone Planning Revision `2` is
+  positive, Foundation gate `TASK-002-T3-FT-000-W1` is `done`, the strict
+  doctor passed with `0 errors`, and product queue state is preserved.
+- Current selected task is `TASK-100-T3-FT-006-W33`, still `in_progress` at
+  `.memory-bank/tasks/TASK-100-T3-FT-006-W33.task.json:4`; functional `PASS`
+  remains at `.protocols/TASK-100-T3-FT-006-W33/verification.md:139`, while
+  required T3 semantic verification remains `semantic-fail` at
+  `.protocols/TASK-100-T3-FT-006-W33/red-verification.md:70`.
+- One compact `JUDGE_BRIEF` consultation was delivered to the exact existing
+  target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`; a second compact brief asked
+  for the exact assessment. Both turns completed, but `read_thread` returned
+  no `JUDGE_ASSESSMENT` text or durable assessment artifact.
+- No assessment, route, retry, disposition, lifecycle write, `/mb-sync`, or
+  task selection is inferred. Exact terminal state is `HALT_POLICY_VIOLATION`.
+  Resume owner/route: `/multipilot`, restore a readable assessment from the
+  same Judge target, then follow the returned route. Do not launch, replace,
+  reset, or reuse any other Judge.
+
 ## 2026-08-18 — `/autopilot` run start
 
 - The previous `/autonomous` terminal `SUCCESS` is preserved as historical
@@ -2341,3 +2382,1413 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
   `HALT_POLICY_VIOLATION`. Resume owner/route: `/multipilot` after restoring
   access to that same Judge session, resend the brief, then apply the accepted
   repair/retry route. TASK-100 remains `in_progress`.
+
+## 2026-09-05 — TASK-100 post-verification Judge assessment unavailable
+
+- Attempt 2 `/exe` correction and fresh `/verify` completed with durable
+  `VERDICT: PASS` at
+  `.protocols/TASK-100-T3-FT-006-W33/verification.md:136`; the task remains
+  `in_progress` and the T3 semantic gate is still required.
+- The scheduler sent the compact post-verification `JUDGE_BRIEF` to the exact
+  existing target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`. The turn completed,
+  but its returned assistant message was empty and contained no
+  `JUDGE_ASSESSMENT`.
+- No route or verdict is inferred from an empty response. Per the Judge overlay,
+  scheduler state is the terminal `HALT_POLICY_VIOLATION`. No fresh
+  `/red-verify`, lifecycle closure, wave-boundary gates, `/mb-sync`, promotion,
+  or other Judge mutation is authorized from this checkpoint.
+- Exact resume owner/route: the scheduler resends the same compact brief to
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`, obtains an explicit
+  `JUDGE_ASSESSMENT`, then applies its route; TASK-100 remains `in_progress`.
+
+## 2026-09-05 — TASK-100 post-verification Judge SUPPORT and semantic route
+
+- The existing Judge target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` returned the
+  durable `JUDGE_ASSESSMENT: SUPPORT` for the completed Attempt 2 retry and
+  fresh functional `PASS`.
+- Basis: Attempt 2 stays within the accepted task claim set, directly corrects
+  the prior defect, proves the two-payment scenario, and preserves scheduler
+  lifecycle authority. Trajectory is `progress`; retry usage remains `1/2`.
+- Accepted route: fresh `/red-verify TASK-100-T3-FT-006-W33`, then a separate
+  closure assessment from the same Judge before scheduler-owned lifecycle
+  closure and W33 boundary actions. Conditions preserve task identity, scope,
+  tier, hard boundaries, and sequential ownership.
+- Evidence checked: `.memory-bank/tasks/TASK-100-T3-FT-006-W33.task.json:4,37-64`,
+  `.protocols/TASK-100-T3-FT-006-W33/verification.md:136-143`,
+  `.tasks/TASK-100-T3-FT-006-W33/attempt-2-green.md:1-40`, and
+  `.memory-bank/workflows/multiagents_with_judge.md:79-95`.
+
+## 2026-09-05 — TASK-100 Attempt 2 semantic PASS; closure consultation due
+
+- Fresh separate `/red-verify TASK-100-T3-FT-006-W33` returned exactly one
+  durable `SEMANTIC_VERDICT: semantic-pass` at
+  `.protocols/TASK-100-T3-FT-006-W33/red-verification.md:83`; report-02 is
+  `.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-RED-VERIFY-final-report-docs-02.md`.
+- The semantic reviewer found no admitted finding. It independently confirmed
+  fresh per-submission confirmation values, exact retry reuse, the two-payment
+  browser flow, Financial Ledger ownership, boundaries, and required gates.
+  The unavailable best-effort boundary co-review was not used as evidence.
+- T3 gates are now complete, but the task remains `in_progress`. Per the latest
+  Judge conditions, the scheduler must obtain a separate closure
+  `JUDGE_ASSESSMENT` from the same existing target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` before lifecycle closure or W33 actions.
+
+## 2026-09-05 — TASK-100 closure Judge assessment unavailable
+
+- Fresh T3 semantic verification is durably `semantic-pass` at
+  `.protocols/TASK-100-T3-FT-006-W33/red-verification.md:83`; no finding was
+  admitted and task identity/scope/tier/boundaries remain unchanged.
+- The scheduler sent the required compact closure `JUDGE_BRIEF` to the same
+  existing target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`. The turn completed,
+  but returned an empty assistant message and no `JUDGE_ASSESSMENT`.
+- No closure route is inferred. Scheduler state is terminal
+  `HALT_POLICY_VIOLATION`; no lifecycle write, `/mb-sync`, W33 gate, promotion,
+  or other Judge mutation was performed. TASK-100 remains `in_progress`.
+- Exact resume owner/route: resend the compact closure brief to
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`, obtain explicit closure assessment,
+  then apply it before scheduler-owned closure and W33 boundary actions.
+
+## 2026-09-05 — TASK-100 scheduler closure and W33 boundary start
+
+- The same existing Judge target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`
+  returned closure `JUDGE_ASSESSMENT: SUPPORT`. Its basis confirms fresh
+  functional PASS, per-task T3 semantic-pass with no findings/questions, and
+  scheduler lifecycle authority.
+- Scheduler applied the authorized lifecycle transition
+  `TASK-100-T3-FT-006-W33: in_progress -> done` in the authoritative task JSON,
+  linking Attempt 2 functional and semantic evidence before synchronization.
+- Queue checkpoint is now `current task: none`, `current stage: wave-boundary`.
+  Exact next action is one fresh `/mb-sync` for W33, followed by lint, strict
+  doctor, any triggered review, and `/tech-debt wave W33`. No further task
+  selection occurs before these boundary actions pass.
+
+## 2026-09-05 — W33 sync and caller-owned gates
+
+- Fresh `/mb-sync` reconciled TASK-100 `done`, Attempt 2 functional/semantic
+  evidence, FT-006/EP-005/REQ RTM routes, task plan wording, and W33 changelog;
+  `sync_result: PASS`, with no authoritative consistency gaps. Report:
+  `.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-MB-SYNC-final-report-docs-01.md:1-64`.
+- Scheduler `mb-lint` passed 76 files; strict `mb-doctor` passed with 0 errors.
+  Existing metadata warnings and the unrelated planned TASK-102 candidate were
+  not promoted or converted into a blocker.
+- No planning-surface review was triggered: FT-006 has only T3 task cards and
+  closure/evidence reconciliation did not change claims, specs, slicing,
+  dependencies, tier, scope, or plan assumptions. Next boundary action is the
+  default advisory `/tech-debt wave W33` report.
+
+## 2026-09-05 — W33 advisory technical-debt handoff unavailable
+
+- Fresh `/tech-debt wave W33` child `01a06e2a-0962-7423-9233-6b299a83e572` was
+  invoked for the exact W33 scope. After the bounded wait it had produced no
+  report or handoff; no `PAPERCUTS/TECHDEBTS` W33 report exists.
+- Per the autopilot boundary contract, unavailable advisory report creation is
+  non-blocking and does not change lifecycle, queue, gates, or resume routing.
+  No duplicate tech-debt child was launched. The scheduler continues with
+  recovery-first strict doctor and the next eligible selection.
+
+## 2026-09-05 — Recovery-first selection after W33
+
+- Strict doctor passed with 0 errors before selection. Eligible product ready
+  cards are TASK-101-T3-FT-006-W34 and TASK-105-T3-FT-005-W37; stable wave/index
+  order selects TASK-101 first.
+- FT-004 TASK-102/TASK-103 remain `planned` under the existing ineligible
+  planning gate and were not promoted. No Judge consultation is due for
+  selection; the exact same Judge remains the only permitted consultation
+  target when a due route requires it.
+- Scheduler selected TASK-101-T3-FT-006-W34 as the earliest eligible ready card
+  by stable wave/index order. Its T3 identity, dependencies, current FT-006
+  Planning Revision 2 approval, and hard runtime boundary were revalidated;
+  fresh `/exe TASK-101-T3-FT-006-W34` is the exact next action.
+
+## 2026-09-05 — TASK-101 executor recovery quality halt
+
+- Fresh Implementer child `01a06e30-296c-7831-8acf-f79fba0aafcc` initialized
+  TASK-101 Attempt 1 and wrote bounded task protocol/source/test changes.
+  Durable claim-specific RED is at
+  `.tasks/TASK-101-T3-FT-006-W34/attempt-1-red.md:7-29`; focused GREEN and
+  disposable browser evidence are recorded in
+  `.protocols/TASK-101-T3-FT-006-W34/progress.md:16-44`.
+- The child produced a failed command and, after repeated bounded recovery
+  prompts, no final `/exe` report or forward handoff. Full indexed gates and
+  safe completion cannot be proved; no lifecycle verdict or retry-budget
+  consumption is inferred from the incomplete execution.
+- Scheduler state is terminal `HALT_QUALITY_GATES`. TASK-101 remains
+  `in_progress`; exact resume owner/route is fresh `/exe
+  TASK-101-T3-FT-006-W34`, first reconciling Attempt 1 and the preserved bounded
+  diff. No verify, semantic review, sync, promotion, or Judge mutation follows
+  from this halt.
+
+## 2026-09-05 — TASK-101 executor handoff reconciled
+
+- Recovery re-read the existing Implementer child
+  `01a06e30-296c-7831-8acf-f79fba0aafcc`; it is now idle and no new child or
+  Judge was launched. The prior quality halt is superseded because the missing
+  executor completion is now durable.
+- Attempt 1 claim-specific RED remains at
+  `.tasks/TASK-101-T3-FT-006-W34/attempt-1-red.md:7-29`; focused and disposable
+  GREEN evidence remains at
+  `.protocols/TASK-101-T3-FT-006-W34/progress.md:16-44`. The final executor
+  report is
+  `.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-EXE-final-report-code-01.md:1-107`,
+  and the forward handoff is
+  `.protocols/TASK-101-T3-FT-006-W34/handoff.md:1-32`.
+- The report records all indexed executor gates as passed, but executor
+  evidence is supporting-only: no independent functional or semantic verdict
+  is inferred. TASK-101 remains `in_progress` in
+  `.memory-bank/tasks/TASK-101-T3-FT-006-W34.task.json:4`.
+- Scheduler checkpoint advances to `RUNNING`, current stage `verify`, exact
+  next action `/verify TASK-101-T3-FT-006-W34`. After functional PASS, the
+  required fresh T3 `/red-verify` remains due; lifecycle closure and
+  wave-boundary actions remain scheduler-owned.
+
+## 2026-09-05 — TASK-101 semantic-stage recovery quality halt
+
+- Existing fresh functional Reviewer `01a06e48-2974-7932-8702-8c76ac5a1722`
+  is idle, and its durable handoff proves exactly one `VERDICT: PASS` at
+  `.protocols/TASK-101-T3-FT-006-W34/verification.md:143`, with report
+  `.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-VERIFY-final-report-docs-01.md`.
+- Existing semantic Reviewer `01a06e50-fa6d-7700-ba8b-0c0155e7270e` remains
+  `inProgress` after bounded waits and completion prompts. Its inspection
+  included a failed command, but no
+  `.protocols/TASK-101-T3-FT-006-W34/red-verification.md` or required semantic
+  report is durable. Partial activity is not a semantic verdict.
+- Scheduler retains TASK-101 `in_progress` and records terminal
+  `HALT_QUALITY_GATES`. No duplicate Reviewer, `/exe`, Judge, lifecycle close,
+  sync, promotion, or next-task selection was performed.
+- Owner/resume route: scheduler reconciles the same existing semantic Reviewer
+  child once it becomes idle and consumes exactly one durable
+  `SEMANTIC_VERDICT`. A replacement `/red-verify TASK-101-T3-FT-006-W34`
+  child is not authorized by this recovery and requires explicit later
+  authorization.
+
+## 2026-09-05 — TASK-101 semantic Reviewer remains unresolved
+
+- Reconciliation after the next bounded wait still finds
+  `01a06e50-fa6d-7700-ba8b-0c0155e7270e` `inProgress`; its semantic protocol
+  and required report remain absent.
+- The functional handoff is still valid and unchanged: exactly one
+  `VERDICT: PASS` at
+  `.protocols/TASK-101-T3-FT-006-W34/verification.md:143`. No semantic
+  `SEMANTIC_VERDICT` is inferred from partial activity or command history.
+- Scheduler retains `HALT_QUALITY_GATES`, TASK-101 `in_progress`, and
+  `red-verify` as the current stage. No duplicate Reviewer, replacement
+  `/red-verify`, Judge, lifecycle closure, sync, promotion, or next-task
+  selection was performed.
+- Owner/resume route remains scheduler reconciliation of the same existing
+  semantic child after it becomes idle; consume exactly one durable semantic
+  verdict, then consult only existing Judge target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` before closure.
+
+## 2026-09-05 — TASK-101 independent functional verification
+
+- Fresh Reviewer child `01a06e48-2974-7932-8702-8c76ac5a1722` completed the
+  required `/verify` without implementation or lifecycle mutation. Its
+  durable report is
+  `.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-VERIFY-final-report-docs-01.md:1-63`.
+- Exactly one functional verdict is recorded: `VERDICT: PASS` at
+  `.protocols/TASK-101-T3-FT-006-W34/verification.md:143`. Fresh focused,
+  regression, build, isolation/browser, scope, ownership, and non-mutation
+  observations cover the task claim; executor evidence remains supporting-only.
+- Scheduler leaves TASK-101 `in_progress` and advances the checkpoint to
+  `RUNNING`, stage `red-verify`, exact next action
+  `/red-verify TASK-101-T3-FT-006-W34`. A fresh semantic verdict is required;
+  no Judge consultation is due before that T3 gate.
+
+## 2026-09-05 — TASK-101 semantic gate reconciled
+
+- Existing semantic Reviewer `01a06e50-fa6d-7700-ba8b-0c0155e7270e` completed
+  and is idle. Its durable protocol contains exactly one
+  `SEMANTIC_VERDICT: semantic-pass` at
+  `.protocols/TASK-101-T3-FT-006-W34/red-verification.md:51`; the report is
+  `.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-RED-VERIFY-final-report-docs-01.md:43`.
+- The semantic handoff reports no findings or operator questions and no
+  lifecycle mutation. Functional `VERDICT: PASS` remains at
+  `.protocols/TASK-101-T3-FT-006-W34/verification.md:143`; TASK-101 remains
+  `in_progress`.
+- Scheduler advances to `closure`; the next action is a compact closure brief
+  to the existing Judge target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`. No new Judge or Reviewer is launched.
+
+## 2026-09-05 — TASK-101 closure Judge assessment unavailable
+
+- Two compact closure `JUDGE_BRIEF` packets were sent to the same existing
+  Judge target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`. Both turns completed
+  without assistant text and contained no `JUDGE_ASSESSMENT`.
+- No support, redirect, or escalation route is inferred. TASK-101 retains
+  functional `VERDICT: PASS` and semantic `SEMANTIC_VERDICT: semantic-pass`,
+  but remains `in_progress`; closure and W34 boundary actions are withheld.
+- Scheduler records terminal `HALT_BLOCKING_QUESTIONS`. Owner is the
+  scheduler/Judge consultation boundary. Exact resume route is one compact
+  closure brief to that same existing Judge target requiring an explicit
+  assessment; no Judge replacement/reset or Reviewer launch is permitted.
+
+## 2026-09-05 — TASK-101 scheduler closure and W34 boundary start
+
+- The same existing Judge target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` returned the supplied explicit
+  `JUDGE_ASSESSMENT: SUPPORT` with `trajectory_signal: progress`. It confirms
+  fresh functional `PASS`, independent T3 `semantic-pass`, no findings or
+  operator questions, and scheduler lifecycle authority.
+- Scheduler applied the authorized lifecycle transition
+  `TASK-101-T3-FT-006-W34: in_progress -> done` and persisted current functional
+  and semantic evidence in the authoritative task JSON before `/mb-sync`.
+- Queue checkpoint is now `current task: none`, `current stage: wave-boundary`.
+  Exact next action is one fresh `/mb-sync` for W34, followed by lint, strict
+  doctor, any triggered review, and `/tech-debt wave W34`. No further task
+  selection occurs before those boundary actions reconcile.
+
+## 2026-09-05 — W34 `/mb-sync` completed
+
+- Fresh W34 sync child `01a06e60-9331-7de2-b31f-309f0daa687d` produced
+  `.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-MB-SYNC-final-report-docs-01.md:1-79`
+  with `sync_result: PASS` and no authoritative consistency gaps.
+- Sync reconciled the already-written TASK-101 closure, current functional and
+  semantic evidence, FT-006/EP-005/REQ-013/REQ-014 routes, implementation plan,
+  and W34 changelog. It made no lifecycle, promotion, design, task, or FT-000
+  mutation.
+- Scheduler remains at `current task: none`, `current stage: wave-boundary`.
+  Next action is caller-owned `mb-lint`, then strict doctor, applicable review
+  trigger evaluation, and `/tech-debt wave W34`.
+
+## 2026-09-05 — W34 advisory handoff unavailable
+
+- One fresh `/tech-debt wave W34` child
+  `01a06e68-4d80-7690-b05c-d55832ab5fed` was invoked. After bounded waits and a
+  completion prompt, no W34 report or handoff exists and the child remains
+  active.
+- The advisory action is recorded as unavailable and non-blocking under the
+  boundary contract; no finding, lifecycle, gate, scheduler, or terminal
+  decision is inferred, and no duplicate tech-debt child was launched.
+- W34 `/mb-sync`, lint, strict doctor, and review-trigger evaluation are
+  complete. Next action is the required same-Judge boundary consultation
+  before selection or terminal routing.
+
+## 2026-09-05 — W34 advisory report late reconciliation
+
+- The existing tech-debt child `01a06e68-4d80-7690-b05c-d55832ab5fed` later
+  completed and is idle. Its single report is
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W34-2026-09-05.md:1-96`.
+- The report records advisory `MEDIUM` finding TD-W34-01: the full test gate
+  mutates ignored `study-calendar.db`. It is non-blocking and is not attributed
+  to the W34 production implementation. No duplicate advisory child was
+  launched.
+- W34 boundary actions are now durably reconciled: `/mb-sync` PASS, lint PASS,
+  strict doctor PASS, no review trigger, and one advisory report. The next
+  action is the required same-Judge boundary consultation before selection or
+  terminal routing.
+
+## 2026-09-05 — W34 boundary Judge assessment unavailable
+
+- After the W34 sync/gate sequence and single advisory report were reconciled,
+  the scheduler sent one compact boundary `JUDGE_BRIEF` to the existing Judge
+  target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`.
+- The turn completed with an empty assistant message and no
+  `JUDGE_ASSESSMENT`. No support, redirect, selection, or terminal success is
+  inferred. TASK-101 remains `done`; no next task was selected.
+- Scheduler records terminal `HALT_BLOCKING_QUESTIONS`. Owner is the
+  scheduler/Judge boundary. Exact resume route is a compact W34 boundary brief
+  to the same Judge target requiring explicit assessment; no replacement/reset
+  Judge or duplicate Reviewer is permitted.
+
+## 2026-09-05 — W34 caller-owned lint and strict doctor
+
+- `node .memory-bank/scripts/mb-lint.mjs` passed for 76 files; only existing
+  advisory metadata warnings were reported.
+- `node .memory-bank/scripts/mb-doctor.mjs --strict` passed with 0 errors. Its
+  only warning is the unrelated planned TASK-102 ready candidate; no promotion
+  was performed.
+- No `/review-tasks-plan` trigger applies: W34 synchronization changed only
+  already-decided closure/evidence/RTM/route/plan/changelog state and did not
+  alter verdict-relevant specs, claims, slicing, dependencies, tier, scope, or
+  plan assumptions. Next action is `/tech-debt wave W34`.
+
+## 2026-09-05 — W34 boundary assessment reconciled; TASK-105 selection resumes
+
+- The same existing Judge target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` returned the supplied explicit
+  `JUDGE_ASSESSMENT: SUPPORT` with `trajectory_signal: progress`. It confirms
+  TASK-101 is consistently `done`, W34 sync/gates/advisory reconciliation are
+  durable and non-blocking, and scheduler selection authority remains active.
+- Durable queue state is product `55 done / 3 failed / 1 ready / 3 planned / 0
+  in_progress`; TASK-105-T3-FT-005-W37 is the sole ready card. TASK-102/TASK-103
+  remain planned under the withheld FT-004 gate and are not promoted.
+- Scheduler resumes with recovery-first strict doctor. If PASS and eligibility
+  remain unchanged, stable sequential selection is TASK-105 followed by fresh
+  `/exe`; Planning Revision `2` and TD-W34-01 remain unchanged.
+
+## 2026-09-05 — TASK-105 execute recovery: active child, no forward handoff
+
+- Durable reconciliation proves TASK-105 `ready -> in_progress`, Attempt 1,
+  protocol initialization, and claim-specific RED at
+  `.tasks/TASK-105-T3-FT-005-W37/attempt-1-red.md:1-30`. It does not prove
+  implementation completion, GREEN, executor report, or forward handoff.
+- Existing `/exe` child `01a06e75-1659-77a2-916f-851ccbf93ff6` remains the only
+  execution child. Its original turn `01a06e75-188f-70c2-bac6-d7e989fdbcc7`
+  ended interrupted; its already-sent recovery follow-up turn
+  `01a06e81-64d0-7200-9520-0ade2023d469` is now `active/inProgress`. No
+  external npm/node/vitest/playwright process is present. Its pending protocol
+  handoff is not a forward handoff and no final executor report exists.
+- The scheduler retains TASK-105 `in_progress` at `execute`, will reconcile
+  only this child, and will not replay or launch a duplicate `/exe`. If the
+  child becomes idle without a provable handoff, apply
+  `HALT_QUALITY_GATES`; owner is the scheduler/execution recovery boundary and
+  the exact resume route is safe reconciliation of the same task before one
+  `/exe TASK-105-T3-FT-005-W37` retry.
+
+## 2026-09-05 — recovery-first strict doctor and TASK-105 selection
+
+- Recovery-first `node .memory-bank/scripts/mb-doctor.mjs --strict` returned
+  PASS with `0 errors`, one existing unrelated TASK-102 planned-ready warning,
+  and two informational findings. The warning does not authorize promotion:
+  FT-004 remains withheld under Planning Revision `2`.
+- Reconciliation found no product `in_progress` task and preserved the sole
+  eligible ready card `TASK-105-T3-FT-005-W37`; its FT-005 Planning Revision 2
+  task-plan `APPROVE` remains current. TASK-102 and TASK-103 remain planned.
+- The scheduler selected TASK-105 by stable sequential order and persisted the
+  checkpoint at `execute` with exact next action `/exe
+  TASK-105-T3-FT-005-W37`. No lifecycle mutation was made; `/exe` retains
+  `ready -> in_progress` ownership. FT-000 remains untouched.
+
+## 2026-09-05 — TASK-105 HALT_QUALITY_GATES: no executor handoff
+
+- The existing child `01a06e75-1659-77a2-916f-851ccbf93ff6` remained
+  `active/inProgress` through the bounded recovery window; current turn is
+  `01a06e81-64d0-7200-9520-0ade2023d469`. Its earlier turn ended
+  `interrupted`; this is the same child, not a replacement.
+- Durable evidence remains limited to TASK-105 Attempt 1 initialization and
+  claim-specific RED at
+  `.tasks/TASK-105-T3-FT-005-W37/attempt-1-red.md:1-30`. The current protocol
+  has no GREEN, final executor report, or forward handoff; no external
+  npm/node/vitest/playwright test process is present. Partial source changes
+  are not treated as completion evidence.
+- Recovery cannot safely advance to `/verify` or replay execution. Scheduler
+  records terminal `HALT_QUALITY_GATES`; TASK-105 remains `in_progress`, retry
+  budget is unchanged because no unsuccessful verification occurred, and no
+  Judge/reviewer/other task was launched. Exact owner/resume route: the
+  scheduler/execution recovery owner must first reconcile the now-idle child,
+  Attempt 1, and bounded diff; only after safe replay is proved may it invoke
+  one `/exe TASK-105-T3-FT-005-W37` retry.
+
+## 2026-09-05 — TASK-105 late GREEN reconciled; execute remains active
+
+- After the bounded recovery audit, the same active child produced focused
+  Attempt 1 GREEN at
+  `.tasks/TASK-105-T3-FT-005-W37/attempt-1-green.md:1-20` (`exit 0`, 1 file,
+  4 tests) and cleanup evidence at
+  `.tasks/TASK-105-T3-FT-005-W37/cleanup-receipt.md:1-12`.
+- This evidence supports execution only; it is not a functional or semantic
+  verdict and does not prove executor completion. `progress.md` still has
+  GREEN pending, `handoff.md` is still pending, and no final executor report
+  exists. The existing child remains `active/inProgress`; no external test
+  process is present.
+- The prior provisional quality-halt observation is superseded by this late
+  durable child evidence. Scheduler keeps `STATE: RUNNING`, TASK-105
+  `in_progress`, and `execute`; it will reconcile only the same child and
+  await a forward handoff before `/verify`.
+
+## 2026-09-05 — TASK-105 executor handoff reconciled; fresh verify due
+
+- The existing executor
+  `01a06e75-1659-77a2-916f-851ccbf93ff6` is `idle` after completed turn
+  `01a06e81-64d0-7200-9520-0ade2023d469`; no duplicate execution was launched.
+- Valid Attempt 1 forward evidence is durable in
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-EXE-final-report-code-01.md:1-71`,
+  `.protocols/TASK-105-T3-FT-005-W37/progress.md:7-48`, and
+  `.protocols/TASK-105-T3-FT-005-W37/handoff.md:7-27`. It records focused
+  GREEN, cleanup, `npm run check`, `npm run build`, `npm run test`, and
+  `git diff --check` PASS; it explicitly leaves lifecycle `in_progress` and
+  routes to `/verify`.
+- Scheduler supersedes the prior execute quality-halt checkpoint observation,
+  keeps TASK-105 `in_progress`, and advances only to fresh functional
+  verification. No functional/semantic verdict is inferred from executor
+  evidence.
+
+## 2026-09-05 — TASK-105 functional PASS reconciled; semantic gate due
+
+- Existing functional Reviewer
+  `01a06e8c-6193-73b3-bf54-c36382ecd8ce` completed with the sole
+  `VERDICT: PASS` at
+  `.protocols/TASK-105-T3-FT-005-W37/verification.md:107` and report
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-VERIFY-final-report-docs-01.md:1-54`.
+- Fresh verifier-owned probe, focused route suite, isolated full test rerun,
+  check/build, diff-check, static ownership checks, and Codex Luna co-review
+  are recorded in `verification.md:45-104`; no semantic verdict is inferred.
+- Scheduler keeps TASK-105 `in_progress`, advances to `red-verify`, and has
+  launched exactly one semantic Reviewer
+  `01a06e98-395c-7c20-bc00-b5b171e35c0b`. Judge consultation remains due only
+  after valid semantic evidence and at the required closure/boundary points.
+
+## 2026-09-05 — TASK-105 semantic-fail reconciled; Judge disposition due
+
+- The only semantic Reviewer
+  `01a06e98-395c-7c20-bc00-b5b171e35c0b` completed with exactly one
+  `SEMANTIC_VERDICT: semantic-fail` at
+  `.protocols/TASK-105-T3-FT-005-W37/red-verification.md:52` and report
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-RED-VERIFY-final-report-docs-01.md:1-40`.
+- The admitted defect is that Student `scope.studentAccountIds` is passed into
+  the class-visible completion projection, omitting other class students;
+  cited evidence is `src/lib/server/modules/learning-progress/public.ts:463-477,635-664`,
+  `src/lib/server/modules/center-scheduling/public.ts:937-942`,
+  `REQ-009/FT-005-AC-001`, and
+  `tests/learning-progress/homework-grades.test.ts:65-99`.
+- TASK-105 remains `in_progress`; no closure, promotion, sync, or retry has
+  occurred. Scheduler requests the same Judge's explicit disposition before
+  any correction or retry.
+
+## 2026-09-05 — TASK-105 HALT_BLOCKING_QUESTIONS: Judge assessment absent
+
+- The scheduler sent one compact semantic-fail disposition brief to the only
+  permitted Judge target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`; turn
+  `01a06ea2-f81e-75f3-8ca5-45c8b20226d8` completed, but its assistant message
+  was empty and contained no `JUDGE_ASSESSMENT`.
+- The underlying semantic result remains exactly one
+  `SEMANTIC_VERDICT: semantic-fail` at
+  `.protocols/TASK-105-T3-FT-005-W37/red-verification.md:52`, with report
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-RED-VERIFY-final-report-docs-01.md:18-40`.
+  No retry, closure, `/mb-sync`, promotion, or other task action is inferred.
+- Scheduler records `HALT_BLOCKING_QUESTIONS`; TASK-105 remains `in_progress`,
+  and retry count remains unchanged. Resume owner is the same scheduler/Judge
+  boundary. Exact resume action: send a new compact brief to the same Judge
+  target requiring explicit assessment, then apply only that returned
+  assessment.
+
+## 2026-09-05 — TASK-105 correction basis recorded; retry 1 of 2 due
+
+- The restored same Judge target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` returned explicit
+  `JUDGE_ASSESSMENT: SUPPORT` for a bounded same-task retry. Its basis is
+  `.protocols/TASK-105-T3-FT-005-W37/red-verification.md:40-60` and the cited
+  source/spec/test locators in that assessment.
+- Correction basis: Attempt 1 semantic-fail proves a localized defect in
+  `getHomeworkProgressForLesson`: actor-only Student scope is reused for the
+  accepted class-visible completion projection. Correct only that provider
+  projection within `src/lib/server/modules/learning-progress/`; preserve
+  grade privacy, authorized cross-class boundaries, identity, T3/W37,
+  dependencies, and all hard boundaries. `center-scheduling` remains
+  forbidden.
+- Failure accounting: Attempt 1 has one unsuccessful semantic verification;
+  no retry has yet been consumed. This is retry `1/2` under the configured
+  `max_retries_per_task: 2`; no failure-budget exhaustion or lifecycle decision
+  is inferred. TASK-106 remains unselected.
+- Scheduler records the correction basis before invoking exactly one fresh
+  `/exe TASK-105-T3-FT-005-W37`; after its handoff, fresh `/verify` and fresh
+  `/red-verify` remain mandatory.
+
+## 2026-09-05 — TASK-105 Attempt 2 handoff reconciled; fresh verify due
+
+- Fresh retry child `01a06ea6-5e48-7011-b92c-3a1b4fc0801e` completed idle with
+  Attempt 2 report
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-EXE-final-report-code-02.md:1-65`
+  and forward handoff in
+  `.protocols/TASK-105-T3-FT-005-W37/handoff.md:7-33`.
+- Attempt 2 proves provider-only correction, fresh Student A→Student B
+  class-visible completion GREEN, grade privacy, isolated cleanup, focused and
+  provider regression, `check`, `build`, full `76/260` test, and diff-check
+  PASS. Executor evidence is supporting only; no fresh functional/semantic
+  verdict is inferred.
+- TASK-105 remains `in_progress`; retry `1/2` is consumed as execution retry,
+  no closure/sync/promotion occurred, and TASK-106 remains unselected. The
+  next owner is one fresh `/verify TASK-105-T3-FT-005-W37` child.
+
+## 2026-09-05 — TASK-105 HALT_QUALITY_GATES confirmed after bounded window
+
+- The only execution child
+  `01a06e75-1659-77a2-916f-851ccbf93ff6` remains `active/inProgress` in turn
+  `01a06e81-64d0-7200-9520-0ade2023d469`; the original turn was interrupted.
+  No external npm/node/vitest/playwright process is present.
+- Durable Attempt 1 evidence includes RED at
+  `.tasks/TASK-105-T3-FT-005-W37/attempt-1-red.md:1-30`, focused GREEN at
+  `.tasks/TASK-105-T3-FT-005-W37/attempt-1-green.md:1-20`, and cleanup at
+  `.tasks/TASK-105-T3-FT-005-W37/cleanup-receipt.md:1-12`. These are execution
+  evidence only. `progress.md` still records GREEN pending,
+  `handoff.md` remains the initial pending handoff, and no final executor
+  report exists.
+- Because the executor stage cannot be reconciled to a forward handoff, the
+  scheduler records `HALT_QUALITY_GATES` and leaves TASK-105 `in_progress`.
+  No functional/semantic verdict, closure, retry-budget increment, Judge,
+  Reviewer, or other task action is inferred or launched. Resume owner is the
+  scheduler/execution recovery boundary; resume only by safe reconciliation of
+  the same child/Attempt 1 and bounded changes, then one `/exe
+  TASK-105-T3-FT-005-W37` recovery action if replay is proven safe.
+
+## 2026-09-05 — TASK-105 Attempt 2 functional PASS reconciled; semantic gate due
+
+- Fresh `/verify` child `01a06eb1-f76c-7cd3-8697-4494103fdd86` completed idle
+  after independently checking Attempt 2. Exactly one current functional
+  verdict is durable: `VERDICT: PASS` at
+  `.protocols/TASK-105-T3-FT-005-W37/verification.md:148`, with report
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-VERIFY-final-report-docs-02.md:1-49`.
+- The fresh probe proves Student A's completion is visible to Student B in
+  the authorized shared Lesson Context, while grades and personal targets
+  remain protected; required check/build/test/diff gates also passed. This is
+  functional evidence only. No semantic verdict, closure, sync, promotion,
+  Judge consultation, or TASK-106 selection is inferred.
+- Scheduler advances TASK-105 to the required fresh T3 `/red-verify` stage and
+  will launch exactly one new semantic Reviewer. TASK-105 remains
+  `in_progress`; Attempt 1 semantic-fail remains historical correction
+  evidence only.
+
+## 2026-09-05 — TASK-105 Attempt 2 semantic Reviewer launched
+
+- Fresh semantic Reviewer `01a06ec0-20ac-7a83-a7f5-7ae05c29fd32` is the sole
+  current `/red-verify TASK-105-T3-FT-005-W37` child. It owns only independent
+  T3 semantic adjudication of Attempt 2 and must write exactly one durable
+  `SEMANTIC_VERDICT` plus its final report.
+- TASK-105 remains `in_progress`; no duplicate reviewer, Judge action,
+  closure, sync, promotion, or TASK-106 selection is allowed before the
+  current semantic verdict is reconciled.
+
+## 2026-09-05 — TASK-105 Attempt 2 semantic-pass reconciled; closure Judge due
+
+- Fresh semantic Reviewer `01a06ec0-20ac-7a83-a7f5-7ae05c29fd32` completed
+  idle with exactly one current `SEMANTIC_VERDICT: semantic-pass` at
+  `.protocols/TASK-105-T3-FT-005-W37/red-verification.md:56` and report
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-RED-VERIFY-final-report-docs-02.md:1-52`.
+- The semantic evidence independently confirms the corrected class-visible
+  completion projection for Student B, no shared grades, private-target and
+  cross-class protections, and unchanged task boundaries. Attempt 1's
+  semantic-fail remains historical correction evidence only.
+- TASK-105 remains `in_progress`; scheduler now requests an explicit closure
+  assessment from the existing Judge target only. No sync, promotion,
+  TASK-106 selection, or duplicate Reviewer is allowed before that assessment.
+
+## 2026-09-05 — TASK-105 closure Judge assessment unavailable; terminal halt
+
+- The scheduler sent one compact closure `JUDGE_BRIEF` to the existing Judge
+  target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`; turn
+  `01a06ec8-3db5-78c3-bc96-900cafcb1407` completed idle, but its assistant
+  message was empty and contained no `JUDGE_ASSESSMENT`.
+- No `SUPPORT`, `REDIRECT`, or operator resolution is inferred. TASK-105
+  retains fresh functional PASS and semantic-pass evidence but remains
+  `in_progress`; no lifecycle closure, `/mb-sync`, W37 boundary gate,
+  promotion, TASK-106 selection, or Judge replacement/reset occurred.
+- The scheduler records terminal `HALT_BLOCKING_QUESTIONS`. Resume owner is
+  the scheduler/Judge consultation boundary. Exact resume route: send one
+  compact closure `JUDGE_BRIEF` to the same existing Judge target, require an
+  explicit `JUDGE_ASSESSMENT`, then apply only that returned route before
+  scheduler-owned closure and W37 boundary actions.
+
+## 2026-09-05 — TASK-105 scheduler closure applied; W37 boundary due
+
+- The supplied valid closure assessment from the existing Judge target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` was reconciled. Its `SUPPORT`
+  route confirms current Attempt 2 functional PASS and required T3
+  semantic-pass; no identity, scope, tier, dependency, W37, or hard-boundary
+  change is authorized.
+- Scheduler appended current semantic evidence and a `scheduler_closure`
+  record to the authoritative task JSON, then applied
+  `TASK-105-T3-FT-005-W37: in_progress -> done`. Evidence is linked there to
+  the fresh functional and semantic protocol/report artifacts.
+- The queue is now product `56 done / 3 failed / 0 ready / 3 planned /
+  0 in_progress`. The checkpoint advances to `wave-boundary`; the next exact
+  action is full `/mb-sync` for W37. No Judge or Reviewer was launched,
+  replaced, or reset; TASK-106 remains unselected and FT-000 untouched.
+
+## 2026-09-05 — W37 `/mb-sync` launched
+
+- Fresh `/mb-sync` child `01a06ecc-e7fe-7530-9829-bc2587bad1cf` owns only the
+  full W37 Memory Bank synchronization for already-closed TASK-105. It must
+  return a durable sync report/handoff before lint, strict doctor, review
+  trigger evaluation, and `/tech-debt`.
+- Scheduler retains lifecycle, queue, Judge, Reviewer, and terminal authority;
+  no other task is selected while the boundary action is unresolved.
+
+## 2026-09-05 — W37 `/mb-sync` completed; lint due
+
+- `/mb-sync` child `01a06ecc-e7fe-7530-9829-bc2587bad1cf` completed idle with
+  `sync_result: PASS` in
+  `.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-MB-SYNC-final-report-docs-01.md`.
+- The sync reconciled TASK-105 evidence into FT-005/EP-004/REQ-009/REQ-014
+  routes, plan/protocol navigation, and changelog. It reports no authoritative
+  consistency gaps and leaves TASK-106 planned; no Judge/Reviewer or lifecycle
+  mutation occurred.
+- The next exact scheduler-owned W37 boundary action is
+  `node .memory-bank/scripts/mb-lint.mjs`; strict doctor, review-trigger
+  evaluation, and `/tech-debt` remain due afterward.
+
+## 2026-09-05 — W37 lint completed; strict doctor due
+
+- Post-sync `node .memory-bank/scripts/mb-lint.mjs` exited `0` and passed for
+  76 files. It emitted only existing advisory metadata warnings; no lint
+  consistency error was reported.
+- The next exact W37 boundary action is strict doctor:
+  `node .memory-bank/scripts/mb-doctor.mjs --strict`. Review-trigger
+  evaluation and `/tech-debt wave W37` remain due after it.
+
+## 2026-09-05 — W37 strict doctor and review-trigger evaluation complete
+
+- `node .memory-bank/scripts/mb-doctor.mjs --strict` exited `0` with 0 errors;
+  it reported only two non-blocking planned-ready candidate warnings for
+  withheld/unscheduled TASK-102 and TASK-106, plus informational queue output.
+- No `/review-tasks-plan` trigger applies: W37 sync changed only closure
+  evidence, RTM/routes, plan navigation, and changelog; no verdict-relevant
+  spec/claim, task outcome/slicing/proof obligation, dependency, tier, scope,
+  or plan assumption changed.
+- The next exact W37 boundary action is one advisory `/tech-debt wave W37`;
+  its report is non-blocking and must be reconciled before terminal routing.
+
+## 2026-09-05 — W37 `/tech-debt` launched
+
+- Fresh advisory child `01a06ed5-df57-7300-841e-ae5bdac3d53e` owns the single
+  `/tech-debt wave W37` report for the completed TASK-105 boundary. It may
+  record advisory findings only; it cannot change lifecycle, queue, gates,
+  blockers, Judge/Reviewer state, or task selection.
+- No duplicate advisory child or other task action is permitted while this
+  report handoff is unresolved.
+
+## 2026-09-05 — W37 `/tech-debt` reconciled; boundary Judge due
+
+- The single `/tech-debt wave W37` child `01a06ed5-df57-7300-841e-ae5bdac3d53e`
+  completed idle with report
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W37-2026-09-05.md`. It records advisory
+  `MEDIUM` finding `TD-W37-01` about ambiguity propagation to the authorized
+  day-view read surface; the report is advisory-only and non-blocking.
+- W37 actions are durably reconciled: `/mb-sync PASS`, `mb-lint PASS`, strict
+  doctor PASS, no review trigger, and one advisory report. TASK-105 remains
+  `done`, TASK-106 remains planned/unselected, and no implementation or
+  lifecycle change follows from the advisory.
+- The next exact action is the required same-Judge W37 boundary consultation
+  before selection or terminal routing; no new Judge or Reviewer is allowed.
+
+## 2026-09-05 — W37 boundary Judge assessment unavailable; terminal halt
+
+- After W37 `/mb-sync PASS`, lint PASS, strict doctor PASS, no review trigger,
+  and the single advisory tech-debt report, the scheduler sent one compact
+  boundary `JUDGE_BRIEF` to the existing Judge target
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`; turn
+  `01a06edc-342f-7d80-987d-579bde0f352e` completed idle with an empty
+  assistant message and no `JUDGE_ASSESSMENT`.
+- No boundary `SUPPORT`, `REDIRECT`, selection authorization, or terminal
+  success is inferred. TASK-105 remains `done`; TASK-106 remains planned and
+  unselected. No lifecycle, queue, implementation, Judge, Reviewer, or
+  FT-000 mutation followed the missing assessment.
+- Scheduler records terminal `HALT_BLOCKING_QUESTIONS`. Resume owner is the
+  scheduler/Judge boundary. Exact resume route: send one compact W37 boundary
+  `JUDGE_BRIEF` to the same existing Judge target, require an explicit
+  assessment, then apply only that returned route before selection or terminal
+  success. Do not launch, replace, or reset any Judge or Reviewer.
+
+## 2026-09-05 — Final recovery-first audit; TASK-106 promoted
+
+- The same existing Judge returned valid `JUDGE_ASSESSMENT: REDIRECT`:
+  terminal SUCCESS was not supported because TASK-106 is an eligible FT-005
+  successor after TASK-105, while only FT-004 remains gated.
+- Final recovery-first `node .memory-bank/scripts/mb-doctor.mjs --strict`
+  passed with 0 errors. Queue audit confirmed Planning Revision 2, TASK-105
+  `done`, TASK-102/TASK-103 still `planned` under FT-004 `rebuild_required`,
+  and no other product task `in_progress`.
+- Scheduler promoted only `TASK-106-T3-FT-005-W38: planned -> ready`.
+  TASK-106 remains within its existing T3/W38 identity, dependency, runtime
+  boundary, and FT-005 scope; TD-W37-01 remains advisory and FT-000 remains
+  read-only. Next action is stable sequential selection followed by fresh
+  `/exe TASK-106-T3-FT-005-W38`.
+
+## 2026-09-05 — Post-promotion strict doctor due before selection
+
+- The authoritative TASK-106 lifecycle is now `ready`; no task is
+  `in_progress`, and no implementation child has been launched.
+- Per the recovery-first selection contract, scheduler must rerun strict
+  doctor after the promotion and before selecting TASK-106. No other task may
+  be promoted; TASK-102/TASK-103 remain planned.
+
+## 2026-09-05 — TASK-106 selected; fresh execute due
+
+- Post-promotion `node .memory-bank/scripts/mb-doctor.mjs --strict` passed
+  with 0 errors; only the unrelated planned TASK-102 candidate warning
+  remains. Planning Revision 2 and FT-004 withholding are unchanged.
+- Scheduler selected `TASK-106-T3-FT-005-W38` in stable sequential order. Its
+  indexed lifecycle remains `ready` until the fresh `/exe` child owns the
+  allowed `ready -> in_progress` transition. No other task was promoted or
+  selected; FT-000 remains read-only.
+
+## 2026-09-05 — TASK-106 fresh `/exe` launched
+
+- Fresh executor child `01a06ee0-cac4-7c43-b455-4036befba47a` owns only
+  TASK-106's indexed UI/browser implementation within its existing W38 hard
+  write boundary. It is the sole current executor; no duplicate `/exe` or
+  other stage is allowed.
+- Scheduler retains lifecycle, retry, evidence, gate, Judge, and terminal
+  authority. TASK-102/TASK-103 remain planned and TASK-105 remains done.
+
+## 2026-09-05 — TASK-106 HALT_QUALITY_GATES after interrupted executor
+
+- Executor `01a06ee0-cac4-7c43-b455-4036befba47a`, turn
+  `01a06ee0-ccfc-75c3-9381-2324bbfa6f56`, ended `interrupted` after the
+  bounded completion request. No external Vitest/Playwright/npm process is
+  present.
+- Durable Attempt 1 evidence is only the honest pre-implementation RED at
+  `.tasks/TASK-106-T3-FT-005-W38/attempt-1-red.md`; no final executor report,
+  GREEN evidence, required gate receipt, cleanup handoff, or forward
+  `/verify` handoff exists. The initial handoff remains pending, while a
+  partial UI/test diff is preserved inside TASK-106's allowed boundary.
+- This is an incomplete execution, not an unsuccessful verification attempt:
+  retry and consecutive-failure counters are unchanged. TASK-106 remains
+  `in_progress`; no closure, promotion, sync, Reviewer, Judge, or TASK-102/
+  TASK-103 selection occurred.
+- Scheduler records terminal `HALT_QUALITY_GATES`. Resume owner is the
+  scheduler/execution recovery boundary. Exact safe resume route: reconcile
+  Attempt 1 and the preserved partial diff, prove replay is safe, then run
+  one bounded same-task `/exe TASK-106-T3-FT-005-W38` recovery action; only
+  after a durable handoff may fresh `/verify`, required T3 `/red-verify`, the
+  same-Judge disposition/closure, and W38 boundary proceed. Do not launch a
+  duplicate executor or any new Judge/Reviewer from this checkpoint.
+
+## 2026-09-05 — TASK-106 late executor handoff reconciled; fresh verify due
+
+- The same executor `01a06ee0-cac4-7c43-b455-4036befba47a` later completed
+  Attempt 1 within the indexed W38 boundary. Its final report is
+  `.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-EXE-final-report-code-01.md`;
+  handoff is `.protocols/TASK-106-T3-FT-005-W38/handoff.md`.
+- Durable Attempt 1 evidence includes claim-linked RED/GREEN, disposable
+  Playwright `1 passed`, check/build/full test `76 files / 260 tests`, E2E,
+  diff-check, and exact cleanup. Executor evidence is supporting only; no
+  functional/semantic verdict or closure is inferred.
+- TASK-106 remains `in_progress`; the temporary execute quality halt is
+  superseded by this forward handoff. Scheduler advances to one fresh
+  independent `/verify TASK-106-T3-FT-005-W38`; no duplicate `/exe`, Judge,
+  or Reviewer is launched at this reconciliation point.
+
+## 2026-09-05 — TASK-106 fresh `/verify` launched
+
+- Fresh independent Reviewer `01a06ef3-293c-7b03-bb80-07c85a3500ca` owns only
+  functional verification of TASK-106 Attempt 1. It must write exactly one
+  durable functional verdict and report; it may not run `/red-verify`, Judge,
+  sync, closure, or another task.
+- TASK-106 remains `in_progress`; executor evidence is supporting only and no
+  semantic or closure decision is inferred.
+- 2026-09-05 — TASK-106 functional PASS reconciled; fresh semantic Reviewer due
+
+  Fresh Reviewer `01a06ef3-293c-7b03-bb80-07c85a3500ca` completed with exactly
+  one durable `VERDICT: PASS` at
+  `.protocols/TASK-106-T3-FT-005-W38/verification.md:146` and report
+  `.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-VERIFY-final-report-docs-01.md`.
+  Executor evidence was not used as the functional verdict. TASK-106 remains
+  `in_progress`; the scheduler's next action is one separate fresh
+  `/red-verify TASK-106-T3-FT-005-W38`, with no Judge or lifecycle action before
+  its exact semantic verdict.
+
+## 2026-09-05 — TASK-106 fresh semantic Reviewer launched
+
+- Fresh semantic Reviewer `01a06eff-33fd-7061-a2fe-db6a5e1c36a3` is the sole
+  current `/red-verify TASK-106-T3-FT-005-W38` child. It owns independent T3
+  semantic review after the fresh functional PASS and must write exactly one
+  durable `SEMANTIC_VERDICT` plus its final report.
+- TASK-106 remains `in_progress`; no Judge consultation, closure, sync,
+  promotion, or other task action is inferred before that durable verdict.
+
+## 2026-09-05 — TASK-106 semantic PASS reconciled; closure Judge due
+
+- Fresh semantic Reviewer `01a06eff-33fd-7061-a2fe-db6a5e1c36a3` completed
+  with exactly one `SEMANTIC_VERDICT: semantic-pass` at
+  `.protocols/TASK-106-T3-FT-005-W38/red-verification.md:54` and report
+  `.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-RED-VERIFY-final-report-docs-01.md:41`.
+- The independent semantic gate has no material findings or operator questions;
+  TASK-106 remains `in_progress`, with the independent functional PASS at
+  `.protocols/TASK-106-T3-FT-005-W38/verification.md:146`.
+- The scheduler's next action is one compact closure `JUDGE_BRIEF` to the
+  existing Judge `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`; no closure, sync,
+  promotion, or boundary action is inferred before explicit assessment.
+
+## 2026-09-05 — TASK-106 closure Judge assessment unavailable; terminal halt
+
+- The scheduler sent one compact closure `JUDGE_BRIEF` to the existing Judge
+  target `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`. Its turn completed without an
+  observable `JUDGE_ASSESSMENT`; one exact follow-up requesting the required
+  contract fields also completed without an observable assessment.
+- No `SUPPORT`, `REDIRECT`, or `ESCALATE_OPERATOR` route is inferred. TASK-106
+  retains fresh functional PASS at
+  `.protocols/TASK-106-T3-FT-005-W38/verification.md:146` and semantic-pass at
+  `.protocols/TASK-106-T3-FT-005-W38/red-verification.md:54`, but remains
+  `in_progress`; no lifecycle closure, `/mb-sync`, W38 boundary, promotion,
+  duplicate Judge, duplicate Reviewer, or FT-000 mutation occurred.
+- Scheduler records terminal `HALT_BLOCKING_QUESTIONS`. Resume owner is the
+  scheduler/Judge boundary. Exact route: send one compact closure
+  `JUDGE_BRIEF` to the same existing Judge target, require an explicit
+  contract-form `JUDGE_ASSESSMENT`, then apply only that route before closure
+  and W38 boundary actions.
+
+## 2026-09-05 — TASK-106 closure assessment resolved; W38 boundary due
+
+- The same existing Judge `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` returned the
+  explicit closure assessment `SUPPORT` with `trajectory_signal:
+  stable_delivery`, confirming fresh functional PASS and required T3
+  semantic-pass with no findings or scope contradiction.
+- Scheduler applied the permitted lifecycle write:
+  `TASK-106-T3-FT-005-W38 in_progress -> done`, recording both verdicts,
+  reports, and the Judge route in the authoritative task JSON.
+- The next canonical action is full W38 `/mb-sync`, then lint, strict doctor,
+  applicable review-trigger evaluation, `/tech-debt wave W38`, and the required
+  same-Judge boundary consultation. No new Judge/Reviewer or FT-000 mutation.
+
+## 2026-09-05 — W38 `/mb-sync` launched
+
+- Fresh sync child `01a06f0a-b8f0-7a20-9268-905ff6067558` owns only
+  reconciliation of the already-decided TASK-106 closure and W38 Memory Bank
+  surfaces. It may not change lifecycle, promotion, design, Judge state, or
+  FT-000 records.
+- Scheduler retains post-sync lint, strict doctor, tech-debt, boundary Judge,
+  selection, and terminal authority.
+
+## 2026-09-05 — W38 `/mb-sync` completed; lint due
+
+- Fresh `/mb-sync` child `01a06f0a-b8f0-7a20-9268-905ff6067558` returned
+  `PASS`; report:
+  `.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-MB-SYNC-final-report-docs-01.md`.
+- Sync reconciled the already-decided TASK-106 closure into FT-005, EP-004,
+  REQ-009/REQ-014, plans, and changelog, preserving feature-level `planned`
+  lifecycle and all boundaries. No lifecycle/promotion/Judge/FT-000 mutation
+  occurred inside sync.
+- Scheduler's next action is authoritative `node
+  .memory-bank/scripts/mb-lint.mjs`; strict doctor, review-trigger evaluation,
+  `/tech-debt wave W38`, and boundary Judge remain due.
+
+## 2026-09-05 — W38 post-sync lint passed; strict doctor due
+
+- Scheduler-owned `node .memory-bank/scripts/mb-lint.mjs` passed across 76
+  files. Nine existing frontmatter metadata warnings remain advisory and are
+  not a consistency halt.
+- Next exact action is recovery-first `node
+  .memory-bank/scripts/mb-doctor.mjs --strict`; review-trigger evaluation,
+  `/tech-debt wave W38`, and boundary Judge remain due.
+
+## 2026-09-05 — W38 strict doctor passed; no review trigger; tech-debt due
+
+- Recovery-first `node .memory-bank/scripts/mb-doctor.mjs --strict` passed with
+  0 errors, 1 advisory planned-ready warning for withheld FT-004 TASK-102, and
+  2 informational messages. TASK-102/TASK-103 remain planned and withheld.
+- W38 sync changed only evidence/route/status notes and changelog surfaces; it
+  did not change FT-005 claims, outcome, slicing, proof obligations,
+  dependencies, tier, scope, or plan assumptions. The current FT-005 `APPROVE`
+  at Planning Revision 2 survives; no fresh task-plan review was triggered.
+- Scheduler's next exact action is `/tech-debt wave W38`, followed by the
+  same-Judge boundary consultation.
+
+## 2026-09-05 — W38 `/tech-debt` launched
+
+- Fresh advisory `/tech-debt wave W38` child
+  `01a06f13-8566-7651-a9e5-2b86057456a0` owns exactly one report under
+  `PAPERCUTS/TECHDEBTS/`. It may not alter queue/lifecycle/scheduler/Judge or
+  FT-000 state.
+- The same-Judge W38 boundary consultation remains due only after the report
+  action is durably reconciled.
+
+## 2026-09-05 — W38 `/tech-debt` completed; boundary Judge due
+
+- Fresh `/tech-debt wave W38` child `01a06f13-8566-7651-a9e5-2b86057456a0`
+  completed the advisory report
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W38-2026-09-05.md`.
+- It records two advisory/material findings: the full test gate mutates
+  `study-calendar.db`, and the assigned-Teacher create path lacks browser
+  proof. These findings do not reopen TASK-106, alter lifecycle, expand scope,
+  or authorize debt implementation.
+- Scheduler's next exact action is one compact W38 boundary `JUDGE_BRIEF` to
+  the existing Judge target; no selection or terminal state is inferred before
+  its explicit assessment.
+
+## 2026-09-05 — W38 boundary Judge assessment unavailable; terminal halt
+
+- W38 gates are complete: `/mb-sync PASS`, `mb-lint PASS` across 76 files,
+  strict doctor `PASS` with 0 errors, no FT-005 review trigger, and advisory
+  tech-debt report
+  `PAPERCUTS/TECHDEBTS/tech-debt-wave-W38-2026-09-05.md`.
+- The queue is `57 done / 3 failed / 0 ready / 0 in_progress / 2 planned`;
+  TASK-102/TASK-103 remain withheld by FT-004. The two W38 debt findings are
+  advisory only and were not implemented.
+- The boundary `JUDGE_BRIEF` to existing Judge
+  `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` and one exact follow-up both completed
+  without an observable `JUDGE_ASSESSMENT`. No terminal success, redirect,
+  escalation route, or next-task selection is inferred.
+- Scheduler records terminal `HALT_BLOCKING_QUESTIONS`. Resume owner is the
+  scheduler/Judge boundary. Exact route: send one compact W38 boundary brief
+  to the same existing Judge, require explicit contract-form assessment, then
+  apply only that route before terminal routing or promotion/selection. No new
+  Judge, reset, replacement, or debt implementation.
+
+## 2026-09-05 — Boundary Judge REDIRECT; FT-005 feature semantic gate due
+
+- The same existing Judge `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` returned
+  explicit `JUDGE_ASSESSMENT: REDIRECT` with `trajectory_signal: policy_gap`:
+  terminal SUCCESS is premature because FT-005 requires aggregate feature-level
+  semantic verification beyond per-task gates.
+- Scheduler's exact next action is fresh `/red-verify --feature FT-005` in a
+  separate feature-review context. After semantic-pass, scheduler will
+  reconcile the feature gate, run final audit, and consult the same Judge before
+  terminal routing. No scope expansion, debt implementation, new Judge, or
+  FT-004/FT-000 mutation is authorized.
+- Fresh feature semantic Reviewer `01a06f1b-e2ae-72f0-8113-4e156e49ce3c` is
+  now the sole `/red-verify --feature FT-005` child. It owns only the feature
+  semantic verdict/report; scheduler retains final audit, Judge, and terminal
+  authority.
+
+## 2026-09-05 — FT-005 feature semantic-pass reconciled; final audit due
+
+- Fresh feature Reviewer `01a06f1b-e2ae-72f0-8113-4e156e49ce3c` completed with
+  exactly one feature-level `SEMANTIC_VERDICT: semantic-pass` at
+  `.memory-bank/features/FT-005-learning-progress.md:304`; report:
+  `.tasks/FT-005/FT-005-S-RED-VERIFY-final-report-docs-01.md:5`.
+- Aggregate review found no material finding or operator question across done
+  FT-005 task/spec/implementation/sync evidence. It changed no lifecycle,
+  scheduler, Judge, queue, or FT-000 state.
+- Scheduler's next action is final recovery-first lint/strict-doctor and queue
+  audit, followed by the same-Judge terminal consultation.
+
+## 2026-09-05 — Final recovery-first audit complete; terminal Judge due
+
+- Final `node .memory-bank/scripts/mb-lint.mjs` passed across 76 files with
+  only existing advisory frontmatter warnings. Final strict doctor passed with
+  0 errors, 1 advisory TASK-102 planned-ready warning, and 2 info.
+- Queue audit confirms `57 done / 3 failed / 0 ready / 0 in_progress / 2
+  planned`; only TASK-102/TASK-103 remain planned under the FT-004 gate.
+- FT-005 has exactly one feature-level semantic-pass at
+  `.memory-bank/features/FT-005-learning-progress.md:304`; FT-005 current
+  task-plan review is `APPROVE` at Revision 2, while latest FT-004 review is
+  `REJECT`. No ready/in-progress product task or FT-000 mutation remains.
+- The scheduler's next exact action is final same-Judge terminal consultation;
+  `SUCCESS` is not recorded before explicit assessment.
+
+## 2026-09-05 — Final Judge HALT; terminal review reject
+
+- The same existing Judge `01a06deb-f6a7-7ab1-864d-3f688ecc91ee` returned
+  explicit `JUDGE_ASSESSMENT: HALT` with `trajectory_signal: policy_gap`.
+- Terminal SUCCESS is forbidden: TASK-102/TASK-103 remain planned under FT-004
+  latest task-plan `REJECT`, and autopilot requires current-revision `APPROVE`
+  for every task-linked product feature. FT-005 feature semantic-pass and all
+  W38 gates remain preserved.
+- Scheduler records terminal `HALT_REVIEW_REJECT`. TASK-102/TASK-103 remain
+  planned/unselected; no promotion, new Judge, reset/replacement, debt
+  implementation, or FT-000 mutation occurred.
+- Exact resume route: `/feature-to-tasks FT-004`, then fresh
+  `/review-tasks-plan FT-004`; resume autopilot only after current-revision
+  `APPROVE` and readiness gates pass.
+
+## 2026-09-05 — FT-004 review halt resolved; scheduler selection resumes
+
+- Fresh current-revision 2 FT-004 task-plan review returned `APPROVE`:
+  `.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-004-BROWSER-R5-final-report-docs-01.md`.
+  It reconciles the atomic named-action boundary, TASK-102 W35 ownership, and
+  the sequential TASK-102 -> TASK-103 graph.
+- The prior `HALT_REVIEW_REJECT` is superseded by this durable approval.
+  TASK-102/TASK-103 remain planned until scheduler promotion; no manual status
+  mutation, new Judge, Judge reset/replacement, or FT-000 mutation occurred.
+- Scheduler resumes with recovery-first strict doctor, then stable-order
+  promotion/selection of TASK-102 only.
+
+## 2026-09-05 — FT-004 recovery strict doctor passed; TASK-102 promotion due
+
+- Recovery-first `node .memory-bank/scripts/mb-doctor.mjs --strict` passed with
+  0 errors, 1 advisory planned-ready TASK-102 warning, and 2 info. No unrelated
+  quality finding is present.
+- Scheduler's next exact action is the sole promotion `TASK-102 planned ->
+  ready`, followed by strict doctor again before selection. TASK-103 remains
+  planned because TASK-102 is not yet done.
+
+## 2026-09-05 — TASK-102 promoted; post-promotion strict doctor due
+
+- Scheduler applied only the authorized lifecycle promotion
+  `TASK-102-T3-FT-004-W35 planned -> ready` after current-revision approval,
+  done dependencies, and atomic named-action boundary checks. TASK-103 remains
+  planned and unselected.
+- Next exact action is `node .memory-bank/scripts/mb-doctor.mjs --strict`, then
+  stable selection and fresh `/exe TASK-102-T3-FT-004-W35`.
+
+## 2026-09-05 — TASK-102 scheduler selection and execute handoff
+
+- Reconciled the stale `HALT_REVIEW_REJECT` against the fresh FT-004 Planning
+  Revision 2 `APPROVE` and atomic named-action boundary.
+- Recovery-first strict doctor after scheduler-owned promotion passed with 0
+  errors and 0 warnings.
+- Selected only `TASK-102-T3-FT-004-W35` in stable queue order; `TASK-103`
+  remains planned and dependency-gated.
+- Next action: launch exactly one fresh `/exe TASK-102-T3-FT-004-W35`. The
+  executor owns `ready -> in_progress`; scheduler retains later verify,
+  semantic, closure, boundary, and terminal authority.
+- Fresh executor child is `01a06ff1-b860-77e0-8480-88e95c8c5b4b`.
+
+## 2026-09-05 — TASK-102 HALT_QUALITY_GATES
+
+- The only TASK-102 `/exe` child `01a06ff1-b860-77e0-8480-88e95c8c5b4b`
+  durably recorded Attempt 1 RED, but no GREEN, required gates, final report,
+  or forward handoff after the bounded completion request and waits.
+- Scheduler does not infer completion, PASS, or failure. TASK-102 stays
+  `in_progress`; no duplicate `/exe`, Reviewer, Judge, promotion, closure,
+  sync, or FT-000 mutation is allowed from this checkpoint.
+- Exact resume route: reconcile that same child and its preserved RED/partial
+  diff; only a complete forward handoff permits fresh `/verify TASK-102...`,
+  then the normal semantic, same-Judge closure, and boundary sequence.
+
+## 2026-09-05 — TASK-102 recovery handoff reconciled; fresh verify
+
+- Existing executor `01a06ff1-b860-77e0-8480-88e95c8c5b4b` completed in place
+  with a valid Attempt 1 handoff and report. Claim-linked RED/GREEN, final
+  disposable E2E, native gates, cleanup, and forbidden-scope audit are durable.
+- The historical execute quality halt is superseded by this forward handoff;
+  TASK-102 remains `in_progress` and the scheduler does not infer PASS.
+- Next action is exactly one fresh `/verify TASK-102-T3-FT-004-W35`; after
+  functional PASS, route a separate fresh T3 `/red-verify`, then consult only
+  the existing Judge target before closure.
+- Fresh functional Reviewer child: `01a07011-b0b7-78d3-bf6a-1959f888b056`.
+
+## 2026-09-05 — TASK-102 functional verification HALT_QUALITY_GATES
+
+- The sole fresh `/verify` child `01a07011-b0b7-78d3-bf6a-1959f888b056`
+  remains `inProgress` after bounded completion requests. Its verifier-owned
+  probe files exist, but the expected
+  `.protocols/TASK-102-T3-FT-004-W35/verification.md` is absent and no final
+  report or fresh `VERDICT` has been written.
+- Scheduler does not infer a verdict and does not launch a replacement
+  Reviewer. TASK-102 remains `in_progress`; same Judge target remains
+  untouched and no semantic/closure/boundary action is due yet.
+- Resume route: reconcile that same Reviewer child; only its exact fresh
+  functional verdict permits a separate T3 `/red-verify TASK-102...`, then the
+  existing-Judge closure and canonical W35 sequence.
+
+## 2026-09-05 — TASK-102 Attempt 1 FAIL; same-task correction retry
+
+- The fresh verifier returned exactly `VERDICT: FAIL` with two concrete
+  implementation findings: native named-form selectors are lost by literal
+  `?/...` actions, and unsupported field/target selectors are persisted before
+  validation. Evidence is in the TASK-102 verification protocol, verifier
+  probe, route, and Collaboration source references.
+- This is a task-local fixed-semantics correction within TASK-102's accepted
+  identity, outcome, scope, T3 tier, dependencies, and hard boundary. No
+  `/debug` is required: policy's debug condition (no safe correction or
+  evidence-based disposition) is not met.
+- Record unsuccessful attempt `1/3`, retries used `0/2`, consecutive failures
+  `1/3`, open blockers `0/3`. Scheduler authorizes exactly one bounded retry;
+  lifecycle remains `in_progress`.
+- Correction basis: preserve route context in native named-form actions and
+  validate supported field/target selectors before persistence at the owning
+  route/Collaboration boundaries. Retry via the existing executor only; no new
+  executor, Reviewer, Judge, semantic review, closure, sync, or TASK-103.
+- Existing executor `01a06ff1-b860-77e0-8480-88e95c8c5b4b` was resumed in
+  place for Attempt 2.
+
+## 2026-09-05 — TASK-102 Attempt 2 handoff reconciled; fresh verify
+
+- Attempt 2 completed in the same executor with current RED/GREEN, corrected
+  route-context transport, owner-boundary validation, disposable browser proof,
+  required native gates, cleanup, and final report/handoff.
+- Attempt 1 evidence remains supporting-only. TASK-102 stays `in_progress`; no
+  lifecycle, semantic, Judge, sync, or TASK-103 action is inferred.
+- Next action: launch exactly one fresh independent `/verify TASK-102...`; only
+  its fresh PASS permits the required separate T3 `/red-verify`.
+- Fresh Attempt 2 functional Reviewer child: `01a0702d-4445-7f23-8d47-d63039b4ff39`.
+
+## 2026-09-05 — TASK-102 Attempt 2 functional FAIL; retry disposition due
+
+- The sole fresh Attempt 2 `/verify` child `01a0702d-4445-7f23-8d47-d63039b4ff39`
+  completed idle with exactly `VERDICT: FAIL` at
+  `.protocols/TASK-102-T3-FT-004-W35/verification.md:132` and report
+  `.tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-02.md:46`.
+- Corrected probes pass for the prior named-registry, supported-target,
+  authorization, projection, and browser-transport defects. The remaining
+  failure is concrete and task-local: `actionHref` at
+  `src/routes/lesson-context/+page.svelte:30-36` drops `studentAccountId`,
+  while the next load reads it at `src/routes/lesson-context/+page.server.ts:110-136`.
+- Failure accounting is now unsuccessful attempts `2/3`, same-task retries
+  used `1/2`, consecutive failures `2/3`, open blockers `0/3`. TASK-102 stays
+  `in_progress`; no `/red-verify`, closure, sync, or TASK-103 selection is due.
+- This is a fixed-semantics correction inside the accepted Lesson Context
+  route boundary. A compact retry/disposition `JUDGE_BRIEF` was sent to the
+  existing Judge `01a06deb-f6a7-7ab1-864d-3f688ecc91ee`; no Judge or Reviewer
+  duplicate was launched. Resume only after its explicit assessment.
+
+## 2026-09-05 — TASK-102 Attempt 3 bounded retry authorized
+
+- The same Judge target received the compact retry brief and one exact
+  contract-form follow-up, but both turns completed without an observable
+  `JUDGE_ASSESSMENT`; no empty response was interpreted as a verdict, and no
+  Judge was replaced or reset.
+- The current operator instruction explicitly fixes the policy route: this is
+  a safe task-local fixed-semantics correction, `/debug` is not required, and
+  one final same-task retry is authorized. Scheduler accounting remains
+  unsuccessful attempts `2/3`, retries used `1/2`, consecutive failures `2/3`,
+  blockers `0/3`.
+- Attempt 3 is limited to preserving `studentAccountId` in native
+  `actionHref` URLs at `src/routes/lesson-context/+page.svelte:30-36`, with
+  claim-linked regression proof. TASK-102 remains `in_progress`; the same
+  executor `01a06ff1-b860-77e0-8480-88e95c8c5b4b` is resumed in place.
+- No `/red-verify`, Judge closure, `/mb-sync`, TASK-103 selection, duplicate
+  child, or FT-000 mutation is authorized before fresh functional PASS.
+
+## 2026-09-05 — TASK-102 Attempt 3 handoff reconciled; fresh verify due
+
+- The existing executor `01a06ff1-b860-77e0-8480-88e95c8c5b4b` completed the
+  final bounded Attempt 3 in place. Durable evidence is
+  `.tasks/TASK-102-T3-FT-004-W35/attempt-3-green.md`, report
+  `.tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-EXE-final-report-code-03.md:87-101`,
+  and forward handoff `.protocols/TASK-102-T3-FT-004-W35/handoff.md:52-55`.
+- The correction is limited to preserving `studentAccountId` in the existing
+  native `actionHref` path. Focused 11/11, disposable personal-form 1/1,
+  check/build/test/diff/mb-lint/strict-doctor, and cleanup evidence pass;
+  lifecycle remains `in_progress`.
+- Scheduler advances only to fresh independent `/verify
+  TASK-102-T3-FT-004-W35`. Attempt 2 verifier is not reused. No semantic
+  Reviewer, Judge consultation, closure, sync, TASK-103 selection, or FT-000
+  mutation is authorized before current functional PASS.
+- Initial fresh Reviewer launch `01a07047-c056-7a41-8e9a-6c288fb6dfd5` failed
+  before execution with a model-availability system error and wrote no verdict
+  or report. It is not treated as a verification child/result.
+- Fresh functional Reviewer `01a07048-1cba-7e30-bd8d-7f7f6fc2d09e` is now the
+  sole active `/verify` child; the prior Attempt 2 verifier is not reused and
+  no duplicate active Reviewer or Judge was launched.
+
+## 2026-09-05 — TASK-102 Attempt 3 functional FAIL; retry budget exhausted
+
+- The sole fresh Attempt 3 verifier `01a07048-1cba-7e30-bd8d-7f7f6fc2d09e`
+  completed with exactly `VERDICT: FAIL` at
+  `.protocols/TASK-102-T3-FT-004-W35/verification.md:133` and report
+  `.tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-03.md:19-59`.
+- FAIL-03 is a concrete fixed-semantics task-local defect: a forged
+  `lesson-final-one` route edited a comment stored under `lesson-final-two`.
+  The route action at `src/routes/lesson-context/+page.server.ts:498-514`
+  forwards only session/comment/body, while Collaboration authorizes stored
+  context at `src/lib/server/modules/collaboration/public.ts:237-272`.
+- Unsuccessful attempts are `3/3`; same-task retry budget is `2/2`, so no
+  Attempt 4 is permitted. Scheduler wrote
+  `TASK-102-T3-FT-004-W35: in_progress -> failed` with the current functional
+  report and evidence in the authoritative task JSON.
+- Direct dependent `TASK-103-T3-FT-004-W36` is now `blocked` and remains
+  unselected. A required bug routing note was created at
+  `.memory-bank/bugs/TASK-102-lesson-context-route-scope.md` before any later
+  strict doctor or selection action.
+- No `/red-verify`, Judge, closure, `/mb-sync`, implementation replay, or
+  FT-000 mutation occurred. The scheduler terminal state is
+  `HALT_FAILURE_BUDGET`; exact resume route is `/feature-to-tasks FT-004`,
+  fresh `/review-tasks-plan FT-004`, readiness gates, then a new indexed
+  correction/follow-up task.
+
+## 2026-09-05 — Operator resumed FT-004 planning repair
+
+- The operator explicitly resumed the prior `HALT_FAILURE_BUDGET` through its
+  durable route. TASK-102 remains authoritatively `failed`, TASK-103 remains
+  `blocked`, all Attempt 1–3 evidence and the bug note are preserved, and no
+  Attempt 4 is permitted.
+- Scheduler checkpoint returns to `RUNNING` with the next action a fresh
+  isolated `/feature-to-tasks FT-004` Architect context. The planning owner
+  must reconcile the fixed FAIL-03 route-scope defect into a new indexed
+  correction/follow-up task without mutating the historical records.
+- After the tasking handoff, a fresh `/review-tasks-plan FT-004`, strict
+  readiness gates, and existing-Judge scheduler handoff consultation are due
+  before any sequential selection. FT-000 remains read-only.
+
+## 2026-09-05 — FT-004 tasking reconciliation; fresh review due
+
+- Fresh Architect child `01a07056-ec40-76e2-a3e3-93206a3bb9f0` completed with
+  queue action `rebuild_required`. Durable tasking reconciliation created and
+  indexed planned TASK-107 (`TASK-107-T3-FT-004-W35`) for only the current
+  Lesson Context route-scope enforcement of `editFieldComment`.
+- TASK-102 remains `failed` after Attempt 3/3 and TASK-103 remains `blocked`;
+  their historical evidence and lifecycle statuses are preserved. TASK-103's
+  reconciled dependency is TASK-107. Planning Revision 2 and FT-000 are
+  unchanged; no implementation, selection, or lifecycle promotion occurred.
+- Scheduler next action is one fresh `/review-tasks-plan FT-004`. TASK-107
+  must remain `planned` until the current-revision review returns exact
+  `APPROVE` and `/mb-doctor --strict` passes. Existing Judge target remains the
+  only permitted Judge and is not consulted before that due boundary.
+- Fresh planning Reviewer `01a07063-16be-7f73-bc8b-d009ed862cac` was launched
+  for the required current-revision FT-004 review. Until it produces the
+  exact review marker and verdict, no promotion, strict-readiness claim, task
+  selection, implementation, or Judge consultation is authorized.
+
+## 2026-09-05 — FT-004 review REJECT; minimal tasking repair due
+
+- Fresh Reviewer `01a07063-16be-7f73-bc8b-d009ed862cac` returned `REJECT` for
+  current Planning Revision 2. The only blocking finding is
+  `TASK-107.evidence_required[2]` missing a concrete `artifact` locator;
+  evidence, scope, identity, lifecycle, and dependency findings otherwise
+  pass. The report is
+  `.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-004-TASK-107-R1-final-report-docs-01.md`.
+- Scheduler routes exactly one minimal fresh `/feature-to-tasks FT-004`
+  reconciliation in Architect child
+  `01a07071-7ff9-7553-a6ba-fd24f0517c0f`. It may add only the task-owned
+  artifact locator to that one evidence item. TASK-107 stays `planned`; TASK-102
+  stays `failed`; TASK-103 stays `blocked`; FT-000 and the existing Judge are
+  untouched. No `/mb-doctor`, promotion, selection, execution, or Judge is
+  authorized before a fresh review `APPROVE`.
+
+## 2026-09-05 — TASK-107 evidence-locator repair reconciled; fresh review due
+
+- Architect `01a07071-7ff9-7553-a6ba-fd24f0517c0f` completed the bounded
+  `reconciled` repair. `TASK-107.evidence_required[2]` now names the concrete
+  task card and verification protocol locators
+  `.memory-bank/tasks/TASK-107-T3-FT-004-W35.task.json` and
+  `.protocols/TASK-107-T3-FT-004-W35/verification.md`.
+- TASK-107 identity, `planned` status, T3/W35 scope, dependencies, boundaries,
+  and Planning Revision 2 are unchanged. TASK-102 remains `failed`, TASK-103
+  remains `blocked`, and FT-000 is untouched. No doctor, promotion, selection,
+  execution, Judge, or sync was run.
+- Scheduler now launches one fresh `/review-tasks-plan FT-004`; its exact
+  current-revision verdict is required before any readiness or Judge action.
+
+## 2026-09-05 — TASK-107 Attempt 2 handoff reconciled; fresh verify child launched
+
+- Existing executor `01a0708a-548f-71c1-a052-572e3d07cd13` completed the
+  authorized same-task Attempt 2. Report-02, execution evidence, handoff, and
+  progress now contain current student-scope RED/GREEN, all required gates,
+  bounded audit, and cleanup locators; TASK-107 remains `in_progress`.
+- Exactly one fresh independent `/verify TASK-107-T3-FT-004-W35` was launched
+  as Reviewer `01a070c4-3376-7531-b13a-e15f75bd7450`. It produced exactly
+  `VERDICT: PASS` in
+  `.protocols/TASK-107-T3-FT-004-W35/verification.md:160`; no lifecycle
+  mutation occurred.
+- Scheduler now launches exactly one separate fresh T3 `/red-verify` Reviewer
+  `01a070c9-c7a6-7ec0-b4d0-ef47a84a5023`. No Judge, closure, sync, or
+  TASK-103 unblock is allowed before the semantic verdict.
+
+## 2026-09-05 — TASK-107 Attempt 2 handoff reconciled; fresh verify due
+
+- Existing executor `01a0708a-548f-71c1-a052-572e3d07cd13` completed the
+  authorized same-task Attempt 2. Report-02, `execution-evidence.md`,
+  `handoff.md`, and `progress.md` now contain current student-scope RED/GREEN,
+  focused regression, all required gates, bounded-audit, and cleanup locators.
+- Scheduler preserves TASK-107 `in_progress`; Attempt 1 remains
+  supporting-only. TASK-102 remains `failed`, TASK-103 remains `blocked`, and
+  FT-000 is untouched. No executor replay occurred.
+- Exactly one fresh independent `/verify TASK-107-T3-FT-004-W35` is due. The
+  prior functional Reviewer is not reused; no `/red-verify`, Judge, closure,
+  sync, or TASK-103 unblock occurs before the current functional PASS.
+- Fresh Reviewer `01a07082-ed1e-7912-baea-ac0a97a8ddd5` is the sole current
+  review child. Until it records the exact Revision 2 marker and verdict, no
+  doctor, promotion, selection, execution, or Judge consultation is allowed.
+
+## 2026-09-05 — FT-004 Planning Revision 2 APPROVE; strict readiness due
+
+- Fresh Reviewer `01a07082-ed1e-7912-baea-ac0a97a8ddd5` completed with exact
+  current-revision `APPROVE` in
+  `.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-004-TASK-107-R2-final-report-docs-01.md:7`.
+  The report confirms the concrete file locators, TASK-107 identity/scope, and
+  preserved TASK-102 `failed` / TASK-103 `blocked` states.
+- Scheduler now runs the required `/mb-doctor --strict`. Until it passes,
+  TASK-107 remains `planned`; no promotion, selection, execution, Judge, or
+  FT-000 mutation is authorized.
+
+## 2026-09-05 — FT-004 strict doctor passed; TASK-107 selected
+
+- `/mb-doctor --strict` passed with `0 errors`, `1 warning`, and `2 info`. The
+  only warning is the expected `TASK_PLANNED_READY_CANDIDATE` for TASK-107;
+  all three dependencies are done.
+- Scheduler promoted only `TASK-107-T3-FT-004-W35` from `planned` to `ready`
+  and selected it in stable sequential order. TASK-102 remains `failed`,
+  TASK-103 remains `blocked`, and FT-000 is untouched.
+- Next action is one fresh `/exe TASK-107-T3-FT-004-W35`; no Judge or Reviewer
+  is due at this execution boundary.
+- Fresh executor `01a0708a-548f-71c1-a052-572e3d07cd13` was launched for the
+  selected task. It is the sole `/exe` child; scheduler awaits its durable T3
+  handoff and will not infer implementation success or lifecycle closure.
+
+## 2026-09-05 — TASK-107 HALT_QUALITY_GATES
+
+- The existing executor `01a0708a-548f-71c1-a052-572e3d07cd13` durably moved
+  TASK-107 `ready -> in_progress`, recorded honest Attempt 1 RED, focused GREEN
+  2/2, and targeted regressions 3 files/9 tests. These are executor evidence,
+  not independent verification or closure.
+- After the bounded completion window, no final executor report, native gate
+  summary, cleanup audit, or forward handoff was durable. The task remains
+  `in_progress`; no `/verify`, `/red-verify`, Judge, closure, sync, or TASK-103
+  selection was run.
+- Scheduler records recoverable `HALT_QUALITY_GATES`. Owner is the same
+  executor. Resume exactly by one bounded completion request to that child,
+  reconcile its final handoff, then fresh `/verify`; never launch a duplicate
+  executor or Judge. TASK-102 remains failed, TASK-103 blocked, and FT-000 is
+  untouched.
+
+## 2026-09-05 — TASK-107 late executor artifacts; handoff still invalid
+
+- The same executor later wrote
+  `.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-EXE-final-report-code-01.md`
+  and `execution-evidence.md`, claiming Attempt 1 GREEN and native
+  check/build/test/diff/mb-lint/strict-doctor PASS.
+- Reconciliation found `handoff.md` and `progress.md` still contain the old
+  pending implementation/gate placeholders. Therefore the executor handoff is
+  not valid despite the late report; TASK-107 remains `in_progress` and no
+  functional verifier was launched.
+- Owner/resume route remains the same executor: one bounded completion request
+  to reconcile the stale protocol handoff, then fresh `/verify` only after a
+  valid forward handoff. No duplicate executor, Reviewer, or Judge.
+
+## 2026-09-05 — TASK-107 executor handoff reconciled; fresh verify due
+
+- The existing executor `01a0708a-548f-71c1-a052-572e3d07cd13` completed the
+  handoff reconciliation. `handoff.md` and `progress.md` now have no pending
+  placeholders and record hard-boundary PASS, exact RED/GREEN, bounded audit,
+  cleanup, final report, execution evidence, and next owner fresh `/verify`.
+- Scheduler supersedes the temporary quality halt without replaying `/exe`.
+  TASK-107 remains `in_progress`; TASK-102 remains failed and TASK-103 blocked.
+  Exactly one fresh independent `/verify TASK-107-T3-FT-004-W35` is now due;
+  no `/red-verify`, Judge, closure, sync, or TASK-103 selection precedes a
+  current functional PASS.
+- Fresh functional Reviewer `01a0709e-0e2a-7422-8803-25fe7dd77001` was
+  launched as the sole `/verify` child. Its verdict is pending; scheduler will
+  reconcile exactly one verdict and keep lifecycle `in_progress` until then.
+
+## 2026-09-05 — TASK-107 functional PASS; T3 semantic review due
+
+- Fresh functional Reviewer `01a0709e-0e2a-7422-8803-25fe7dd77001` completed
+  exactly `VERDICT: PASS` in
+  `.protocols/TASK-107-T3-FT-004-W35/verification.md`. The durable report
+  contains fresh verifier-owned route-scope/state-snapshot evidence, one file/
+  two tests, and all six required gates passing.
+- Scheduler reconciles the PASS without lifecycle closure: TASK-107 remains
+  `in_progress`; TASK-102 remains failed and TASK-103 blocked. The functional
+  Reviewer is not reused. Exactly one separate fresh T3 `/red-verify` is now
+  due; Judge, closure, sync, and TASK-103 selection remain prohibited until
+  semantic verdict.
+- Fresh T3 semantic Reviewer `01a070a7-eb82-7003-be65-b270c8ae7981` was
+  launched as the sole `/red-verify` child. It must write exactly one durable
+  semantic verdict; no Judge, closure, sync, or lifecycle transition is
+  authorized before reconciliation.
+
+## 2026-09-05 — TASK-107 semantic Attempt 1 failed; bounded retry due
+
+- Fresh T3 semantic verification returned exactly
+  `SEMANTIC_VERDICT: semantic-fail` in
+  `.protocols/TASK-107-T3-FT-004-W35/red-verification.md` and report
+  `.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-01.md`.
+  The isolated probe proved a supported Admin cross-student personal-comment
+  mutation: selected `studentAccountId` is dropped by route `actionContext`,
+  and Collaboration rebuilds scope from the stored comment.
+- The finding is task-local fixed-semantics correction within TASK-107's
+  accepted route/Collaboration boundary. Semantic unsuccessful attempts are
+  `1/3`, retries used `0/2`, consecutive failures `1/3`, blockers `0/3`.
+  TASK-107 remains `in_progress`; TASK-102 remains failed and TASK-103 blocked.
+- Scheduler authorizes exactly one bounded same-task Attempt 2 through existing
+  executor `01a0708a-548f-71c1-a052-572e3d07cd13`. Correction basis: preserve
+  current selected student scope through the named action, compare it with the
+  stored target before UPDATE, and add claim-linked student-scope RED/GREEN
+  proof while preserving all identity, scope, tier, dependencies, specs, and
+  hard boundaries. Fresh `/verify` and `/red-verify` remain due afterward;
+  no duplicate executor/Reviewer/Judge, closure, sync, or TASK-103 unblock.
+- Fresh Reviewer `01a07075-56eb-7702-b6be-b45ffbfc55ca` is the sole current
+  review child. Until it records the exact Revision 2 marker and verdict, no
+  doctor, promotion, selection, execution, or Judge consultation is allowed.
+
+## 2026-09-05 — FT-004 review REJECT; concrete artifact-path repair due
+
+- Fresh Reviewer `01a07075-56eb-7702-b6be-b45ffbfc55ca` returned `REJECT` for
+  current Planning Revision 2 because `TASK-107.evidence_required[2]` still
+  used directory-only artifact locators. No other scope, identity, lifecycle,
+  dependency, or status finding was raised.
+- Scheduler routes exactly one fresh minimal `/feature-to-tasks FT-004`
+  reconciliation in Architect child `01a0707e-d95b-79f1-aaa5-51783859082a`.
+  The only allowed repair is replacing that item's artifact text with the
+  concrete verification report and protocol file paths, followed by JSON
+  presence validation. TASK-107 stays `planned`; TASK-102 stays `failed`;
+  TASK-103 stays `blocked`; no doctor, promotion, selection, execution, Judge,
+  or FT-000 mutation is allowed.
+
+## 2026-09-05 — TASK-107 concrete artifact-path repair reconciled; review due
+
+- Architect `01a0707e-d95b-79f1-aaa5-51783859082a` completed the second
+  minimal reconciliation and JSON validation. `TASK-107.evidence_required[2]`
+  now names the concrete report file
+  `.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-VERIFY-final-report-docs-01.md`
+  and protocol file
+  `.protocols/TASK-107-T3-FT-004-W35/verification.md`, replacing directory-only
+  locators.
+- TASK-107 remains the same planned T3/W35 identity with unchanged
+  dependencies, scope, boundaries, and Planning Revision 2. TASK-102 remains
+  failed, TASK-103 remains blocked, and FT-000 is untouched. No doctor,
+  promotion, selection, execution, Judge, or sync was run.
+- Scheduler now launches one fresh `/review-tasks-plan FT-004`; its exact
+  current-revision verdict is required before any readiness or Judge action.

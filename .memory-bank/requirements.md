@@ -157,10 +157,10 @@ status: draft
 | REQ-009 | EP-004 | FT-005 | test:FT-005-AC-001..002 | planned |
 | REQ-010 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..005;FT-006-AC-004 | verified |
 | REQ-011 | EP-005 | FT-006 | test:FT-006-AC-001;FT-006-AC-009 | verified |
-| REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007 | verified |
-| REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006;FT-006-AC-008 | verified |
-| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-006-AC-009;FT-007-AC-002..003;FT-007-AC-007..009 | planned |
-| REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007 | verified |
+| REQ-012 | EP-005 | FT-006 | test:FT-006-AC-002..004;FT-006-AC-007;FT-006-AC-010 | verified |
+| REQ-013 | EP-005 | FT-006 | test:FT-006-AC-005..006;FT-006-AC-008;FT-006-AC-010;FT-006-AC-011 | verified |
+| REQ-014 | EP-001, EP-002, EP-003, EP-004, EP-005, EP-006 | FT-001, FT-002, FT-003, FT-004, FT-005, FT-006, FT-007 | test:FT-001-AC-001;FT-001-AC-005..008;FT-001-AC-013;FT-002-AC-001;FT-002-AC-005..006;FT-002-AC-011;FT-003-AC-006..008;FT-004-AC-005;FT-005-AC-002;FT-006-AC-005;FT-006-AC-009;FT-006-AC-010;FT-006-AC-011;FT-007-AC-002..003;FT-007-AC-007..009 | planned |
+| REQ-015 | EP-004, EP-005 | FT-005, FT-006 | test:FT-005-AC-003..004;FT-006-AC-002..004;FT-006-AC-007;FT-006-AC-010 | verified |
 | REQ-016 | Product release gate | — | test:product-release-acceptance after mapped feature checks | planned |
 | REQ-017 | EP-006 | FT-007 | test:FT-007-AC-001..009 | implemented |
 
@@ -196,6 +196,46 @@ non-mutation.
 REQ-011 retains its existing `verified` lifecycle and shared REQ-014 remains
 `planned`; this task-level boundary does not make a new requirement lifecycle
 decision. `TASK-100` and `TASK-101` remain planned under FT-006.
+
+## FT-006 W33 task evidence route — 2026-09-05
+
+`TASK-100-T3-FT-006-W33` is `done` from the current Attempt 2 independent
+functional `PASS`, required T3 `semantic-pass`, and scheduler closure for
+`FT-006-AC-010 / REQ-012 / REQ-013 / REQ-014 / REQ-015`. The evidence covers
+the protected own-center Admin payment journal, exact payment facts,
+authoritative allocation/balance/status/audit refresh after confirmed edits
+and cancellations, no duplicate creation path, and denied-scope
+non-mutation.
+
+- [TASK-100 card](tasks/TASK-100-T3-FT-006-W33.task.json)
+- [functional evidence](../.protocols/TASK-100-T3-FT-006-W33/verification.md)
+- [semantic evidence](../.protocols/TASK-100-T3-FT-006-W33/red-verification.md)
+- [W33 sync evidence](../.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-MB-SYNC-final-report-docs-01.md)
+
+REQ-012, REQ-013, and REQ-015 retain their existing `verified` lifecycles;
+shared REQ-014 remains `planned` because its RTM mapping spans incomplete
+features. This task-level boundary does not make a new requirement lifecycle
+decision. `TASK-101` remains planned under FT-006.
+
+## FT-006 W34 task evidence route — 2026-09-05
+
+`TASK-101-T3-FT-006-W34` is `done` from the current Attempt 1 independent
+functional `PASS`, required T3 `semantic-pass`, and scheduler closure for
+`FT-006-AC-011 / REQ-013 / REQ-014`. The evidence covers the server-authorized
+Student and Parent-linked-child marker projection, projected week/month
+placement, exact amount and factual date, multiple same-day markers,
+shared-role omission, unchanged paid/unpaid labels, forged-scope immunity, and
+financial-state non-mutation.
+
+- [TASK-101 card](tasks/TASK-101-T3-FT-006-W34.task.json)
+- [functional evidence](../.protocols/TASK-101-T3-FT-006-W34/verification.md)
+- [semantic evidence](../.protocols/TASK-101-T3-FT-006-W34/red-verification.md)
+- [W34 sync evidence](../.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-MB-SYNC-final-report-docs-01.md)
+
+REQ-013 retains its existing `verified` lifecycle; shared REQ-014 remains
+`planned` because its RTM mapping spans incomplete features. This task-level
+boundary does not make a new requirement lifecycle decision. FT-006 remains
+`planned` pending its feature-level boundary.
 
 ## W10 task evidence route
 
@@ -603,3 +643,66 @@ planned `TASK-105-T3-FT-005-W37` and `TASK-106-T3-FT-005-W38` cards close this
 remaining projection, action, UI, and Playwright contour. Historical backend
 task identities and evidence remain unchanged; no requirement target or AC was
 changed.
+
+## FT-005 W37 task evidence route — 2026-09-05
+
+`TASK-105-T3-FT-005-W37` is durably `done` from its current Attempt 2
+independent functional `PASS`, required T3 `semantic-pass`, and scheduler
+closure for `FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`. The evidence
+covers the server-composed class-scoped homework projection, named authorized
+create/complete/grade actions, class-visible completion without shared grades,
+private grade visibility, server-generated opaque IDs, repeat-create equality,
+fail-closed ambiguous selection, denial before write, and isolated disposable
+state cleanup.
+
+- [TASK-105 card](tasks/TASK-105-T3-FT-005-W37.task.json)
+- [functional evidence](../.protocols/TASK-105-T3-FT-005-W37/verification.md)
+- [semantic evidence](../.protocols/TASK-105-T3-FT-005-W37/red-verification.md)
+- [W37 sync evidence](../.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-MB-SYNC-final-report-docs-01.md)
+
+REQ-009 and shared REQ-014 retain their existing `planned` lifecycles because
+the W38 browser outcome and the feature-level aggregate gate are still
+outstanding. This task-level boundary does not make a new requirement
+lifecycle decision; `TASK-106-T3-FT-005-W38` remains planned.
+
+## FT-005 W38 task evidence route — 2026-09-05
+
+`TASK-106-T3-FT-005-W38` is durably `done` from its current Attempt 1
+independent functional `PASS`, required T3 `semantic-pass`, and scheduler
+closure for `FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`. The evidence
+covers the existing Lesson Context Student completion control, class-visible
+completion after reload, Admin/assigned-Teacher creation and grading for
+`α`/`β`/`γ`/`F`, corresponding Student/linked-Parent visibility, unrelated
+Student/unlinked-Parent denial, state-before/state-after equality, and exact
+disposable database cleanup.
+
+- [TASK-106 card](tasks/TASK-106-T3-FT-005-W38.task.json)
+- [functional evidence](../.protocols/TASK-106-T3-FT-005-W38/verification.md)
+- [semantic evidence](../.protocols/TASK-106-T3-FT-005-W38/red-verification.md)
+- [W38 sync evidence](../.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-MB-SYNC-final-report-docs-01.md)
+
+REQ-009 and shared REQ-014 retain their existing `planned` lifecycles because
+this boundary reconciles task evidence only; the feature-level aggregate and
+shared requirement lifecycle decisions remain with their owning scheduler or
+feature route. No RTM requirement target, mapping, or lifecycle decision is
+changed here.
+
+## FT-004 W35 TASK-107 correction route — 2026-09-05
+
+`TASK-107-T3-FT-004-W35` is durably `done` from fresh Attempt 2 functional
+`PASS`, required T3 `semantic-pass`, all gates, and scheduler closure for
+`FT-004-AC-005 / REQ-006 / REQ-007 / REQ-014`. The evidence proves current
+selected-student scope propagation and deny-before-mutation for forged
+cross-lesson, cross-class, wrong-student, personal-to-shared-route, and
+other-author edits while preserving same-context owner success.
+
+- [TASK-107 card](tasks/TASK-107-T3-FT-004-W35.task.json)
+- [functional evidence](../.protocols/TASK-107-T3-FT-004-W35/verification.md)
+- [semantic evidence](../.protocols/TASK-107-T3-FT-004-W35/red-verification.md)
+- [W35 sync evidence](../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-MB-SYNC-final-report-docs-01.md)
+
+REQ-006, REQ-007, and shared REQ-014 retain their existing `planned`
+lifecycle values because this is task evidence only; FT-004 and EP-003 remain
+`planned` pending the remaining TASK-103 browser outcome and feature-level
+aggregate decision. TASK-102 remains failed and TASK-103 remains blocked until
+the scheduler's separate post-sync dependent-state pass.

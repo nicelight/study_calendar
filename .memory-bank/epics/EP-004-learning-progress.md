@@ -39,3 +39,32 @@ Historical task identities and evidence remain unchanged.
 ## Source / constraints
 - [.memory-bank/prd.md](../prd.md#homework-grades-and-attendance), `FR-EDU-*`,
   `NFR-PRIV-*`, `NFR-FIN-*`.
+
+## W37 task evidence reconciliation — 2026-09-05
+
+The scheduler-decided `TASK-105-T3-FT-005-W37` closure adds current Attempt 2
+functional `PASS` and required T3 `semantic-pass` evidence for the
+server-composed Lesson Context homework projection and named create, complete,
+and grade actions under `FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`.
+See the [FT-005 W37 closure route](../features/FT-005-learning-progress.md#w37-server-transport-closure--2026-09-05)
+and the [W37 sync report](../../.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-MB-SYNC-final-report-docs-01.md).
+
+This task-scoped sync preserves the existing EP-004 document status and
+`lifecycle: planned`. FT-005, REQ-009, and shared REQ-014 remain `planned`
+because the W38 browser outcome and the feature-level aggregate gate are still
+outstanding; no epic or feature lifecycle decision is inferred here.
+
+## W38 browser UI closure — 2026-09-05
+
+The scheduler-decided `TASK-106-T3-FT-005-W38` closure adds current Attempt 1
+functional `PASS` and required T3 `semantic-pass` evidence for the existing
+Lesson Context homework completion and grading surface under
+`FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`. See the [FT-005 W38
+closure route](../features/FT-005-learning-progress.md#w38-browser-ui-closure--2026-09-05)
+and the [W38 sync report](../../.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-MB-SYNC-final-report-docs-01.md).
+
+The browser contour is now evidenced through the W37 server transport and W38
+UI/browser proof. This task-scoped sync preserves EP-004 document status
+`active` and `lifecycle: planned`; FT-005, REQ-009, and shared REQ-014 also
+remain `planned` pending the applicable feature-level aggregate/lifecycle
+owner decision. No promotion or dependent transition is inferred here.

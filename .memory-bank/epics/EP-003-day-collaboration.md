@@ -36,6 +36,18 @@ therefore `active`/`planned` pending the sequential FT-004 browser projection,
 form transport, UI, and disposable Playwright cards. Historical task evidence
 and task lifecycles remain unchanged.
 
+## W35 correction closure — 2026-09-05
+
+The indexed `TASK-107-T3-FT-004-W35` correction is now `done` with fresh
+functional `PASS`, T3 `semantic-pass`, all required gates, and scheduler
+closure. It closes the current route/Collaboration scope defect for
+`FT-004-AC-005` without changing EP-003 lifecycle ownership. The remaining
+browser UI outcome is `TASK-103-T3-FT-004-W36`, which stays blocked until the
+scheduler applies its post-sync dependent-state pass.
+
+- [TASK-107 card](../tasks/TASK-107-T3-FT-004-W35.task.json)
+- [W35 sync report](../../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-MB-SYNC-final-report-docs-01.md)
+
 ## Source / constraints
 - [.memory-bank/prd.md](../prd.md#reactions-and-day-chat), `FR-COM-*`,
   `FR-DAY-003..005`, `NFR-PRIV-*`.

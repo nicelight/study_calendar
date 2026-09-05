@@ -89,6 +89,8 @@ describe('Collaboration comments, reactions, and scoped discussion access', () =
 
 		const edited = root.collaboration.editFieldComment({
 			sessionToken: 'session-student-one',
+			classId: 'class-own',
+			lessonId: 'lesson-own',
 			commentId: 'comment-one',
 			body: 'Edited note'
 		});
@@ -127,6 +129,8 @@ describe('Collaboration comments, reactions, and scoped discussion access', () =
 		expect(() =>
 			root.collaboration.editFieldComment({
 				sessionToken: 'session-student-two',
+				classId: 'class-own',
+				lessonId: 'lesson-own',
 				commentId: 'comment-one',
 				body: 'Unauthorized edit'
 			})
@@ -228,6 +232,36 @@ describe('Collaboration comments, reactions, and scoped discussion access', () =
 		).toThrow('invalid-reaction');
 	});
 
+	it('rejects unsupported field keys before Collaboration writes', () => {
+		const before = root.database.sqlite
+			.prepare('SELECT COUNT(*) AS count FROM collaboration_comments WHERE field_key = ?')
+			.get('unsupported-field');
+
+		expect(() => root.collaboration.createFieldComment({
+			sessionToken: 'session-admin-own',
+			classId: 'class-own',
+			lessonId: 'lesson-own',
+			scope: 'shared',
+			fieldKey: 'unsupported-field',
+			commentId: 'comment-unsupported-owner',
+			body: 'Must not persist'
+		})).toThrow('invalid-field-key');
+		expect(() => root.collaboration.setReaction({
+			sessionToken: 'session-admin-own',
+			classId: 'class-own',
+			lessonId: 'lesson-own',
+			scope: 'shared',
+			targetType: 'field',
+			targetId: 'unsupported-field',
+			reaction: 'like'
+		})).toThrow('invalid-field-key');
+
+		expect(before).toEqual({ count: 0 });
+		expect(root.database.sqlite
+			.prepare('SELECT COUNT(*) AS count FROM collaboration_reactions WHERE target_id = ?')
+			.get('unsupported-field')).toEqual({ count: 0 });
+	});
+
 	it('FT-004-AC-005 separates shared and personal discussion by current server scope', () => {
 		root.collaboration.createFieldComment({
 			sessionToken: 'session-student-one',
@@ -267,6 +301,8 @@ describe('Collaboration comments, reactions, and scoped discussion access', () =
 		expect(() =>
 			root.collaboration.editFieldComment({
 				sessionToken: 'session-student-two',
+				classId: 'class-own',
+				lessonId: 'lesson-own',
 				commentId: 'comment-personal-one',
 				body: 'Cross-student mutation'
 			})

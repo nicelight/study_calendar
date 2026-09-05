@@ -56,13 +56,19 @@ function routeEvent(sessionToken: string, fields: Record<string, string | string
 	const url = new URL('https://calendar.test/lesson-context?classId=class-group-v&lessonId=lesson-group-v');
 	const formData = new FormData();
 	for (const [name, value] of Object.entries(fields)) {
+		if (name === 'action') continue;
 		for (const entry of Array.isArray(value) ? value : [value]) formData.append(name, entry);
 	}
 	return {
 		url,
 		request: new Request(url, { method: 'POST', body: formData }),
-		cookies: { get: (name: string) => name === 'foundation_session' ? sessionToken : undefined }
+		cookies: { get: (name: string) => name === 'foundation_session' ? sessionToken : undefined },
+		actionName: fields.action
 	} as any;
+}
+
+async function invoke(request: any) {
+	return lessonContextActions[request.actionName](request);
 }
 
 describe('verifier-owned FT-005-AC-005 probe', () => {
@@ -114,12 +120,12 @@ describe('verifier-owned FT-005-AC-005 probe', () => {
 	});
 
 	it('proves the route delegates and rejects a non-Teacher before mutation', async () => {
-		const saved = await lessonContextActions.default(routeEvent('session-teacher-verifier', {
+		const saved = await invoke(routeEvent('session-teacher-verifier', {
 			action: 'saveAttendance', absentStudentAccountId: 'student-b'
 		}));
 		expect(saved).toEqual({ attendanceSuccess: true });
 		const before = root.database.sqlite.prepare('SELECT * FROM learning_attendance ORDER BY lesson_id, student_account_id').all();
-		const denied = await lessonContextActions.default(routeEvent('session-student-a', {
+		const denied = await invoke(routeEvent('session-student-a', {
 			action: 'saveAttendance', absentStudentAccountId: 'student-a'
 		}));
 		expect(denied).toMatchObject({ status: 403, data: { error: 'attendance_forbidden' } });

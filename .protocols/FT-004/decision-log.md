@@ -98,3 +98,49 @@ Collaboration public module, SQLite tables, accepted boundaries, and old task
 cards are reused. No new top-level route, mutation API, frontend state layer,
 database abstraction, old task identity, old lifecycle, or accumulated evidence
 is changed.
+
+## 2026-09-05 — Revision 2 acceptance-trace repair
+
+The browser task-plan review identified a missing target-linked AC mapping.
+Reconciliation confirms the authoritative cards now contain the required exact
+IDs in `verification_targets`: `TASK-102` owns `FT-004-AC-005`, and `TASK-103`
+owns `FT-004-AC-001` through `FT-004-AC-005`. Matching feature locators and
+claim-linked RED/GREEN contracts remain on the cards. No task identity, tier,
+wave, dependency, lifecycle, implementation scope, or Planning Revision
+changed. The next route is a fresh `/review-tasks-plan FT-004`.
+
+## 2026-09-05 — TASK-102 Attempt 3 fixed-semantics follow-up
+
+Fresh independent verification proved that a forged `lesson-final-one` route
+could edit an owned comment stored under `lesson-final-two`: the route passed
+only `sessionToken`, `commentId`, and `body`, while Collaboration authorized the
+stored comment context without checking the current route class/lesson scope.
+This is an implementation defect inside the accepted
+`collaboration-browser-surface.md#authorized-mutation-transport` contract, not
+an unresolved product or architecture decision.
+
+The minimum follow-up is planned `TASK-107-T3-FT-004-W35`, a fresh T3 identity
+with dependencies on completed TASK-016, TASK-017, and TASK-039. It owns only
+current route-scope enforcement for `editFieldComment` and focused isolated
+forged-context RED/GREEN proof. TASK-102 remains failed and is not a dependency
+or proof source; its Attempt 1–3 evidence and retry history are preserved.
+TASK-103 remains blocked with its identity and evidence preserved, and now
+depends on TASK-107 for the explicit W35 → W36 correction path. No Attempt 4,
+execution, verification, semantic review, Judge, scheduler closure, or sync was
+run.
+
+## 2026-09-05 — TASK-107 evidence-locator repair
+
+Fresh task-plan review found one execution-readiness gap in the third
+`TASK-107.evidence_required` item: its boundary proof described the required
+RED/GREEN result but did not name a concrete artifact. The reconciliation
+replaces that directory-only artifact text with the exact task-owned
+`.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-VERIFY-final-report-docs-01.md`
+and `.protocols/TASK-107-T3-FT-004-W35/verification.md` paths only.
+
+TASK-107 remains the same planned `T3`/`W35` identity with the same
+dependencies, scope, boundaries, evidence, and Planning Revision `2`;
+TASK-102 remains failed, TASK-103 remains blocked, and FT-000 is untouched.
+The feature-to-tasks queue action is `reconciled`; the next route is a fresh
+`/review-tasks-plan FT-004`. No execution, doctor, promotion, selection, Judge,
+or sync was run.

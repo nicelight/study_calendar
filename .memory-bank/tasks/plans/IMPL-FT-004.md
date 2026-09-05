@@ -24,7 +24,10 @@ FT-002/FT-005/FT-006 work.
 Collaboration owns comments, reactions, messages, replies, and branch
 visibility at `src/lib/server/modules/collaboration/`. Lesson Context owns
 only the server-composed projection and `/lesson-context` form-action adapter;
-it consumes actor and calendar scope boundaries and never trusts client
+TASK-102 also performs the atomic migration of existing default-posting forms
+to named actions so the route never has a broken default/named-action split.
+TASK-103 consumes that stable transport for the Collaboration controls. Lesson
+Context consumes actor and calendar scope boundaries and never trusts client
 authority fields. Identity & Access owns participant `fullName` through the
 bounded `getParticipantLabels` read, while Collaboration selects only IDs from
 its authorized discussion projection.
@@ -36,12 +39,19 @@ its authorized discussion projection.
 | W5 | TASK-011-T3-FT-004-W5 | comments, reactions, and scope | TASK-005-T3-FT-002-W3 |
 | W6 | TASK-016-T3-FT-004-W6 | T3 center-lifecycle isolation for comments and reactions | TASK-011-T3-FT-004-W5 |
 | W6 | TASK-017-T3-FT-004-W6 | T3 center-lifecycle isolation for threaded messages, branches, and tabs | TASK-011-T3-FT-004-W5 |
-| W35 | TASK-102-T3-FT-004-W35 | Server-composed Collaboration projection and server-authorized Lesson Context mutation transport | TASK-016-T3-FT-004-W6, TASK-017-T3-FT-004-W6, TASK-039-T3-FT-003-W10 |
-| W36 | TASK-103-T3-FT-004-W36 | Complete Collaboration UI in Lesson Context and disposable shared/personal browser proof | TASK-102-T3-FT-004-W35 |
+| W35 | TASK-102-T3-FT-004-W35 | Atomic named-action transport: migrate existing Lesson Context form callers, add server-composed Collaboration projection and authorized actions | TASK-016-T3-FT-004-W6, TASK-017-T3-FT-004-W6, TASK-039-T3-FT-003-W10 |
+| W35 | TASK-107-T3-FT-004-W35 | Enforce current Lesson Context class/lesson scope for named Collaboration comment edits after the TASK-102 Attempt 3 failure | TASK-016-T3-FT-004-W6, TASK-017-T3-FT-004-W6, TASK-039-T3-FT-003-W10 |
+| W36 | TASK-103-T3-FT-004-W36 | Complete Collaboration UI in Lesson Context and disposable shared/personal browser proof on the corrected named transport | TASK-107-T3-FT-004-W35 |
 
 `TASK-012-T2-FT-004-W6` is a preserved historical `failed` task with an
 explicit `superseded` disposition; it is not an executable replacement or
 dependency for downstream work.
+
+`TASK-102-T3-FT-004-W35` is also preserved as the historical failed browser
+transport attempt after three unsuccessful attempts. It is not a dependency or
+source of fresh proof for `TASK-107`; the new W35 follow-up depends only on the
+completed W6 isolation cards and the completed shared Lesson Context navigation
+outcome.
 
 ## Controlled re-tier rebuild
 
@@ -113,25 +123,74 @@ reconciled in IMPL-FT-003.
   and are not reused as current T3 proof.
 - The operator browser-completion decision makes that historical evidence
   insufficient for feature closure. FT-004 is `active` / `planned` pending
-  TASK-102 and TASK-103; affected REQ and EP-003 lifecycle values, old task
+  TASK-107 and TASK-103; affected REQ and EP-003 lifecycle values, old task
   identities, retry budgets, accepted architecture, and Planning Revision
   remain unchanged.
 
 ## Current Browser Queue
 
-1. `TASK-102-T3-FT-004-W35` extends the existing Lesson Context projection and
-   named form-action transport, and wires Identity & Access `getParticipantLabels`
-   through the accepted Actor Context Boundary. It owns server authorization,
-   deny-before-mutation, the server-side AC-005/REQ-014 harm path,
-   route/action integration tests, and a disposable shared/personal transport
-   smoke.
-2. `TASK-103-T3-FT-004-W36` renders the complete Collaboration surface in the
-   existing Lesson Context page. It owns browser-visible AC-001..AC-005,
-   shared/personal role and revocation scenarios, reload persistence,
-   eleven-plus branch retention/reactivation, and failure-safe disposable
-   Playwright cleanup.
+1. `TASK-102-T3-FT-004-W35` is the preserved historical failed attempt for the
+   existing Lesson Context projection and named form-action transport. Its
+   Attempt 1-3 evidence, identity, exhausted retry budget, and failed status
+   remain unchanged and it is not an executable prerequisite.
+2. `TASK-107-T3-FT-004-W35` owns only the fixed-semantics correction: the
+   existing named `editFieldComment` action must enforce the current
+   server-resolved class/lesson scope at the Collaboration write boundary.
+   Its fresh T3 proof covers forged cross-lesson/cross-class denial before
+   mutation and same-context owner success; it does not replay TASK-102's
+   projection, labels, named-action migration, or browser UI claims.
+3. `TASK-103-T3-FT-004-W36` renders the complete Collaboration surface in the
+   existing Lesson Context page on the corrected named transport. It owns
+   browser-visible AC-001..AC-005, shared/personal role and revocation
+   scenarios, reload persistence, eleven-plus branch retention/reactivation,
+   and failure-safe disposable Playwright cleanup; it remains blocked until
+   its new `TASK-107` prerequisite is reviewed and completed.
 
-The cards are sequential. Neither adds a top-level route, mutation API,
-frontend state layer, Collaboration writer, or SQLite schema. FT-004 cannot
-claim completion until both cards have independent claim-linked functional and
+The current executable sequence is therefore `TASK-107` → `TASK-103`.
+Neither adds a top-level route, mutation API, frontend state layer,
+Collaboration writer, or SQLite schema. FT-004 cannot claim completion until
+the follow-up and UI task have independent claim-linked functional and
 semantic evidence.
+
+## Attempt 3 route-scope correction
+
+`TASK-102-T3-FT-004-W35` failed its fresh Attempt 3 functional verification:
+the forged `lesson-final-one` route edited an owned comment stored under
+`lesson-final-two` because the route supplied only `sessionToken`, `commentId`,
+and `body`, while Collaboration authorized the stored comment context without
+checking the current route scope. The defect is fixed-semantics work inside
+the accepted route/boundary contract, not a new architecture decision.
+
+The minimum fresh identity is planned `TASK-107-T3-FT-004-W35`. It keeps T3
+because the outcome is protected mutation and privacy behavior, reuses the
+completed `TASK-016`, `TASK-017`, and `TASK-039` prerequisites, and owns only
+the route/public-boundary scope check plus focused isolated RED/GREEN proof.
+`TASK-103` remains `blocked` with its identity and evidence preserved, and its
+dependency is routed to `TASK-107` so the existing W35 → W36 sequence has a
+valid correction path. No code, execution, verification, semantic review,
+closure, Judge, scheduler, or Planning Revision change is part of this
+planning reconciliation.
+
+## Revision 2 Acceptance-Trace Reconciliation
+
+The prior browser queue satisfied the target-linked proof mapping:
+`TASK-102` listed `FT-004-AC-005` in `verification_targets`, and `TASK-103`
+listed `FT-004-AC-001` through `FT-004-AC-005`. Those exact locators and
+historical RED/GREEN contracts remain preserved. The current correction adds
+planned `TASK-107` for the failed fixed-semantics route-scope result and routes
+the still-blocked `TASK-103` through it; the feature remains `planned` pending
+fresh review and execution gates.
+
+## W35 TASK-107 closure reconciliation — 2026-09-05
+
+`TASK-107-T3-FT-004-W35` is now `done` with fresh Attempt 2 functional `PASS`,
+T3 `semantic-pass`, all required native gates, and same-Judge `SUPPORT`.
+Its current student-scope correction remains inside the accepted
+route/Collaboration boundary and does not alter the plan, ownership, tier,
+dependencies, or Planning Revision 2. The authoritative task card and W35
+sync report route the current evidence.
+
+The canonical next sequence remains `TASK-103-T3-FT-004-W36` after the
+scheduler-owned W35 post-sync strict readiness and dependent-state pass.
+TASK-102 remains failed and is never retried; TASK-103 is not unblocked by this
+sync itself.

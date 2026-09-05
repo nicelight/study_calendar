@@ -51,15 +51,16 @@ task DAG ending at `TASK-002-T3-FT-000-W1`.
 ## Boundary pass and ordered tasks
 
 The three accepted implementation outcomes are independently completable.
-W32 is closed; W33 and W34 remain planned:
+W32, W33, and W34 are closed:
 
 1. Admin pricing settings/history: TASK-099 now supplies the price-history
    query, protected browser surface, and existing payment-form initialization
    from the class value.
-2. Admin payment journal/correction: payment edit/cancel/replay exists, but no
-   center-scoped journal read or server/UI adapter exposes it.
-3. Personal markers: marker calculation exists, but Calendar does not consume
-   or render it.
+2. Admin payment journal/correction: TASK-100 now supplies the protected
+   center-scoped journal read and server/UI adapter over the existing
+   edit/cancel/replay commands.
+3. Personal markers: TASK-101 now supplies the server-authorized Calendar
+   consumer and rendering over the existing marker projection.
 
 The outcomes stay separate because they have different view models, actions,
 privacy surfaces, and proof fixtures. The journal depends on the finance-page
@@ -70,8 +71,8 @@ dependencies/regression inputs, not new task claims.
 | Wave | Task | Status | Outcome | Dependency |
 |---|---|---|---|---|
 | W32 | TASK-099-T3-FT-006-W32 | done | Admin class price/student override settings, append-only history, and existing payment-form initial amount (AC-009) | TASK-043-T3-FT-006-W22; TASK-005-T3-FT-002-W3; TASK-049-T3-FT-006-W25 |
-| W33 | TASK-100-T3-FT-006-W33 | planned | Admin payment journal with edit/cancel actions, refreshed allocations/balance, and audit UI (AC-010) | TASK-099-T3-FT-006-W32; TASK-046-T3-FT-006-W23; TASK-048-T3-FT-006-W24 |
-| W34 | TASK-101-T3-FT-006-W34 | planned | Personal calendar payment-marker consumption and rendering (AC-011) | TASK-047-T3-FT-006-W23; TASK-050-T3-FT-006-W26; TASK-039-T3-FT-003-W10 |
+| W33 | TASK-100-T3-FT-006-W33 | done | Admin payment journal with edit/cancel actions, refreshed allocations/balance, and audit UI (AC-010) | TASK-099-T3-FT-006-W32; TASK-046-T3-FT-006-W23; TASK-048-T3-FT-006-W24 |
+| W34 | TASK-101-T3-FT-006-W34 | done | Personal calendar payment-marker consumption and rendering (AC-011) | TASK-047-T3-FT-006-W23; TASK-050-T3-FT-006-W26; TASK-039-T3-FT-003-W10 |
 
 No production-only configuration or checks are introduced, so no extra final
 production-acceptance task is needed.
@@ -151,7 +152,7 @@ The fresh `/review-tasks-plan FT-006` returned `APPROVE` at Planning Revision
 The queue action remains `rebuild_required` because the rejected planned cards
 were materially repaired; the final identities are `TASK-099`, `TASK-100`, and
 `TASK-101`. The decomposition is closed. At this planning boundary all three T3
-cards were `planned`; the later W32 reconciliation below supersedes only that
+cards were `planned`; the later wave reconciliations below supersede only that
 task-status snapshot.
 
 ## W32 implementation reconciliation — 2026-09-04
@@ -166,3 +167,27 @@ were not changed by `/mb-sync`.
 FT-006 therefore remains `planned`; this status/evidence reconciliation does
 not introduce a fresh task-plan review trigger or any promotion/dependency
 transition.
+
+## W33 implementation reconciliation — 2026-09-05
+
+`TASK-100-T3-FT-006-W33` is now `done` under the scheduler-written closure,
+with current independent functional `PASS` and T3 `semantic-pass` evidence for
+AC-010 / REQ-012 / REQ-013 / REQ-014 / REQ-015. The task identity,
+dependencies, tier, verification array, hard boundary, and accepted
+Financial Ledger ownership remain governed by their existing artifacts.
+
+`TASK-101-T3-FT-006-W34` remains `planned`. FT-006 therefore remains
+`planned`; this status/evidence reconciliation introduces no fresh task-plan
+review trigger or promotion/dependency transition.
+
+## W34 implementation reconciliation — 2026-09-05
+
+`TASK-101-T3-FT-006-W34` is now `done` under the scheduler-written closure,
+with current independent functional `PASS` and T3 `semantic-pass` evidence for
+AC-011 / REQ-013 / REQ-014. The task identity, dependencies, tier,
+verification array, hard boundary, and accepted Financial Ledger ownership
+remain governed by their existing artifacts.
+
+FT-006 remains `planned` pending its feature-level boundary. This
+status/evidence reconciliation introduces no fresh task-plan review trigger,
+promotion/dependency transition, or Planning Revision change.

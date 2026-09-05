@@ -62,13 +62,19 @@ function event(root: CompositionRoot, sessionToken: string, fields?: Record<stri
 	const url = new URL('https://calendar.test/lesson-context?classId=class-group&lessonId=lesson-group');
 	const formData = new FormData();
 	for (const [name, value] of Object.entries(fields ?? {})) {
+		if (name === 'action') continue;
 		for (const entry of Array.isArray(value) ? value : [value]) formData.append(name, entry);
 	}
 	return {
 		url,
 		request: new Request(url, { method: fields ? 'POST' : 'GET', body: fields ? formData : undefined }),
-		cookies: { get: (name: string) => name === 'foundation_session' ? sessionToken : undefined }
+		cookies: { get: (name: string) => name === 'foundation_session' ? sessionToken : undefined },
+		actionName: fields?.action
 	} as any;
+}
+
+async function invoke(request: any) {
+	return lessonContextActions[request.actionName](request);
 }
 
 describe('FT-005-AC-005 lesson context attendance entry', () => {
@@ -99,7 +105,7 @@ describe('FT-005-AC-005 lesson context attendance entry', () => {
 		expect(rendered).toContain('03.08.2026');
 		expect(rendered).not.toMatch(/<h1[^>]*>2026-08-03<\/h1>/);
 
-		const saved = await lessonContextActions.default(event(root, 'session-teacher-own', {
+		const saved = await invoke(event(root, 'session-teacher-own', {
 			action: 'saveAttendance',
 			absentStudentAccountId: 'student-two'
 		}));
@@ -114,11 +120,11 @@ describe('FT-005-AC-005 lesson context attendance entry', () => {
 
 	it('denies Student and unassigned Teacher without changing attendance', async () => {
 		const before = root.database.sqlite.prepare('SELECT * FROM learning_attendance').all();
-		const studentDenied = await lessonContextActions.default(event(root, 'session-student-one', {
+		const studentDenied = await invoke(event(root, 'session-student-one', {
 			action: 'saveAttendance',
 			absentStudentAccountId: 'student-one'
 		}));
-		const unassignedDenied = await lessonContextActions.default(event(root, 'session-teacher-unassigned', {
+		const unassignedDenied = await invoke(event(root, 'session-teacher-unassigned', {
 			action: 'saveAttendance',
 			absentStudentAccountId: 'student-one'
 		}));

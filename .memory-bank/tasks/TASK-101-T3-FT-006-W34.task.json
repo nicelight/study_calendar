@@ -1,7 +1,7 @@
 {
   "id": "TASK-101-T3-FT-006-W34",
   "title": "Render personal-calendar payment markers",
-  "status": "ready",
+  "status": "done",
   "wave": "W34",
   "feature": "FT-006",
   "reqs": ["REQ-013", "REQ-014"],
@@ -28,7 +28,51 @@
     "FT-006-AC-011 / REQ-013 / REQ-014: an authorized Student or Parent-linked-child personal calendar consumes the named Financial Ledger marker projection and renders a marker on the closest previous non-lesson day, including previous-week/month boundaries, with exact amount and factual date.",
     "Multiple payments projected to the same markerDate remain separately discoverable; existing paid/unpaid lesson labels and their authoritative derivation remain unchanged.",
     "Marker loading, calendar navigation, ordering, and rendering are read-only. Shared Admin and Teacher calendars omit personal payment markers; Parent receives only a server-resolved linked child's markers, and non-permitted student data is not accepted from URL or form input.",
-    "Disposable Playwright proof uses the project-owned temporary database/server and compares financial state before and after marker-only navigation/rendering."
+    "Disposable Playwright proof uses the project-owned temporary database/server and compares financial state before and after marker-only navigation/rendering.",
+    "Current independent functional verification passed; see .protocols/TASK-101-T3-FT-006-W34/verification.md and .tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-VERIFY-final-report-docs-01.md. Lifecycle remains scheduler-owned and unchanged.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-101-T3-FT-006-W34/verification.md",
+      "artifact": ".tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh verifier-owned focused and regression probes passed and independently covered the Student/Parent projection, shared-role omission, exact marker facts, boundary placement, forged URL immunity, existing paid/unpaid path, and financial-state equality.",
+        "Fresh verifier-owned disposable Playwright proof passed 1/1 with Student, linked Parent, Admin, and Teacher flows, navigation, multiple markers, exact temporary cleanup, and unchanged disposable-run financial state.",
+        "Executor required check, full test, build, disposable E2E, diff, Memory Bank lint, and strict doctor gates are recorded as passed; the known ignored real-database mutation is preserved as a non-blocking papercut.",
+        "Attempt 1 RED/GREEN and executor report remain preserved as supporting evidence; verifier lifecycle ownership remained unchanged."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-101-T3-FT-006-W34/red-verification.md",
+      "artifact": ".tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh independent T3 semantic verification found no admitted finding or operator question and confirmed the accepted FT-006-AC-011 / REQ-013 / REQ-014 claim set.",
+        "Source review and fresh semantic checks confirmed server-resolved scope, Financial Ledger ownership, no direct persistence access, marker multiplicity, factual amount/date presentation, unchanged paid/unpaid behavior, and non-mutation boundaries.",
+        "The semantic protocol contains exactly one SEMANTIC_VERDICT: semantic-pass; unavailable co-review output was not treated as evidence."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 1",
+      "cause": "Current functional PASS and required T3 semantic-pass satisfy FT-006-AC-011 / REQ-013 / REQ-014.",
+      "evidence": [
+        ".tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-EXE-final-report-code-01.md",
+        ".protocols/TASK-101-T3-FT-006-W34/verification.md",
+        ".tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-101-T3-FT-006-W34/red-verification.md",
+        ".tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; close TASK-101 and complete W34 boundary while preserving identity, scope, tier, and boundaries.",
+      "next_action": "/mb-sync at W34 boundary",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
   "evidence_required": [

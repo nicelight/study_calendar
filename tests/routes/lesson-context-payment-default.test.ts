@@ -18,12 +18,19 @@ import {
 function event(root: CompositionRoot, sessionToken: string, method: 'GET' | 'POST' = 'GET', fields: Record<string, string> = {}) {
 	const url = new URL('https://calendar.test/lesson-context?classId=class-default-099&lessonId=lesson-default-099');
 	const formData = new FormData();
-	for (const [name, value] of Object.entries(fields)) formData.set(name, value);
+	for (const [name, value] of Object.entries(fields)) {
+		if (name !== 'action') formData.set(name, value);
+	}
 	return {
 		url,
 		request: new Request(url, method === 'POST' ? { method, body: formData } : { method }),
-		cookies: { get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined) }
+		cookies: { get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined) },
+		actionName: fields.action
 	} as any;
+}
+
+async function invoke(request: any) {
+	return lessonContextActions[request.actionName](request);
 }
 
 function createFixture(): CompositionRoot {
@@ -99,7 +106,7 @@ describe('TASK-099 Lesson Context payment default', () => {
 			'name="amount" type="number" min="0.01" step="any" required="" value="24.5"'
 		);
 
-		const result = await lessonContextActions.default(event(root, 'session-admin-default-099', 'POST', {
+		const result = await invoke(event(root, 'session-admin-default-099', 'POST', {
 			action: 'createPayment',
 			studentAccountId: 'student-default-099',
 			amount: '7.25',

@@ -1,7 +1,7 @@
 ---
 description: Product feature for field comments, reactions, and threaded day chat.
 status: active
-last_updated: 2026-09-03
+last_updated: 2026-09-05
 source_of_truth:
   - .memory-bank/features/FT-004-day-collaboration.md
   - .memory-bank/contracts/collaboration-browser-surface.md
@@ -184,6 +184,16 @@ Feature-level contract detail remains downstream task-design work.
 - Feature completion remains pending until both new task cards have their own
   claim-linked functional and semantic evidence.
 
+## Planning Revision 2 Proof-Link Reconciliation
+
+The browser task cards carry the exact acceptance IDs required by the
+prospective acceptance trace: `TASK-102` targets `FT-004-AC-005`, while
+`TASK-103` targets `FT-004-AC-001` through `FT-004-AC-005`. Their matching
+feature locators and RED/GREEN evidence contracts remain unchanged. This is a
+planning-link correction only; task identity, tier, wave, dependencies,
+lifecycle, implementation scope, and accepted Collaboration ownership are
+preserved.
+
 ## Feature Doctor — Participant Labels
 
 The browser surface requires display labels for comment authors and reaction
@@ -201,6 +211,28 @@ and selecting the author/reactor IDs. Labels grant no authority. The accepted
 contract extension and bounded impact are recorded by `/spec-redesign`; no
 acceptance criterion or task identity is changed.
 
+## Current task-plan reconciliation — 2026-09-05
+
+Fresh Attempt 3 verification of `TASK-102-T3-FT-004-W35` found one concrete
+route-scope defect: a forged `lesson-final-one` route edited an owned comment
+stored under `lesson-final-two`. The route omitted the current class/lesson
+context when calling Collaboration, so the stored comment context was checked
+without comparing it to the current route scope. This is a fixed-semantics
+correction within the accepted Collaboration Browser Surface contract; no
+architecture, ownership, Foundation dependency, or Planning Revision changed.
+
+`TASK-102` remains historical `failed` with all Attempt 1–3 evidence and no
+Attempt 4. The minimum new planned T3 follow-up is
+[`TASK-107-T3-FT-004-W35`](../tasks/TASK-107-T3-FT-004-W35.task.json), which
+owns only current class/lesson validation for `editFieldComment` and its fresh
+forged-context RED/GREEN proof. It depends on completed TASK-016, TASK-017,
+and TASK-039, not on failed TASK-102 and does not inherit its evidence.
+
+`TASK-103-T3-FT-004-W36` remains `blocked`; its identity, UI scope, and
+existing lifecycle evidence are preserved, while its prerequisite is routed to
+TASK-107. Feature completion remains pending TASK-107 and TASK-103, each with
+independent functional and T3 semantic evidence.
+
 ## Clarifications
 
 ### 2026-09-03 — Participant-label owner
@@ -214,4 +246,26 @@ storage reads, and broad Center & Scheduling registry labels remain excluded.
 
 Impact is `bounded`: Planning Revision remains `2`, Foundation is unaffected,
 and only FT-004 requires task-plan reconciliation. The feature remains planned
-until TASK-102 and TASK-103 pass their browser-surface proof.
+until TASK-107 and TASK-103 pass their browser-surface proof.
+
+## TASK-107 W35 correction closure — 2026-09-05
+
+`TASK-107-T3-FT-004-W35` is durably `done` after its fresh Attempt 2
+functional `PASS`, required T3 `semantic-pass`, all native gates, and explicit
+same-Judge `JUDGE_ASSESSMENT: SUPPORT`. The correction retains the selected
+personal student scope through the named action and Collaboration boundary;
+fresh proof denies forged cross-lesson, cross-class, wrong-student,
+personal-to-shared-route, and other-author edits before mutation while keeping
+same-context owner edits functional.
+
+- [TASK-107 card](../tasks/TASK-107-T3-FT-004-W35.task.json)
+- [functional evidence](../../.protocols/TASK-107-T3-FT-004-W35/verification.md)
+- [functional report](../../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-VERIFY-final-report-docs-02.md)
+- [semantic evidence](../../.protocols/TASK-107-T3-FT-004-W35/red-verification.md)
+- [semantic report](../../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-01.md)
+- [W35 sync report](../../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-MB-SYNC-final-report-docs-01.md)
+
+`TASK-102` remains failed with all Attempt 1–3 evidence preserved and no
+Attempt 4. `TASK-103` remains blocked until the scheduler's post-sync
+dependent-state pass. FT-004 remains `active` / `planned`; this task closure
+does not make a feature-level aggregate lifecycle decision.

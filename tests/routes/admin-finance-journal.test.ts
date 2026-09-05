@@ -165,6 +165,8 @@ describe('TASK-100 Admin payment journal', () => {
 		expect(body).toContain('2026-08-02');
 		expect(body).toContain('Создан');
 		expect(body).not.toContain('?/createPayment');
+		expect(body).not.toContain('value="confirm-edit"');
+		expect(body).not.toContain('value="confirm-cancel"');
 	});
 
 	it('edits and cancels through the existing commands, then reloads the projection and audit', async () => {

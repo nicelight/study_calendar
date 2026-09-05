@@ -7,6 +7,7 @@
 	let material = $derived(context?.material ?? null);
 	let attendance = $derived(data.attendance ?? lesson?.attendance ?? null);
 	let payment = $derived(data.payment ?? null);
+	let homeworkProgress = $derived(context?.homeworkProgress ?? null);
 
 	function studentLabel(studentAccountId: string): string {
 		const labels = data.studentLabels as Record<string, string> | undefined;
@@ -24,6 +25,16 @@
 		});
 		if (studentAccountId) params.set('studentAccountId', studentAccountId);
 		return `/lesson-context?${params.toString()}`;
+	}
+
+	function actionHref(action: string): string {
+		const classId = context?.navigation.classId ?? lesson?.classId;
+		const lessonId = context?.navigation.lessonId ?? lesson?.lessonId;
+		if (!classId || !lessonId) return `?/${action}`;
+		const params = new URLSearchParams({ classId, lessonId });
+		const studentAccountId = context?.navigation.studentAccountId;
+		if (studentAccountId) params.set('studentAccountId', studentAccountId);
+		return `?${params.toString()}&/${action}`;
 	}
 
 	function statusLabel(status: 'planned' | 'completed' | 'cancelled'): string {
@@ -60,6 +71,14 @@
 			attendance_forbidden: 'У вас нет права отмечать посещаемость этого урока.',
 			attendance_operation_failed: 'Не удалось сохранить посещаемость.'
 		}[error] ?? 'Не удалось сохранить посещаемость.';
+	}
+
+	function gradeFor(studentAccountId: string): 'α' | 'β' | 'γ' | 'F' | null {
+		return homeworkProgress?.grades.find((entry) => entry.studentAccountId === studentAccountId)?.grade ?? null;
+	}
+
+	function completionStatus(completed: boolean): string {
+		return completed ? 'Выполнено' : 'Не выполнено';
 	}
 
 	function syncPaymentDate(event: Event): void {
@@ -105,6 +124,60 @@
 				<div><dt>Практическая работа</dt><dd>{context.material.practicalWork}</dd></div>
 				<div><dt>Домашнее задание</dt><dd>{context.material.homework}</dd></div>
 			</dl>
+		</section>
+
+		<section class="homework" aria-labelledby="homework-title">
+			<div class="section-label">Домашнее задание</div>
+			{#if homeworkProgress?.homework}
+				<h2 id="homework-title">{homeworkProgress.homework.title}</h2>
+				{#if form?.homeworkSuccess}
+					<p class="form-message success" role="status">Изменение домашнего задания сохранено.</p>
+				{/if}
+				{#if context.personal && context.personal.progress.completion && !context.personal.progress.completion.completed}
+					<form method="POST" action={actionHref('completeHomework')} class="homework-completion-form" aria-label="Отметить домашнее задание выполненным">
+						<button type="submit">Отметить выполненным</button>
+					</form>
+				{/if}
+				<div class="homework-statuses" aria-label="Статусы выполнения класса">
+					<h3>Статусы класса</h3>
+					{#each homeworkProgress.completions as completion}
+						<div class="homework-row" data-homework-completion={completion.studentAccountId}>
+							<div>
+								<strong>{studentLabel(completion.studentAccountId)}</strong>
+								<span>{completionStatus(completion.completed)}</span>
+							</div>
+							{#if data.canEditMaterial}
+								<form method="POST" action={actionHref('recordGrade')} class="grade-form" aria-label={`Оценка для ${studentLabel(completion.studentAccountId)}`}>
+									<input type="hidden" name="studentAccountId" value={completion.studentAccountId} />
+									<label>
+										<span>Оценка</span>
+										<select name="grade" required value={gradeFor(completion.studentAccountId) ?? ''}>
+											<option value="" disabled>Выберите</option>
+											<option value="α">α</option>
+											<option value="β">β</option>
+											<option value="γ">γ</option>
+											<option value="F">F</option>
+										</select>
+									</label>
+									<button type="submit">Сохранить оценку</button>
+								</form>
+							{/if}
+						</div>
+					{/each}
+				</div>
+			{:else if data.canEditMaterial}
+				<h2 id="homework-title">Домашнее задание ещё не создано</h2>
+				<p class="editor-intro">Создайте один элемент из домашнего задания общего материала.</p>
+				{#if form?.homeworkSuccess}
+					<p class="form-message success" role="status">Изменение домашнего задания сохранено.</p>
+				{/if}
+				<form method="POST" action={actionHref('createHomework')} class="homework-create-form" aria-label="Создать домашнее задание">
+					<button type="submit">Создать домашнее задание</button>
+				</form>
+			{:else}
+				<h2 id="homework-title">Домашнее задание ещё не создано</h2>
+				<p class="editor-intro">Домашнее задание пока недоступно.</p>
+			{/if}
 		</section>
 
 		{#if context.personal}
@@ -160,8 +233,7 @@
 			{:else if form?.error}
 				<p class="form-message error" role="alert">{attendanceErrorLabel(form.error)}</p>
 			{/if}
-			<form method="POST" class="attendance-form" aria-label="Посещаемость урока">
-				<input type="hidden" name="action" value="saveAttendance" />
+			<form method="POST" action={actionHref('saveAttendance')} class="attendance-form" aria-label="Посещаемость урока">
 				{#each attendance as entry}
 					<label class="attendance-row">
 						<input
@@ -189,7 +261,7 @@
 			{:else if form?.error}
 				<p class="form-message error" role="alert">{errorLabel(form.error)}</p>
 			{/if}
-			<form method="POST" class="material-form" aria-label="Материал занятия">
+				<form method="POST" action={actionHref('setSharedLessonMaterial')} class="material-form" aria-label="Материал занятия">
 				<label>
 					<span>Тема занятия</span>
 					<input name="topic" required value={material?.topic ?? ''} />
@@ -217,8 +289,7 @@
 			{:else if form?.error}
 				<p class="form-message error" role="alert">{paymentErrorLabel(form.error)}</p>
 			{/if}
-			<form method="POST" class="material-form" aria-label="Оплата занятия">
-				<input type="hidden" name="action" value="createPayment" />
+				<form method="POST" action={actionHref('createPayment')} class="material-form" aria-label="Оплата занятия">
 				<label>
 					<span>Ученик</span>
 					<select name="studentAccountId" required>
@@ -268,6 +339,7 @@
 	nav { display: flex; flex-wrap: wrap; gap: .65rem; }
 	nav a { padding: .65rem .85rem; border: 1px solid #d9e0d8; border-radius: .65rem; color: #25332e; font-weight: 800; text-decoration: none; }
 	.material, .personal, .shared, .empty { margin-top: 2rem; padding: 1.5rem; border: 1px solid #d9e0d8; border-radius: 1rem; background: #fffdf8; }
+	.homework { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #b8c8ba; border-radius: 1rem; background: #f4f8f0; }
 	.material-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #b8c8ba; border-radius: 1rem; background: #eef6ee; }
 	.attendance-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #b8c8ba; border-radius: 1rem; background: #f0f5ed; }
 	.payment-editor { display: grid; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border: 1px solid #d6bd8d; border-radius: 1rem; background: #fff6e8; }
@@ -279,6 +351,16 @@
 	.personal { background: #e9f2e9; }
 	.shared p, .empty p { color: #6d7a73; line-height: 1.6; }
 	.editor-intro { margin: 0; color: #6d7a73; line-height: 1.5; }
+	.homework-statuses { display: grid; gap: .75rem; }
+	.homework-statuses h3 { margin: .5rem 0 0; font-size: 1rem; }
+	.homework-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem); align-items: center; gap: 1rem; padding: .8rem; border: 1px solid #d9e0d8; border-radius: .65rem; background: #fffdf8; }
+	.homework-row > div:first-child { display: grid; gap: .25rem; }
+	.homework-row > div:first-child span { color: #6d7a73; font-size: .85rem; }
+	.homework-completion-form, .homework-create-form, .grade-form { display: flex; gap: .75rem; align-items: end; }
+	.grade-form label { display: grid; flex: 1; gap: .35rem; }
+	.grade-form label span { color: #6d7a73; font-size: .78rem; font-weight: 800; }
+	.grade-form select { width: 100%; border: 1px solid #b8c8ba; border-radius: .65rem; padding: .7rem .8rem; background: #fffdf8; color: #25332e; font: inherit; }
+	.homework button { min-height: 2.75rem; border: 1px solid #3f765d; border-radius: .65rem; padding: 0 .9rem; background: #3f765d; color: #fffdf8; font: inherit; font-weight: 800; cursor: pointer; }
 	.material-form { display: grid; gap: 1rem; }
 	.material-form label { display: grid; gap: .4rem; }
 	.material-form label span { color: #6d7a73; font-size: .78rem; font-weight: 800; }
@@ -293,5 +375,5 @@
 	.form-message { margin: 0; padding: .7rem .8rem; border-radius: .6rem; font-weight: 800; }
 	.form-message.success { background: #dcebdd; color: #2f6b4f; }
 	.form-message.error { background: #f8e2dd; color: #8e3f2b; }
-	@media (max-width: 42rem) { .context-header { align-items: start; flex-direction: column; } }
+	@media (max-width: 42rem) { .context-header { align-items: start; flex-direction: column; } .homework-row { grid-template-columns: 1fr; } .grade-form { align-items: stretch; flex-direction: column; } }
 </style>

@@ -4,6 +4,83 @@ status: active
 ---
 # Changelog
 
+## [2026-09-05] Wave W38 — TASK-106 Lesson Context UI closure
+
+- Reconciled `TASK-106-T3-FT-005-W38` as `done` from its current Attempt 1
+  implementation, independent functional `PASS`, required T3 `semantic-pass`,
+  and scheduler closure for `FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`.
+- Updated FT-005, EP-004, the REQ-009/REQ-014 evidence route, and the FT-005
+  implementation/task-planning routes with the authoritative W38 evidence.
+  The task index, spec registry, backbone, boundary map, root router, and
+  subfolder routing already resolve the accepted paths and required no edit.
+- Preserved TASK-106 identity, T3/W38 classification, dependency on done
+  TASK-105, implementation, tests, all task-local evidence, Planning Revision
+  `2`, and scheduler/Judge/Reviewer state. FT-005, EP-004, REQ-009, and shared
+  REQ-014 remain `planned`; no feature/epic/requirement promotion, dependent
+  transition, new task, or design decision was made by this sync.
+- Handoff: scheduler owns post-sync `mb-lint`, strict `mb-doctor`, applicable
+  review-trigger evaluation, `/tech-debt wave W38`, and the separate boundary
+  Judge/selection pass; none of these caller-owned actions was run by
+  `/mb-sync`.
+
+## [2026-09-05] Wave W37 — TASK-105 Lesson Context transport closure
+
+- Reconciled `TASK-105-T3-FT-005-W37` as `done` from its current Attempt 2
+  implementation, independent functional `PASS`, required T3 `semantic-pass`,
+  and scheduler closure for `FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`.
+- Updated FT-005, EP-004, the REQ-009/REQ-014 RTM evidence route, the FT-005
+  implementation/task-planning routes, and this W37 sync evidence. The task
+  index, spec registry, backbone, boundary map, root router, and subfolder
+  routing already resolve the accepted paths and required no edit.
+- Fixed one pre-existing relative link in `IMPL-FT-005` to the canonical
+  Learning Progress Browser Surface; no semantic or ownership change was made.
+- Preserved TASK-105 identity, T3/W37 classification, dependencies, accepted
+  Learning Progress ownership, implementation, tests, all historical and
+  current verification artifacts, W38 `planned` state, FT-005/EP-004/REQ-009
+  lifecycle values, shared REQ-014 `planned`, Planning Revision `2`, and
+  scheduler/Judge/Reviewer state. No feature/epic/requirement promotion,
+  dependent unblock, new task, or design decision was made by this sync.
+- Handoff: scheduler owns post-sync `mb-lint`, strict `mb-doctor`, any
+  review-trigger evaluation, dependent-state pass, and `/tech-debt wave W37`;
+  none of these caller-owned actions was run by `/mb-sync`.
+
+## [2026-09-05] Wave W34 — TASK-101 personal payment-marker closure
+
+- Reconciled `TASK-101-T3-FT-006-W34` as `done` from its current Attempt 1
+  implementation, independent functional `PASS`, required T3 `semantic-pass`,
+  and scheduler closure for `FT-006-AC-011 / REQ-013 / REQ-014`.
+- Updated FT-006, EP-005, REQ-013/REQ-014 RTM test locators, and the FT-006
+  implementation plan with the authoritative W34 evidence routes; the task
+  index, spec registry, backbone, boundary map, and routers already resolve
+  the accepted paths and required no edit.
+- Preserved FT-006 `planned`, EP-005 `verified`, REQ-013 `verified`, shared
+  REQ-014 `planned`, Planning Revision `2`, dependencies, implementation,
+  tests, verification artifacts, and the known test-isolation papercut as
+  supporting project evidence. No feature/epic/requirement promotion or new
+  design decision was made by this sync.
+- Handoff: scheduler owns post-sync `mb-lint`, strict doctor, any review-trigger
+  evaluation, and `/tech-debt wave W34`; no such gate or report was run by
+  `/mb-sync`.
+
+## [2026-09-05] Wave W33 — TASK-100 Admin payment-journal closure
+
+- Reconciled `TASK-100-T3-FT-006-W33` as `done` from its current Attempt 2
+  implementation, independent functional `PASS`, required T3 `semantic-pass`,
+  and scheduler closure for `FT-006-AC-010 / REQ-012 / REQ-013 / REQ-014 /
+  REQ-015`.
+- Updated FT-006, EP-005, REQ-012/REQ-013/REQ-014/REQ-015 evidence routes,
+  the RTM test locators, and the FT-006 implementation plan; the task index,
+  spec registry, backbone, boundary map, root router, and subfolder routing
+  already resolve the accepted paths and required no edit.
+- Preserved Attempt 1 and its semantic finding as historical/supporting
+  evidence, FT-006 and EP-005 lifecycle values, REQ-012/REQ-013/REQ-015
+  `verified` values, shared REQ-014 `planned`, TASK-101 `planned`, Planning
+  Revision `2`, dependencies, promotion, scheduler state, implementation,
+  and verification artifacts.
+- Handoff: scheduler owns post-sync `mb-lint`, strict doctor, any separate
+  promotion/dependency pass, and `/tech-debt wave W33`; no such gate or report
+  was run by `/mb-sync`.
+
 ## [2026-09-04] Wave W32 — TASK-099 Admin pricing closure
 
 - Reconciled `TASK-099-T3-FT-006-W32` as `done` from its current Attempt 2

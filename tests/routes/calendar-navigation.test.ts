@@ -54,27 +54,37 @@ function lessonContextEvent(
 function paymentActionEvent(sessionToken: string, fields: Record<string, string>) {
 	const url = new URL('https://calendar.test/lesson-context?classId=class-own&lessonId=lesson-own');
 	const formData = new FormData();
-	for (const [name, value] of Object.entries(fields)) formData.set(name, value);
+	for (const [name, value] of Object.entries(fields)) {
+		if (name !== 'action') formData.set(name, value);
+	}
 	return {
 		url,
 		request: new Request(url, { method: 'POST', body: formData }),
 		cookies: {
 			get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined)
-		}
+		},
+		actionName: fields.action
 	} as any;
 }
 
 function lessonMaterialActionEvent(sessionToken: string, fields: Record<string, string>) {
 	const url = new URL('https://calendar.test/lesson-context?classId=class-own&lessonId=lesson-own');
 	const formData = new FormData();
-	for (const [name, value] of Object.entries(fields)) formData.set(name, value);
+	for (const [name, value] of Object.entries(fields)) {
+		if (name !== 'action') formData.set(name, value);
+	}
 	return {
 		url,
 		request: new Request(url, { method: 'POST', body: formData }),
 		cookies: {
 			get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined)
-		}
+		},
+		actionName: fields.action ?? 'setSharedLessonMaterial'
 	} as any;
+}
+
+async function invoke(request: any) {
+	return lessonContextActions[request.actionName](request);
 }
 
 function snapshot(root: CompositionRoot): Record<string, unknown[]> {
@@ -242,7 +252,7 @@ describe('FT-003-AC-008 calendar lesson navigation', () => {
 			expect.objectContaining({ lessonId: 'lesson-own-unpaid', paymentStatus: 'unpaid' })
 		]));
 
-		const created = await lessonContextActions.default(
+		const created = await invoke(
 			paymentActionEvent('session-teacher-own', {
 				action: 'createPayment',
 				studentAccountId: 'student-own',
@@ -285,7 +295,7 @@ describe('FT-003-AC-008 calendar lesson navigation', () => {
 		expect(studentPage.canCreatePayment).toBe(false);
 		expect(render(LessonContextPage, { props: { data: studentPage } } as any).body).not.toContain('Внести оплату');
 
-		const denied = await lessonContextActions.default(
+		const denied = await invoke(
 			paymentActionEvent('session-student-own', {
 				action: 'createPayment',
 				studentAccountId: 'student-own',
@@ -325,7 +335,7 @@ describe('FT-003-AC-008 calendar lesson navigation', () => {
 	});
 
 	it('allows Admin and assigned Teacher to save material while denying Student', async () => {
-		const saved = await lessonContextActions.default(
+		const saved = await invoke(
 			lessonMaterialActionEvent('session-admin-own', {
 				topic: 'Updated topic',
 				practicalWork: 'Updated practice',
@@ -345,7 +355,7 @@ describe('FT-003-AC-008 calendar lesson navigation', () => {
 			homework: 'Updated homework'
 		});
 
-		const teacherSaved = await lessonContextActions.default(
+		const teacherSaved = await invoke(
 			lessonMaterialActionEvent('session-teacher-own', {
 				topic: 'Teacher topic',
 				practicalWork: 'Teacher practice',
@@ -355,7 +365,7 @@ describe('FT-003-AC-008 calendar lesson navigation', () => {
 		expect(teacherSaved).toEqual({ success: true });
 
 		const beforeStudentAttempt = snapshot(root);
-		const denied = await lessonContextActions.default(
+		const denied = await invoke(
 			lessonMaterialActionEvent('session-student-own', {
 				topic: 'Student topic',
 				practicalWork: 'Student practice',
@@ -400,7 +410,7 @@ describe('TASK-050 independent personal payment projection verification', () => 
 			expect.objectContaining({ lessonId: 'lesson-own', paymentStatus: 'unpaid' })
 		]));
 
-		const created = await lessonContextActions.default(
+		const created = await invoke(
 			paymentActionEvent('session-teacher-own', {
 				action: 'createPayment',
 				studentAccountId: 'student-own',
@@ -429,7 +439,7 @@ describe('TASK-050 independent personal payment projection verification', () => 
 
 	it('rejects forged payment scope before mutation and ignores shared URL student hints', async () => {
 		const before = snapshot(root);
-		const denied = await lessonContextActions.default(
+		const denied = await invoke(
 			paymentActionEvent('session-teacher-own', {
 				action: 'createPayment',
 				studentAccountId: 'forged-student-account',

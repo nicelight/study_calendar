@@ -64,16 +64,18 @@ attendance entry for individual and group classes. TASK-009 and TASK-010
 evidence remains evidence for their original outcomes only; TASK-042 owns the
 new browser/integration contour.
 
-The current browser completion/grading contour is owned by the two planned
-cards listed above. W37 is limited to server composition and named form
-actions; W38 is limited to the existing page UI and one disposable Playwright
-flow. The canonical shape, privacy rules, and cleanup target are defined by
-[Learning Progress Browser Surface](../../.memory-bank/contracts/learning-progress-browser-surface.md).
-W37's claim-linked proof explicitly covers AC-001/AC-002, repeat-create
-count/identity equality, server-generated opaque ID generation and uniqueness,
-and isolated teardown. W38's AC-001 proof explicitly covers Admin/assigned-
-Teacher creation before Student completion. FT-005, EP-004, and REQ-009 are
-all `planned` until this browser contour is independently verified.
+The current browser completion/grading contour was planned as two sequential
+cards. W37 is limited to server composition and named form actions; W38 is
+limited to the existing page UI and one disposable Playwright flow. The
+canonical shape, privacy rules, and cleanup target are defined by [Learning
+Progress Browser Surface](../../.memory-bank/contracts/learning-progress-browser-surface.md).
+W37's claim-linked proof covers AC-001/AC-002, repeat-create count/identity
+equality, server-generated opaque ID generation and uniqueness, and isolated
+teardown. W38's current proof covers Admin/assigned-Teacher creation before
+Student completion, reload persistence, accepted grades, corresponding versus
+unrelated privacy, and exact cleanup. The browser contour is independently
+verified at the W38 task boundary; FT-005, EP-004, and REQ-009 remain
+`planned` pending the feature-level aggregate/lifecycle decision.
 
 ## W8 card completeness correction
 
@@ -117,3 +119,28 @@ The provider contract is explicit: Learning Progress receives `lessonId` and
 server-resolved actor/context, selects homework internally, and returns a
 personal grade projection. No existing lifecycle or evidence changed; the new
 provider task is planned and requires fresh review before execution.
+
+## W37 server transport closure — 2026-09-05
+
+The authoritative `TASK-105-T3-FT-005-W37` card is now `done` after its current
+Attempt 2 functional `PASS`, required T3 `semantic-pass`, and scheduler closure.
+The server-side Lesson Context outcome is reconciled through the current
+functional/semantic protocols and reports linked from the task card and the
+W37 sync report. The outcome remains bounded to the existing Learning Progress
+provider and named Lesson Context actions; no lesson relation, migration, new
+API, consumer-owned mapping, or ownership change was introduced.
+
+## W38 browser UI closure — 2026-09-05
+
+The authoritative `TASK-106-T3-FT-005-W38` card is now `done` after its current
+Attempt 1 functional `PASS`, required T3 `semantic-pass`, and scheduler
+closure. The W38 UI/browser outcome is reconciled through the functional and
+semantic protocols/reports linked from the task card and the W38 sync report.
+It remains bounded to the existing Lesson Context page, W37's server
+projection/actions, and the exact disposable Playwright path; no server,
+provider, route, API, persistence, or ownership boundary changed.
+
+The sequential W37/W38 browser contour is now task-evidenced. FT-005, EP-004,
+and REQ-009 remain `planned` pending their feature-level aggregate/lifecycle
+owner decision; shared REQ-014 remains `planned`. No promotion, dependent
+transition, Judge/Reviewer change, or Planning Revision change is made here.

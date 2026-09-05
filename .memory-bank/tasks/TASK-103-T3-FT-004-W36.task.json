@@ -1,7 +1,7 @@
 {
   "id": "TASK-103-T3-FT-004-W36",
-  "title": "Render complete Collaboration UI in Lesson Context with disposable browser proof",
-  "status": "planned",
+  "title": "Render complete Collaboration UI on the named Lesson Context transport with disposable browser proof",
+  "status": "blocked",
   "wave": "W36",
   "feature": "FT-004",
   "reqs": [
@@ -11,7 +11,7 @@
     "REQ-014"
   ],
   "depends_on": [
-    "TASK-102-T3-FT-004-W35"
+    "TASK-107-T3-FT-004-W35"
   ],
   "touched_files": [
     "src/routes/lesson-context/+page.svelte",
@@ -57,7 +57,18 @@
     "FT-004-AC-001: the browser displays one account-owned comment for each supported field with author and last-change attribution, permits create and edit only for the current account, and persists the result after reload.",
     "FT-004-AC-002: the browser exposes like, love, laugh, celebrate, and question reactions on supported field/comment/message targets and lets a permitted viewer inspect the participants for each reaction.",
     "FT-004-AC-003 and FT-004-AC-004: the browser renders the common feed, reply controls, arbitrary-depth threaded discussion, a branch tab after its first reply, no more than ten most recently active branch tabs, and retained hidden branches that return after new activity.",
-    "FT-004-AC-005: the browser keeps shared and personal discussions separate for Admin, assigned Teacher, Student, and linked Parent, denies unauthenticated, invalid-session, cross-student/cross-class/cross-center, and revoked-membership/assignment cases, and shows no unauthorized data after reload."
+    "FT-004-AC-005: the browser keeps shared and personal discussions separate for Admin, assigned Teacher, Student, and linked Parent, denies unauthenticated, invalid-session, cross-student/cross-class/cross-center, and revoked-membership/assignment cases, and shows no unauthorized data after reload.",
+    {
+      "stage": "lifecycle",
+      "verdict": "blocked",
+      "report": ".protocols/AUTONOMOUS-RUN/decision-log.md",
+      "evidence": [
+        "Direct dependency TASK-102-T3-FT-004-W35 is authoritatively failed after unsuccessful Attempts 1, 2, and 3: .memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json:4,63-93.",
+        "TASK-103 cannot be promoted or selected while its only dependency is failed; no implementation, executor, reviewer, Judge, or lifecycle work was started for TASK-103."
+      ],
+      "recommended_owner_action": "Remain blocked until the FT-004 planning owner produces a reviewed, readiness-passing correction/follow-up dependency; preserve TASK-103 identity and scope.",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [
     ".memory-bank/tasks/plans/IMPL-FT-004.md",

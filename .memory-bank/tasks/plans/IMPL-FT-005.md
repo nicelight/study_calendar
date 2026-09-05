@@ -118,12 +118,15 @@ evidence reconciled at the W8 boundary.
   completion, accepted grades, reload persistence, and corresponding versus
   unrelated grade privacy.
 - The canonical transport and proof rules are in
-  [Learning Progress Browser Surface](.memory-bank/contracts/learning-progress-browser-surface.md).
-- Lifecycle is consistently `planned` for FT-005, EP-004, and the sole FT-005
-  mapping for REQ-009 until W37/W38 receive execution and independent
-  verification evidence.
-- Both cards remain `planned`; execution and verification must produce fresh
-  task-owned evidence before any feature lifecycle decision.
+  [Learning Progress Browser Surface](../../contracts/learning-progress-browser-surface.md).
+- At planning time, lifecycle was consistently `planned` for FT-005, EP-004,
+  and the sole FT-005 mapping for REQ-009 until W37/W38 received execution and
+  independent verification evidence. The current W37/W38 task outcomes are
+  recorded in the boundary sections below; the feature-level lifecycle remains
+  owned by its separate aggregate decision.
+- At planning time both cards were `planned`; execution and verification have
+  since produced the task-owned evidence required before any feature lifecycle
+  decision.
 
 ## Task-plan approval and decomposition closure — 2026-09-04
 
@@ -134,3 +137,40 @@ The final sequential queue is `TASK-105-T3-FT-005-W37` →
 cards remain `planned` until the applicable readiness/promotion owner acts;
 this boundary does not claim implementation, verification, or feature
 lifecycle promotion.
+
+## W37 implementation reconciliation — 2026-09-05
+
+`TASK-105-T3-FT-005-W37` is now `done` under the scheduler-written closure,
+with current independent functional `PASS` and T3 `semantic-pass` evidence for
+the server-composed homework projection and named Lesson Context actions under
+`FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`. The task identity,
+dependencies, T3 tier, W37 wave, hard boundary, and accepted Learning Progress
+ownership remain governed by their existing artifacts.
+
+The current proof covers class-visible completion without shared grades,
+private grades, server-generated opaque IDs, repeat-create idempotency,
+selection ambiguity fail-closed behavior, authorization non-mutation, and
+isolated cleanup. Attempt 1 remains historical correction evidence only;
+current Attempt 2 functional and semantic reports are the closure path.
+
+`TASK-106-T3-FT-005-W38` remains `planned`. FT-005, EP-004, and REQ-009 remain
+`planned`, as does shared REQ-014; this task-level reconciliation introduces
+no feature-level lifecycle transition, promotion/dependent transition, task
+plan approval change, or Planning Revision change.
+
+## W38 browser UI closure — 2026-09-05
+
+The authoritative `TASK-106-T3-FT-005-W38` card is now `done` after its current
+Attempt 1 functional `PASS`, required T3 `semantic-pass`, and scheduler
+closure. The W38 outcome is reconciled through the current functional and
+semantic protocols/reports linked from the task card and the W38 sync report.
+The existing Lesson Context UI consumes W37's server projection and named
+actions and proves completion/reload persistence, class-visible status,
+accepted grades, privacy, and disposable cleanup without changing the
+server/provider/API boundary.
+
+The sequential W37/W38 browser contour is now task-evidenced. FT-005, EP-004,
+and REQ-009 remain `planned` pending their feature-level aggregate/lifecycle
+owner decision; shared REQ-014 remains `planned`. No task, feature,
+requirement, dependency, promotion, Judge, Reviewer, or Planning Revision
+decision is created by this reconciliation.

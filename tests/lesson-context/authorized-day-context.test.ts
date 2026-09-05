@@ -19,6 +19,12 @@ describe('FT-003 authorized shared and personal day context', () => {
 				('session-student-one', 'student-one', NULL),
 				('session-student-two', 'student-two', NULL),
 				('session-parent-one', 'parent-one', NULL);
+			INSERT INTO account_profiles (account_id, full_name, registered_at) VALUES
+				('admin-own', 'Admin Own', '2026-01-01T00:00:00.000Z'),
+				('teacher-own', 'Teacher Own', '2026-01-01T00:00:00.000Z'),
+				('student-one', 'Student One', '2026-01-01T00:00:00.000Z'),
+				('student-two', 'Student Two', '2026-01-01T00:00:00.000Z'),
+				('parent-one', 'Parent One', '2026-01-01T00:00:00.000Z');
 			INSERT INTO centers (id, name) VALUES ('center-own', 'Own Center');
 			INSERT INTO center_memberships (center_id, account_id) VALUES
 				('center-own', 'admin-own'),

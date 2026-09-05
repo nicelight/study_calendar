@@ -93,6 +93,23 @@ and see reloaded Ledger-owned allocations, balance/advance, and audit history.
 
 ## Definition of done
 
-- Current Attempt 1 has honest claim-linked RED followed by claim-equivalent GREEN.
+- Attempt 1 has preserved historical claim-linked RED/GREEN, and current
+  Attempt 2 has honest retry RED followed by claim-equivalent GREEN.
 - All required gates run with reproducible evidence.
 - Handoff points to exact current-attempt evidence and routes to `/verify`.
+
+## Attempt 2 correction plan
+
+- Retry only the accepted `F-001` correction under the durable Judge
+  `SUPPORT` assessment; preserve the task card, accepted outcome, boundaries,
+  and Attempt 1 evidence.
+- Replace the fixed edit/cancel confirmation values at the browser adapter
+  boundary with a fresh per-form-submission idempotency value. Keep that value
+  for an exact native retry of the same payload and mint a new value when the
+  payload changes.
+- Extend only the existing disposable browser fixture/spec to two payments and
+  prove two distinct edits and two distinct cancellations by the same Admin,
+  with refreshed journal, allocation, balance, status, and audit assertions.
+- Run the claim-linked retry RED before the production correction, then the
+  claim-equivalent GREEN and every indexed gate. Do not run `/verify`,
+  `/red-verify`, `/mb-sync`, lifecycle closure, or dependent promotion here.

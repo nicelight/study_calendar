@@ -20,6 +20,11 @@ export type AccountProfile = {
 	registeredAt: string;
 };
 
+export type ParticipantLabel = {
+	accountId: string;
+	fullName: string;
+};
+
 export type CurrentActorProfile = AccountProfile & {
 	role: Role;
 };
@@ -367,6 +372,30 @@ export class IdentityAccessBoundary {
 			accountId: row.account_id,
 			fullName: row.full_name,
 			registeredAt: row.registered_at
+		}));
+	}
+
+	getParticipantLabels(accountIds: string[]): ParticipantLabel[] {
+		const requestedAccountIds = [
+			...new Set(accountIds.filter((accountId) => typeof accountId === 'string' && accountId))
+		];
+		if (requestedAccountIds.length === 0) {
+			return [];
+		}
+
+		const placeholders = requestedAccountIds.map(() => '?').join(', ');
+		const rows = this.database.sqlite
+			.prepare(`
+				SELECT account_id, full_name
+				FROM account_profiles
+				WHERE account_id IN (${placeholders})
+				ORDER BY account_id
+			`)
+			.all(...requestedAccountIds) as Array<Pick<AccountProfileRow, 'account_id' | 'full_name'>>;
+
+		return rows.map((row) => ({
+			accountId: row.account_id,
+			fullName: row.full_name
 		}));
 	}
 

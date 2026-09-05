@@ -15,12 +15,19 @@ import { actions as lessonContextActions } from '../../src/routes/lesson-context
 function paymentActionEvent(sessionToken: string, fields: Record<string, string>, href = '/lesson-context?classId=class-route-049&lessonId=lesson-route-049') {
 	const url = new URL(`https://calendar.test${href}`);
 	const formData = new FormData();
-	for (const [name, value] of Object.entries(fields)) formData.set(name, value);
+	for (const [name, value] of Object.entries(fields)) {
+		if (name !== 'action') formData.set(name, value);
+	}
 	return {
 		url,
 		request: new Request(url, { method: 'POST', body: formData }),
-		cookies: { get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined) }
+		cookies: { get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined) },
+		actionName: fields.action
 	} as any;
+}
+
+async function invoke(request: any) {
+	return lessonContextActions[request.actionName](request);
 }
 
 function financialSnapshot(root: CompositionRoot) {
@@ -91,7 +98,7 @@ describe('TASK-049 protected Lesson Context payment adapter', () => {
 	});
 
 	it('delegates authorized Admin/Teacher submissions and rejects every forged scope before mutation', async () => {
-		const adminResult = await lessonContextActions.default(
+		const adminResult = await invoke(
 			paymentActionEvent('session-admin-route-049', {
 				action: 'createPayment', studentAccountId: 'student-route-049', amount: '7.50', factualDate: '', confirmation: 'admin-route-049'
 			})
@@ -101,7 +108,7 @@ describe('TASK-049 protected Lesson Context payment adapter', () => {
 			created_by_account_id: 'admin-route-049', factual_date: '2026-08-10'
 		});
 
-		const teacherResult = await lessonContextActions.default(
+		const teacherResult = await invoke(
 			paymentActionEvent('session-teacher-assigned-049', {
 				action: 'createPayment', studentAccountId: 'student-route-049', amount: '2.50', factualDate: '2026-08-11', confirmation: 'teacher-route-049'
 			})
@@ -118,7 +125,7 @@ describe('TASK-049 protected Lesson Context payment adapter', () => {
 		];
 		for (const [sessionToken, fields, href] of deniedRequests) {
 			const before = financialSnapshot(root);
-			const result = await lessonContextActions.default(paymentActionEvent(sessionToken, fields, href));
+			const result = await invoke(paymentActionEvent(sessionToken, fields, href));
 			expect(result).toMatchObject({ status: expect.any(Number), data: { error: expect.stringMatching(/payment_forbidden|invalid_payment_request/) } });
 			expect(financialSnapshot(root)).toEqual(before);
 		}

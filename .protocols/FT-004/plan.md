@@ -62,12 +62,16 @@ database abstraction is introduced.
 
 The unmerged outcomes were reconciled into two execution-cohesive candidates:
 
-1. **Server-composed browser projection and authorized transport** — extend the
-   existing Lesson Context projection and route actions to expose shared and
-   personal Collaboration data and delegate all mutations through the existing
-   Collaboration public boundary. Server session, role, center/class/lesson/
-   student scope, target ownership, and membership/assignment state remain the
-   authority; client role, center, author, and scope fields are never trusted.
+1. **Atomic named-action transport and server-composed browser projection** —
+   migrate the existing Lesson Context default-posting forms to named SvelteKit
+   action targets in the same task that exports the named route actions, then
+   expose shared and personal Collaboration data and delegate all Collaboration
+   mutations through the existing public boundary. Server session, role,
+   center/class/lesson/student scope, target ownership, and
+   membership/assignment state remain the authority; client role, center,
+   author, and scope fields are never trusted. This prevents a broken
+   intermediate state because SvelteKit cannot keep `default` alongside named
+   actions.
 2. **Complete Lesson Context Collaboration UI and browser proof** — render
    field comments, own edit controls, author/time, five reactions and reactor
    participants, common feed, arbitrary-depth replies, branch tabs, shared and
@@ -75,27 +79,39 @@ The unmerged outcomes were reconciled into two execution-cohesive candidates:
    reload and hidden-branch reactivation with a disposable SQLite database and
    the project-owned runner, including cleanup on failure.
 
-The candidates are sequential: the UI cannot be verified against a stable
-projection/action contract before candidate 1, while the transport is
-independently reviewable without merging the independently testable visual
-surface. Both are T3 because they cross protected browser mutations and
-privacy/authority boundaries. Tentative waves are W35 and W36 after the
-existing W6 isolation cards and the accepted shared Lesson Context navigation
-outcome `TASK-039-T3-FT-003-W10`; IDs were assigned after this boundary
-confirmation.
+The candidates are sequential: candidate 1 owns the complete route transport
+and the minimal updates to existing form callers needed to make named actions
+safe, while candidate 2 adds the independently testable Collaboration visual
+surface on that stable transport. Both are T3 because they cross protected
+browser mutations and privacy/authority boundaries. Tentative waves are W35
+and W36 after the existing W6 isolation cards and the accepted shared Lesson
+Context navigation outcome `TASK-039-T3-FT-003-W10`; IDs were assigned after
+this boundary confirmation.
 
 ## Current executable queue
 
 | Wave | Task | Owns | Dependencies |
 |---|---|---|---|
-| W35 | [TASK-102-T3-FT-004-W35](../../.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json) | Server-composed shared/personal Collaboration projection, Identity & Access `getParticipantLabels`, and five named, server-authorized `/lesson-context` form actions; owns server-side AC-005/REQ-014 transport proof | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
-| W36 | [TASK-103-T3-FT-004-W36](../../.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json) | Complete Lesson Context Collaboration UI and shared/personal disposable Playwright proof; owns browser-visible AC-001..AC-005 and UI-side AC-005 privacy proof | `TASK-102-T3-FT-004-W35` |
+| W35 | [TASK-102-T3-FT-004-W35](../../.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json) | Historical failed browser transport attempt; identity, evidence, retry history, and `failed` status are preserved and it is not executable | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
+| W35 | [TASK-107-T3-FT-004-W35](../../.memory-bank/tasks/TASK-107-T3-FT-004-W35.task.json) | Fixed-semantics correction for current class/lesson scope on named `editFieldComment`, with fresh T3 forged-context RED/GREEN proof | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
+| W36 | [TASK-103-T3-FT-004-W36](../../.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json) | Complete Lesson Context Collaboration UI and shared/personal disposable Playwright proof on the corrected named transport; identity and `blocked` status remain preserved | `TASK-107-T3-FT-004-W35` |
 
-Both cards are new `planned` IDs. `TASK-016`, `TASK-017`, and `TASK-039` are
-completed dependencies; `TASK-012` is intentionally excluded. The first card
-must finish before the second starts. No production-only acceptance card is
-needed because the required browser surface and disposable verification are
-repository/runtime outcomes.
+`TASK-016`, `TASK-017`, and `TASK-039` are completed dependencies;
+`TASK-012` and failed `TASK-102` are intentionally excluded from executable
+dependency proof. `TASK-107` is the only new planned executable card from this
+reconciliation. `TASK-103` remains blocked and follows it in W36. No
+production-only acceptance card is needed because the required browser surface
+and disposable verification are repository/runtime outcomes.
+
+## Revision 2 Acceptance-Trace Reconciliation
+
+The prior browser queue mapped `TASK-102` to `FT-004-AC-005` and `TASK-103` to
+`FT-004-AC-001` through `FT-004-AC-005`; those cards retain their historical
+source locators and evidence. The fresh correction card `TASK-107` carries the
+same exact `FT-004-AC-005` locator plus the route-scope canonical proof
+obligation and owns only the fixed-semantics follow-up. No historical identity,
+evidence, accepted ownership, Foundation prerequisite, or Planning Revision is
+changed.
 
 ## Bounded shared-contract reconciliation — 2026-09-03
 
@@ -111,8 +127,9 @@ Spine, Foundation path, and Planning Revision `2` remain unchanged. The
 affected canonical consumers are `boundary-map.md`, `access-control.md`, and
 `collaboration-browser-surface.md`; only FT-004 required the bounded planning
 reconciliation. Existing task statuses, completed evidence, and protocols
-remain preserved. The mechanical review corrections
-are incorporated in TASK-102/TASK-103 and require a fresh
+remain preserved. The mechanical review corrections are preserved on
+TASK-102/TASK-103; the fixed-semantics follow-up is TASK-107. The queue
+requires a fresh
 `/review-tasks-plan FT-004`.
 
 ## Controlled re-tier rebuild and preserved history
@@ -196,9 +213,31 @@ TASK-012 historical `failed`/`superseded` disposition is recorded below.
 The historical feature result is `semantic-pass` only for the backend
 boundary/persistence scope proved by TASK-016 and TASK-017. The operator's
 browser-completion decision makes that evidence insufficient for feature
-closure: FT-004 is currently `active`/`planned` pending the two new browser
+closure: FT-004 is currently `active`/`planned` pending the correction and UI
 tasks and their independent functional and semantic evidence for AC-001..AC-005.
 TASK-012 remains explicitly terminal `failed`/`superseded`; its identity, tier,
 dependencies, Attempt 1/2 evidence, and retry history are preserved. No
 architecture, Planning Revision, REQ/epic lifecycle, old task status, or old
 evidence is changed by this reconciliation.
+
+## 2026-09-05 — TASK-102 Attempt 3 route-scope correction
+
+Fresh independent verification recorded one concrete fixed-semantics failure:
+the forged `lesson-final-one` route edited an owned comment stored under
+`lesson-final-two` because `editFieldComment` received only `sessionToken`,
+`commentId`, and `body`. The route/public-boundary correction is already
+covered by the accepted `#authorized-mutation-transport` contract and requires
+no new canonical spec or operator decision.
+
+The minimum new indexed identity is planned
+`TASK-107-T3-FT-004-W35`. It depends on the completed W6 Collaboration
+isolation cards and `TASK-039`, stays T3 because it repairs protected mutation
+and privacy semantics, and owns only current class/lesson scope validation plus
+focused isolated RED/GREEN evidence. It does not inherit TASK-102 evidence or
+replay its broader browser transport outcome.
+
+`TASK-102` remains `failed` with all Attempt 1–3 evidence and exhausted retry
+history. `TASK-103` remains `blocked` with its identity, scope, and evidence
+preserved; its dependency now points to TASK-107 so the W35 → W36 correction
+path is explicit without promoting or unblocking it. No execution, Attempt 4,
+verification, semantic review, Judge, scheduler closure, or sync was run.

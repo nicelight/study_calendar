@@ -1,7 +1,7 @@
 {
   "id": "TASK-106-T3-FT-005-W38",
   "title": "Render homework completion and grading UI with disposable browser proof",
-  "status": "planned",
+  "status": "done",
   "wave": "W38",
   "feature": "FT-005",
   "reqs": [
@@ -50,7 +50,46 @@
     "The existing Lesson Context page renders the homework item, class-visible completion statuses, the Student completion control, and the Admin/Teacher grade selector using only the server projection and named actions from TASK-105.",
     "A disposable Playwright flow creates the missing item as Admin or the assigned Teacher, marks it complete as Student, records α, β, γ, and F in permitted Teacher/Admin cases, reloads, and proves the completion status and grade persistence.",
     "The browser flow proves class-visible completion without shared grade leakage and proves corresponding student/linked-family grade access plus unrelated Student/unlinked-Parent denial through fresh server responses.",
-    "The disposable runner uses only tmp/ft-005-homework-grading-ui.db and exact sidecars, cleans up on success and failure, and never uses study-calendar.db."
+    "The disposable runner uses only tmp/ft-005-homework-grading-ui.db and exact sidecars, cleans up on success and failure, and never uses study-calendar.db.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 1",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-106-T3-FT-005-W38/verification.md",
+      "artifact": ".tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh disposable Playwright passed 1 test covering Admin creation, Student completion/reload persistence, class-visible completion, α/β/γ/F grade persistence, corresponding Student/linked-Parent visibility, unrelated Student/unlinked-Parent denial, and cleanup.",
+        "Fresh npm run check, npm run build, DATABASE_URL=:memory: npm run test (76 files / 260 tests), and git diff --check all exited 0."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 1",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-106-T3-FT-005-W38/red-verification.md",
+      "artifact": ".tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh independent T3 semantic verification found no material finding or operator question and confirmed the accepted FT-005 AC-001/AC-002 claim set.",
+        "The semantic protocol contains exactly one SEMANTIC_VERDICT: semantic-pass; the functional protocol contains exactly one VERDICT: PASS."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 1",
+      "cause": "Fresh functional PASS and required T3 semantic-pass satisfy TASK-106-T3-FT-005-W38; the same existing Judge returned JUDGE_ASSESSMENT: SUPPORT with stable_delivery.",
+      "evidence": [
+        ".protocols/TASK-106-T3-FT-005-W38/verification.md",
+        ".tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-106-T3-FT-005-W38/red-verification.md",
+        ".tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: stable_delivery; transition TASK-106 in_progress -> done, then run W38 /mb-sync and canonical boundary gates while preserving identity, scope, tier, dependencies, W38, and hard boundaries.",
+      "next_action": "/mb-sync at W38 boundary",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [
     ".memory-bank/tasks/plans/IMPL-FT-005.md",

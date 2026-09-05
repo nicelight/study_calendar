@@ -60,6 +60,27 @@
 		if (!payment) return '—';
 		return `${payment.amount} · ${payment.factualDate} · ${paymentStatusLabel(payment.status)}`;
 	}
+
+	function paymentSubmissionPayload(form: HTMLFormElement): string {
+		const payload = new URLSearchParams();
+		for (const [name, value] of new FormData(form).entries()) {
+			if (name !== 'confirmation') payload.append(name, String(value));
+		}
+		return payload.toString();
+	}
+
+	function preparePaymentSubmission(event: SubmitEvent): void {
+		const form = event.currentTarget;
+		if (!(form instanceof HTMLFormElement)) return;
+		const confirmation = form.elements.namedItem('confirmation');
+		if (!(confirmation instanceof HTMLInputElement)) return;
+
+		const payload = paymentSubmissionPayload(form);
+		if (!confirmation.value || form.dataset.confirmationPayload !== payload) {
+			confirmation.value = crypto.randomUUID();
+			form.dataset.confirmationPayload = payload;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -245,23 +266,23 @@
 
 							{#if entry.status === 'recorded'}
 								<div class="payment-actions">
-									<form method="POST" action="?/editPayment" class="payment-form" aria-label={`Изменить платёж ${entry.paymentId}`}>
+									<form method="POST" action="?/editPayment" class="payment-form" aria-label={`Изменить платёж ${entry.paymentId}`} onsubmit={preparePaymentSubmission}>
 										<h4>Изменить платёж</h4>
 										<input type="hidden" name="classId" value={entry.classId} />
 										<input type="hidden" name="studentAccountId" value={entry.studentAccountId} />
 										<input type="hidden" name="paymentId" value={entry.paymentId} />
 										<label><span>Сумма</span><input name="amount" type="number" min="0.01" step="any" required value={entry.amount} /></label>
 										<label><span>Фактическая дата</span><input name="factualDate" type="date" required value={entry.factualDate} /></label>
-										<label class="confirmation"><input name="confirmation" type="checkbox" value="confirm-edit" required /><span>Подтверждаю изменение платежа</span></label>
+										<label class="confirmation"><input name="confirmation" type="checkbox" value="" required /><span>Подтверждаю изменение платежа</span></label>
 										<button type="submit">Сохранить изменение</button>
 									</form>
-									<form method="POST" action="?/cancelPayment" class="payment-form cancel-form" aria-label={`Отменить платёж ${entry.paymentId}`}>
+									<form method="POST" action="?/cancelPayment" class="payment-form cancel-form" aria-label={`Отменить платёж ${entry.paymentId}`} onsubmit={preparePaymentSubmission}>
 										<h4>Отменить платёж</h4>
 										<input type="hidden" name="classId" value={entry.classId} />
 										<input type="hidden" name="studentAccountId" value={entry.studentAccountId} />
 										<input type="hidden" name="paymentId" value={entry.paymentId} />
 										<p>Платёж останется в журнале как отменённый, а распределение будет пересчитано.</p>
-										<label class="confirmation"><input name="confirmation" type="checkbox" value="confirm-cancel" required /><span>Подтверждаю отмену платежа</span></label>
+										<label class="confirmation"><input name="confirmation" type="checkbox" value="" required /><span>Подтверждаю отмену платежа</span></label>
 										<button type="submit">Отменить платёж</button>
 									</form>
 								</div>

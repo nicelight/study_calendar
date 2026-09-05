@@ -1,7 +1,7 @@
 {
   "id": "TASK-100-T3-FT-006-W33",
   "title": "Expose the Admin payment journal and correction controls",
-  "status": "in_progress",
+  "status": "done",
   "wave": "W33",
   "feature": "FT-006",
   "reqs": ["REQ-012", "REQ-013", "REQ-014", "REQ-015"],
@@ -27,7 +27,34 @@
     "The journal's edit and cancel actions require explicit confirmation and invoke only the existing Financial Ledger editPayment and cancelPayment commands; after success the authoritative allocation, balance, status, and before/after audit are reloaded.",
     "The journal contains no payment-creation form. Anonymous, Teacher, Student, Parent, wrong-center, forged class/student, and forged payment requests are rejected before mutation.",
     "Disposable Playwright proof uses the project-owned temporary database/server and removes only its exact temporary state.",
-    "Current independent functional verification passed; see .protocols/TASK-100-T3-FT-006-W33/verification.md and .tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-VERIFY-final-report-docs-01.md. Lifecycle remains scheduler-owned and unchanged."
+    "Current independent functional verification passed; see .protocols/TASK-100-T3-FT-006-W33/verification.md and .tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-VERIFY-final-report-docs-02.md. Lifecycle remains scheduler-owned and unchanged.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-100-T3-FT-006-W33/verification.md",
+      "artifact": ".tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh verifier-owned in-memory probe passed 1 file / 1 test and independently covered the complete journal, authoritative financial facts, explicit confirmation, edit/cancel reload, denial/non-mutation matrix, no creation path, and Financial Ledger ownership.",
+        "Fresh focused route suite passed 1 file / 3 tests; fresh disposable Playwright passed 1/1 with two payments, two edits, two cancellations, refreshed allocation/balance/status/audit, exact temporary cleanup, and unchanged real-database checksum during the run.",
+        "Fresh required check, full test, build, diff, Memory Bank lint, and strict doctor gates all exited 0; lint/doctor reported only existing advisory or unrelated warnings.",
+        "Attempt 1 RED/GREEN and reports remain preserved as historical/supporting evidence; no task status, lifecycle, scheduler, spec, dependency, or forbidden implementation path was changed."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-100-T3-FT-006-W33/red-verification.md",
+      "artifact": ".tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh independent T3 semantic verification found no admitted finding or operator question and confirmed the accepted FT-006-AC-010 / REQ-012 / REQ-013 / REQ-014 / REQ-015 claim set.",
+        "Current source review and disposable two-payment browser proof confirmed fresh per-submission confirmation values, exact retry reuse, authoritative Financial Ledger ownership, refreshed balances/allocations/audit, and unchanged hard boundaries.",
+        "Scheduler closure is authorized by the same-Judge JUDGE_ASSESSMENT: SUPPORT after functional PASS and semantic-pass; prior Attempt 1 semantic-fail remains preserved as historical evidence."
+      ],
+      "lifecycle_changed": false
+    }
   ],
   "docs": [".memory-bank/tasks/plans/IMPL-FT-006.md", ".protocols/FT-006/plan.md"],
   "evidence_required": [

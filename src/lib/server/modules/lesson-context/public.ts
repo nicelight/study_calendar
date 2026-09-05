@@ -6,7 +6,7 @@ import type {
 } from '$lib/server/modules/center-scheduling/public';
 import type {
 	CollaborationBoundary,
-	DayDiscussionView
+	CollaborationBrowserProjection
 } from '$lib/server/modules/collaboration/public';
 import type {
 	FinancialLedgerBoundary,
@@ -20,7 +20,11 @@ import type {
 } from '$lib/server/modules/identity-access/public';
 import type {
 	AttendanceView,
+	Grade,
 	GradeView,
+	HomeworkCompletionView,
+	HomeworkProgressView,
+	HomeworkView,
 	LearningProgressBoundary
 } from '$lib/server/modules/learning-progress/public';
 import type { SharedDatabase } from '$lib/server/platform/database';
@@ -44,9 +48,10 @@ export type PersonalDayProjection = {
 	studentAccountId: string;
 	progress: {
 		attendance: AttendanceView;
+		completion: HomeworkCompletionView | null;
 		grade: GradeView | null;
 	};
-	discussion: DayDiscussionView;
+	discussion: CollaborationBrowserProjection;
 	financial: {
 		balance: BalanceProjectionView;
 		paymentMarkers: PaymentMarkerView[];
@@ -56,21 +61,22 @@ export type PersonalDayProjection = {
 export type DayContextView = {
 	mode: 'shared' | 'personal';
 	lesson: {
-	lessonId: string;
-	centerId: string;
-	classId: string;
-	className: string;
-	lessonDate: string;
-	status: LessonView['status'];
+		lessonId: string;
+		centerId: string;
+		classId: string;
+		className: string;
+		lessonDate: string;
+		status: LessonView['status'];
 	};
 	navigation: {
-	date: string;
-	classId: string;
-	lessonId: string;
-	studentAccountId: string | null;
+		date: string;
+		classId: string;
+		lessonId: string;
+		studentAccountId: string | null;
 	};
 	material: SharedLessonMaterial;
-	discussion: DayDiscussionView;
+	homeworkProgress: HomeworkProgressView;
+	discussion: CollaborationBrowserProjection;
 	personal: PersonalDayProjection | null;
 };
 
@@ -122,11 +128,18 @@ type LessonContextCalendarPort = Pick<
 >;
 type LessonContextProgressPort = Pick<
 	LearningProgressBoundary,
-	'getAttendance' | 'getGradeForLesson' | 'getAttendancePercentage'
+	| 'getAttendance'
+	| 'getGradeForLesson'
+	| 'getAttendancePercentage'
+	| 'getHomeworkForLesson'
+	| 'getHomeworkProgressForLesson'
+	| 'createHomework'
+	| 'completeHomework'
+	| 'recordGrade'
 >;
 type LessonContextDiscussionPort = Pick<
 	CollaborationBoundary,
-	'getDayDiscussion'
+	'getBrowserProjection'
 >;
 type LessonContextFinancialPort = Pick<
 	FinancialLedgerBoundary,
@@ -208,17 +221,22 @@ export class LessonContextBoundary {
 	}
 
 	getDayContext(request: DayContextRequest): DayContextView {
-		const actor = this.identityAccess.resolveActor(request.sessionToken);
-		const scope = actor
-			? this.centerScheduling.getAuthorizedClassScope(request.sessionToken, request.classId)
-			: null;
-		const lesson = scope ? this.findLesson(scope, request.lessonId, request.sessionToken) : null;
-		if (!actor || !scope || !lesson) {
+		const { scope, lesson } = this.requireAuthorizedLesson(request);
+
+		const material = this.requireMaterial(lesson, scope);
+		if (
+			request.studentAccountId !== undefined &&
+			!scope.studentAccountIds.includes(request.studentAccountId)
+		) {
 			throw new Error('not-authorized');
 		}
 
-		const material = this.requireMaterial(lesson, scope);
-		const sharedDiscussion = this.collaboration.getDayDiscussion({
+		const homeworkProgress = this.learningProgress.getHomeworkProgressForLesson({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			lessonId: lesson.lessonId
+		});
+		const sharedDiscussion = this.collaboration.getBrowserProjection({
 			sessionToken: request.sessionToken,
 			classId: scope.classId,
 			lessonId: lesson.lessonId,
@@ -237,16 +255,13 @@ export class LessonContextBoundary {
 				lesson: this.toLessonContextView(lesson, scope),
 				navigation,
 				material,
+				homeworkProgress,
 				discussion: sharedDiscussion,
 				personal: null
 			};
 		}
 
-		if (!scope.studentAccountIds.includes(request.studentAccountId)) {
-			throw new Error('not-authorized');
-		}
-
-		const personalDiscussion = this.collaboration.getDayDiscussion({
+		const personalDiscussion = this.collaboration.getBrowserProjection({
 			sessionToken: request.sessionToken,
 			classId: scope.classId,
 			lessonId: lesson.lessonId,
@@ -263,6 +278,10 @@ export class LessonContextBoundary {
 					lessonId: lesson.lessonId,
 					studentAccountId: request.studentAccountId
 				}),
+				completion:
+					homeworkProgress.completions.find(
+					(completion) => completion.studentAccountId === request.studentAccountId
+				) ?? null,
 				grade: this.learningProgress.getGradeForLesson({
 					sessionToken: request.sessionToken,
 					classId: scope.classId,
@@ -292,9 +311,90 @@ export class LessonContextBoundary {
 			lesson: this.toLessonContextView(lesson, scope),
 			navigation,
 			material,
+			homeworkProgress,
 			discussion: personalDiscussion,
 			personal
 		};
+	}
+
+	createHomework(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+	}): HomeworkView {
+		const { actor, scope, lesson } = this.requireAuthorizedLesson(request);
+		if (actor.role !== 'admin' && actor.role !== 'teacher') {
+			throw new Error('not-authorized');
+		}
+
+		const existing = this.learningProgress.getHomeworkForLesson({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			lessonId: lesson.lessonId
+		});
+		if (existing) return existing;
+
+		const material = this.requireMaterial(lesson, scope);
+		return this.learningProgress.createHomework({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			title: material.homework
+		});
+	}
+
+	completeHomework(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+	}): HomeworkCompletionView {
+		const { actor, scope, lesson } = this.requireAuthorizedLesson(request);
+		if (actor.role !== 'student' || !scope.studentAccountIds.includes(actor.accountId)) {
+			throw new Error('not-authorized');
+		}
+
+		const homework = this.learningProgress.getHomeworkForLesson({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			lessonId: lesson.lessonId
+		});
+		if (!homework) throw new Error('homework-not-found');
+
+		return this.learningProgress.completeHomework({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			homeworkId: homework.homeworkId
+		});
+	}
+
+	recordGrade(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+		studentAccountId: string;
+		grade: Grade;
+	}): GradeView {
+		const { actor, scope, lesson } = this.requireAuthorizedLesson(request);
+		if (
+			(actor.role !== 'admin' && actor.role !== 'teacher') ||
+			!scope.studentAccountIds.includes(request.studentAccountId)
+		) {
+			throw new Error('not-authorized');
+		}
+
+		const homework = this.learningProgress.getHomeworkForLesson({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			lessonId: lesson.lessonId
+		});
+		if (!homework) throw new Error('homework-not-found');
+
+		return this.learningProgress.recordGrade({
+			sessionToken: request.sessionToken,
+			classId: scope.classId,
+			homeworkId: homework.homeworkId,
+			studentAccountId: request.studentAccountId,
+			grade: request.grade
+		});
 	}
 
 	getStudentPaymentStatuses(request: {
@@ -332,6 +432,39 @@ export class LessonContextBoundary {
 			lessonId: lesson.lessonId,
 			status: paidLessons.has(lesson.lessonId) ? 'paid' : 'unpaid'
 		}));
+	}
+
+	getPersonalPaymentMarkers(request: {
+		sessionToken?: string;
+		classId: string;
+	}): PaymentMarkerView[] {
+		const actor = this.identityAccess.resolveActor(request.sessionToken);
+		const scope = actor
+			? this.centerScheduling.getAuthorizedClassScope(request.sessionToken, request.classId)
+			: null;
+		if (
+			!actor ||
+			!scope ||
+			scope.accountId !== actor.accountId ||
+			(scope.role !== 'student' && scope.role !== 'parent')
+		) {
+			throw new Error('not-authorized');
+		}
+
+		const studentAccountIds = scope.role === 'student' ? [actor.accountId] : scope.studentAccountIds;
+		return studentAccountIds
+			.flatMap((studentAccountId) =>
+				this.financialLedger.getPaymentMarkers({
+					sessionToken: request.sessionToken,
+					classId: scope.classId,
+					studentAccountId
+				})
+			)
+			.sort((left, right) =>
+				`${left.markerDate}:${left.factualDate}:${left.paymentId}`.localeCompare(
+					`${right.markerDate}:${right.factualDate}:${right.paymentId}`
+				)
+			);
 	}
 
 	getStatisticsRegistry(request: {
@@ -435,6 +568,22 @@ export class LessonContextBoundary {
 			throw new Error('not-authorized');
 		}
 		return scoped;
+	}
+
+	private requireAuthorizedLesson(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+	}): { actor: ActorContext; scope: AuthorizedClassScope; lesson: LessonView } {
+		const actor = this.identityAccess.resolveActor(request.sessionToken);
+		const scope = actor
+			? this.centerScheduling.getAuthorizedClassScope(request.sessionToken, request.classId)
+			: null;
+		const lesson = scope ? this.findLesson(scope, request.lessonId, request.sessionToken) : null;
+		if (!actor || !scope || !lesson) {
+			throw new Error('not-authorized');
+		}
+		return { actor, scope, lesson };
 	}
 
 	private findLesson(

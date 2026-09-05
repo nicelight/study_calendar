@@ -1,7 +1,7 @@
 ---
-description: Bounded feature-doctor clarification for FT-004 participant-label ownership.
+description: Bounded feature-doctor clarification for FT-004 participant-label ownership and named-action task boundary.
 status: complete
-last_updated: 2026-09-03
+last_updated: 2026-09-05
 source_of_truth:
   - .protocols/FT-004/clarification.md
 ---
@@ -86,3 +86,62 @@ in the projection?
   `/feature-to-tasks FT-004`, then rerun `/review-tasks-plan FT-004`.
 - Mechanical review findings (gate paths, AC-005 locator, AC-005 artifact,
   anonymous/invalid-session proof) are task-card reconciliation items.
+
+## 2026-09-05 — Named-action task-boundary finding
+
+### Finding
+
+The fresh FT-004 planning review found that the canonical browser contract
+requires five named SvelteKit form actions, while the current route and all
+existing Lesson Context forms still use one `default` action. TASK-102 owns
+the named transport but forbids the existing page forms; TASK-103 owns the
+page but forbids the route server. Because SvelteKit 2.70.2 rejects exporting
+`default` together with named actions, the current W35/W36 split cannot reach a
+working intermediate state without violating a hard scope or breaking current
+forms.
+
+Evidence:
+
+- `.memory-bank/contracts/collaboration-browser-surface.md#authorized-mutation-transport`
+  requires `createFieldComment`, `editFieldComment`, `setReaction`,
+  `createMessage`, and `replyToMessage`.
+- `src/routes/lesson-context/+page.server.ts:169-179` exports only
+  `actions.default`.
+- `src/routes/lesson-context/+page.svelte:127-320` submits existing forms to
+  the default action without named targets.
+- `.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json` forbids the page, while
+  `.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json` forbids the server
+  route.
+
+### Repair options
+
+1. **Preserve the accepted named-action contract (recommended).** Reconcile
+   `/feature-to-tasks FT-004` so TASK-102 atomically migrates the existing
+   Lesson Context form callers and route transport to named actions, while
+   TASK-103 adds the Collaboration UI/forms on that stable transport. This
+   keeps the contract, avoids a broken intermediate route, and changes only
+   task ownership/hard scope.
+2. **Replace the named-action contract with one default dispatcher.** This
+   would require a canonical contract/spec redesign and a larger revalidation
+   surface; it is not selected because it contradicts the current accepted
+   browser contract.
+
+Decision: no product or canonical-contract decision remains unresolved. The
+accepted named-action contract is authoritative; the repair is a local task
+boundary/proof reconciliation owned by `/feature-to-tasks FT-004`.
+
+Design impact: none.
+
+Behavior spec impact: none.
+
+Immediate route: `/feature-to-tasks FT-004`, then fresh
+`/review-tasks-plan FT-004`. Do not execute TASK-102/TASK-103 before approval.
+
+### Resolution
+
+The accepted named-action contract is retained. `/feature-to-tasks FT-004`
+reconciled TASK-102 to own the existing default-form caller migration together
+with the named route actions and removed the page from its forbidden scope;
+TASK-103 now consumes that stable transport and remains the owner of the
+Collaboration UI and browser proof. No feature behavior, canonical contract,
+task identity, tier, dependency, lifecycle, or Planning Revision changed.

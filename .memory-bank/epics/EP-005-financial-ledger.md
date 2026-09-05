@@ -39,3 +39,28 @@ and the [W32 sync report](../../.tasks/TASK-099-T3-FT-006-W32/TASK-099-T3-FT-006
 This task-scoped sync preserves the existing EP-005 lifecycle and document
 status. FT-006 remains `planned` while TASK-100 and TASK-101 remain planned;
 no epic or feature lifecycle decision is inferred here.
+
+## W33 task evidence reconciliation — 2026-09-05
+
+The scheduler-decided `TASK-100-T3-FT-006-W33` closure adds current Attempt 2
+functional `PASS` and required T3 `semantic-pass` evidence for the FT-006
+Admin payment journal and correction controls under `FT-006-AC-010 / REQ-012 /
+REQ-013 / REQ-014 / REQ-015`. See the
+[FT-006 W33 closure route](../features/FT-006-financial-ledger.md#w33-admin-payment-journal-closure--2026-09-05)
+and the [W33 sync report](../../.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-MB-SYNC-final-report-docs-01.md).
+
+This task-scoped sync preserves the existing EP-005 lifecycle and document
+status. FT-006 remains `planned` while TASK-101 remains planned; no epic or
+feature lifecycle decision is inferred here.
+
+## W34 task evidence reconciliation — 2026-09-05
+
+The scheduler-decided `TASK-101-T3-FT-006-W34` closure adds current Attempt 1
+functional `PASS` and required T3 `semantic-pass` evidence for the FT-006
+personal Calendar payment-marker consumer under `FT-006-AC-011 / REQ-013 /
+REQ-014`. See the [FT-006 W34 closure route](../features/FT-006-financial-ledger.md#w34-personal-calendar-payment-marker-closure--2026-09-05)
+and the [W34 sync report](../../.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-MB-SYNC-final-report-docs-01.md).
+
+This task-scoped sync preserves the existing EP-005 lifecycle and document
+status. FT-006 remains `planned`; REQ-013 remains `verified`, shared REQ-014
+remains `planned`, and no epic or feature lifecycle decision is inferred here.

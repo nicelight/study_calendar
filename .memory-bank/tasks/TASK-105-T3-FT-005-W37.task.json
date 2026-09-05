@@ -1,7 +1,7 @@
 {
   "id": "TASK-105-T3-FT-005-W37",
   "title": "Expose homework completion and grading through Lesson Context transport",
-  "status": "ready",
+  "status": "done",
   "wave": "W37",
   "feature": "FT-005",
   "reqs": [
@@ -50,7 +50,50 @@
     "FT-005-AC-002: named /lesson-context actions let only Admin or the assigned Teacher record α, β, γ, or F for an authorized class student while keeping grades out of shared completion data.",
     "Create proof submits no authoritative homeworkId, proves the persisted ID is a non-empty server-generated opaque value rather than a forged client value, and proves independently created items in distinct authorized class fixtures receive distinct IDs; a repeat-create submission leaves the item count and existing ID unchanged.",
     "Focused provider and route tests prove invalid, forged, cross-center, unassigned, and wrong-role actions leave Learning Progress state unchanged; the route has no direct database writes and /api/lesson-context remains GET-only.",
-    "Every W37 probe uses isolated or disposable state, records state before and after rejected and repeated actions, safely reruns, closes its database/session resources, and removes only its exact temporary database and sidecars with a cleanup receipt."
+    "Every W37 probe uses isolated or disposable state, records state before and after rejected and repeated actions, safely reruns, closes its database/session resources, and removes only its exact temporary database and sidecars with a cleanup receipt.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-105-T3-FT-005-W37/verification.md",
+      "artifact": ".tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh verifier-owned isolated probe passed 1 file / 1 test and observed Student A completion in Student B's shared Lesson Context, grade-free shared completion data, corresponding personal grade visibility, private-target denial, provider selection, server-generated distinct IDs, repeat-action equality, accepted grades, and ambiguity fail-closed behavior.",
+        "The same disposable probe recorded state-before/state-after equality for forged, wrong-role, unassigned, cross-class, cross-center, and invalid-grade actions; source checks confirmed no route Learning Progress table access and no POST export in /api/lesson-context.",
+        "Fresh npm run check, npm run build, DATABASE_URL=:memory: npm run test (76 files / 260 tests), and git diff --check all exited 0. All probe fixtures used :memory: SQLite, closed resources in afterEach, and created no filesystem sidecars.",
+        "Attempt 1 RED, Attempt 2 executor GREEN/cleanup, and the prior semantic-fail report remain supporting evidence; no execute receipt was reused as independent proof and task lifecycle remains in_progress."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-105-T3-FT-005-W37/red-verification.md",
+      "artifact": ".tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh independent T3 semantic verification found no admitted finding or operator question and confirmed the accepted REQ-009 / REQ-014 / FT-005-AC-001 / FT-005-AC-002 claim set.",
+        "Attempt 2 source review and semantic checks confirmed Student A completion is visible to Student B through the authorized shared Lesson Context, while shared grades, personal targets, cross-class access, Learning Progress ownership, and GET-only API boundaries remain protected.",
+        "The semantic protocol contains exactly one SEMANTIC_VERDICT: semantic-pass; Attempt 1 semantic-fail remains preserved as historical correction evidence."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 2",
+      "cause": "Current Attempt 2 functional PASS and required T3 semantic-pass satisfy TASK-105-T3-FT-005-W37; the same existing Judge returned closure JUDGE_ASSESSMENT: SUPPORT.",
+      "evidence": [
+        ".tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-EXE-final-report-code-02.md",
+        ".protocols/TASK-105-T3-FT-005-W37/verification.md",
+        ".tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-VERIFY-final-report-docs-02.md",
+        ".protocols/TASK-105-T3-FT-005-W37/red-verification.md",
+        ".tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-RED-VERIFY-final-report-docs-02.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: progress; close TASK-105 and complete W37 boundary while preserving identity, scope, T3 tier, dependencies, W37, and hard boundaries.",
+      "next_action": "/mb-sync at W37 boundary",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [
     ".memory-bank/tasks/plans/IMPL-FT-005.md",

@@ -4,7 +4,7 @@ status: active
 type: feature
 id: FT-006
 lifecycle: planned
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 epic: EP-005
 requirements: [REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015]
 spec_design_status: complete
@@ -450,3 +450,50 @@ changed during execution.
 - [Attempt 1 RED](../../.tasks/TASK-100-T3-FT-006-W33/attempt-1-red.md)
 - [Attempt 1 GREEN](../../.tasks/TASK-100-T3-FT-006-W33/attempt-1-green.md)
 - [executor report](../../.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-EXE-final-report-code-01.md)
+
+## W33 Admin payment-journal closure — 2026-09-05
+
+`TASK-100-T3-FT-006-W33` is durably `done` from its current Attempt 2
+implementation, independent functional `PASS`, required T3 `semantic-pass`,
+and scheduler closure for `FT-006-AC-010 / REQ-012 / REQ-013 / REQ-014 /
+REQ-015`. The protected own-center Admin journal lists each payment once,
+shows authoritative financial facts and audit history, and permits only
+explicitly confirmed edit/cancel corrections with refreshed allocation,
+balance, status, and audit results. Attempt 1 and its semantic finding remain
+preserved as historical/supporting evidence only.
+
+- [TASK-100 card](../tasks/TASK-100-T3-FT-006-W33.task.json)
+- [Attempt 2 functional verification](../../.protocols/TASK-100-T3-FT-006-W33/verification.md)
+- [Attempt 2 functional report](../../.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-VERIFY-final-report-docs-02.md)
+- [Attempt 2 semantic verification](../../.protocols/TASK-100-T3-FT-006-W33/red-verification.md)
+- [Attempt 2 semantic report](../../.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-RED-VERIFY-final-report-docs-02.md)
+- [W33 boundary sync](../../.tasks/TASK-100-T3-FT-006-W33/TASK-100-T3-FT-006-W33-S-MB-SYNC-final-report-docs-01.md)
+
+`TASK-101-T3-FT-006-W34` remains `planned`, and FT-006 remains
+`lifecycle: planned`. This task-scoped reconciliation changes no feature,
+epic, or requirement lifecycle, dependency, promotion, task-plan approval,
+Planning Revision, or scheduler state.
+
+## W34 Personal calendar payment-marker closure — 2026-09-05
+
+`TASK-101-T3-FT-006-W34` is durably `done` from its current Attempt 1
+implementation, independent functional `PASS`, required T3 `semantic-pass`,
+and scheduler closure for `FT-006-AC-011 / REQ-013 / REQ-014`. The personal
+Calendar consumes the existing Financial Ledger marker projection through the
+server-authorized Lesson Context adapter: Student self and Parent-linked-child
+markers render on the provider-owned projected day with exact amount and
+factual date, while same-day markers remain separately discoverable and shared
+Admin/Teacher calendars omit them.
+
+- [TASK-101 card](../tasks/TASK-101-T3-FT-006-W34.task.json)
+- [Attempt 1 functional verification](../../.protocols/TASK-101-T3-FT-006-W34/verification.md)
+- [functional report](../../.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-VERIFY-final-report-docs-01.md)
+- [Attempt 1 semantic verification](../../.protocols/TASK-101-T3-FT-006-W34/red-verification.md)
+- [semantic report](../../.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-RED-VERIFY-final-report-docs-01.md)
+- [W34 boundary sync](../../.tasks/TASK-101-T3-FT-006-W34/TASK-101-T3-FT-006-W34-S-MB-SYNC-final-report-docs-01.md)
+
+REQ-013 retains its existing `verified` lifecycle; shared REQ-014 remains
+`planned` because its RTM mapping spans incomplete features. FT-006 remains
+`lifecycle: planned` pending its feature-level boundary. This task-scoped
+reconciliation changes no epic or feature lifecycle, dependency, promotion,
+task-plan approval, Planning Revision, or scheduler state.

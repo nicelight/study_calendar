@@ -10,7 +10,10 @@ import type { LessonContextBoundary } from '$lib/server/modules/lesson-context/p
 import type { PageServerLoad } from './$types';
 
 type CalendarPort = Pick<CenterSchedulingBoundary, 'getAuthorizedClassScope' | 'getLessons'>;
-type CalendarLessonContextPort = Pick<LessonContextBoundary, 'getStudentPaymentStatuses'>;
+type CalendarLessonContextPort = Pick<
+	LessonContextBoundary,
+	'getStudentPaymentStatuses' | 'getPersonalPaymentMarkers'
+>;
 
 export type CalendarPaymentStatus = 'paid' | 'unpaid';
 export type CalendarLessonView = LessonView & { paymentStatus?: CalendarPaymentStatus };
@@ -18,6 +21,7 @@ export type CalendarLessonView = LessonView & { paymentStatus?: CalendarPaymentS
 export type CalendarPageData = Pick<AuthorizedClassScope, 'classId' | 'className' | 'mode' | 'role'> & {
 	selectedDate: string;
 	lessons: CalendarLessonView[];
+	paymentMarkers: ReturnType<LessonContextBoundary['getPersonalPaymentMarkers']>;
 };
 
 export function _createCalendarPageLoad(
@@ -64,6 +68,13 @@ export function _createCalendarPageLoad(
 						}));
 					})()
 				: lessons;
+		const paymentMarkers =
+			scope.role === 'student' || scope.role === 'parent'
+				? lessonContext.getPersonalPaymentMarkers({
+						sessionToken,
+						classId: scope.classId
+				  })
+				: [];
 
 		const requestedDate = event.url.searchParams.get('date');
 		return {
@@ -72,7 +83,8 @@ export function _createCalendarPageLoad(
 			mode: scope.mode,
 			role: scope.role,
 			selectedDate: isIsoDate(requestedDate) ? requestedDate : DEFAULT_SELECTED_DATE,
-			lessons: calendarLessons
+			lessons: calendarLessons,
+			paymentMarkers
 		};
 	};
 }

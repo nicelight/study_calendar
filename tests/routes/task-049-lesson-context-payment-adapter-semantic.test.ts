@@ -20,12 +20,19 @@ function actionEvent(
 ) {
 	const url = new URL(`https://calendar.test/lesson-context?classId=${classId}&lessonId=${lessonId}`);
 	const formData = new FormData();
-	for (const [name, value] of fields) formData.append(name, value);
+	for (const [name, value] of fields) {
+		if (name !== 'action') formData.append(name, value);
+	}
 	return {
 		url,
 		request: new Request(url, { method: 'POST', body: formData }),
-		cookies: { get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined) }
+		cookies: { get: (name: string) => (name === 'foundation_session' ? sessionToken : undefined) },
+		actionName: fields.find(([name]) => name === 'action')?.[1]
 	} as any;
+}
+
+async function invoke(request: any) {
+	return lessonContextActions[request.actionName](request);
 }
 
 function financialCounts(root: CompositionRoot) {
@@ -87,7 +94,7 @@ describe('TASK-049 adversarial Lesson Context adapter semantics', () => {
 	});
 
 	it('keeps forged query/form scope outside the financial mutation boundary', async () => {
-		const accepted = await lessonContextActions.default(actionEvent(
+		const accepted = await invoke(actionEvent(
 			'session-admin-sem-049',
 			'class-sem-049',
 			'lesson-sem-049',
@@ -135,7 +142,7 @@ describe('TASK-049 adversarial Lesson Context adapter semantics', () => {
 
 		for (const request of deniedRequests) {
 			const before = financialCounts(root);
-			const result = await lessonContextActions.default(request);
+			const result = await invoke(request);
 			expect(result).toMatchObject({ status: expect.any(Number), data: { error: expect.stringMatching(/payment_forbidden|invalid_payment_request/) } });
 			expect(financialCounts(root)).toEqual(before);
 		}

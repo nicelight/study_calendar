@@ -20,6 +20,16 @@
 		return grouped;
 	}
 
+	function groupPaymentMarkersByDate(markers: CalendarPageData['paymentMarkers']) {
+		const grouped = new Map<string, CalendarPageData['paymentMarkers']>();
+		for (const marker of markers) {
+			const markersOnDate = grouped.get(marker.markerDate) ?? [];
+			markersOnDate.push(marker);
+			grouped.set(marker.markerDate, markersOnDate);
+		}
+		return grouped;
+	}
+
 	function paymentStatusForDate(date: string): 'paid' | 'unpaid' | undefined {
 		if (data.role !== 'student') return undefined;
 		const lessons = lessonsByDate.get(date) ?? [];
@@ -59,6 +69,7 @@
 	}
 
 	let lessonsByDate = $derived(groupLessonsByDate(data.lessons));
+	let paymentMarkersByDate = $derived(groupPaymentMarkersByDate(data.paymentMarkers));
 	let lessonWeekdays = $derived(
 		buildCalendarWeeks(data.selectedDate, [[], [], []]).map((week) =>
 			week.days.flatMap((day, dayIndex) => (lessonsByDate.has(day.date) ? [dayIndex] : []))
@@ -148,10 +159,25 @@
 											{paymentStatusForDate(day.date) === 'paid' ? 'Оплачено' : 'Не оплачено'}
 										</span>
 									{/if}
-								{:else}
-									<span class="day-state free-state">Свободно</span>
-								{/if}
-							</div>
+									{:else}
+										<span class="day-state free-state">Свободно</span>
+									{/if}
+									{#if paymentMarkersByDate.has(day.date)}
+										<div class="payment-markers" aria-label="Платежи">
+											<span class="payment-marker-title">Оплата</span>
+											{#each paymentMarkersByDate.get(day.date) ?? [] as marker (marker.paymentId)}
+												<div
+													class="payment-marker"
+													data-payment-marker-id={marker.paymentId}
+													data-payment-marker-date={marker.markerDate}
+												>
+													<span>{marker.amount}</span>
+													<time datetime={marker.factualDate}>Фактическая дата: {marker.factualDate}</time>
+												</div>
+											{/each}
+										</div>
+									{/if}
+								</div>
 						{/each}
 					</div>
 				</section>
@@ -194,6 +220,10 @@
 	.payment-state { font-size: .7rem; font-weight: 900; }
 	.paid-lesson .payment-state { color: #2f6b4f; }
 	.unpaid-lesson .payment-state { color: #a45b22; }
+	.payment-markers { display: grid; gap: .3rem; margin-top: auto; padding-top: .35rem; border-top: 1px solid #d9e0d8; }
+	.payment-marker-title { color: #3f765d; font-size: .68rem; font-weight: 900; }
+	.payment-marker { display: grid; gap: .1rem; padding: .35rem; border: 1px solid #b8c8ba; border-radius: .45rem; background: #eef5ec; color: #25332e; font-size: .68rem; font-weight: 800; }
+	.payment-marker time { color: #6d7a73; font-size: .62rem; font-weight: 700; }
 	.date-picker input:focus-visible, .day-link:focus-visible, .lesson-link:focus-visible { outline: 3px solid #b9684e; outline-offset: 3px; }
 	@media (max-width: 42rem) {
 		.calendar-header, .calendar-card-header { align-items: start; flex-direction: column; }

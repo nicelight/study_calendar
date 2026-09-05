@@ -1,7 +1,7 @@
 {
   "id": "TASK-102-T3-FT-004-W35",
-  "title": "Expose Collaboration through Lesson Context projection and authorized form actions",
-  "status": "planned",
+  "title": "Expose Collaboration through Lesson Context and atomically migrate named form actions",
+  "status": "failed",
   "wave": "W35",
   "feature": "FT-004",
   "reqs": [
@@ -20,6 +20,7 @@
     "src/lib/server/modules/collaboration/public.ts",
     "src/lib/server/modules/lesson-context/public.ts",
     "src/routes/lesson-context/+page.server.ts",
+    "src/routes/lesson-context/+page.svelte",
     "tests/collaboration/",
     "tests/lesson-context/",
     "tests/routes/",
@@ -61,10 +62,25 @@
   ],
   "verify": [
     "The existing Lesson Context server composition exposes the permitted shared and personal Collaboration projection for supported fields, comments, reactions, common feed, arbitrary-depth threads, and recent branch tabs without duplicating Collaboration persistence or ownership.",
-    "The existing /lesson-context route accepts only the named Collaboration form actions and delegates createFieldComment, editFieldComment, setReaction, createMessage, and replyToMessage through the existing Collaboration public boundary.",
+    "The existing /lesson-context route exports named SvelteKit actions for the existing homework, attendance, material, and payment forms plus the named Collaboration actions, and delegates createFieldComment, editFieldComment, setReaction, createMessage, and replyToMessage through the existing Collaboration public boundary.",
     "Identity & Access owns participant fullName and exposes only the named getParticipantLabels projection; Collaboration selects IDs only after authorizing the current discussion scope, and Lesson Context consumes labels without gaining authority.",
     "Every Collaboration mutation resolves actor, role, center, class, lesson, optional student scope, target, and ownership on the server before writing; forged role, center, author, class, lesson, student, target, or scope selectors and revoked membership/teacher assignment are denied without state change or unrelated-object disclosure.",
-    "Unauthenticated requests without foundation_session and requests with invalid or revoked session tokens are denied for the projection and every Collaboration action before any state change or protected existence is disclosed."
+    "Unauthenticated requests without foundation_session and requests with invalid or revoked session tokens are denied for the projection and every Collaboration action before any state change or protected existence is disclosed.",
+    {
+      "stage": "lifecycle",
+      "attempt": "Attempt 3",
+      "verdict": "failed",
+      "report": ".protocols/TASK-102-T3-FT-004-W35/verification.md",
+      "artifact": ".tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-03.md",
+      "evidence": [
+        "Fresh independent Attempt 3 functional verification is exactly VERDICT: FAIL at .protocols/TASK-102-T3-FT-004-W35/verification.md:133.",
+        "FAIL-03: the forged lesson-final-one route invoked editFieldComment against a comment stored under lesson-final-two; the action returned collaborationSuccess and changed the comment instead of returning 403 comment_forbidden. Evidence: .tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-03.md:19-35 and verifier-attempt-3-final-probe.test.ts:506-533.",
+        "The route supplies only sessionToken, commentId, and body at src/routes/lesson-context/+page.server.ts:498-514; Collaboration authorizes stored comment context at src/lib/server/modules/collaboration/public.ts:237-272, ignoring the current classId/lessonId route scope.",
+        "Unsuccessful attempts are 3/3 and same-task retry budget 2/2 is exhausted; no fourth attempt is permitted. Required native gates and disposable cleanup passed but do not override the task-scoped functional failure."
+      ],
+      "recommended_owner_action": "Create the required TASK-102 bug/follow-up routing through the normal FT-004 planning owner, keep direct dependents blocked, and resume only after reviewed replacement/follow-up readiness; do not run Attempt 4.",
+      "lifecycle_changed": true
+    }
   ],
   "docs": [
     ".memory-bank/tasks/plans/IMPL-FT-004.md",
@@ -77,13 +93,13 @@
     "Collaboration Browser Surface #server-composed-projection RED: the current Lesson Context projection omits field comments/reactions, full common/personal discussion content, or branch projection; GREEN: route/adapter integration tests over isolated SQLite prove permitted shared and personal sections include the required content, author/time and reactor display labels, common feed, arbitrary-depth descendants, and at most ten recent active branch tabs while hidden messages remain retained; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/.",
     "Collaboration Browser Surface #authorized-mutation-transport RED: a Collaboration action trusts client authority fields, mutates before scope/target validation, exposes forged class/lesson/student/scope data, or bypasses Collaboration ownership; GREEN: route/action integration tests prove all five named actions use the session actor and server-resolved scope, deny forged and revoked contexts before mutation, preserve state snapshots, and delegate writes only to the existing Collaboration public boundary; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/."
   ],
-  "purpose": "Close the missing server-composed browser projection and mutation transport while reusing the existing Collaboration public backend.",
-  "success_outcome": "The existing Lesson Context route can server-render complete permitted shared/personal Collaboration data and accept server-authorized named form actions for every Collaboration mutation without trusting client authority or changing the existing API/schema boundary.",
+  "purpose": "Close the missing server-composed browser projection and mutation transport, including the atomic migration of existing Lesson Context form callers from the default action to named SvelteKit actions, while reusing the existing Collaboration public backend.",
+  "success_outcome": "The existing Lesson Context route can server-render complete permitted shared/personal Collaboration data, export named actions for all existing and Collaboration mutations, and accept server-authorized named form actions without trusting client authority or changing the existing API/schema boundary.",
   "anti_goals": [
     "Do not duplicate comments, reactions, messages, replies, branch projection, or authorization logic outside the existing Collaboration public boundary.",
     "Do not add a new top-level route, /api/lesson-context mutation endpoint, frontend state layer, SQLite table, or persistence abstraction.",
     "Do not trust client role, centerId, authorAccountId, student scope, or other authority fields; route and action input remains untrusted selectors/content only.",
-    "Do not implement the Svelte page controls, claim browser AC closure, or include unrelated FT-002, FT-005, FT-006, or payment E2E work."
+    "Do not implement the Collaboration Svelte page controls or claim browser AC closure; update only existing form targets as required by the named-action migration, and exclude unrelated FT-002, FT-005, FT-006, or payment E2E work."
   ],
   "source_artifacts": [
     ".memory-bank/contracts/collaboration-browser-surface.md#server-composed-projection",
@@ -127,7 +143,7 @@
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
   "constraints": [
-    "Use the existing Lesson Context composition and SvelteKit form-action transport; keep /api/lesson-context GET-only.",
+    "Use the existing Lesson Context composition and migrate its current default-posting forms plus Collaboration mutations to named SvelteKit form actions in one atomic route-transport outcome; keep /api/lesson-context GET-only.",
     "Keep Collaboration as the sole semantic writer and reuse its existing comments, reactions, messages, replies, discussion projections, and SQLite tables.",
     "Resolve authority from the foundation session and accepted server-side Identity & Access and Calendar/Membership boundaries; client identifiers are untrusted selectors.",
     "Use in-memory or disposable SQLite fixtures for route/action proof and the project runner with tmp/ft-004-collaboration-transport.db for browser transport smoke; never use study-calendar.db.",
@@ -137,17 +153,18 @@
     "All five named Collaboration actions deny before mutation when the actor, role, center, class, lesson, student scope, target, parent/root, or ownership is not server-authorized.",
     "Shared and personal projection sections are isolated by the server-resolved scope; personal data is never accepted from an authority field supplied by the browser.",
     "Attribution, last-change time, five standard reactions/reactor visibility, arbitrary reply depth, common-feed inclusion, ten-tab projection, hidden-message retention, and existing Collaboration persistence semantics remain owned by Collaboration.",
-    "Denied access after membership removal or teacher-assignment removal takes effect on the next server check without deleting authored rows or revealing unrelated existence."
+    "Denied access after membership removal or teacher-assignment removal takes effect on the next server check without deleting authored rows or revealing unrelated existence.",
+    "Existing homework, attendance, material, and payment forms continue to work through named action targets; no default action remains alongside the named action set."
   ],
   "verification_targets": [
     "FT-004-AC-005",
     "Claim-linked RED/GREEN unit/integration tests for the Lesson Context projection and route actions, with an isolated SQLite database, exact state-before/state-after assertions, explicit no-cookie and invalid/revoked-session cases, and actor/role/center/class/lesson/student/target forgery matrix for Admin, assigned Teacher, Student, and linked Parent.",
     "A disposable Playwright browser transport scenario visits both shared and permitted personal /lesson-context contexts, submits the named form actions through the browser session, checks server-rendered projection/denial behavior including no-cookie and invalid/revoked-cookie requests, verifies reload persistence, and uses scripts/run-disposable-e2e.mjs so cleanup removes only the exact temporary database and WAL/journal siblings.",
-    "Source and route review proves no direct database access from the route, no client authority trust, no mutation API, no new Collaboration backend abstraction, and no change to unrelated feature surfaces."
+    "Source and route review proves no direct database access from the route, no client authority trust, no mutation API, no new Collaboration backend abstraction, and no change to unrelated feature surfaces.",
+    "Named-action migration RED: the route exports only actions.default or an existing form still posts to the default action; GREEN: the route exports the existing and five Collaboration named actions, every existing Lesson Context form targets a named action, and all existing form behaviors remain covered by the disposable route/action gate; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/verification.md."
   ],
   "runtime_context": {
     "forbidden_scope": [
-      "src/routes/lesson-context/+page.svelte",
       "src/routes/api/lesson-context/",
       "src/lib/server/platform/database.ts",
       "src/lib/server/modules/financial-ledger/",

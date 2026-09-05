@@ -1,0 +1,199 @@
+{
+  "id": "TASK-107-T3-FT-004-W35",
+  "title": "Enforce current Lesson Context scope for Collaboration comment edits",
+  "status": "done",
+  "wave": "W35",
+  "feature": "FT-004",
+  "reqs": [
+    "REQ-006",
+    "REQ-007",
+    "REQ-014"
+  ],
+  "depends_on": [
+    "TASK-016-T3-FT-004-W6",
+    "TASK-017-T3-FT-004-W6",
+    "TASK-039-T3-FT-003-W10"
+  ],
+  "touched_files": [
+    "src/routes/lesson-context/+page.server.ts",
+    "src/lib/server/modules/collaboration/public.ts",
+    "tests/routes/task-102-lesson-context-transport.integration.test.ts",
+    "tests/collaboration/comments-reactions.test.ts"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "check",
+      "command": "npm run check",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "test",
+      "command": "npm run test",
+      "required": true
+    },
+    {
+      "name": "diff",
+      "command": "git diff --check",
+      "required": true
+    },
+    {
+      "name": "mb-lint",
+      "command": "node .memory-bank/scripts/mb-lint.mjs",
+      "required": true
+    },
+    {
+      "name": "strict-doctor",
+      "command": "node .memory-bank/scripts/mb-doctor.mjs --strict",
+      "required": true
+    }
+  ],
+  "verify": [
+    "The named editFieldComment action passes the server-resolved current classId and lessonId into the existing Collaboration public boundary, and the owner rejects a comment whose stored class/lesson does not equal that current route scope before any write.",
+    "A forged lesson-final-one route targeting an account-owned comment stored under lesson-final-two returns 403 comment_forbidden, leaves the stored body and last-change timestamp unchanged, and does not disclose unrelated object existence.",
+    "An authorized same-class/same-lesson edit of the current account's comment still succeeds through the existing route action and Collaboration writer.",
+    "Source and runtime review prove that the route owns no direct Collaboration persistence, no alternate writer or mutation API is introduced, and the accepted Collaboration ownership and Lesson Context adapter boundary remain unchanged.",
+    "The focused isolated route/public-boundary proof is safe to rerun, records state before and after rejected and permitted edits, and never targets study-calendar.db.",
+    {
+      "stage": "functional",
+      "attempt": "Attempt 2",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-107-T3-FT-004-W35/verification.md",
+      "artifact": ".tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh independent verifier-owned route/public-boundary probe passed 1 file / 2 tests with class, lesson, selected-student scope, denial-before-mutation, same-context success, state snapshots, and cleanup.",
+        "Fresh verifier rerun recorded npm run check, npm run build, npm run test (78 files / 268 tests), git diff --check, mb-lint, and strict doctor PASS."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic",
+      "attempt": "Attempt 2",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-107-T3-FT-004-W35/red-verification.md",
+      "artifact": ".tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-01.md",
+      "evidence": [
+        "Fresh T3 semantic review passed 2/2 isolated tests and denied forged cross-lesson, cross-class, wrong-student, personal-to-shared-route, and other-author edits before mutation while preserving same-context success.",
+        "The semantic protocol contains exactly one SEMANTIC_VERDICT: semantic-pass and no material finding or operator question."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 2",
+      "cause": "Fresh functional PASS, required T3 semantic-pass, all native gates, and explicit same-Judge JUDGE_ASSESSMENT: SUPPORT satisfy TASK-107-T3-FT-004-W35 closure.",
+      "evidence": [
+        ".protocols/TASK-107-T3-FT-004-W35/verification.md",
+        ".tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-VERIFY-final-report-docs-02.md",
+        ".protocols/TASK-107-T3-FT-004-W35/red-verification.md",
+        ".tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; trajectory_signal: stable_delivery; fresh functional PASS, T3 semantic-pass, all gates durable, no findings/questions; transition TASK-107 in_progress -> done, then W35 /mb-sync and boundary gates.",
+      "next_action": "/mb-sync at W35 boundary",
+      "lifecycle_changed": true
+    }
+  ],
+  "docs": [
+    ".memory-bank/tasks/plans/IMPL-FT-004.md",
+    ".protocols/FT-004/plan.md",
+    ".memory-bank/contracts/collaboration-browser-surface.md",
+    ".memory-bank/bugs/TASK-102-lesson-context-route-scope.md"
+  ],
+  "evidence_required": [
+    "FT-004-AC-005 / REQ-014 / Collaboration Browser Surface #authorized-mutation-transport RED: the current route can edit an owned comment stored under another lesson or class; GREEN: a fresh isolated route/action probe returns 403 comment_forbidden before mutation for the forged route and records unchanged comment body, last-change timestamp, and related state; artifact: .tasks/TASK-107-T3-FT-004-W35/ and .protocols/TASK-107-T3-FT-004-W35/verification.md.",
+    "FT-004-AC-005 / REQ-014 / Access Control #authority-and-scope RED: stored target context alone authorizes an edit despite a forged current route scope; GREEN: the authenticated actor, server-resolved current class/lesson, stored target context, ownership, and action are all checked at the public write boundary, with same-context success and cross-context denial; artifact: .tasks/TASK-107-T3-FT-004-W35/ and .protocols/TASK-107-T3-FT-004-W35/.",
+    "Day Discussion Query Boundary and Composition and Request Data Flow RED: the route or a second module becomes a discussion writer or performs direct persistence; GREEN: the route supplies current scope and delegates the single edit to Collaboration, which remains the sole writer, with source review and native project gates recorded in the task artifacts; artifact: .tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-VERIFY-final-report-docs-01.md and .protocols/TASK-107-T3-FT-004-W35/verification.md."
+  ],
+  "purpose": "Repair the fixed-semantics route-scope defect left by failed TASK-102 Attempt 3 without replaying the completed projection, named-action, or UI outcomes.",
+  "success_outcome": "The existing named editFieldComment action enforces the current server-resolved Lesson Context class/lesson scope at the Collaboration write boundary: forged cross-lesson or cross-class edits fail before mutation, while an authorized same-context owner edit remains functional.",
+  "anti_goals": [
+    "Do not reopen, mutate, or inherit functional or semantic evidence from TASK-102-T3-FT-004-W35; its failed identity and Attempt 1-3 evidence remain historical.",
+    "Do not add a new top-level route, /api/lesson-context mutation endpoint, frontend state layer, SQLite schema, or persistence abstraction.",
+    "Do not trust client role, author, center, class, lesson, student, scope, or target claims as authority; the route context must be server-resolved and the Collaboration boundary must revalidate the stored target relationship.",
+    "Do not implement the Collaboration UI owned by TASK-103 or change unrelated FT-002, FT-005, FT-006, Identity & Access, Center & Scheduling, or Learning Progress behavior."
+  ],
+  "source_artifacts": [
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-005",
+    ".memory-bank/contracts/collaboration-browser-surface.md#authorized-mutation-transport",
+    ".memory-bank/contracts/collaboration-browser-surface.md#ownership-and-route",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#collaboration",
+    ".memory-bank/bugs/TASK-102-lesson-context-route-scope.md",
+    ".protocols/TASK-102-T3-FT-004-W35/verification.md",
+    ".tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-03.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/features/FT-004-day-collaboration.md#FT-004-AC-005",
+    ".memory-bank/contracts/collaboration-browser-surface.md#authorized-mutation-transport",
+    ".memory-bank/contracts/collaboration-browser-surface.md#ownership-and-route",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary",
+    ".memory-bank/contracts/boundary-map.md#calendar-and-membership-query-boundary",
+    ".memory-bank/contracts/access-control.md#authority-and-scope",
+    ".memory-bank/contracts/access-control.md#data-minimization-and-failure-behavior",
+    ".memory-bank/architecture/system-architecture.md#composition-and-request-data-flow",
+    ".memory-bank/domains/core-domain.md#persistence-and-transaction-rules",
+    ".memory-bank/states/lifecycle-map.md#collaboration",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/testing/strategy.md#disposable-browser-proof",
+    ".memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/workflows/tier-policy.md#tier-obligations"
+  ],
+  "constraints": [
+    "Keep the existing /lesson-context route and named editFieldComment action; pass only the already server-resolved current class/lesson context needed for target-scope validation.",
+    "Keep Collaboration as the sole semantic writer and reuse its existing comment persistence and authorization path; no schema or API boundary change is planned.",
+    "Reject forged current class/lesson scope before the UPDATE and preserve state-before/state-after equality for the denied target.",
+    "Use an isolated or disposable SQLite fixture for the route/public-boundary proof and never target study-calendar.db.",
+    "This is a fresh follow-up identity after TASK-102 exhausted its retry budget; do not run Attempt 4 or reuse TASK-102 evidence as current proof."
+  ],
+  "invariants": [
+    "The current server-resolved classId and lessonId are part of the edit authorization decision.",
+    "A comment stored under another class or lesson is denied with the existing route failure envelope before body or timestamp mutation.",
+    "An authorized owner editing a comment in the current class/lesson remains permitted.",
+    "Collaboration remains the only writer for field comments; Lesson Context remains a transport/composition adapter.",
+    "Denied cross-context edits do not reveal unrelated object existence and leave all relevant disposable state unchanged."
+  ],
+  "verification_targets": [
+    "FT-004-AC-005 / REQ-014: forged current route class/lesson selectors cannot edit an otherwise owned comment from another lesson or class; the denied request is non-mutating and does not disclose unrelated existence.",
+    "FT-004-AC-005 / REQ-014 / .memory-bank/contracts/collaboration-browser-surface.md#authorized-mutation-transport: the named route action supplies current server-resolved context and the Collaboration public boundary validates target scope, actor, and ownership before writing.",
+    ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary and .memory-bank/architecture/system-architecture.md#composition-and-request-data-flow: the route delegates the edit to Collaboration without direct persistence or a second writer.",
+    "Claim-linked RED/GREEN isolated integration proof covers forged cross-lesson, forged cross-class, same-context owner success, state-before/state-after equality, safe rerun, cleanup, and all applicable native gates."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "src/routes/lesson-context/+page.svelte",
+      "src/routes/api/lesson-context/",
+      "src/lib/server/modules/identity-access/",
+      "src/lib/server/modules/center-scheduling/",
+      "src/lib/server/modules/financial-ledger/",
+      "src/lib/server/modules/learning-progress/",
+      "src/lib/server/platform/database.ts",
+      "study-calendar.db",
+      ".memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json",
+      ".memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json",
+      ".memory-bank/tasks/TASK-012-T2-FT-004-W6.task.json",
+      ".memory-bank/tasks/TASK-016-T3-FT-004-W6.task.json",
+      ".memory-bank/tasks/TASK-017-T3-FT-004-W6.task.json"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-redesign if enforcing current route scope requires a new shared contract, new persistence schema, new mutation API, or a change to accepted Collaboration ownership.",
+      "Stop if the edit can be authorized only by trusting client authority fields or if the forged cross-context denial cannot be shown before mutation with state snapshots.",
+      "Stop if focused proof requires study-calendar.db, an existing server, destructive shared-state reset, or cleanup that is not failure-safe."
+    ]
+  }
+}

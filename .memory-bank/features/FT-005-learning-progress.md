@@ -233,3 +233,72 @@ consequence owner.
 The accepted feature and EP-004 lifecycle values remain unchanged by this
 sync; the fresh task closure adds evidence and does not infer a new product
 promotion.
+
+## W37 server transport closure — 2026-09-05
+
+`TASK-105-T3-FT-005-W37` is durably `done` from its current Attempt 2
+implementation, independent functional `PASS`, required T3 `semantic-pass`,
+and scheduler closure for `FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`.
+The Lesson Context server transport now composes the provider-owned
+class-scoped homework projection and delegates named create, completion, and
+grading actions through Learning Progress. The evidence covers zero/one/
+multiple selection with fail-closed ambiguity, class-visible completion
+without shared grades, private grade projection, server-generated opaque IDs,
+repeat-create idempotency, accepted grades, deny-before-write behavior, and
+the unchanged GET-only API boundary.
+
+- [TASK-105 card](../tasks/TASK-105-T3-FT-005-W37.task.json)
+- [Attempt 2 functional verification](../../.protocols/TASK-105-T3-FT-005-W37/verification.md)
+- [functional report](../../.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-VERIFY-final-report-docs-02.md)
+- [Attempt 2 semantic verification](../../.protocols/TASK-105-T3-FT-005-W37/red-verification.md)
+- [semantic report](../../.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-RED-VERIFY-final-report-docs-02.md)
+- [W37 boundary sync](../../.tasks/TASK-105-T3-FT-005-W37/TASK-105-T3-FT-005-W37-S-MB-SYNC-final-report-docs-01.md)
+
+Attempt 1 and its semantic finding remain preserved as historical correction
+basis only. `TASK-106-T3-FT-005-W38` remains `planned` pending its own UI and
+browser proof. FT-005 and EP-004 remain `lifecycle: planned`; REQ-009 and
+shared REQ-014 remain `planned`. This task-scoped reconciliation changes no
+feature, epic, or requirement lifecycle, dependency, promotion, task-plan
+approval, Planning Revision, or scheduler state.
+
+## W38 browser UI closure — 2026-09-05
+
+`TASK-106-T3-FT-005-W38` is durably `done` from its current Attempt 1 UI
+implementation, independent functional `PASS`, required T3 `semantic-pass`,
+and scheduler closure for `FT-005-AC-001 / FT-005-AC-002 / REQ-009 / REQ-014`.
+The existing Lesson Context page now consumes W37's server projection and
+named actions for Student completion, class-visible statuses, and Admin/
+assigned-Teacher grading. The fresh disposable Playwright proof covers Admin
+creation, completion/reload persistence, `α`/`β`/`γ`/`F`, corresponding
+Student/linked-Parent visibility, unrelated Student/unlinked-Parent denial,
+state preservation, and exact disposable cleanup.
+
+- [TASK-106 card](../tasks/TASK-106-T3-FT-005-W38.task.json)
+- [functional evidence](../../.protocols/TASK-106-T3-FT-005-W38/verification.md)
+- [functional report](../../.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-VERIFY-final-report-docs-01.md)
+- [semantic evidence](../../.protocols/TASK-106-T3-FT-005-W38/red-verification.md)
+- [semantic report](../../.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-RED-VERIFY-final-report-docs-01.md)
+- [W38 boundary sync](../../.tasks/TASK-106-T3-FT-005-W38/TASK-106-T3-FT-005-W38-S-MB-SYNC-final-report-docs-01.md)
+
+The W37/W38 task contour is now evidenced, but this task-level sync does not
+make the feature-level aggregate lifecycle decision. FT-005 and EP-004 remain
+`lifecycle: planned`; REQ-009 and shared REQ-014 remain `planned`. Task
+identity, dependencies, Planning Revision `2`, accepted Learning Progress
+ownership, promotion, dependent state, and scheduler/Judge state are unchanged.
+
+## Semantic Verification
+
+- Fresh feature-level `/red-verify --feature FT-005` found no reportable
+  material semantic break or operator-owned question across AC-001..005,
+  REQ-009/010/014/015, the current W5/W6/W8/W22/W37/W38 task evidence, direct
+  canonical specs, implementation routes, and sync routes.
+- Independent adversarial coverage included server-side role/center/class/
+  student/family scope, Learning Progress ownership, homework selection and
+  idempotency, grade privacy, attendance/financial state continuity, denied
+  state preservation, direct route/API bypass checks, fresh targeted Vitest,
+  and disposable Playwright cleanup. The two required fresh `Codex Luna`
+  `xhigh` co-reviews were launched with separate focuses; no usable candidate
+  payload arrived in their bounded window.
+- [Feature-level semantic verification report](../../.tasks/FT-005/FT-005-S-RED-VERIFY-final-report-docs-01.md)
+
+SEMANTIC_VERDICT: semantic-pass

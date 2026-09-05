@@ -14,6 +14,24 @@ and commands.
 - attempt: 1
 - started: 2026-09-04T20:47:15+05:00
 
+## Execution Attempt — 2
+- attempt: 2
+- started: 2026-09-05T00:49:24+05:00
+- retry basis: durable Judge `JUDGE_ASSESSMENT: SUPPORT` for the exact
+  existing target, after Attempt 1's independent T3 semantic-fail `F-001`;
+  retry `1/2` is bounded to the same task and remains scheduler-owned.
+- correction basis: the journal's fixed `confirm-edit` and `confirm-cancel`
+  values exhaust the Financial Ledger idempotency key after the first
+  correction of each operation type. Generate a fresh confirmation for each
+  new edit/cancel payload and reuse it only when the payload is an exact
+  retry; add a two-payment disposable browser regression.
+- preserved basis: Attempt 1 RED/GREEN, functional PASS, semantic-fail, and
+  reports remain historical/supporting-only and are not overwritten.
+- preflight safety: this Attempt 2 block is recorded before the retry probe,
+  test-surface change, or production write. Task identity, outcome, scope,
+  tier, dependencies, direct specs, hard boundary, forbidden scope, and
+  FT-000 read-only status remain unchanged.
+
 ## Inputs
 
 - Task/index: `.memory-bank/tasks/TASK-100-T3-FT-006-W33.task.json`, `.memory-bank/tasks/index.json`
@@ -65,5 +83,7 @@ and commands.
 ## Next session
 
 - Start by reading: `context.md`, `plan.md`, `progress.md`, and `handoff.md`.
-- Attempt 1 is complete. Next action is fresh `/verify
-  TASK-100-T3-FT-006-W33`; do not replay the RED or implementation.
+- Attempt 1 is preserved as historical/supporting-only. Attempt 2 owns only
+  the accepted confirmation/idempotency correction and its two-payment browser
+  regression; next action after the executor handoff is fresh `/verify
+  TASK-100-T3-FT-006-W33`.

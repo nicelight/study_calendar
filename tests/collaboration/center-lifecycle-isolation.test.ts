@@ -139,6 +139,8 @@ describe('Collaboration center lifecycle isolation', () => {
 		expect(() =>
 			root.collaboration.editFieldComment({
 				sessionToken: 'session-admin-shared',
+				classId: 'class-reused',
+				lessonId,
 				commentId: 'comment-center-a',
 				body: 'cross-lifecycle edit'
 			})

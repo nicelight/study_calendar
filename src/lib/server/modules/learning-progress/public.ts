@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import {
 	CenterSchedulingBoundary,
 	type AuthorizedClassScope,
@@ -27,6 +28,12 @@ export type HomeworkCompletionView = {
 	studentAccountId: string;
 	completed: boolean;
 	completedAt: string | null;
+};
+
+export type HomeworkProgressView = {
+	homework: HomeworkView | null;
+	completions: HomeworkCompletionView[];
+	grades: GradeView[];
 };
 
 export type GradeView = {
@@ -347,7 +354,7 @@ export class LearningProgressBoundary {
 	createHomework(request: {
 		sessionToken?: string;
 		classId: string;
-		homeworkId: string;
+		homeworkId?: string;
 		title: string;
 	}): HomeworkView {
 		return this.database.transaction(() => {
@@ -360,6 +367,7 @@ export class LearningProgressBoundary {
 				throw new Error('invalid-homework-title');
 			}
 
+			const homeworkId = request.homeworkId ?? randomBytes(16).toString('base64url');
 			const createdAt = this.now().toISOString();
 			this.database.sqlite
 				.prepare(
@@ -368,7 +376,7 @@ export class LearningProgressBoundary {
 					) VALUES (?, ?, ?, ?, ?, ?)`
 				)
 				.run(
-					request.homeworkId,
+					homeworkId,
 					scope.centerId,
 					scope.classId,
 					title,
@@ -376,7 +384,7 @@ export class LearningProgressBoundary {
 					createdAt
 				);
 
-			return this.requireHomeworkView(request.homeworkId, scope.classId);
+			return this.requireHomeworkView(homeworkId, scope.classId);
 		});
 	}
 
@@ -434,6 +442,43 @@ export class LearningProgressBoundary {
 			.all(request.homeworkId, scope.classId) as CompletionRow[];
 
 		return rows.map((row) => this.toCompletionView(row));
+	}
+
+	getHomeworkForLesson(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+	}): HomeworkView | null {
+		const { scope } = this.requireClassScope(request.sessionToken, request.classId);
+		const lesson = this.requireLesson(request.sessionToken, scope, request.lessonId);
+		const homework = this.findHomeworkForLesson(lesson);
+		return homework ? this.toHomeworkView(homework) : null;
+	}
+
+	getHomeworkProgressForLesson(request: {
+		sessionToken?: string;
+		classId: string;
+		lessonId: string;
+	}): HomeworkProgressView {
+		const { actor, scope } = this.requireClassScope(request.sessionToken, request.classId);
+		const lesson = this.requireLesson(request.sessionToken, scope, request.lessonId);
+		const homework = this.findHomeworkForLesson(lesson);
+		if (!homework) {
+			return { homework: null, completions: [], grades: [] };
+		}
+
+		return {
+			homework: this.toHomeworkView(homework),
+			completions: this.getHomeworkCompletions({
+				sessionToken: request.sessionToken,
+				classId: scope.classId,
+				homeworkId: homework.id
+			}),
+			grades:
+				actor.role === 'admin' || actor.role === 'teacher'
+					? this.getHomeworkGradesForScope(homework.id, scope)
+					: []
+		};
 	}
 
 	recordGrade(request: {
@@ -514,25 +559,15 @@ export class LearningProgressBoundary {
 		this.requireClassStudent(scope, request.studentAccountId);
 		const lesson = this.requireLesson(request.sessionToken, scope, request.lessonId);
 
-		const candidates = this.database.sqlite
-			.prepare(
-				`SELECT id, center_id, class_id, title, created_by_account_id, created_at
-				 FROM learning_homework
-				 WHERE center_id = ? AND class_id = ?`
-			)
-			.all(lesson.centerId, lesson.classId) as HomeworkRow[];
-
-		if (candidates.length > 1) {
-			throw new Error('ambiguous-homework-selection');
-		}
-		if (candidates.length === 0) {
+		const homework = this.findHomeworkForLesson(lesson);
+		if (!homework) {
 			return null;
 		}
 
 		return this.getGrade({
 			sessionToken: request.sessionToken,
 			classId: lesson.classId,
-			homeworkId: candidates[0].id,
+			homeworkId: homework.id,
 			studentAccountId: request.studentAccountId
 		});
 	}
@@ -584,6 +619,46 @@ export class LearningProgressBoundary {
 			}
 			throw cause;
 		}
+	}
+
+	private findHomeworkForLesson(lesson: LessonView): HomeworkRow | null {
+		const candidates = this.database.sqlite
+			.prepare(
+				`SELECT id, center_id, class_id, title, created_by_account_id, created_at
+				 FROM learning_homework
+				 WHERE center_id = ? AND class_id = ?`
+			)
+			.all(lesson.centerId, lesson.classId) as HomeworkRow[];
+
+		if (candidates.length > 1) {
+			throw new Error('ambiguous-homework-selection');
+		}
+		return candidates[0] ?? null;
+	}
+
+	private getHomeworkGradesForScope(homeworkId: string, scope: AuthorizedClassScope): GradeView[] {
+		if (scope.studentAccountIds.length === 0) return [];
+
+		const studentPlaceholders = scope.studentAccountIds.map(() => '?').join(', ');
+		const rows = this.database.sqlite
+			.prepare(
+				`SELECT
+					learning_grades.homework_id,
+					learning_homework.class_id,
+					learning_grades.student_account_id,
+					learning_grades.grade,
+					learning_grades.recorded_by_account_id,
+					learning_grades.recorded_at
+				 FROM learning_grades
+				 JOIN learning_homework ON learning_homework.id = learning_grades.homework_id
+				 WHERE learning_grades.homework_id = ?
+				   AND learning_homework.class_id = ?
+				   AND learning_grades.student_account_id IN (${studentPlaceholders})
+				 ORDER BY learning_grades.student_account_id`
+			)
+			.all(homeworkId, scope.classId, ...scope.studentAccountIds) as GradeRow[];
+
+		return rows.map((row) => this.toGradeView(row));
 	}
 
 	private requireHomework(homeworkId: string, classId: string): HomeworkRow {
