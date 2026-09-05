@@ -4,6 +4,40 @@ status: active
 ---
 # Changelog
 
+## [2026-09-05] Wave W36 — TASK-103 Collaboration browser UI closure
+
+- Reconciled `TASK-103-T3-FT-004-W36` as `done` from its scheduler-written
+  Attempt 2 closure, current functional `PASS`, required T3 `semantic-pass`,
+  native gates, and explicit same-Judge `SUPPORT` assessment.
+- Updated FT-004, EP-003, the REQ-006/REQ-007/REQ-008/REQ-014 evidence route,
+  the FT-004 implementation/task-planning routes, and this W36 sync evidence.
+  The task index, spec registry, backbone, boundary map, root router, and
+  subfolder routing already resolve the accepted paths and required no edit.
+- Preserved TASK-102 `failed` Attempt 1–3 evidence, TASK-107 `done`, FT-004 /
+  EP-003 / affected REQ `planned` lifecycle values, TASK-103 identity/T3/W36
+  scope, dependencies, Planning Revision 2, and FT-000 untouched. No
+  feature-level promotion or aggregate lifecycle decision was made by sync.
+- Handoff: scheduler owns post-sync `mb-lint`, strict doctor, dependent-state
+  and promotion passes, and the advisory `/tech-debt wave W36` report; none is
+  run inside `/mb-sync`.
+
+## [2026-09-05] Wave W35 — TASK-107 route-scope correction closure
+
+- Reconciled `TASK-107-T3-FT-004-W35` as `done` from fresh Attempt 2
+  functional `PASS`, required T3 `semantic-pass`, all native gates, and the
+  existing Judge's explicit `SUPPORT` assessment.
+- Updated FT-004, EP-003, the REQ-006/REQ-007/REQ-014 evidence route, the
+  FT-004 implementation/task-planning route, and this W35 sync evidence. The
+  task index, spec registry, backbone, boundary map, and routers already
+  resolve the accepted paths and required no mechanical repair.
+- Preserved TASK-102 failed Attempt 1–3 evidence, TASK-103 blocked state,
+  FT-004/EP-003/REQ lifecycle values, task identity, T3/W35 boundary,
+  dependencies, Planning Revision 2, and FT-000 untouched. No feature-level
+  promotion or aggregate lifecycle decision was made by sync.
+- Handoff: scheduler owns post-sync `mb-lint`, strict doctor, dependent-state
+  pass, and the next sequential TASK-103 selection; no such gate is inferred
+  by this sync.
+
 ## [2026-09-05] Wave W38 — TASK-106 Lesson Context UI closure
 
 - Reconciled `TASK-106-T3-FT-005-W38` as `done` from its current Attempt 1

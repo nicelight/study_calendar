@@ -127,7 +127,7 @@ reconciled in IMPL-FT-003.
   identities, retry budgets, accepted architecture, and Planning Revision
   remain unchanged.
 
-## Current Browser Queue
+## Historical Browser Queue at Planning Boundary
 
 1. `TASK-102-T3-FT-004-W35` is the preserved historical failed attempt for the
    existing Lesson Context projection and named form-action transport. Its
@@ -140,17 +140,14 @@ reconciled in IMPL-FT-003.
    mutation and same-context owner success; it does not replay TASK-102's
    projection, labels, named-action migration, or browser UI claims.
 3. `TASK-103-T3-FT-004-W36` renders the complete Collaboration surface in the
-   existing Lesson Context page on the corrected named transport. It owns
-   browser-visible AC-001..AC-005, shared/personal role and revocation
-   scenarios, reload persistence, eleven-plus branch retention/reactivation,
-   and failure-safe disposable Playwright cleanup; it remains blocked until
-   its new `TASK-107` prerequisite is reviewed and completed.
+   existing Lesson Context page on the corrected named transport. At the
+   planning boundary it was blocked pending its `TASK-107` prerequisite; its
+   current closure is reconciled below.
 
-The current executable sequence is therefore `TASK-107` → `TASK-103`.
-Neither adds a top-level route, mutation API, frontend state layer,
-Collaboration writer, or SQLite schema. FT-004 cannot claim completion until
-the follow-up and UI task have independent claim-linked functional and
-semantic evidence.
+The planning-time executable sequence was therefore `TASK-107` → `TASK-103`.
+Neither task adds a top-level route, mutation API, frontend state layer,
+Collaboration writer, or SQLite schema. Both task outcomes are now independently
+evidenced; feature-level lifecycle remains separately owned.
 
 ## Attempt 3 route-scope correction
 
@@ -165,11 +162,11 @@ The minimum fresh identity is planned `TASK-107-T3-FT-004-W35`. It keeps T3
 because the outcome is protected mutation and privacy behavior, reuses the
 completed `TASK-016`, `TASK-017`, and `TASK-039` prerequisites, and owns only
 the route/public-boundary scope check plus focused isolated RED/GREEN proof.
-`TASK-103` remains `blocked` with its identity and evidence preserved, and its
-dependency is routed to `TASK-107` so the existing W35 → W36 sequence has a
-valid correction path. No code, execution, verification, semantic review,
-closure, Judge, scheduler, or Planning Revision change is part of this
-planning reconciliation.
+At that planning boundary, `TASK-103` remained `blocked` with its identity and
+evidence preserved, and its dependency was routed to `TASK-107` so the
+existing W35 → W36 sequence had a valid correction path. No code, execution,
+verification, semantic review, closure, Judge, scheduler, or Planning Revision
+change was part of that planning reconciliation.
 
 ## Revision 2 Acceptance-Trace Reconciliation
 
@@ -194,3 +191,23 @@ The canonical next sequence remains `TASK-103-T3-FT-004-W36` after the
 scheduler-owned W35 post-sync strict readiness and dependent-state pass.
 TASK-102 remains failed and is never retried; TASK-103 is not unblocked by this
 sync itself.
+
+## W36 TASK-103 browser closure reconciliation — 2026-09-05
+
+`TASK-103-T3-FT-004-W36` is now `done` under the scheduler-written Attempt 2
+closure, backed by functional `PASS`, T3 `semantic-pass`, all required native
+gates, and same-Judge `JUDGE_ASSESSMENT: SUPPORT`. Its current browser proof
+covers the complete UI and privacy/persistence outcome on the corrected named
+transport.
+
+- [TASK-103 card](../../tasks/TASK-103-T3-FT-004-W36.task.json)
+- [functional evidence](../../../.protocols/TASK-103-T3-FT-004-W36/verification.md)
+- [functional report](../../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md)
+- [semantic evidence](../../../.protocols/TASK-103-T3-FT-004-W36/red-verification.md)
+- [semantic report](../../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md)
+- [W36 sync report](../../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-MB-SYNC-final-report-docs-01.md)
+
+TASK-102 remains the historical `failed` W35 transport attempt and TASK-107
+remains the completed W35 scope correction. FT-004 remains `active` /
+`planned`; no feature/epic/requirement promotion, dependency transition, or
+Planning Revision change is created by this sync.

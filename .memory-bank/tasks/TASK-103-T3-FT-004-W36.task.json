@@ -1,7 +1,7 @@
 {
   "id": "TASK-103-T3-FT-004-W36",
   "title": "Render complete Collaboration UI on the named Lesson Context transport with disposable browser proof",
-  "status": "blocked",
+  "status": "done",
   "wave": "W36",
   "feature": "FT-004",
   "reqs": [
@@ -59,14 +59,19 @@
     "FT-004-AC-003 and FT-004-AC-004: the browser renders the common feed, reply controls, arbitrary-depth threaded discussion, a branch tab after its first reply, no more than ten most recently active branch tabs, and retained hidden branches that return after new activity.",
     "FT-004-AC-005: the browser keeps shared and personal discussions separate for Admin, assigned Teacher, Student, and linked Parent, denies unauthenticated, invalid-session, cross-student/cross-class/cross-center, and revoked-membership/assignment cases, and shows no unauthorized data after reload.",
     {
-      "stage": "lifecycle",
-      "verdict": "blocked",
-      "report": ".protocols/AUTONOMOUS-RUN/decision-log.md",
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "Attempt 2",
+      "cause": "Current functional Attempt 2 PASS, required T3 semantic-pass, native gates, and explicit same-Judge JUDGE_ASSESSMENT: SUPPORT satisfy TASK-103-T3-FT-004-W36 closure.",
       "evidence": [
-        "Direct dependency TASK-102-T3-FT-004-W35 is authoritatively failed after unsuccessful Attempts 1, 2, and 3: .memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json:4,63-93.",
-        "TASK-103 cannot be promoted or selected while its only dependency is failed; no implementation, executor, reviewer, Judge, or lifecycle work was started for TASK-103."
+        ".protocols/TASK-103-T3-FT-004-W36/verification.md",
+        ".tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md",
+        ".protocols/TASK-103-T3-FT-004-W36/red-verification.md",
+        ".tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-EXE-final-report-code-02.md"
       ],
-      "recommended_owner_action": "Remain blocked until the FT-004 planning owner produces a reviewed, readiness-passing correction/follow-up dependency; preserve TASK-103 identity and scope.",
+      "judge": "JUDGE_ASSESSMENT: SUPPORT; closure authorized after fresh functional PASS and T3 semantic-pass with no material findings or operator questions.",
+      "next_action": "/mb-sync at W36 boundary",
       "lifecycle_changed": true
     }
   ],
@@ -76,11 +81,11 @@
     ".memory-bank/contracts/collaboration-browser-surface.md"
   ],
   "evidence_required": [
-    "FT-004-AC-001 / REQ-006 / REQ-007 / REQ-014 RED: /lesson-context exposes only a count or permits editing another account's comment, omits author/time, or loses a created comment after reload; GREEN: a Playwright shared/personal scenario creates one comment per supported field, sees author and last-change time, edits only its own comment, rejects a second account-owned duplicate and forged edit, and proves persistence in the disposable database; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
-    "FT-004-AC-002 / REQ-007 RED: a reaction control, one of the five standard reaction types, or reactor participant view is absent, cross-scope, or non-persistent; GREEN: the browser applies and reloads all five standard reactions on supported targets and displays only permitted participants for each; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
-    "FT-004-AC-003 / REQ-008 RED: the common feed, reply control, nested thread, or branch activation is absent, capped, or stale after reload; GREEN: the browser creates a root and replies of arbitrary tested depth, shows every current-scope message in the common feed, creates the branch tab after the first reply, and preserves the selected thread through SSR/reload; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
-    "FT-004-AC-004 / REQ-008 RED: more than ten branch tabs are visible, the least-recent hidden branch is deleted, or new activity cannot reactivate it; GREEN: eleven-plus browser-created branches show at most the ten most recent tabs, hidden branch messages remain retained in SQLite, and a new reply returns the hidden branch to the visible set; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/.",
-    "FT-004-AC-005 / REQ-006 / REQ-014 RED: shared/personal discussions cross student or role scope, an unauthenticated/invalid-session request succeeds, a forged authority selector succeeds, or removed membership/teacher assignment still exposes or mutates data; GREEN: positive Admin/assigned Teacher/Student/linked Parent flows and negative no-cookie/invalid-session/cross-student/cross-class/cross-center/revocation flows prove browser-visible isolation, deny-before-mutation, no existence leakage, full state snapshots, and safe cleanup; artifact: .tasks/TASK-103-T3-FT-004-W36/ and .protocols/TASK-103-T3-FT-004-W36/."
+    "FT-004-AC-001 / REQ-006 / REQ-007 / REQ-014 RED: /lesson-context exposes only a count or permits editing another account's comment, omits author/time, or loses a created comment after reload; GREEN: a Playwright shared/personal scenario creates one comment per supported field, sees author and last-change time, edits only its own comment, rejects a second account-owned duplicate and forged edit, and proves persistence in the disposable database; artifact: .tasks/TASK-103-T3-FT-004-W36/attempt-2-green.md, .tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md, and .protocols/TASK-103-T3-FT-004-W36/verification.md.",
+    "FT-004-AC-002 / REQ-007 RED: a reaction control, one of the five standard reaction types, or reactor participant view is absent, cross-scope, or non-persistent; GREEN: the browser applies and reloads all five standard reactions on supported targets and displays only permitted participants for each; artifact: .tasks/TASK-103-T3-FT-004-W36/attempt-2-green.md, .tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md, and .protocols/TASK-103-T3-FT-004-W36/verification.md.",
+    "FT-004-AC-003 / REQ-008 RED: the common feed, reply control, nested thread, or branch activation is absent, capped, or stale after reload; GREEN: the browser creates a root and replies of arbitrary tested depth, shows every current-scope message in the common feed, creates the branch tab after the first reply, and preserves the selected thread through SSR/reload; artifact: .tasks/TASK-103-T3-FT-004-W36/attempt-2-green.md, .tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md, and .protocols/TASK-103-T3-FT-004-W36/verification.md.",
+    "FT-004-AC-004 / REQ-008 RED: more than ten branch tabs are visible, the least-recent hidden branch is deleted, or new activity cannot reactivate it; GREEN: eleven-plus browser-created branches show at most the ten most recent tabs, hidden branch messages remain retained in SQLite, and a new reply returns the hidden branch to the visible set; artifact: .tasks/TASK-103-T3-FT-004-W36/attempt-2-green.md, .tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md, and .protocols/TASK-103-T3-FT-004-W36/red-verification.md.",
+    "FT-004-AC-005 / REQ-006 / REQ-014 RED: shared/personal discussions cross student or role scope, an unauthenticated/invalid-session request succeeds, a forged authority selector succeeds, or removed membership/teacher assignment still exposes or mutates data; GREEN: positive Admin/assigned Teacher/Student/linked Parent flows and negative no-cookie/invalid-session/cross-student/cross-class/cross-center/revocation flows prove browser-visible isolation, deny-before-mutation, no existence leakage, full state snapshots, and safe cleanup; artifact: .tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md, .protocols/TASK-103-T3-FT-004-W36/red-verification.md, and .tasks/TASK-103-T3-FT-004-W36/cleanup-receipt.md."
   ],
   "purpose": "Close the product-surface gap by rendering and exercising all accepted Collaboration behavior through the existing Lesson Context browser UI.",
   "success_outcome": "Permitted users can create, edit, react to, and inspect the complete shared or personal Collaboration experience in `/lesson-context`, including common and threaded chat, bounded recent branches, and persistent browser state, while unauthorized roles and scopes see neither data nor mutation effects.",

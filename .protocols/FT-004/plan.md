@@ -88,18 +88,19 @@ and W36 after the existing W6 isolation cards and the accepted shared Lesson
 Context navigation outcome `TASK-039-T3-FT-003-W10`; IDs were assigned after
 this boundary confirmation.
 
-## Current executable queue
+## Historical executable queue at Planning Revision 2 boundary
 
 | Wave | Task | Owns | Dependencies |
 |---|---|---|---|
 | W35 | [TASK-102-T3-FT-004-W35](../../.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json) | Historical failed browser transport attempt; identity, evidence, retry history, and `failed` status are preserved and it is not executable | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
 | W35 | [TASK-107-T3-FT-004-W35](../../.memory-bank/tasks/TASK-107-T3-FT-004-W35.task.json) | Fixed-semantics correction for current class/lesson scope on named `editFieldComment`, with fresh T3 forged-context RED/GREEN proof | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
-| W36 | [TASK-103-T3-FT-004-W36](../../.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json) | Complete Lesson Context Collaboration UI and shared/personal disposable Playwright proof on the corrected named transport; identity and `blocked` status remain preserved | `TASK-107-T3-FT-004-W35` |
+| W36 | [TASK-103-T3-FT-004-W36](../../.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json) | Complete Lesson Context Collaboration UI and shared/personal disposable Playwright proof on the corrected named transport; identity and planning-boundary `blocked` state are preserved in history | `TASK-107-T3-FT-004-W35` |
 
 `TASK-016`, `TASK-017`, and `TASK-039` are completed dependencies;
 `TASK-012` and failed `TASK-102` are intentionally excluded from executable
-dependency proof. `TASK-107` is the only new planned executable card from this
-reconciliation. `TASK-103` remains blocked and follows it in W36. No
+dependency proof. `TASK-107` was the only new planned executable card from this
+reconciliation. `TASK-103` followed it in W36 and its closure is reconciled
+below. No
 production-only acceptance card is needed because the required browser surface
 and disposable verification are repository/runtime outcomes.
 
@@ -208,17 +209,35 @@ identity, lifecycle, evidence, dependencies, and retry history; the downstream
 TASK-014 dependency reconciliation is recorded in FT-003. The later explicit
 TASK-012 historical `failed`/`superseded` disposition is recorded below.
 
-## Current lifecycle reconciliation
+## Historical lifecycle reconciliation at planning boundary
 
-The historical feature result is `semantic-pass` only for the backend
+At the planning boundary, the historical feature result was `semantic-pass` only for the backend
 boundary/persistence scope proved by TASK-016 and TASK-017. The operator's
-browser-completion decision makes that evidence insufficient for feature
-closure: FT-004 is currently `active`/`planned` pending the correction and UI
-tasks and their independent functional and semantic evidence for AC-001..AC-005.
+browser-completion decision made that evidence insufficient for feature
+closure: FT-004 was `active`/`planned` pending the correction and UI tasks.
 TASK-012 remains explicitly terminal `failed`/`superseded`; its identity, tier,
 dependencies, Attempt 1/2 evidence, and retry history are preserved. No
 architecture, Planning Revision, REQ/epic lifecycle, old task status, or old
 evidence is changed by this reconciliation.
+
+## W36 TASK-103 closure route — 2026-09-05
+
+The authoritative W36 card is now `done` under scheduler closure Attempt 2,
+with functional `PASS`, T3 `semantic-pass`, required native gates, and explicit
+same-Judge `JUDGE_ASSESSMENT: SUPPORT`. The task owns the complete browser
+Collaboration UI and disposable shared/personal proof on the existing Lesson
+Context transport.
+
+- [TASK-103 card](../../.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json)
+- [functional evidence](../../.protocols/TASK-103-T3-FT-004-W36/verification.md)
+- [functional report](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md)
+- [semantic evidence](../../.protocols/TASK-103-T3-FT-004-W36/red-verification.md)
+- [semantic report](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md)
+- [W36 sync report](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-MB-SYNC-final-report-docs-01.md)
+
+TASK-102 remains failed and TASK-107 remains done. FT-004 remains
+`active`/`planned`; this task-level route does not make an aggregate
+feature/epic/requirement lifecycle or promotion decision.
 
 ## 2026-09-05 — TASK-102 Attempt 3 route-scope correction
 
@@ -236,8 +255,9 @@ and privacy semantics, and owns only current class/lesson scope validation plus
 focused isolated RED/GREEN evidence. It does not inherit TASK-102 evidence or
 replay its broader browser transport outcome.
 
-`TASK-102` remains `failed` with all Attempt 1–3 evidence and exhausted retry
-history. `TASK-103` remains `blocked` with its identity, scope, and evidence
-preserved; its dependency now points to TASK-107 so the W35 → W36 correction
-path is explicit without promoting or unblocking it. No execution, Attempt 4,
-verification, semantic review, Judge, scheduler closure, or sync was run.
+At that planning boundary, `TASK-102` remained `failed` with all Attempt 1–3
+evidence and exhausted retry history. `TASK-103` remained `blocked` with its
+identity, scope, and evidence preserved; its dependency pointed to TASK-107
+so the W35 → W36 correction path was explicit without promoting or unblocking
+it. No execution, Attempt 4, verification, semantic review, Judge, scheduler
+closure, or sync was run as part of that planning reconciliation.

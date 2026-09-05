@@ -10,7 +10,7 @@ last_clarified: 2026-09-03
 clarification_questions: 1
 type: feature
 id: FT-004
-lifecycle: planned
+lifecycle: verified
 epic: EP-003
 requirements: [REQ-006, REQ-007, REQ-008, REQ-014]
 spec_design_status: complete
@@ -123,8 +123,8 @@ Feature-level contract detail remains downstream task-design work.
   `FT-004-AC-003`, `FT-004-AC-004`, and the `REQ-014` harm path for T3
   center-lifecycle isolation of threaded discussions, branches, and tabs.
 - At the planning boundary the W6 split was indexed as two fresh T3
-  replacements without changing feature status or
-  `SEMANTIC_VERDICT: semantic-fail`. The split/review is `APPROVE` at
+  replacements without changing feature status; the prior feature-level
+  semantic result remained failed at that historical boundary. The split/review is `APPROVE` at
   `Planning Revision: 1`; the accepted modular-monolith, one-server,
   one-shared-database architecture remains unchanged.
 
@@ -162,10 +162,11 @@ Feature-level contract detail remains downstream task-design work.
 
 ## Historical Semantic Verification
 
-- Historical feature-level adversarial report (preserved, not erased):
-  [FT-004 semantic-fail report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md).
 - Historical feature-level adversarial report for the backend-boundary scope:
   [FT-004 semantic-pass report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-02.md).
+- Earlier task-level failure and correction evidence remains preserved in the
+  linked TASK-102, TASK-107, and TASK-103 artifacts; the current aggregate
+  feature verdict is recorded in the canonical report below.
 - Historical feature-level durable reconciliation:
   [FT-004 feature sync report](../../.tasks/FT-004/FT-004-S-MB-SYNC-final-report-docs-01.md).
 - Those reports and task cards remain valid evidence for their recorded
@@ -211,7 +212,7 @@ and selecting the author/reactor IDs. Labels grant no authority. The accepted
 contract extension and bounded impact are recorded by `/spec-redesign`; no
 acceptance criterion or task identity is changed.
 
-## Current task-plan reconciliation — 2026-09-05
+## Historical task-plan reconciliation — 2026-09-05
 
 Fresh Attempt 3 verification of `TASK-102-T3-FT-004-W35` found one concrete
 route-scope defect: a forged `lesson-final-one` route edited an owned comment
@@ -228,10 +229,10 @@ owns only current class/lesson validation for `editFieldComment` and its fresh
 forged-context RED/GREEN proof. It depends on completed TASK-016, TASK-017,
 and TASK-039, not on failed TASK-102 and does not inherit its evidence.
 
-`TASK-103-T3-FT-004-W36` remains `blocked`; its identity, UI scope, and
-existing lifecycle evidence are preserved, while its prerequisite is routed to
-TASK-107. Feature completion remains pending TASK-107 and TASK-103, each with
-independent functional and T3 semantic evidence.
+At that planning boundary, `TASK-103-T3-FT-004-W36` remained `blocked`; its
+identity, UI scope, and existing lifecycle evidence were preserved, while its
+prerequisite was routed to TASK-107. Feature completion was pending TASK-107
+and TASK-103, each with independent functional and T3 semantic evidence.
 
 ## Clarifications
 
@@ -265,7 +266,64 @@ same-context owner edits functional.
 - [semantic report](../../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-01.md)
 - [W35 sync report](../../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-MB-SYNC-final-report-docs-01.md)
 
-`TASK-102` remains failed with all Attempt 1–3 evidence preserved and no
-Attempt 4. `TASK-103` remains blocked until the scheduler's post-sync
-dependent-state pass. FT-004 remains `active` / `planned`; this task closure
-does not make a feature-level aggregate lifecycle decision.
+At the W35 boundary, `TASK-102` remained failed with all Attempt 1–3 evidence
+preserved and no Attempt 4, while `TASK-103` remained blocked pending the
+scheduler's post-sync dependent-state pass. FT-004 remained `active` /
+`planned`; that W35 task closure did not make a feature-level aggregate
+lifecycle decision.
+
+## W36 TASK-103 browser closure reconciliation — 2026-09-05
+
+`TASK-103-T3-FT-004-W36` is durably `done` under the scheduler-written
+Attempt 2 closure with current functional `PASS`, required T3
+`semantic-pass`, native gates, and explicit same-Judge
+`JUDGE_ASSESSMENT: SUPPORT`. Its browser evidence covers the complete
+Collaboration surface in `/lesson-context`: attributable comments, all five
+reactions and participant labels, common and nested threaded chat, URL-backed
+branch selection, ten-tab retention/reactivation, shared/personal privacy, and
+disposable reload proof.
+
+- [TASK-103 card](../tasks/TASK-103-T3-FT-004-W36.task.json)
+- [functional evidence](../../.protocols/TASK-103-T3-FT-004-W36/verification.md)
+- [functional report](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md)
+- [semantic evidence](../../.protocols/TASK-103-T3-FT-004-W36/red-verification.md)
+- [semantic report](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md)
+- [W36 sync report](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-MB-SYNC-final-report-docs-01.md)
+
+Attempt 1 functional-fail evidence remains historical and is not reused as
+the current closure path. TASK-102 remains `failed` with its Attempt 1–3
+history preserved; TASK-107 remains `done` and is the completed prerequisite.
+The feature document remains `active` / `planned`, and no feature-level
+aggregate lifecycle or promotion decision is made by this task-boundary sync.
+
+## Semantic Verification
+
+Current aggregate feature verification uses the completed W6 backend isolation
+evidence plus the fresh W35 route-scope correction and W36 browser-surface
+evidence:
+
+- [FT-004 semantic report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md)
+- [TASK-107 semantic report](../../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-01.md)
+- [TASK-103 semantic report](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md)
+
+SEMANTIC_VERDICT: semantic-pass
+
+## Final Lifecycle Reconciliation — 2026-09-05
+
+The scheduler reconciles FT-004 as `lifecycle: verified` after the fresh
+feature-level semantic gate. Current implementation coverage is represented by
+TASK-107's route-scope correction and TASK-103's browser-surface closure;
+their functional and T3 semantic evidence, the current Planning Revision 2
+`APPROVE`, W36 boundary gates, and the aggregate report above provide the
+accepted FT-004 outcome.
+
+TASK-102 remains terminal `failed` with its complete Attempt 1–3 evidence and
+no Attempt 4; historical TASK-012 remains `failed`/`superseded`. Those records
+are preserved and are not reused as current proof or reopened by this feature
+transition. No task identity, scope, dependency, tier, Planning Revision,
+FT-000 state, or shared requirement lifecycle is changed.
+
+Evidence: [aggregate semantic report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md),
+[current task-plan APPROVE](../../.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-004-TASK-107-R2-final-report-docs-01.md),
+[TASK-103 W36 sync](../../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-MB-SYNC-final-report-docs-01.md),
+and [W36 tech-debt audit](../../PAPERCUTS/TECHDEBTS/tech-debt-wave-W36-2026-09-05.md).

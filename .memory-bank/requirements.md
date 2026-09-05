@@ -701,8 +701,31 @@ other-author edits while preserving same-context owner success.
 - [semantic evidence](../.protocols/TASK-107-T3-FT-004-W35/red-verification.md)
 - [W35 sync evidence](../.tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-MB-SYNC-final-report-docs-01.md)
 
-REQ-006, REQ-007, and shared REQ-014 retain their existing `planned`
-lifecycle values because this is task evidence only; FT-004 and EP-003 remain
-`planned` pending the remaining TASK-103 browser outcome and feature-level
-aggregate decision. TASK-102 remains failed and TASK-103 remains blocked until
-the scheduler's separate post-sync dependent-state pass.
+At the W35 boundary, REQ-006, REQ-007, and shared REQ-014 retained their
+existing `planned` lifecycle values because that was task evidence only; FT-004
+and EP-003 remained `planned` pending the remaining TASK-103 browser outcome
+and feature-level aggregate decision. TASK-102 remained failed and TASK-103
+remained blocked until the scheduler's separate post-sync dependent-state pass.
+
+## FT-004 W36 browser task evidence route — 2026-09-05
+
+`TASK-103-T3-FT-004-W36` is durably `done` from its current Attempt 2
+functional `PASS`, required T3 `semantic-pass`, native gates, and explicit
+same-Judge `JUDGE_ASSESSMENT: SUPPORT`. The evidence covers the complete
+browser Collaboration outcome mapped to `REQ-006`, `REQ-007`, `REQ-008`, and
+the privacy harm path in `REQ-014`: comments with attribution, five reactions
+and participant labels, common/nested chat, bounded retained branches,
+shared/personal isolation, reload persistence, and deny-before-mutation.
+
+- [TASK-103 card](tasks/TASK-103-T3-FT-004-W36.task.json)
+- [functional evidence](../.protocols/TASK-103-T3-FT-004-W36/verification.md)
+- [functional report](../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-VERIFY-final-report-docs-02.md)
+- [semantic evidence](../.protocols/TASK-103-T3-FT-004-W36/red-verification.md)
+- [semantic report](../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-RED-VERIFY-final-report-docs-01.md)
+- [W36 sync report](../.tasks/TASK-103-T3-FT-004-W36/TASK-103-T3-FT-004-W36-S-MB-SYNC-final-report-docs-01.md)
+
+The RTM mappings and lifecycle values remain unchanged: `REQ-006`, `REQ-007`,
+`REQ-008`, and shared `REQ-014` are still `planned`. This task evidence route
+does not decide the feature/epic aggregate lifecycle or promote a requirement.
+TASK-102 remains failed with its complete Attempt 1–3 history, and TASK-107
+remains done.
