@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import { expect, test, type Page } from '@playwright/test';
+import { formatDisplayDate } from '../src/lib/date-input';
 
 const adminEmail = process.env.E2E_ADMIN_EMAIL ?? 'admin@nicelight.ai';
 const adminPassword = process.env.E2E_ADMIN_PASSWORD;
@@ -217,7 +218,7 @@ test('real teacher payment is recorded and appears as paid on the student calend
 	});
 	await paymentForm.locator('select[name="studentAccountId"]').selectOption(studentAccountId);
 	await paymentForm.locator('input[name="amount"]').fill('20');
-	await paymentForm.locator('input[name="factualDate"]').fill(paidLesson.lesson_date);
+	await paymentForm.locator('input[type="text"]').fill(formatDisplayDate(paidLesson.lesson_date));
 	const confirmation = `e2e-payment-${Date.now()}`;
 	await paymentForm.locator('input[name="confirmation"]').fill(confirmation);
 	await paymentForm.getByRole('button', { name: 'Внести оплату' }).click();

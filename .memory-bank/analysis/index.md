@@ -11,4 +11,6 @@ status: active
 
 ## Product Brief
 
+- [.memory-bank/analysis/frontend-design-direction.md](frontend-design-direction.md): разрешённое оператором frontend-направление «Тихий фокус» — палитра, рабочие экраны, общая тема и экономные переходы.
+
 - [.memory-bank/analysis/product-brief.md](product-brief.md): `status: draft`, source `BR-001` и `BR-002`, включая доработку center-scoped навигации и статистики; `Decision: proceed`; PRD согласован и готов к `/prd-to-features`.

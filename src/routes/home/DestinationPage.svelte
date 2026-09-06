@@ -66,22 +66,20 @@
 </main>
 
 <style>
-	:global(*) { box-sizing: border-box; }
-	:global(body) { margin: 0; background: #f7f3eb; color: #25332e; font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", sans-serif; }
-	.destination-shell { width: min(100% - 2rem, 66rem); margin: 0 auto; padding: 3rem 0 5rem; }
+	.destination-shell { width: min(100% - 2rem, 66rem); margin: 0 auto; padding: 1.75rem 0 3rem; }
 	.hero { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; }
-	.eyebrow { margin: 0 0 .55rem; color: #3f765d; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+	.eyebrow { margin: 0 0 .55rem; color: var(--ui-accent-ink); font-size: .8125rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 	h1, h2, p { margin-top: 0; }
-	h1 { margin-bottom: 1rem; font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: -.07em; line-height: .95; }
-	.intro, .meta { color: #6d7a73; line-height: 1.6; }
-	.role { margin-bottom: .2rem; padding: .55rem .75rem; border: 1px solid #d9e0d8; border-radius: 999px; background: #fffdf8; color: #3f765d; font-size: .78rem; font-weight: 800; }
+	h1 { margin-bottom: 1rem; font-size: clamp(1.5rem, 4vw, 1.75rem); letter-spacing: -.035em; line-height: 1.2; }
+	.intro, .meta { color: var(--ui-muted); line-height: 1.6; }
+	.role { margin-bottom: .2rem; padding: .55rem .75rem; border: 1px solid var(--ui-line); border-radius: 999px; background: var(--ui-surface); color: var(--ui-accent-ink); font-size: .78rem; font-weight: 600; }
 	.destinations { display: grid; gap: 1rem; margin-top: 2rem; }
-	.destination-card { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem; border: 1px solid #d9e0d8; border-radius: 1rem; background: #fffdf8; box-shadow: 0 16px 36px rgba(39, 61, 48, .08); }
-	h2 { margin-bottom: .35rem; font-size: clamp(1.4rem, 4vw, 2rem); letter-spacing: -.04em; }
+	.destination-card { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem; border: 1px solid var(--ui-line); border-radius: var(--ui-radius); background: linear-gradient(130deg, var(--ui-surface), #f5f9fa); }
+	h2 { margin-bottom: .35rem; font-size: 1.125rem; letter-spacing: -.04em; }
 	.meta { margin-bottom: 0; font-size: .9rem; }
-	.button { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; flex: 0 0 auto; padding: .65rem .9rem; border: 1px solid #3f765d; border-radius: .65rem; background: #3f765d; color: #fffdf8; font-weight: 800; text-decoration: none; }
-	.button:hover { background: #2f5f4a; }
-	.button:focus-visible { outline: 3px solid #b9684e; outline-offset: 3px; }
-	.empty { padding: 1.25rem; border: 1px dashed #b8c8ba; border-radius: 1rem; color: #6d7a73; }
+	.button { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; flex: 0 0 auto; padding: .65rem .9rem; border: 1px solid var(--ui-accent); border-radius: .65rem; background: var(--ui-accent); color: var(--ui-on-accent); font-weight: 600; text-decoration: none; }
+	.button:hover { background: var(--ui-accent-hover); }
+	.button:focus-visible { outline: 3px solid var(--ui-accent); outline-offset: 3px; }
+	.empty { padding: 1.25rem; border: 1px dashed #7c9299; border-radius: var(--ui-radius); color: var(--ui-muted); }
 	@media (max-width: 38rem) { .hero, .destination-card { align-items: start; flex-direction: column; } .role { margin-bottom: 0; } .button { width: 100%; } }
 </style>

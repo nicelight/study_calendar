@@ -12,6 +12,8 @@
 	<title>Вход</title>
 </svelte:head>
 
+<main class="auth-shell">
+<a class="auth-brand" href="/">Study Calendar</a>
 <h1>Вход</h1>
 <form method="POST">
 	<label>
@@ -34,3 +36,4 @@
 		<a href={`/auth/${provider}/start`}>Войти через {provider}</a>
 	{/each}
 </nav>
+</main>

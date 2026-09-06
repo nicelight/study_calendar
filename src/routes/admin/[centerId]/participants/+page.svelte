@@ -53,23 +53,60 @@
 </main>
 
 <style>
-	:global(*) { box-sizing: border-box; }
-	:global(body) { margin: 0; background: #f7f3eb; color: #25332e; font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", sans-serif; }
-	.admin-shell { width: min(100% - 2rem, 44rem); margin: 0 auto; padding: 3rem 0 5rem; }
+	.admin-shell {
+		--surface: var(--ui-surface, #fff);
+		--ink: var(--ui-text, #202a2d);
+		--muted: var(--ui-muted, #58666b);
+		--line: var(--ui-line, #e3eaed);
+		--field-line: #7c9299;
+		--accent: var(--ui-accent, #2fa5bf);
+		--accent-soft: var(--ui-accent-soft, #edf7f9);
+		--danger: var(--ui-danger, #a23d42);
+		--danger-soft: #fbeff0;
+		--radius: var(--ui-radius, 12px);
+		--font: var(--ui-font, system-ui, sans-serif);
+		width: min(calc(100% - 2rem), 44rem);
+		margin: 0 auto;
+		padding: 1.75rem 0 5rem;
+		color: var(--ink);
+		font-family: var(--font);
+	}
 	header { margin-bottom: 2rem; }
-	.eyebrow { color: #3f765d; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-	h1 { margin: .4rem 0 1rem; font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: -.07em; line-height: .95; }
-	.intro { color: #6d7a73; line-height: 1.6; }
-	.card { display: grid; gap: 1.25rem; padding: clamp(1rem, 4vw, 2rem); border: 1px solid #d9e0d8; border-radius: 1rem; background: #fffdf8; box-shadow: 0 20px 50px rgba(39, 61, 48, .09); }
-	h2 { margin: 0; letter-spacing: -.03em; }
-	form { display: grid; gap: 1rem; }
-	label { display: grid; gap: .45rem; color: #6d7a73; font-size: .86rem; font-weight: 800; }
-	select, button { min-height: 2.8rem; padding: .65rem .8rem; border: 1px solid #b8c8ba; border-radius: .65rem; font: inherit; }
-	select { background: #fffdf8; color: #25332e; }
-	button { border-color: #3f765d; background: #3f765d; color: white; cursor: pointer; font-weight: 800; }
-	.message { margin: 0; padding: 1rem; border-radius: .75rem; line-height: 1.5; }
+	.eyebrow { margin: 0; color: var(--ui-accent-ink); font-size: .72rem; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
+	h1 { margin: .55rem 0 .9rem; font-size: clamp(1.5rem, 4vw, 1.75rem); letter-spacing: -.04em; line-height: 1.1; }
+	.intro { max-width: 34rem; margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.55; }
+	.card {
+		display: grid;
+		gap: 1.25rem;
+		padding: clamp(1.25rem, 4vw, 2rem);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: linear-gradient(135deg, var(--surface), var(--accent-soft));
+	}
+	h2 { margin: 0; font-size: clamp(1.125rem, 3vw, 1.25rem); letter-spacing: -.025em; }
+	form, label { display: grid; gap: .5rem; }
+	form { gap: 1rem; }
+	label { color: var(--muted); font-size: .9rem; font-weight: 700; }
+	input, select, button {
+		min-height: 2.75rem;
+		padding: .65rem .8rem;
+		border: 1px solid var(--field-line);
+		border-radius: 8px;
+		background: var(--surface);
+		color: var(--ink);
+		font: inherit;
+		font-size: 1rem;
+	}
+	button { border-color: var(--accent); background: var(--accent); color: var(--ui-on-accent); cursor: pointer; font-weight: 750; transition: opacity 140ms ease, background-color 140ms ease; }
+	button:hover:not(:disabled) { opacity: .9; }
+	button:disabled { cursor: not-allowed; opacity: .5; }
+	:where(a, input, select, button):focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+	.message { margin: 0; padding: 1rem; border: 1px solid transparent; border-radius: 8px; line-height: 1.5; }
 	.message p { margin: .35rem 0; }
-	.error { background: #f9e7e2; color: #873d2b; }
-	.success { background: #e9f2e9; color: #28583f; }
-	.success a { color: inherit; font-weight: 800; overflow-wrap: anywhere; }
+	.error { border-color: color-mix(in srgb, var(--danger) 24%, var(--line)); background: var(--danger-soft); color: var(--danger); }
+	.success { border-color: color-mix(in srgb, var(--accent) 22%, var(--line)); background: var(--accent-soft); color: var(--ui-accent-ink); }
+	.success a { color: inherit; font-weight: 750; overflow-wrap: anywhere; }
+	@media (prefers-reduced-motion: reduce) {
+		button { transition: none; }
+	}
 </style>

@@ -1,0 +1,45 @@
+:root {
+	color-scheme: light;
+	--ui-bg: #f7f9fa;
+	--ui-surface: #fff;
+	--ui-text: #202a2d;
+	--ui-muted: #58666b;
+	--ui-line: #e3eaed;
+	--ui-accent: #2fa5bf;
+	--ui-accent-ink: #176579;
+	--ui-on-accent: #132f36;
+	--ui-accent-hover: #32a9c2;
+	--ui-accent-soft: #edf7f9;
+	--ui-warn-soft: #fbf4e9;
+	--ui-danger: #a23d42;
+	--ui-radius: 12px;
+	--ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--ui-bg); color: var(--ui-text); font-family: var(--ui-font); font-size: 16px; line-height: 1.5; }
+button, input, textarea, select { font: inherit; }
+button, input:not([type='checkbox']):not([type='radio']):not([type='hidden']), select { min-height: 44px; }
+button, select { cursor: pointer; }
+input, textarea, select { max-width: 100%; accent-color: var(--ui-accent); }
+textarea { resize: vertical; }
+a { color: var(--ui-accent-ink); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 3px; }
+button:disabled { cursor: not-allowed; opacity: .6; }
+button, a { -webkit-tap-highlight-color: transparent; }
+h1, h2, h3 { text-wrap: balance; }
+p, dd { overflow-wrap: anywhere; }
+::selection { background: #dceff4; color: var(--ui-text); }
+.auth-shell { width: min(100% - 2rem, 26rem); margin: clamp(2rem, 10vh, 6rem) auto; padding: 1.5rem; border: 1px solid var(--ui-line); border-radius: var(--ui-radius); background: linear-gradient(150deg, #fff, #f2f8fa); }
+.auth-shell h1 { margin: .4rem 0 1.5rem; font-size: 1.75rem; letter-spacing: -.035em; }
+.auth-shell form, .auth-shell label, .auth-shell nav { display: grid; gap: .65rem; }
+.auth-shell form { gap: 1rem; }
+.auth-shell label span { font-size: .875rem; font-weight: 600; }
+.auth-shell input { width: 100%; padding: .65rem .8rem; border: 1px solid #7c9299; border-radius: 8px; background: var(--ui-surface); color: var(--ui-text); }
+.auth-shell button { padding: .65rem 1rem; border: 1px solid var(--ui-accent); border-radius: 8px; background: var(--ui-accent); color: var(--ui-on-accent); font-weight: 600; }
+.auth-shell nav { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--ui-line); }
+.auth-shell nav a { display: flex; align-items: center; min-height: 44px; }
+.auth-shell [role='alert'] { color: var(--ui-danger); }
+.auth-brand { font-size: .875rem; font-weight: 600; text-decoration: none; }
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

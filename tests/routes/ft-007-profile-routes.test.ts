@@ -83,7 +83,7 @@ describe('FT-007-AC-007 canonical Profile route', () => {
 
 	it('keeps the shell integration on the exact four canonical destinations and existing logout POST', () => {
 		const layout = readFileSync(layoutPath, 'utf8');
-		const hrefs = [...layout.matchAll(/<a href="([^"]+)">(?:Home|Classes|Statistics|Profile)<\/a>/g)]
+		const hrefs = [...layout.matchAll(/<a href="([^"]+)"[^>]*>(?:Home|Classes|Statistics|Profile)<\/a>/g)]
 			.map((match) => match[1]);
 		expect(hrefs).toEqual(['/home', '/classes', '/statistics', '/profile']);
 		expect(layout).toContain('<form method="POST" action="/auth/logout">');

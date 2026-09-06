@@ -105,6 +105,14 @@ test('Statistics sorting is a typed read-only presentation over the authorized r
 	for (const table of [students, teachers, classes]) {
 		await expect(table.getByRole('button')).toHaveCount(table === students ? 8 : table === teachers ? 6 : 4);
 	}
+	const nameSort = students.locator('th').first().getByRole('button');
+	await nameSort.focus();
+	await nameSort.press('Space');
+	await expect(students.locator('th').first()).toHaveAttribute('aria-sort', 'descending');
+	await expect(students.locator('tbody tr').first()).toContainText('Яна Бета');
+	await nameSort.press('Enter');
+	await expect(students.locator('th').first()).toHaveAttribute('aria-sort', 'ascending');
+	await expect(students.locator('tbody tr').first()).toContainText('Анна Альфа');
 
 	async function assertBothDirections(
 		table: typeof students,

@@ -4,6 +4,44 @@ status: active
 ---
 # Changelog
 
+## [2026-09-06] — Бирюзовый акцент по образцу оператора
+
+- Основной цвет заменён на `#2FA5BF` в общей теме и локальных стилях страниц;
+  согласованы градиенты, hover, контуры и мягкие подложки. Акцентный текст и
+  подписи кнопок получили контрастные оттенки. Поведение приложения не менялось.
+- [Визуальное направление](analysis/frontend-design-direction.md): обновлённая
+  палитра и указание не создавать новые изображения/дизайн-ревью в `.protocols/`.
+
+## [2026-09-06] — Frontend «Тихий фокус» implementation
+
+- Реализовано согласованное визуальное направление: общая светлая тема,
+  компактная типографика, мягкие статичные градиенты, SVG в навигации/календаре,
+  короткие переходы с reduced motion, единое оформление рабочих страниц.
+- Три Luna xhigh выполнили календарь, урок и Admin; главный агент интегрировал
+  результат и исправил замечания code/browser review, включая mobile Finance
+  overflow, контраст полей и клавиатурную сортировку статистики.
+- [Интеграционный отчёт](../.protocols/frontend-design-review/integration-review.md):
+  проверки, исправления, разделение работы и локальные screenshots. Серверные
+  бизнес-правила и исходная рабочая БД этим редизайном не изменены.
+
+## [2026-09-06] — Frontend design direction proposal
+
+- Добавлено draft-предложение «Тихий фокус»: продуктивность, минимализм,
+  мягкие градиенты, организация экранов и ограничения движения.
+- Документ доступен через analysis/index; реализация интерфейса и принятые
+  продуктовые контракты этим предложением не изменяются.
+
+## [2026-09-06] — Browser regression cleanup
+
+- Completed the Playwright regression matrix: 10 disposable feature specs and 2
+  real-database specs pass; `svelte-check`, Vitest (79 files / 271 tests), build,
+  and `git diff --check` also pass.
+- Fixed the homework completion form's accessible name and prevented an empty
+  class-price field from clobbering user input during hydration.
+- Aligned three browser assertions with the accepted UI contracts: named
+  SvelteKit action transport, localized Profile registration date, and the
+  visible payment date input.
+
 ## [2026-09-05] — REQ-014 clarification and TASK-102 acceptance
 
 - Clarified REQ-014 and the Collaboration Browser Surface contract: role,

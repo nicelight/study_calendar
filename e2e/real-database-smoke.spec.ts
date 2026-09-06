@@ -78,8 +78,8 @@ test('real Admin can open a class lesson through the browser', async ({ page }) 
 		await expect(page.getByText('Материал сохранён.')).toBeVisible();
 		await page.reload();
 		await expect(page.getByRole('heading', { name: 'E2E проверка темы' })).toBeVisible();
-		await expect(page.getByText('E2E проверка практики')).toBeVisible();
-		await expect(page.getByText('E2E проверка домашнего задания')).toBeVisible();
+		await expect(page.locator('.material').getByText('E2E проверка практики')).toBeVisible();
+		await expect(page.locator('.material').getByText('E2E проверка домашнего задания')).toBeVisible();
 
 		const classId = new URL(page.url()).searchParams.get('classId');
 		if (!classId) throw new Error('The real lesson context URL did not contain classId');

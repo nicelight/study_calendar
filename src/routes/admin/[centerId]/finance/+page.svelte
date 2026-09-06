@@ -133,7 +133,11 @@
 							<input type="hidden" name="classId" value={classView.classId} />
 							<label>
 								<span>Сумма</span>
-								<input name="amount" type="number" min="0.01" step="any" required value={classView.currentAmount ?? ''} />
+								{#if classView.currentAmount !== null}
+									<input name="amount" type="number" min="0.01" step="any" required value={classView.currentAmount} />
+								{:else}
+									<input name="amount" type="number" min="0.01" step="any" required />
+								{/if}
 							</label>
 							<label>
 								<span>Действует с</span>
@@ -295,74 +299,113 @@
 	</main>
 
 <style>
-	:global(*) { box-sizing: border-box; }
-	:global(body) { margin: 0; background: #f7f3eb; color: #25332e; font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", sans-serif; }
-	.finance-shell { width: min(100% - 2rem, 76rem); margin: 0 auto; padding: 3rem 0 5rem; }
-	.hero { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
-	.hero h1 { margin: .4rem 0 1rem; font-size: clamp(2.8rem, 8vw, 5.5rem); letter-spacing: -.07em; line-height: .95; }
-	.hero p:not(.eyebrow), .history-heading p, .journal-heading p, .empty p, .cancel-form p { color: #6d7a73; line-height: 1.6; }
-	.eyebrow { margin: 0; color: #3f765d; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-	nav { display: flex; flex-wrap: wrap; gap: .65rem; }
-	nav a { color: #25332e; font-weight: 800; }
-	.notice { margin: 0 0 1.5rem; padding: .85rem 1rem; border-radius: .7rem; font-weight: 800; }
-	.notice.success { background: #dcebdd; color: #2f6b4f; }
-	.notice.error { background: #f8e2dd; color: #8e3f2b; }
-	.class-list { display: grid; gap: 1.5rem; }
-	.class-card, .empty { padding: clamp(1rem, 3vw, 2rem); border: 1px solid #d9e0d8; border-radius: 1rem; background: #fffdf8; box-shadow: 0 16px 36px rgba(39, 61, 48, .08); }
-	.class-header, .history-heading { display: flex; align-items: start; justify-content: space-between; gap: 1.5rem; }
-	.class-header { padding-bottom: 1.25rem; border-bottom: 1px solid #e5e9e2; }
-	h2, h3 { margin: .4rem 0 .6rem; letter-spacing: -.035em; }
-	code { color: #6d7a73; font-size: .78rem; }
-	.current-price { display: grid; gap: .25rem; margin: 0; padding: .75rem 1rem; border-radius: .75rem; background: #e9f2e9; text-align: right; }
-	.current-price span { color: #6d7a73; font-size: .75rem; }
-	.current-price strong { color: #2f6b4f; font-size: 1.35rem; }
-	.forms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-	.price-form { display: grid; gap: .8rem; padding: 1rem; border: 1px solid #d9e0d8; border-radius: .8rem; background: #f7faf5; }
-	.price-form h3 { margin-top: 0; font-size: 1.05rem; }
-	.price-form label { display: grid; gap: .35rem; color: #6d7a73; font-size: .8rem; font-weight: 800; }
-	.price-form input, .price-form select, .price-form button { min-height: 2.7rem; border: 1px solid #b8c8ba; border-radius: .6rem; padding: .6rem .7rem; font: inherit; }
-	.price-form input, .price-form select { background: #fffdf8; color: #25332e; }
-	.price-form button { border-color: #3f765d; background: #3f765d; color: white; font-weight: 800; cursor: pointer; }
-	.price-form button:disabled { cursor: not-allowed; opacity: .5; }
-	.history { margin-top: 1.5rem; }
-	.history-heading { align-items: end; }
-	.history-heading p { margin: 0; font-size: .85rem; }
-	.table-wrap { overflow-x: auto; border: 1px solid #d9e0d8; border-radius: .75rem; }
-	table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-	th, td { padding: .75rem .8rem; border-bottom: 1px solid #e5e9e2; text-align: left; vertical-align: top; white-space: nowrap; }
-	th { color: #3f765d; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
+	.finance-shell {
+		--surface: var(--ui-surface, #fff);
+		--ink: var(--ui-text, #202a2d);
+		--muted: var(--ui-muted, #58666b);
+		--line: var(--ui-line, #e3eaed);
+		--field-line: #7c9299;
+		--accent: var(--ui-accent, #2fa5bf);
+		--accent-soft: var(--ui-accent-soft, #edf7f9);
+		--warn-soft: var(--ui-warn-soft, #fbf4e9);
+		--danger: var(--ui-danger, #a23d42);
+		--danger-soft: #fbeff0;
+		--radius: var(--ui-radius, 12px);
+		--font: var(--ui-font, system-ui, sans-serif);
+		width: min(calc(100% - 2rem), 80rem);
+		margin: 0 auto;
+		padding: 1.75rem 0 5rem;
+		color: var(--ink);
+		font-family: var(--font);
+	}
+	.hero { display: grid; gap: 1.25rem; margin-bottom: 1.75rem; }
+	.eyebrow { margin: 0; color: var(--ui-accent-ink); font-size: .72rem; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
+	h1 { margin: .5rem 0 .7rem; font-size: clamp(1.5rem, 4vw, 1.75rem); letter-spacing: -.04em; line-height: 1.1; }
+	h2 { margin: .25rem 0 0; font-size: clamp(1.125rem, 3vw, 1.25rem); letter-spacing: -.025em; }
+	h3, h4 { margin: 0; letter-spacing: -.02em; }
+	h3 { font-size: 1rem; }
+	h4 { font-size: .95rem; }
+	.hero > div > p:not(.eyebrow), .history-heading p, .journal-heading p, .empty p, .cancel-form p { margin: 0; color: var(--muted); line-height: 1.55; }
+	.hero > div > p:not(.eyebrow) { max-width: 48rem; font-size: 1rem; }
+	nav { display: flex; flex-wrap: wrap; gap: .6rem; }
+	nav a { display: inline-flex; min-height: 2.75rem; align-items: center; padding: .65rem .85rem; border: 1px solid var(--accent); border-radius: 8px; color: var(--ui-accent-ink); font-weight: 750; text-decoration: none; }
+	:where(a, button, input, select):focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+	.notice { margin: 0 0 1.25rem; padding: .9rem 1rem; border: 1px solid transparent; border-radius: 8px; font-weight: 700; }
+	.notice.success { border-color: color-mix(in srgb, var(--accent) 22%, var(--line)); background: var(--accent-soft); color: var(--ui-accent-ink); }
+	.notice.error { border-color: color-mix(in srgb, var(--danger) 24%, var(--line)); background: var(--danger-soft); color: var(--danger); }
+	.class-list { display: grid; gap: 1rem; min-width: 0; }
+	.class-card, .table-wrap, .price-form, .forms, .journal-card { min-width: 0; }
+	.class-card, .empty { padding: clamp(1.1rem, 3vw, 1.5rem); border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(135deg, var(--surface), var(--accent-soft)); }
+	.class-header, .history-heading, .journal-heading, .journal-card-heading { display: flex; flex-direction: column; align-items: start; justify-content: space-between; gap: 1rem; }
+	.class-header { padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+	code { color: var(--muted); font: .78rem/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace; overflow-wrap: anywhere; }
+	.current-price { display: grid; gap: .25rem; margin: 0; padding: .7rem .85rem; border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--line)); border-radius: 8px; background: var(--accent-soft); text-align: right; }
+	.current-price span { color: var(--muted); font-size: .75rem; }
+	.current-price strong { color: var(--ui-accent-ink); font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+	.forms { display: grid; gap: .85rem; margin-top: 1rem; }
+	.price-form { display: grid; gap: .75rem; align-content: start; padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(135deg, var(--surface), var(--ui-bg, #f7f9fa)); }
+	.price-form h3 { margin-bottom: .15rem; }
+	.price-form label, .payment-form label:not(.confirmation) { display: grid; gap: .35rem; color: var(--muted); font-size: .82rem; font-weight: 700; }
+	.price-form input, .price-form select, .price-form button, .payment-form input[type="number"], .payment-form input[type="date"], .payment-form button {
+		width: 100%;
+		min-height: 2.75rem;
+		padding: .65rem .75rem;
+		border: 1px solid var(--field-line);
+		border-radius: 8px;
+		font: inherit;
+		font-size: 1rem;
+	}
+	.price-form input, .price-form select, .payment-form input[type="number"], .payment-form input[type="date"] { background: var(--surface); color: var(--ink); }
+	.price-form button, .payment-form button { border-color: var(--accent); background: var(--accent); color: var(--ui-on-accent); cursor: pointer; font-weight: 750; transition: opacity 140ms ease, background-color 140ms ease; }
+	.price-form button:hover:not(:disabled), .payment-form button:hover:not(:disabled) { opacity: .9; }
+	.price-form button:disabled, .payment-form button:disabled { cursor: not-allowed; opacity: .5; }
+	.history { margin-top: 1.25rem; }
+	.history-heading { align-items: end; margin-bottom: .75rem; }
+	.history-heading p, .journal-heading p { max-width: 32rem; font-size: .84rem; }
+	.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+	table { width: 100%; min-width: 42rem; border-collapse: collapse; font-size: .86rem; }
+	th, td { padding: .7rem .75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; white-space: nowrap; }
+	th { color: var(--ui-accent-ink); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
+	th:nth-child(2), td:nth-child(2) { text-align: right; font-variant-numeric: tabular-nums; }
 	tbody tr:last-child td { border-bottom: 0; }
-	.empty-history { margin: 0; padding: 1rem; border: 1px dashed #b8c8ba; border-radius: .7rem; color: #6d7a73; }
-	.journal { margin-top: 2rem; padding: clamp(1rem, 3vw, 2rem); border: 1px solid #d9e0d8; border-radius: 1rem; background: #eff5ed; }
-	.journal-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.25rem; }
+	.empty-history { margin: 0; padding: .9rem 1rem; border: 1px dashed var(--field-line); border-radius: 8px; color: var(--muted); }
+	.journal { margin-top: 1.5rem; padding: clamp(1.1rem, 3vw, 1.5rem); border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(135deg, var(--accent-soft), var(--surface)); }
+	.journal-heading { align-items: end; margin-bottom: 1rem; }
 	.journal-heading h2 { margin-bottom: 0; }
-	.journal-heading p { margin: 0; font-size: .85rem; }
-	.journal-list { display: grid; gap: 1rem; }
-	.journal-card { padding: 1rem; border: 1px solid #d9e0d8; border-radius: .8rem; background: #fffdf8; }
-	.journal-card-heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+	.journal-list { display: grid; gap: .85rem; }
+	.journal-card { padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 	.journal-card-heading h3 { margin-bottom: .2rem; }
-	.journal-card-heading p { margin: 0; color: #6d7a73; }
-	.payment-status { padding: .4rem .65rem; border-radius: 999px; background: #dcebdd; color: #2f6b4f; font-size: .78rem; white-space: nowrap; }
-	.payment-status.cancelled { background: #f8e2dd; color: #8e3f2b; }
-	.payment-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; margin: 1rem 0 0; }
-	.payment-facts div { padding: .7rem; border-radius: .65rem; background: #f3f7f0; }
-	.payment-facts dt { color: #6d7a73; font-size: .72rem; font-weight: 800; }
-	.payment-facts dd { margin: .25rem 0 0; font-weight: 800; }
-	.journal-details { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 1rem; margin-top: 1rem; }
-	.journal-details section { padding-top: .8rem; border-top: 1px solid #e5e9e2; }
-	.journal-details h4, .payment-form h4 { margin: 0 0 .6rem; letter-spacing: -.02em; }
+	.journal-card-heading p { margin: 0; color: var(--muted); }
+	.payment-status { padding: .4rem .65rem; border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line)); border-radius: 999px; background: var(--accent-soft); color: var(--ui-accent-ink); font-size: .78rem; font-weight: 750; white-space: nowrap; }
+	.payment-status.cancelled { border-color: color-mix(in srgb, var(--danger) 24%, var(--line)); background: var(--danger-soft); color: var(--danger); }
+	.payment-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; margin: 1rem 0 0; }
+	.payment-facts div { padding: .7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--ui-bg, #f7f9fa); }
+	.payment-facts dt { color: var(--muted); font-size: .72rem; font-weight: 700; }
+	.payment-facts dd { margin: .25rem 0 0; font-weight: 750; font-variant-numeric: tabular-nums; text-align: right; }
+	.journal-details { display: grid; gap: .85rem; margin-top: 1rem; }
+	.journal-details section { padding-top: .8rem; border-top: 1px solid var(--line); }
+	.journal-details h4, .payment-form h4 { margin: 0 0 .6rem; }
 	.fact-list, .audit-list { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
 	.fact-list li { display: flex; justify-content: space-between; gap: .75rem; }
-	.audit-list li { display: grid; gap: .15rem; padding: .5rem .65rem; border-radius: .55rem; background: #f3f7f0; font-size: .8rem; }
-	.audit-list span, .audit-list small, .muted { color: #6d7a73; }
-	.payment-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
-	.payment-form { display: grid; gap: .7rem; padding: 1rem; border: 1px solid #d9e0d8; border-radius: .7rem; background: #f7faf5; }
-	.payment-form label:not(.confirmation) { display: grid; gap: .35rem; color: #6d7a73; font-size: .8rem; font-weight: 800; }
-	.payment-form input[type="number"], .payment-form input[type="date"], .payment-form button { min-height: 2.6rem; border: 1px solid #b8c8ba; border-radius: .6rem; padding: .6rem .7rem; font: inherit; }
-	.payment-form input[type="number"], .payment-form input[type="date"] { background: #fffdf8; color: #25332e; }
-	.payment-form button { border-color: #3f765d; background: #3f765d; color: white; font-weight: 800; cursor: pointer; }
-	.cancel-form button { border-color: #a94d36; background: #a94d36; }
-	.confirmation { display: flex; align-items: start; gap: .5rem; color: #25332e; font-size: .8rem; font-weight: 700; }
-	.confirmation input { margin-top: .15rem; }
-	@media (max-width: 48rem) { .hero, .class-header, .history-heading, .journal-heading, .journal-card-heading { align-items: start; flex-direction: column; } .current-price { text-align: left; } .forms, .payment-actions, .journal-details { grid-template-columns: 1fr; } .payment-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	.audit-list li { display: grid; gap: .15rem; padding: .55rem .65rem; border-radius: 6px; background: var(--ui-bg, #f7f9fa); font-size: .8rem; }
+	.audit-list span, .audit-list small, .muted { color: var(--muted); }
+	.payment-actions { display: grid; gap: .85rem; margin-top: 1rem; }
+	.payment-form { display: grid; gap: .7rem; padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(135deg, var(--surface), var(--ui-bg, #f7f9fa)); }
+	.payment-form input[type="number"], .payment-form input[type="date"] { color: var(--ink); }
+	.cancel-form { background: var(--warn-soft); }
+	.cancel-form button { border-color: var(--danger); background: var(--danger); color: var(--surface); }
+	.confirmation { display: flex; align-items: start; gap: .5rem; color: var(--ink); font-size: .82rem; font-weight: 700; }
+	.confirmation input { width: 1.1rem; min-height: 1.1rem; margin-top: .2rem; accent-color: var(--accent); }
+
+	@media (min-width: 42rem) {
+		.class-header, .history-heading, .journal-heading, .journal-card-heading { flex-direction: row; }
+		.hero { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+		.forms, .payment-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.journal-details { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+		.payment-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.price-form button, .payment-form button { transition: none; }
+	}
 </style>

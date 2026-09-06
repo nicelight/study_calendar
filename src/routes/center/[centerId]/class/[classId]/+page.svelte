@@ -43,16 +43,14 @@
 </main>
 
 <style>
-	:global(*) { box-sizing: border-box; }
-	:global(body) { margin: 0; background: #f7f3eb; color: #25332e; font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", sans-serif; }
-	.class-entry-shell { width: min(100% - 2rem, 44rem); margin: 0 auto; padding: 3rem 0 5rem; }
-	.eyebrow, dt { color: #3f765d; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-	h1 { margin: .4rem 0 1rem; font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: -.07em; line-height: .95; }
-	.intro { color: #6d7a73; line-height: 1.6; }
+	.class-entry-shell { width: min(100% - 2rem, 44rem); margin: 0 auto; padding: 1.75rem 0 3rem; }
+	.eyebrow, dt { color: var(--ui-accent-ink); font-size: .8125rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+	h1 { margin: .4rem 0 1rem; font-size: clamp(1.5rem, 4vw, 1.75rem); letter-spacing: -.035em; line-height: 1.2; }
+	.intro { color: var(--ui-muted); line-height: 1.6; }
 	dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 2rem 0 0; }
-	dl div { padding: 1rem; border: 1px solid #d9e0d8; border-radius: .8rem; background: #fffdf8; }
-	dd { margin: .4rem 0 0; font-size: 1.1rem; font-weight: 800; }
+	dl div { padding: 1rem; border: 1px solid var(--ui-line); border-radius: .8rem; background: var(--ui-surface); }
+	dd { margin: .4rem 0 0; font-size: 1.1rem; font-weight: 600; }
 	.class-actions { display: flex; margin-top: 2rem; }
-	.button { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; padding: .65rem .9rem; border: 1px solid #3f765d; border-radius: .65rem; background: #3f765d; color: #fffdf8; font-weight: 800; text-decoration: none; }
+	.button { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; padding: .65rem .9rem; border: 1px solid var(--ui-accent); border-radius: .65rem; background: var(--ui-accent); color: var(--ui-on-accent); font-weight: 600; text-decoration: none; }
 	@media (max-width: 32rem) { dl { grid-template-columns: 1fr; } }
 </style>

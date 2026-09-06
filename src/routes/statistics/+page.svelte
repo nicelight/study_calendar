@@ -18,6 +18,12 @@
 	let classSort = $state<SortState<ClassSortKey>>({ key: 'className', direction: 'ascending' });
 
 	const textCollator = new Intl.Collator('ru', { sensitivity: 'base', numeric: true });
+	function activateSortWithSpace(event: KeyboardEvent) {
+		if (event.key === ' ') {
+			event.preventDefault();
+			(event.currentTarget as HTMLAnchorElement).click();
+		}
+	}
 	const sortedStudents = $derived(sortRows(data.registry.students, studentSort, studentSortValue));
 	const sortedTeachers = $derived(sortRows(data.registry.teachers, teacherSort, teacherSortValue));
 	const sortedClasses = $derived(sortRows(data.registry.classes, classSort, classSortValue));
@@ -109,14 +115,14 @@
 		<div class="table-wrap">
 			<table>
 				<thead><tr>
-					<th aria-sort={sortAria(studentSort, 'fullName')}><a role="button" href="#students-heading" aria-label={sortLabel('ФИО', studentSort, 'fullName')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'fullName'); }}>ФИО <span>{sortMark(studentSort, 'fullName')}</span></a></th>
-					<th aria-sort={sortAria(studentSort, 'registeredAt')}><a role="button" href="#students-heading" aria-label={sortLabel('Регистрация', studentSort, 'registeredAt')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'registeredAt'); }}>Регистрация <span>{sortMark(studentSort, 'registeredAt')}</span></a></th>
-					<th aria-sort={sortAria(studentSort, 'className')}><a role="button" href="#students-heading" aria-label={sortLabel('Класс', studentSort, 'className')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'className'); }}>Класс <span>{sortMark(studentSort, 'className')}</span></a></th>
-					<th aria-sort={sortAria(studentSort, 'parentNames')}><a role="button" href="#students-heading" aria-label={sortLabel('Родитель', studentSort, 'parentNames')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'parentNames'); }}>Родитель <span>{sortMark(studentSort, 'parentNames')}</span></a></th>
-					<th aria-sort={sortAria(studentSort, 'teacherNames')}><a role="button" href="#students-heading" aria-label={sortLabel('Teacher', studentSort, 'teacherNames')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'teacherNames'); }}>Teacher <span>{sortMark(studentSort, 'teacherNames')}</span></a></th>
-					<th aria-sort={sortAria(studentSort, 'paymentCapabilityPercentage')}><a role="button" href="#students-heading" aria-label={sortLabel('Payment capability', studentSort, 'paymentCapabilityPercentage')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'paymentCapabilityPercentage'); }}>Payment capability <span>{sortMark(studentSort, 'paymentCapabilityPercentage')}</span></a></th>
-					<th aria-sort={sortAria(studentSort, 'attendancePercentage')}><a role="button" href="#students-heading" aria-label={sortLabel('Attendance', studentSort, 'attendancePercentage')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'attendancePercentage'); }}>Attendance <span>{sortMark(studentSort, 'attendancePercentage')}</span></a></th>
-					<th aria-sort={sortAria(studentSort, 'institutionName')}><a role="button" href="#students-heading" aria-label={sortLabel('Institution', studentSort, 'institutionName')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'institutionName'); }}>Institution <span>{sortMark(studentSort, 'institutionName')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'fullName')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('ФИО', studentSort, 'fullName')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'fullName'); }}>ФИО <span>{sortMark(studentSort, 'fullName')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'registeredAt')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Регистрация', studentSort, 'registeredAt')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'registeredAt'); }}>Регистрация <span>{sortMark(studentSort, 'registeredAt')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'className')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Класс', studentSort, 'className')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'className'); }}>Класс <span>{sortMark(studentSort, 'className')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'parentNames')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Родитель', studentSort, 'parentNames')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'parentNames'); }}>Родитель <span>{sortMark(studentSort, 'parentNames')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'teacherNames')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Teacher', studentSort, 'teacherNames')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'teacherNames'); }}>Teacher <span>{sortMark(studentSort, 'teacherNames')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'paymentCapabilityPercentage')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Payment capability', studentSort, 'paymentCapabilityPercentage')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'paymentCapabilityPercentage'); }}>Payment capability <span>{sortMark(studentSort, 'paymentCapabilityPercentage')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'attendancePercentage')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Attendance', studentSort, 'attendancePercentage')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'attendancePercentage'); }}>Attendance <span>{sortMark(studentSort, 'attendancePercentage')}</span></a></th>
+					<th aria-sort={sortAria(studentSort, 'institutionName')}><a role="button" href="#students-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Institution', studentSort, 'institutionName')} onclick={(event) => { event.preventDefault(); studentSort = toggleSort(studentSort, 'institutionName'); }}>Institution <span>{sortMark(studentSort, 'institutionName')}</span></a></th>
 				</tr></thead>
 				<tbody>
 					{#each sortedStudents as student}
@@ -134,12 +140,12 @@
 		<div class="table-wrap">
 			<table>
 				<thead><tr>
-					<th aria-sort={sortAria(teacherSort, 'fullName')}><a role="button" href="#teachers-heading" aria-label={sortLabel('ФИО', teacherSort, 'fullName')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'fullName'); }}>ФИО <span>{sortMark(teacherSort, 'fullName')}</span></a></th>
-					<th aria-sort={sortAria(teacherSort, 'registeredAt')}><a role="button" href="#teachers-heading" aria-label={sortLabel('Регистрация', teacherSort, 'registeredAt')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'registeredAt'); }}>Регистрация <span>{sortMark(teacherSort, 'registeredAt')}</span></a></th>
-					<th aria-sort={sortAria(teacherSort, 'classNames')}><a role="button" href="#teachers-heading" aria-label={sortLabel('Классы', teacherSort, 'classNames')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'classNames'); }}>Классы <span>{sortMark(teacherSort, 'classNames')}</span></a></th>
-					<th aria-sort={sortAria(teacherSort, 'attendancePercentage')}><a role="button" href="#teachers-heading" aria-label={sortLabel('Attendance', teacherSort, 'attendancePercentage')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'attendancePercentage'); }}>Attendance <span>{sortMark(teacherSort, 'attendancePercentage')}</span></a></th>
-					<th aria-sort={sortAria(teacherSort, 'institutionName')}><a role="button" href="#teachers-heading" aria-label={sortLabel('Institution', teacherSort, 'institutionName')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'institutionName'); }}>Institution <span>{sortMark(teacherSort, 'institutionName')}</span></a></th>
-					<th aria-sort={sortAria(teacherSort, 'studentCount')}><a role="button" href="#teachers-heading" aria-label={sortLabel('Students', teacherSort, 'studentCount')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'studentCount'); }}>Students <span>{sortMark(teacherSort, 'studentCount')}</span></a></th>
+					<th aria-sort={sortAria(teacherSort, 'fullName')}><a role="button" href="#teachers-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('ФИО', teacherSort, 'fullName')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'fullName'); }}>ФИО <span>{sortMark(teacherSort, 'fullName')}</span></a></th>
+					<th aria-sort={sortAria(teacherSort, 'registeredAt')}><a role="button" href="#teachers-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Регистрация', teacherSort, 'registeredAt')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'registeredAt'); }}>Регистрация <span>{sortMark(teacherSort, 'registeredAt')}</span></a></th>
+					<th aria-sort={sortAria(teacherSort, 'classNames')}><a role="button" href="#teachers-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Классы', teacherSort, 'classNames')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'classNames'); }}>Классы <span>{sortMark(teacherSort, 'classNames')}</span></a></th>
+					<th aria-sort={sortAria(teacherSort, 'attendancePercentage')}><a role="button" href="#teachers-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Attendance', teacherSort, 'attendancePercentage')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'attendancePercentage'); }}>Attendance <span>{sortMark(teacherSort, 'attendancePercentage')}</span></a></th>
+					<th aria-sort={sortAria(teacherSort, 'institutionName')}><a role="button" href="#teachers-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Institution', teacherSort, 'institutionName')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'institutionName'); }}>Institution <span>{sortMark(teacherSort, 'institutionName')}</span></a></th>
+					<th aria-sort={sortAria(teacherSort, 'studentCount')}><a role="button" href="#teachers-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Students', teacherSort, 'studentCount')} onclick={(event) => { event.preventDefault(); teacherSort = toggleSort(teacherSort, 'studentCount'); }}>Students <span>{sortMark(teacherSort, 'studentCount')}</span></a></th>
 				</tr></thead>
 				<tbody>
 					{#each sortedTeachers as teacher}
@@ -157,10 +163,10 @@
 		<div class="table-wrap">
 			<table>
 				<thead><tr>
-					<th aria-sort={sortAria(classSort, 'className')}><a role="button" href="#classes-heading" aria-label={sortLabel('Название', classSort, 'className')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'className'); }}>Название <span>{sortMark(classSort, 'className')}</span></a></th>
-					<th aria-sort={sortAria(classSort, 'institutionName')}><a role="button" href="#classes-heading" aria-label={sortLabel('Institution', classSort, 'institutionName')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'institutionName'); }}>Institution <span>{sortMark(classSort, 'institutionName')}</span></a></th>
-					<th aria-sort={sortAria(classSort, 'studentCount')}><a role="button" href="#classes-heading" aria-label={sortLabel('Students', classSort, 'studentCount')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'studentCount'); }}>Students <span>{sortMark(classSort, 'studentCount')}</span></a></th>
-					<th aria-sort={sortAria(classSort, 'teacherNames')}><a role="button" href="#classes-heading" aria-label={sortLabel('Teacher', classSort, 'teacherNames')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'teacherNames'); }}>Teacher <span>{sortMark(classSort, 'teacherNames')}</span></a></th>
+					<th aria-sort={sortAria(classSort, 'className')}><a role="button" href="#classes-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Название', classSort, 'className')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'className'); }}>Название <span>{sortMark(classSort, 'className')}</span></a></th>
+					<th aria-sort={sortAria(classSort, 'institutionName')}><a role="button" href="#classes-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Institution', classSort, 'institutionName')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'institutionName'); }}>Institution <span>{sortMark(classSort, 'institutionName')}</span></a></th>
+					<th aria-sort={sortAria(classSort, 'studentCount')}><a role="button" href="#classes-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Students', classSort, 'studentCount')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'studentCount'); }}>Students <span>{sortMark(classSort, 'studentCount')}</span></a></th>
+					<th aria-sort={sortAria(classSort, 'teacherNames')}><a role="button" href="#classes-heading" onkeydown={activateSortWithSpace} aria-label={sortLabel('Teacher', classSort, 'teacherNames')} onclick={(event) => { event.preventDefault(); classSort = toggleSort(classSort, 'teacherNames'); }}>Teacher <span>{sortMark(classSort, 'teacherNames')}</span></a></th>
 				</tr></thead>
 				<tbody>
 					{#each sortedClasses as classRow}
@@ -175,23 +181,25 @@
 </main>
 
 <style>
-	:global(*) { box-sizing: border-box; }
-	:global(body) { margin: 0; background: #f7f3eb; color: #25332e; font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", sans-serif; }
-	.statistics-shell { width: min(100% - 2rem, 74rem); margin: 0 auto; padding: 3rem 0 5rem; }
+	.statistics-shell { width: min(100% - 2rem, 74rem); margin: 0 auto; padding: 1.75rem 0 3rem; }
 	.hero { max-width: 48rem; margin-bottom: 2.5rem; }
-	.eyebrow { margin: 0 0 .55rem; color: #3f765d; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+	.eyebrow { margin: 0 0 .55rem; color: var(--ui-accent-ink); font-size: .8125rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 	h1, h2, p { margin-top: 0; }
-	h1 { margin-bottom: 1rem; font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: -.07em; line-height: .95; }
-	h2 { margin: 2rem 0 .75rem; font-size: clamp(1.5rem, 4vw, 2.2rem); letter-spacing: -.04em; }
-	.hero p:last-child { color: #6d7a73; line-height: 1.6; }
-	.table-wrap { overflow-x: auto; border: 1px solid #d9e0d8; border-radius: 1rem; background: #fffdf8; box-shadow: 0 16px 36px rgba(39, 61, 48, .08); }
+	h1 { margin-bottom: 1rem; font-size: clamp(1.5rem, 4vw, 1.75rem); letter-spacing: -.035em; line-height: 1.2; }
+	h2 { margin: 2rem 0 .75rem; font-size: 1.125rem; letter-spacing: -.04em; }
+	.hero p:last-child { color: var(--ui-muted); line-height: 1.6; }
+	.table-wrap { overflow-x: auto; border: 1px solid var(--ui-line); border-radius: var(--ui-radius); background: var(--ui-surface);  }
 	table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-	th, td { padding: .85rem 1rem; border-bottom: 1px solid #e5e9e2; text-align: left; vertical-align: top; white-space: nowrap; }
-	th { color: #3f765d; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; }
-	th [role='button'] { display: inline-flex; gap: .4rem; align-items: center; color: inherit; font: inherit; font-weight: 800; letter-spacing: inherit; text-decoration: none; text-transform: inherit; cursor: pointer; }
-	th [role='button']:focus-visible { outline: 2px solid #3f765d; outline-offset: 3px; border-radius: .2rem; }
+	th, td { padding: .85rem 1rem; border-bottom: 1px solid var(--ui-line); text-align: left; vertical-align: top; white-space: nowrap; }
+	th { color: var(--ui-accent-ink); font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; }
+	th [role='button'] { display: inline-flex; gap: .4rem; align-items: center; color: inherit; font: inherit; font-weight: 600; letter-spacing: inherit; text-decoration: none; text-transform: inherit; cursor: pointer; }
+	th [role='button']:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 3px; border-radius: .2rem; }
 	th [role='button'] span { font-size: .95rem; line-height: 1; }
 	tbody tr:last-child td { border-bottom: 0; }
 	.stacked-value { display: block; }
-	.empty { color: #6d7a73; text-align: center; }
+	.empty { color: var(--ui-muted); text-align: center; }
+	table { font-variant-numeric: tabular-nums; }
+	th [role='button'] { min-height: 44px; }
+	th[aria-sort='ascending'], th[aria-sort='descending'] { background: var(--ui-accent-soft); }
+	tbody tr:hover { background: #f5f9fa; }
 </style>

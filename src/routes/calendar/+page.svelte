@@ -87,13 +87,19 @@
 <main class="calendar-shell" data-class-id={data.classId} data-role={data.role}>
 	<header class="calendar-header">
 		<div>
-			<p class="eyebrow">Календарь класса</p>
+			<p class="eyebrow"><span class="eyebrow-marker" aria-hidden="true"></span>Календарь класса</p>
 			<h1>{data.className}</h1>
 			<p class="intro">Формат: {modeLabel(data.mode)}</p>
 		</div>
 
 		<label class="date-picker">
-			<span>Перейти к дате (дд.мм.гггг)</span>
+			<span class="date-label">
+				<svg aria-hidden="true" viewBox="0 0 20 20" focusable="false">
+					<rect x="3.25" y="4.5" width="13.5" height="12" rx="1.75" fill="none" stroke="currentColor" stroke-width="1.5" />
+					<path d="M6.5 3v3M13.5 3v3M3.5 8h13" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" />
+				</svg>
+				Перейти к дате (дд.мм.гггг)
+			</span>
 			<input
 				aria-label="Выбранная дата"
 				type="text"
@@ -112,10 +118,11 @@
 	<section class="calendar-card" aria-labelledby="selected-day-title">
 		<header class="calendar-card-header">
 			<div>
-				<p class="eyebrow">Выбранный день</p>
+				<p class="eyebrow"><span class="eyebrow-marker" aria-hidden="true"></span>Выбранный день</p>
 				<h2 id="selected-day-title">{selectedDateLabel}</h2>
+				<p class="calendar-card-note">Занятия и свободные дни вокруг выбранной даты</p>
 			</div>
-			<p class="legend"><span aria-hidden="true">✦</span> Занятие</p>
+			<p class="legend"><span class="lesson-dot" aria-hidden="true"></span>Занятие</p>
 		</header>
 
 		<div class="weeks" aria-label="Недели календаря">
@@ -141,7 +148,7 @@
 									<span class="day-number">{day.dayNumber}</span>
 								</a>
 								{#if day.isLesson}
-									<span class="day-state"><span aria-hidden="true">✦</span> Урок</span>
+									<span class="day-state"><span class="lesson-dot" aria-hidden="true"></span>Урок</span>
 									{#each lessonsByDate.get(day.date) ?? [] as lesson (lesson.lessonId)}
 										<a
 											class="lesson-link"
@@ -187,48 +194,379 @@
 </main>
 
 <style>
-	:global(*) { box-sizing: border-box; }
-	:global(body) { margin: 0; background: #f7f3eb; color: #25332e; font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", sans-serif; }
-	.calendar-shell { width: min(100% - 2rem, 74rem); margin: 0 auto; padding: 3rem 0 5rem; }
-	.calendar-header, .calendar-card-header { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; }
-	.eyebrow { margin: 0 0 .55rem; color: #3f765d; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-	h1, h2, h3, p { margin-top: 0; }
-	h1 { margin-bottom: 1rem; font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: -.07em; line-height: .95; }
-	.intro, .legend { color: #6d7a73; line-height: 1.6; }
-	.date-picker { display: grid; min-width: 13.5rem; gap: .45rem; padding: .75rem .9rem; border: 1px solid #d9e0d8; border-radius: .75rem; background: #fffdf8; color: #6d7a73; font-size: .74rem; font-weight: 800; }
-	.date-picker input { min-height: 2.2rem; border: 0; background: transparent; color: #25332e; font: inherit; font-size: 1rem; font-weight: 800; }
-	.calendar-card { margin-top: 2rem; padding: clamp(1rem, 3vw, 2.25rem); border: 1px solid #d9e0d8; border-radius: 1.25rem; background: #fffdf8; box-shadow: 0 20px 50px rgba(39, 61, 48, .09); }
-	.calendar-card-header { padding-bottom: 1.5rem; border-bottom: 1px solid #d9e0d8; }
-	h2 { margin-bottom: 0; font-size: clamp(1.5rem, 3vw, 2.25rem); letter-spacing: -.04em; }
-	.weeks { display: grid; gap: 1.75rem; padding-top: 1.75rem; }
-	.week h3 { margin-bottom: .7rem; color: #6d7a73; font-size: .8rem; letter-spacing: .03em; }
-	.week-grid { display: grid; grid-template-columns: var(--week-columns); gap: .45rem; }
-	.day { display: flex; min-width: 0; min-height: 7.2rem; flex-direction: column; gap: .38rem; padding: .7rem; border: 1px solid #d9e0d8; border-radius: .8rem; background: #fbfaf5; color: #25332e; }
-	.day:hover { border-color: #3f765d; }
-	.lesson-day { border-color: rgba(185, 104, 78, .58); background: #dcebdd; }
-	.paid-lesson { border-color: #5a9b6d; background: #dcebdd; }
-	.unpaid-lesson { border-color: #c9934d; background: #fff0d8; }
-	.selected-day { box-shadow: inset 0 0 0 3px #b9684e; }
-	.day-link { display: flex; min-width: 0; flex-direction: column; gap: .38rem; color: #25332e; text-decoration: none; }
-	.weekday { color: #6d7a73; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-	.day-number { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -.07em; line-height: 1; }
-	.day-state { color: #b9684e; font-size: .7rem; font-weight: 900; }
-	.free-state { color: #6d7a73; font-weight: 700; }
-	.lesson-link { display: grid; gap: .25rem; padding: .42rem; border: 1px solid #d9e0d8; border-radius: .55rem; background: #fffdf8; color: #25332e; text-decoration: none; }
-	.lesson-link:hover { border-color: #3f765d; background: #f2f7f0; }
-	.lesson-action { color: #3f765d; font-size: .68rem; font-weight: 900; }
-	.payment-state { font-size: .7rem; font-weight: 900; }
-	.paid-lesson .payment-state { color: #2f6b4f; }
-	.unpaid-lesson .payment-state { color: #a45b22; }
-	.payment-markers { display: grid; gap: .3rem; margin-top: auto; padding-top: .35rem; border-top: 1px solid #d9e0d8; }
-	.payment-marker-title { color: #3f765d; font-size: .68rem; font-weight: 900; }
-	.payment-marker { display: grid; gap: .1rem; padding: .35rem; border: 1px solid #b8c8ba; border-radius: .45rem; background: #eef5ec; color: #25332e; font-size: .68rem; font-weight: 800; }
-	.payment-marker time { color: #6d7a73; font-size: .62rem; font-weight: 700; }
-	.date-picker input:focus-visible, .day-link:focus-visible, .lesson-link:focus-visible { outline: 3px solid #b9684e; outline-offset: 3px; }
+	main.calendar-shell {
+		box-sizing: border-box;
+		width: min(100% - 2rem, 74rem);
+		margin: 0 auto;
+		padding: 1.75rem 0 4.5rem;
+		color: var(--ui-text);
+		font-family: var(--ui-font);
+	}
+
+	.calendar-header,
+	.calendar-card-header {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		gap: 2rem;
+	}
+
+	.eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0 0 0.65rem;
+		color: var(--ui-accent-ink);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		line-height: 1.2;
+		text-transform: uppercase;
+	}
+
+	.eyebrow-marker {
+		display: inline-block;
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 50%;
+		background: var(--ui-accent);
+	}
+
+	h1,
+	h2,
+	h3,
+	p {
+		margin-top: 0;
+	}
+
+	h1 {
+		margin-bottom: 0.7rem;
+		font-size: clamp(1.5rem, 4vw, 1.75rem);
+		font-weight: 780;
+		letter-spacing: -0.055em;
+		line-height: 1.1;
+	}
+
+	.intro,
+	.legend {
+		color: var(--ui-muted);
+		line-height: 1.5;
+	}
+
+	.intro {
+		font-size: 0.92rem;
+	}
+
+	.date-picker {
+		display: grid;
+		flex: 0 0 min(100%, 15rem);
+		min-width: 13.5rem;
+		gap: 0.55rem;
+		padding: 0.9rem 1rem 0.85rem;
+		border: 1px solid var(--ui-line);
+		border-radius: var(--ui-radius);
+		background-color: var(--ui-surface);
+		background-image: linear-gradient(145deg, var(--ui-surface), #f2f8fa);
+		color: var(--ui-muted);
+		font-size: 0.74rem;
+		font-weight: 750;
+	}
+
+	.date-label {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		line-height: 1.25;
+	}
+
+	.date-label svg {
+		width: 1rem;
+		height: 1rem;
+		flex: 0 0 auto;
+	}
+
+	.date-picker input {
+		width: 100%;
+		min-height: 2.75rem;
+		border: 0;
+		border-bottom: 1px solid var(--ui-line);
+		background: transparent;
+		color: var(--ui-text);
+		font: inherit;
+		font-size: 1rem;
+		font-weight: 800;
+	}
+
+	.date-picker:focus-within {
+		border-color: var(--ui-accent);
+	}
+
+	.calendar-card {
+		margin-top: 1.75rem;
+		padding: clamp(1rem, 3vw, 2.25rem);
+		border: 1px solid var(--ui-line);
+		border-radius: var(--ui-radius);
+		background-color: var(--ui-surface);
+		background-image: linear-gradient(155deg, var(--ui-surface) 0%, #f2f8fa 145%);
+		box-shadow: 0 16px 36px rgb(32 42 45 / 7%);
+	}
+
+	.calendar-card-header {
+		padding-bottom: 1.35rem;
+		border-bottom: 1px solid var(--ui-line);
+	}
+
+	h2 {
+		margin-bottom: 0;
+		font-size: clamp(1.125rem, 3vw, 1.25rem);
+		font-weight: 760;
+		letter-spacing: -0.04em;
+		line-height: 1.08;
+	}
+
+	.calendar-card-note {
+		margin: 0.45rem 0 0;
+		color: var(--ui-muted);
+		font-size: 0.82rem;
+		line-height: 1.4;
+	}
+
+	.legend {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		margin: 0;
+		font-size: 0.82rem;
+		font-weight: 750;
+		white-space: nowrap;
+	}
+
+	.weeks {
+		display: grid;
+		gap: 1.5rem;
+		padding-top: 1.5rem;
+	}
+
+	.week h3 {
+		margin: 0 0 0.65rem;
+		color: var(--ui-muted);
+		font-size: 0.75rem;
+		font-weight: 800;
+		letter-spacing: 0.045em;
+		line-height: 1.3;
+	}
+
+	.week-grid {
+		display: grid;
+		grid-template-columns: var(--week-columns);
+		gap: 0.45rem;
+		align-items: stretch;
+	}
+
+	.day {
+		display: flex;
+		min-width: 0;
+		min-height: 8rem;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 0.45rem;
+		padding: 0.8rem;
+		border: 1px solid var(--ui-line);
+		border-radius: 0.7rem;
+		background-color: var(--ui-surface);
+		background-image: linear-gradient(145deg, var(--ui-surface), #f2f8fa);
+		color: var(--ui-text);
+	}
+
+	.day:hover {
+		border-color: var(--ui-accent);
+	}
+
+	.lesson-day {
+		border-color: var(--ui-accent);
+		background-color: var(--ui-accent-soft);
+		background-image: linear-gradient(145deg, rgb(255 255 255 / 45%), rgb(237 247 249 / 20%));
+	}
+
+	.paid-lesson {
+		border-color: var(--ui-accent);
+		background-color: var(--ui-accent-soft);
+	}
+
+	.unpaid-lesson {
+		border-color: #c8944f;
+		background-color: var(--ui-warn-soft);
+		background-image: linear-gradient(145deg, rgb(255 255 255 / 42%), rgb(251 244 233 / 18%));
+	}
+
+	.selected-day {
+		box-shadow: inset 0 0 0 2px var(--ui-accent);
+	}
+
+	.day-link {
+		display: flex;
+		min-width: 0;
+		min-height: 2.75rem;
+		flex-direction: column;
+		gap: 0.38rem;
+		color: var(--ui-text);
+		text-decoration: none;
+	}
+
+	.weekday {
+		color: var(--ui-muted);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		line-height: 1.2;
+		text-transform: uppercase;
+	}
+
+	.day-number {
+		font-size: clamp(1.7rem, 4vw, 2.45rem);
+		font-weight: 780;
+		letter-spacing: -0.06em;
+		line-height: 1;
+	}
+
+	.day-state {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		color: var(--ui-accent-ink);
+		font-size: 0.7rem;
+		font-weight: 850;
+		line-height: 1.2;
+	}
+
+	.lesson-dot {
+		display: inline-block;
+		width: 0.42rem;
+		height: 0.42rem;
+		flex: 0 0 auto;
+		border-radius: 50%;
+		background: currentColor;
+	}
+
+	.free-state {
+		color: var(--ui-muted);
+		font-weight: 700;
+		overflow-wrap: anywhere;
+	}
+
+	.lesson-link {
+		display: grid;
+		min-height: 2.75rem;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.45rem 0.5rem;
+		border: 1px solid var(--ui-line);
+		border-radius: 0.55rem;
+		background-color: var(--ui-surface);
+		background-image: linear-gradient(145deg, var(--ui-surface), #f2f8fa);
+		color: var(--ui-text);
+		text-decoration: none;
+	}
+
+	.lesson-link:hover {
+		border-color: var(--ui-accent);
+	}
+
+	.lesson-action {
+		color: var(--ui-accent-ink);
+		font-size: 0.68rem;
+		font-weight: 900;
+		line-height: 1.2;
+	}
+
+	.payment-state {
+		font-size: 0.7rem;
+		font-weight: 900;
+		line-height: 1.2;
+	}
+
+	.paid-lesson .payment-state {
+		color: var(--ui-accent-ink);
+	}
+
+	.unpaid-lesson .payment-state {
+		color: #84551f;
+	}
+
+	.payment-markers {
+		display: grid;
+		gap: 0.3rem;
+		margin-top: auto;
+		padding-top: 0.45rem;
+		border-top: 1px solid var(--ui-line);
+	}
+
+	.payment-marker-title {
+		color: var(--ui-accent-ink);
+		font-size: 0.68rem;
+		font-weight: 900;
+	}
+
+	.payment-marker {
+		display: grid;
+		gap: 0.1rem;
+		padding: 0.4rem;
+		border: 1px solid var(--ui-line);
+		border-radius: 0.45rem;
+		background-color: var(--ui-accent-soft);
+		color: var(--ui-text);
+		font-size: 0.68rem;
+		font-weight: 800;
+	}
+
+	.payment-marker time {
+		color: var(--ui-muted);
+		font-size: 0.62rem;
+		font-weight: 700;
+		line-height: 1.3;
+	}
+
+	.date-picker input:focus-visible,
+	.day-link:focus-visible,
+	.lesson-link:focus-visible {
+		outline: 3px solid var(--ui-accent);
+		outline-offset: 3px;
+	}
+
 	@media (max-width: 42rem) {
-		.calendar-header, .calendar-card-header { align-items: start; flex-direction: column; }
-		.date-picker { width: 100%; }
-		.week { min-width: 0; overflow-x: auto; padding-bottom: .25rem; }
-		.week-grid { min-width: 32rem; }
+		.calendar-header,
+		.calendar-card-header {
+			align-items: stretch;
+			flex-direction: column;
+			gap: 1.25rem;
+		}
+
+		.date-picker {
+			width: 100%;
+			flex-basis: auto;
+		}
+
+		.week {
+			min-width: 0;
+			overflow-x: auto;
+			padding: 0.05rem 0.1rem 0.35rem;
+		}
+
+		.week-grid {
+			min-width: 32rem;
+		}
+
+		.day {
+			min-width: 5.5rem;
+			padding-inline: .5rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.calendar-shell *,
+		.calendar-shell *::before,
+		.calendar-shell *::after {
+			transition-duration: 0ms !important;
+		}
 	}
 </style>

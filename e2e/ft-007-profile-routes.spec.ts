@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import { expect, test } from '@playwright/test';
 import { resolve, sep } from 'node:path';
 import { statSync } from 'node:fs';
+import { formatDateTime } from '../src/lib/date-input';
 
 const databaseFilename = process.env.DATABASE_URL;
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:5174';
@@ -90,7 +91,7 @@ test('canonical protected routes include a bounded read-only Profile and fail cl
 	}
 	await expect(page.locator('[data-profile-page]')).toBeVisible();
 	await expect(page.locator('dt')).toHaveText(['ФИО', 'Роль', 'Регистрация']);
-	await expect(page.locator('dd')).toHaveText(['Админ Профиля', 'admin', '2026-08-24T10:00:00.000Z']);
+	await expect(page.locator('dd')).toHaveText(['Админ Профиля', 'admin', formatDateTime('2026-08-24T10:00:00.000Z')]);
 	await expect(page.locator('[data-profile-page] form, [data-profile-page] input, [data-profile-page] button')).toHaveCount(0);
 	await expect.poll(profileSnapshot).toBe(profileBefore);
 

@@ -167,10 +167,10 @@ test('disposable homework completion and grading proof uses fresh server project
 			method: 'POST',
 			credentials: 'include',
 			headers: { 'content-type': 'application/x-www-form-urlencoded' },
-			body: new URLSearchParams({ action: 'recordGrade', studentAccountId: 'student-one-e2e-106', grade: 'α' })
+			body: new URLSearchParams({ studentAccountId: 'student-one-e2e-106', grade: 'α' })
 		});
 		return { status: response.status, body: await response.text() };
-	}, lessonUrl());
+	}, `${lessonUrl()}&/recordGrade`);
 	await expect(deniedActionResponse.body).toContain('homework_forbidden');
 	await expect(progressState()).toEqual(deniedActionBefore);
 

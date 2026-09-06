@@ -6,6 +6,8 @@
 	<title>Приглашение</title>
 </svelte:head>
 
+<main class="auth-shell">
+<a class="auth-brand" href="/">Study Calendar</a>
 <h1>Принять приглашение</h1>
 <nav aria-label="Провайдер входа">
 	{#each data.providers as provider}
@@ -14,3 +16,4 @@
 		</a>
 	{/each}
 </nav>
+</main>
