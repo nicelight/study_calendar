@@ -1,7 +1,7 @@
 ---
 description: Product feature for field comments, reactions, and threaded day chat.
 status: active
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 source_of_truth:
   - .memory-bank/features/FT-004-day-collaboration.md
   - .memory-bank/contracts/collaboration-browser-surface.md

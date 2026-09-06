@@ -99,8 +99,9 @@ status: active
 ## Claim-linked RED / GREEN (T2/T3)
 - attempt: 1
 - applicability: applicable
-- accepted claim locator(s): named-action migration target and Collaboration
-  Browser Surface `#authorized-mutation-transport`.
+- accepted claim locator(s): `FT-004-AC-005` / `REQ-006`, `REQ-007`, `REQ-008`,
+  `REQ-014` / Collaboration Browser Surface
+  `#server-composed-projection` and `#authorized-mutation-transport`.
 - accepted not-applicable reason and alternative proof: none.
 - RED command/probe: `./node_modules/.bin/vitest run
   tests/routes/task-102-lesson-context-transport.test.ts`.

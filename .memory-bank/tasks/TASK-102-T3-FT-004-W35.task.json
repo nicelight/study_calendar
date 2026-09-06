@@ -1,7 +1,7 @@
 {
   "id": "TASK-102-T3-FT-004-W35",
   "title": "Expose Collaboration through Lesson Context and atomically migrate named form actions",
-  "status": "failed",
+  "status": "done",
   "wave": "W35",
   "feature": "FT-004",
   "reqs": [
@@ -94,6 +94,48 @@
         ".memory-bank/bugs/TASK-102-lesson-context-route-scope.md"
       ],
       "lifecycle_changed": false
+    },
+    {
+      "stage": "functional_reconciliation",
+      "attempt": "post-REQ-014 reconciliation",
+      "verdict": "PASS",
+      "report": ".protocols/TASK-102-T3-FT-004-W35/verification.md",
+      "artifact": ".tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-04.md",
+      "evidence": [
+        "Fresh functional VERDICT: PASS at .protocols/TASK-102-T3-FT-004-W35/verification.md:117 with 3/3 isolated verifier tests and 1/1 disposable browser proof.",
+        "REQ-014 role, membership, ownership, privacy, revoked-session, and deny-before-mutation checks pass; URL lessonId mismatch is explicitly N/A under the canonical clarification.",
+        "Native check, build, full test 79 files/271 tests, diff, mb-lint, strict doctor, and exact disposable cleanup pass in the fresh report."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "semantic_reconciliation",
+      "attempt": "post-REQ-014 reconciliation",
+      "verdict": "semantic-pass",
+      "report": ".protocols/TASK-102-T3-FT-004-W35/red-verification.md",
+      "artifact": ".tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-02.md",
+      "evidence": [
+        "Fresh T3 semantic report contains exactly SEMANTIC_VERDICT: semantic-pass with no admitted finding or operator question.",
+        "Coverage includes role/center/class/student membership, target ownership, privacy, session denial/revocation, shared/personal isolation, deny-before-mutation, named actions, and Collaboration sole-writer ownership.",
+        "Historical Attempts 1–3 remain preserved and are not reclassified as a fourth retry."
+      ],
+      "lifecycle_changed": false
+    },
+    {
+      "stage": "scheduler_closure",
+      "decision": "done",
+      "attempt": "post-REQ-014 reconciliation",
+      "cause": "Fresh functional PASS and T3 semantic-pass justify authorized closure without Attempt 4 while preserving Attempts 1–3.",
+      "evidence": [
+        ".protocols/TASK-102-T3-FT-004-W35/verification.md:117",
+        ".tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-04.md",
+        ".protocols/TASK-102-T3-FT-004-W35/red-verification.md:70",
+        ".tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-RED-VERIFY-final-report-docs-02.md",
+        ".tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-004-REQ014-R1-final-report-docs-01.md"
+      ],
+      "judge": "JUDGE_ASSESSMENT: SUPPORT — Fresh PASS and semantic-pass justify authorized closure without Attempt 4 while preserving Attempts 1–3.",
+      "next_action": "final mb-lint, strict doctor, and queue audit",
+      "lifecycle_changed": true
     }
   ],
   "docs": [
@@ -105,7 +147,7 @@
     "FT-004-AC-005 / REQ-014 / access-control authority and failure behavior RED: unauthenticated or invalid-session access succeeds, removed membership or teacher assignment continues to read or mutate Collaboration data, or a denied request leaks unrelated object existence; GREEN: unauthenticated, invalid-session, Admin, assigned Teacher, Student, and linked Parent positive/negative route cases show the next server check is authoritative, denied operations leave disposable SQLite state unchanged, and errors do not reveal unrelated records; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/verification.md.",
     "Identity & Access / Actor Context RED: author or reactor labels are read from a forbidden table, arbitrary account IDs are accepted, or labels broaden scope; GREEN: a named getParticipantLabels probe returns only accountId/fullName for IDs selected by Collaboration after current discussion authorization and returns no authority facts; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/verification.md.",
     "Collaboration Browser Surface #server-composed-projection RED: the current Lesson Context projection omits field comments/reactions, full common/personal discussion content, or branch projection; GREEN: route/adapter integration tests over isolated SQLite prove permitted shared and personal sections include the required content, author/time and reactor display labels, common feed, arbitrary-depth descendants, and at most ten recent active branch tabs while hidden messages remain retained; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/.",
-    "Collaboration Browser Surface #authorized-mutation-transport RED: a Collaboration action trusts client authority fields, mutates before scope/target validation, exposes forged class/lesson/student/scope data, or bypasses Collaboration ownership; GREEN: route/action integration tests prove all five named actions use the session actor and server-resolved scope, deny forged and revoked contexts before mutation, preserve state snapshots, and delegate writes only to the existing Collaboration public boundary; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/."
+    "Collaboration Browser Surface #authorized-mutation-transport RED: a Collaboration action trusts client authority fields, mutates before role/membership/ownership/privacy validation, treats an already authorized target as forbidden solely because the URL lessonId differs, or bypasses Collaboration ownership; GREEN: route/action integration tests prove all five named actions use the session actor and server-resolved authorization context, deny unauthorized or revoked contexts before mutation, preserve state snapshots, and delegate writes only to the existing Collaboration public boundary; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/."
   ],
   "purpose": "Close the missing server-composed browser projection and mutation transport, including the atomic migration of existing Lesson Context form callers from the default action to named SvelteKit actions, while reusing the existing Collaboration public backend.",
   "success_outcome": "The existing Lesson Context route can server-render complete permitted shared/personal Collaboration data, export named actions for all existing and Collaboration mutations, and accept server-authorized named form actions without trusting client authority or changing the existing API/schema boundary.",
@@ -164,7 +206,7 @@
     "Capture state before and after denied reads/mutations and run cleanup in a finally path on both passing and failing browser/test flows."
   ],
   "invariants": [
-    "All five named Collaboration actions deny before mutation when the actor, role, center, class, lesson, student scope, target, parent/root, or ownership is not server-authorized.",
+    "All five named Collaboration actions deny before mutation when the actor, role, center/class/student membership, target, parent/root, ownership, or privacy scope is not server-authorized; a URL lessonId mismatch alone does not deny an already authorized target.",
     "Shared and personal projection sections are isolated by the server-resolved scope; personal data is never accepted from an authority field supplied by the browser.",
     "Attribution, last-change time, five standard reactions/reactor visibility, arbitrary reply depth, common-feed inclusion, ten-tab projection, hidden-message retention, and existing Collaboration persistence semantics remain owned by Collaboration.",
     "Denied access after membership removal or teacher-assignment removal takes effect on the next server check without deleting authored rows or revealing unrelated existence.",
@@ -172,7 +214,7 @@
   ],
   "verification_targets": [
     "FT-004-AC-005",
-    "Claim-linked RED/GREEN unit/integration tests for the Lesson Context projection and route actions, with an isolated SQLite database, exact state-before/state-after assertions, explicit no-cookie and invalid/revoked-session cases, and actor/role/center/class/lesson/student/target forgery matrix for Admin, assigned Teacher, Student, and linked Parent.",
+    "Claim-linked RED/GREEN unit/integration tests for the Lesson Context projection and route actions, with an isolated SQLite database, exact state-before/state-after assertions, explicit no-cookie and invalid/revoked-session cases, and actor/role/center/class/student/target authorization matrix for Admin, assigned Teacher, Student, and linked Parent; URL lessonId mismatch alone is not a negative authorization case.",
     "A disposable Playwright browser transport scenario visits both shared and permitted personal /lesson-context contexts, submits the named form actions through the browser session, checks server-rendered projection/denial behavior including no-cookie and invalid/revoked-cookie requests, verifies reload persistence, and uses scripts/run-disposable-e2e.mjs so cleanup removes only the exact temporary database and WAL/journal siblings.",
     "Source and route review proves no direct database access from the route, no client authority trust, no mutation API, no new Collaboration backend abstraction, and no change to unrelated feature surfaces.",
     "Named-action migration RED: the route exports only actions.default or an existing form still posts to the default action; GREEN: the route exports the existing and five Collaboration named actions, every existing Lesson Context form targets a named action, and all existing form behaviors remain covered by the disposable route/action gate; artifact: .tasks/TASK-102-T3-FT-004-W35/ and .protocols/TASK-102-T3-FT-004-W35/verification.md."

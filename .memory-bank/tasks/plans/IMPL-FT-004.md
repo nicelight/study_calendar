@@ -134,12 +134,12 @@ reconciled in IMPL-FT-003.
    existing Lesson Context projection and named form-action transport. Its
    Attempt 1-3 evidence, identity, exhausted retry budget, and failed status
    remain unchanged and it is not an executable prerequisite.
-2. `TASK-107-T3-FT-004-W35` owns only the fixed-semantics correction: the
-   existing named `editFieldComment` action must enforce the current
-   server-resolved class/lesson scope at the Collaboration write boundary.
-   Its fresh T3 proof covers forged cross-lesson/cross-class denial before
-   mutation and same-context owner success; it does not replay TASK-102's
-   projection, labels, named-action migration, or browser UI claims.
+2. `TASK-107-T3-FT-004-W35` retains the completed optional hardening for the
+   named `editFieldComment` action. Its proof covers server-side target
+   authorization and forged cross-context denial before mutation, while an
+   already authorized target remains valid when the URL `lessonId` differs;
+   it does not replay TASK-102's projection, labels, named-action migration,
+   or browser UI claims.
 3. `TASK-103-T3-FT-004-W36` renders the complete Collaboration surface in the
    existing Lesson Context page on the corrected named transport. At the
    planning boundary it was blocked pending its `TASK-107` prerequisite; its
@@ -159,25 +159,25 @@ and `body`, while Collaboration authorized the stored comment context without
 checking the current route scope. The defect is fixed-semantics work inside
 the accepted route/boundary contract, not a new architecture decision.
 
-The minimum fresh identity is planned `TASK-107-T3-FT-004-W35`. It keeps T3
-because the outcome is protected mutation and privacy behavior, reuses the
-completed `TASK-016`, `TASK-017`, and `TASK-039` prerequisites, and owns only
-the route/public-boundary scope check plus focused isolated RED/GREEN proof.
-At that planning boundary, `TASK-103` remained `blocked` with its identity and
-evidence preserved, and its dependency was routed to `TASK-107` so the
-existing W35 → W36 sequence had a valid correction path. No code, execution,
-verification, semantic review, closure, Judge, scheduler, or Planning Revision
-change was part of that planning reconciliation.
+`TASK-107-T3-FT-004-W35` is the completed optional T3 hardening retained from
+that planning boundary. It reuses the completed `TASK-016`, `TASK-017`, and
+`TASK-039` prerequisites and keeps its focused route/public-boundary evidence;
+the accepted REQ-014 semantics do not make URL `lessonId` equality a required
+authorization claim. At that planning boundary, `TASK-103` remained `blocked`
+with its identity and evidence preserved, and its dependency was routed to
+`TASK-107` so the existing W35 → W36 sequence had a valid correction path. No
+code, execution, verification, semantic review, closure, Judge, scheduler, or
+Planning Revision change was part of that planning reconciliation.
 
 ## Revision 2 Acceptance-Trace Reconciliation
 
 The prior browser queue satisfied the target-linked proof mapping:
 `TASK-102` listed `FT-004-AC-005` in `verification_targets`, and `TASK-103`
 listed `FT-004-AC-001` through `FT-004-AC-005`. Those exact locators and
-historical RED/GREEN contracts remain preserved. The current correction adds
-planned `TASK-107` for the failed fixed-semantics route-scope result and routes
-the still-blocked `TASK-103` through it; the feature remains `planned` pending
-fresh review and execution gates.
+historical RED/GREEN contracts remain preserved. The existing `TASK-107`
+optional-hardening claim is reconciled to the accepted authorization rule; no
+new task or fresh evidence is introduced, and `TASK-103` retains its recorded
+dependency and closure evidence.
 
 ## W35 TASK-107 closure reconciliation — 2026-09-05
 

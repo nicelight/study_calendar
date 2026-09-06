@@ -110,11 +110,12 @@ and disposable verification are repository/runtime outcomes.
 
 The prior browser queue mapped `TASK-102` to `FT-004-AC-005` and `TASK-103` to
 `FT-004-AC-001` through `FT-004-AC-005`; those cards retain their historical
-source locators and evidence. The fresh correction card `TASK-107` carries the
-same exact `FT-004-AC-005` locator plus the route-scope canonical proof
-obligation and owns only the fixed-semantics follow-up. No historical identity,
-evidence, accepted ownership, Foundation prerequisite, or Planning Revision is
-changed.
+source locators and evidence. The completed optional-hardening card `TASK-107`
+retains the same exact `FT-004-AC-005` locator and its server-side
+cross-context authorization proof; URL `lessonId` equality is not an
+independent authorization claim under clarified REQ-014. No historical
+identity, evidence, accepted ownership, Foundation prerequisite, or Planning
+Revision is changed.
 
 ## Bounded shared-contract reconciliation — 2026-09-03
 
@@ -250,12 +251,13 @@ the forged `lesson-final-one` route edited an owned comment stored under
 covered by the accepted `#authorized-mutation-transport` contract and requires
 no new canonical spec or operator decision.
 
-The minimum new indexed identity is planned
-`TASK-107-T3-FT-004-W35`. It depends on the completed W6 Collaboration
-isolation cards and `TASK-039`, stays T3 because it repairs protected mutation
-and privacy semantics, and owns only current class/lesson scope validation plus
-focused isolated RED/GREEN evidence. It does not inherit TASK-102 evidence or
-replay its broader browser transport outcome.
+`TASK-107-T3-FT-004-W35` is the completed optional T3 hardening retained from
+this route. It depends on the completed W6 Collaboration isolation cards and
+`TASK-039`, stays T3 because it covers protected mutation and privacy
+semantics, and retains only its focused isolated RED/GREEN evidence. It does
+not inherit TASK-102 evidence or replay its broader browser transport outcome;
+the clarified REQ-014 rule does not require URL `lessonId` equality for an
+already authorized target.
 
 At that planning boundary, `TASK-102` remained `failed` with all Attempt 1–3
 evidence and exhausted retry history. `TASK-103` remained `blocked` with its

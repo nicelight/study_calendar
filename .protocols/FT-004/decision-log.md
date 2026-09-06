@@ -144,3 +144,13 @@ TASK-102 remains failed, TASK-103 remains blocked, and FT-000 is untouched.
 The feature-to-tasks queue action is `reconciled`; the next route is a fresh
 `/review-tasks-plan FT-004`. No execution, doctor, promotion, selection, Judge,
 or sync was run.
+
+## 2026-09-06 — REQ-014 clarification reconciliation route
+
+The operator accepted a bounded contract clarification: an already authorized
+Collaboration target need not match the current URL `lessonId`; REQ-014 still
+requires server-resolved role, membership, ownership, and privacy checks. The
+affected feature is FT-004 only. Planning Revision remains `2`, Foundation is
+unchanged, and no new task identity is needed. The existing task plan/card
+requires reconciliation of its route-selector claim wording before fresh
+TASK-102 functional and semantic verification.

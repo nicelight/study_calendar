@@ -1,6 +1,6 @@
 {
   "id": "TASK-107-T3-FT-004-W35",
-  "title": "Enforce current Lesson Context scope for Collaboration comment edits",
+  "title": "Retain server-authorized scope hardening for Collaboration comment edits",
   "status": "done",
   "wave": "W35",
   "feature": "FT-004",
@@ -54,9 +54,9 @@
     }
   ],
   "verify": [
-    "The named editFieldComment action passes the server-resolved current classId and lessonId into the existing Collaboration public boundary, and the owner rejects a comment whose stored class/lesson does not equal that current route scope before any write.",
-    "A forged lesson-final-one route targeting an account-owned comment stored under lesson-final-two returns 403 comment_forbidden, leaves the stored body and last-change timestamp unchanged, and does not disclose unrelated object existence.",
-    "An authorized same-class/same-lesson edit of the current account's comment still succeeds through the existing route action and Collaboration writer.",
+    "The named editFieldComment action supplies server-resolved actor and target context to the existing Collaboration public boundary, which checks role, center/class/student membership, target ownership, and privacy before any write; URL lessonId mismatch alone does not deny an already authorized target.",
+    "A forged cross-center, cross-class, cross-student, or non-owned target returns 403 comment_forbidden, leaves the stored body and last-change timestamp unchanged, and does not disclose unrelated object existence.",
+    "An authorized owner edit of a permitted Collaboration target succeeds through the existing route action and Collaboration writer.",
     "Source and runtime review prove that the route owns no direct Collaboration persistence, no alternate writer or mutation API is introduced, and the accepted Collaboration ownership and Lesson Context adapter boundary remain unchanged.",
     "The focused isolated route/public-boundary proof is safe to rerun, records state before and after rejected and permitted edits, and never targets study-calendar.db.",
     {
@@ -106,12 +106,12 @@
     ".memory-bank/bugs/TASK-102-lesson-context-route-scope.md"
   ],
   "evidence_required": [
-    "FT-004-AC-005 / REQ-014 / Collaboration Browser Surface #authorized-mutation-transport RED: the current route can edit an owned comment stored under another lesson or class; GREEN: a fresh isolated route/action probe returns 403 comment_forbidden before mutation for the forged route and records unchanged comment body, last-change timestamp, and related state; artifact: .tasks/TASK-107-T3-FT-004-W35/ and .protocols/TASK-107-T3-FT-004-W35/verification.md.",
-    "FT-004-AC-005 / REQ-014 / Access Control #authority-and-scope RED: stored target context alone authorizes an edit despite a forged current route scope; GREEN: the authenticated actor, server-resolved current class/lesson, stored target context, ownership, and action are all checked at the public write boundary, with same-context success and cross-context denial; artifact: .tasks/TASK-107-T3-FT-004-W35/ and .protocols/TASK-107-T3-FT-004-W35/.",
+    "FT-004-AC-005 / REQ-014 / Collaboration Browser Surface #authorized-mutation-transport RED: the current route can edit a target outside the actor's server-authorized role/membership/ownership/privacy scope; GREEN: the focused route/action proof denies the unauthorized target before mutation and records unchanged comment body, last-change timestamp, and related state, while an already authorized target remains valid when the URL lessonId differs; artifact: .tasks/TASK-107-T3-FT-004-W35/ and .protocols/TASK-107-T3-FT-004-W35/verification.md.",
+    "FT-004-AC-005 / REQ-014 / Access Control #authority-and-scope RED: stored target context alone authorizes an edit despite missing or revoked role, center/class/student membership, ownership, or privacy permission; GREEN: the authenticated actor, server-resolved authorization context, stored target context, ownership, and action are checked at the public write boundary, with unauthorized cross-context denial and permitted-owner success; URL lessonId mismatch alone is not a denial condition; artifact: .tasks/TASK-107-T3-FT-004-W35/ and .protocols/TASK-107-T3-FT-004-W35/.",
     "Day Discussion Query Boundary and Composition and Request Data Flow RED: the route or a second module becomes a discussion writer or performs direct persistence; GREEN: the route supplies current scope and delegates the single edit to Collaboration, which remains the sole writer, with source review and native project gates recorded in the task artifacts; artifact: .tasks/TASK-107-T3-FT-004-W35/TASK-107-T3-FT-004-W35-S-VERIFY-final-report-docs-01.md and .protocols/TASK-107-T3-FT-004-W35/verification.md."
   ],
-  "purpose": "Repair the fixed-semantics route-scope defect left by failed TASK-102 Attempt 3 without replaying the completed projection, named-action, or UI outcomes.",
-  "success_outcome": "The existing named editFieldComment action enforces the current server-resolved Lesson Context class/lesson scope at the Collaboration write boundary: forged cross-lesson or cross-class edits fail before mutation, while an authorized same-context owner edit remains functional.",
+  "purpose": "Retain the completed optional server-side authorization hardening from failed TASK-102 Attempt 3 without replaying the completed projection, named-action, or UI outcomes; the obsolete URL lesson-selector equality finding is not a current product defect.",
+  "success_outcome": "The existing named editFieldComment action checks server-resolved role, center/class/student membership, target ownership, and privacy at the Collaboration write boundary: unauthorized cross-context edits fail before mutation, while an already authorized target remains permitted even when the URL lessonId differs.",
   "anti_goals": [
     "Do not reopen, mutate, or inherit functional or semantic evidence from TASK-102-T3-FT-004-W35; its failed identity and Attempt 1-3 evidence remain historical.",
     "Do not add a new top-level route, /api/lesson-context mutation endpoint, frontend state layer, SQLite schema, or persistence abstraction.",
@@ -155,24 +155,24 @@
     ".memory-bank/workflows/tier-policy.md#tier-obligations"
   ],
   "constraints": [
-    "Keep the existing /lesson-context route and named editFieldComment action; pass only the already server-resolved current class/lesson context needed for target-scope validation.",
+    "Keep the existing /lesson-context route and named editFieldComment action; pass only server-resolved actor/role/membership context and target selectors needed for authorization.",
     "Keep Collaboration as the sole semantic writer and reuse its existing comment persistence and authorization path; no schema or API boundary change is planned.",
-    "Reject forged current class/lesson scope before the UPDATE and preserve state-before/state-after equality for the denied target.",
+    "Reject targets outside the actor's server-authorized center/class/student membership, ownership, or privacy scope before the UPDATE and preserve state-before/state-after equality for the denied target; URL lessonId mismatch alone is not a denial.",
     "Use an isolated or disposable SQLite fixture for the route/public-boundary proof and never target study-calendar.db.",
     "This is a fresh follow-up identity after TASK-102 exhausted its retry budget; do not run Attempt 4 or reuse TASK-102 evidence as current proof."
   ],
   "invariants": [
-    "The current server-resolved classId and lessonId are part of the edit authorization decision.",
-    "A comment stored under another class or lesson is denied with the existing route failure envelope before body or timestamp mutation.",
-    "An authorized owner editing a comment in the current class/lesson remains permitted.",
+    "The authenticated actor and server-resolved role, center/class/student membership, target ownership, and privacy scope are part of the edit authorization decision.",
+    "A target outside the actor's authorized center/class/student or ownership scope is denied with the existing route failure envelope before body or timestamp mutation; a URL lessonId mismatch alone is not sufficient for denial.",
+    "An authorized owner editing a permitted target remains permitted.",
     "Collaboration remains the only writer for field comments; Lesson Context remains a transport/composition adapter.",
     "Denied cross-context edits do not reveal unrelated object existence and leave all relevant disposable state unchanged."
   ],
   "verification_targets": [
-    "FT-004-AC-005 / REQ-014: forged current route class/lesson selectors cannot edit an otherwise owned comment from another lesson or class; the denied request is non-mutating and does not disclose unrelated existence.",
+    "FT-004-AC-005 / REQ-014: forged or unauthorized center/class/student/ownership/privacy context cannot edit an otherwise owned comment; the denied request is non-mutating and does not disclose unrelated existence, while URL lessonId mismatch alone is not a negative case.",
     "FT-004-AC-005 / REQ-014 / .memory-bank/contracts/collaboration-browser-surface.md#authorized-mutation-transport: the named route action supplies current server-resolved context and the Collaboration public boundary validates target scope, actor, and ownership before writing.",
     ".memory-bank/contracts/boundary-map.md#day-discussion-query-boundary and .memory-bank/architecture/system-architecture.md#composition-and-request-data-flow: the route delegates the edit to Collaboration without direct persistence or a second writer.",
-    "Claim-linked RED/GREEN isolated integration proof covers forged cross-lesson, forged cross-class, same-context owner success, state-before/state-after equality, safe rerun, cleanup, and all applicable native gates."
+    "Claim-linked RED/GREEN isolated integration proof covers unauthorized cross-context denial, permitted owner success, state-before/state-after equality, safe rerun, cleanup, and all applicable native gates."
   ],
   "runtime_context": {
     "forbidden_scope": [
@@ -191,7 +191,7 @@
       ".memory-bank/tasks/TASK-017-T3-FT-004-W6.task.json"
     ],
     "stop_conditions": [
-      "Stop and route to /spec-redesign if enforcing current route scope requires a new shared contract, new persistence schema, new mutation API, or a change to accepted Collaboration ownership.",
+      "Stop and route to /spec-redesign if satisfying the required role/membership/ownership/privacy authorization requires a new shared contract, new persistence schema, new mutation API, or a change to accepted Collaboration ownership.",
       "Stop if the edit can be authorized only by trusting client authority fields or if the forged cross-context denial cannot be shown before mutation with state snapshots.",
       "Stop if focused proof requires study-calendar.db, an existing server, destructive shared-state reset, or cleanup that is not failure-safe."
     ]
