@@ -4122,3 +4122,18 @@ in `.protocols/AUTONOMOUS-RUN/status.md` as `STATE: SUCCESS`.
 - Lifecycle and evidence remain preserved: TASK-102 failed without Attempt 4,
   TASK-103/TASK-107 done, FT-000 untouched. Durable terminal state is
   `SUCCESS`; no further scheduler action or resume route remains.
+
+## 2026-09-05 — Operator clarified REQ-014 and accepted TASK-102
+
+- The operator explicitly removed the over-specified route-selector equality
+  assertion: an already authorized Collaboration target does not need to match
+  the current URL `lessonId`. REQ-014 still requires server-resolved role,
+  center/class/student membership, target ownership, and privacy; no new
+  behavior, task, retry, or reconciliation is introduced.
+- The canonical requirements and Collaboration Browser Surface contract were
+  updated accordingly. The TASK-102 Attempt 1–3 reports remain unchanged as
+  historical evidence; the sole Attempt 3 failure is accepted out of scope.
+- TASK-102 remains historical `failed`; its route-selector finding is accepted
+  out of scope, but no lifecycle closure is inferred without fresh T3
+  verification. Current queue is `61 done / 4 failed / no pending`; FT-004
+  remains `verified` and terminal `STATE: SUCCESS` is preserved.

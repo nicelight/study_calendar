@@ -56,25 +56,30 @@ the shared section or another student's section.
 Browser mutations use named SvelteKit form actions on `/lesson-context`:
 `createFieldComment`, `editFieldComment`, `setReaction`, `createMessage`, and
 `replyToMessage`. Each action accepts only the minimum untrusted selector and
-content fields needed to identify the current route context and target. The
-session cookie is the sole actor authority.
+content fields needed to identify the route context and target. The session
+cookie is the sole actor authority. The URL's `lessonId` is navigation context;
+it is not an additional authority claim that must match an already authorized
+target's stored lesson.
 
 The server MUST resolve and validate, before any write:
 
 1. authenticated session actor and current role;
 2. current center, class, lesson, and optional student scope from accepted
-   Identity & Access and Calendar/Membership queries;
-3. target existence and target scope, including comment ownership for edits,
+   Identity & Access and Calendar/Membership queries for the route projection
+   and new targets;
+3. target existence and server-authorized target scope, including comment
+   ownership for edits,
    permitted parent/root relationship for replies, and personal-discussion
    ownership.
 
 Client-supplied `role`, `centerId`, `authorAccountId`, `scope`, or authority
-   claims are ignored or rejected and never authorize a request. Forged class,
-   lesson, student, target, or scope selectors, a removed membership, and a
-   removed teacher assignment are denied before mutation on the next server
-   check, without exposing unrelated object existence. All writes delegate to
-   the existing Collaboration public boundary and preserve its attribution,
-   retention, uniqueness, and scope rules.
+claims are ignored or rejected and never authorize a request. An already
+authorized target does not become forbidden solely because the route's
+`lessonId` selector differs from the target's stored lesson. Cross-center,
+cross-class, cross-student, non-owned, removed-membership, and removed-teacher-
+assignment targets remain denied before mutation without exposing unrelated
+object existence. All writes delegate to the existing Collaboration public
+boundary and preserve its attribution, retention, uniqueness, and scope rules.
 
 ## Browser user surface and persistence
 
@@ -91,7 +96,8 @@ reactions, messages, replies, and branch activity persist after reload and
 that hidden messages are retained. Admin, assigned Teacher, Student, and
 linked Parent receive only the views and mutations allowed by the access
 control contract; negative cases cover forged authority/scope and revoked
-membership or assignment.
+membership or assignment; route-selector mismatch alone is not a negative
+authorization case.
 
 ## Verification target
 

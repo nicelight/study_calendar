@@ -317,11 +317,13 @@ their functional and T3 semantic evidence, the current Planning Revision 2
 `APPROVE`, W36 boundary gates, and the aggregate report above provide the
 accepted FT-004 outcome.
 
-TASK-102 remains terminal `failed` with its complete Attempt 1–3 evidence and
-no Attempt 4; historical TASK-012 remains `failed`/`superseded`. Those records
-are preserved and are not reused as current proof or reopened by this feature
-transition. No task identity, scope, dependency, tier, Planning Revision,
-FT-000 state, or shared requirement lifecycle is changed.
+TASK-102 remains historical `failed` with its complete Attempt 1–3 evidence
+preserved. Its obsolete route-selector finding is accepted out of scope under
+the clarified REQ-014 semantics and is not reused as a current product defect.
+Historical TASK-012 remains `failed`/`superseded`. No new task, retry, or
+reconciliation is created, and no task identity, scope, dependency, tier,
+Planning Revision, FT-000 state, or shared requirement lifecycle is changed
+beyond the REQ-014 clarification.
 
 Evidence: [aggregate semantic report](../../.tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md),
 [current task-plan APPROVE](../../.tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-004-TASK-107-R2-final-report-docs-01.md),

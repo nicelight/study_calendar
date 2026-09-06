@@ -39,19 +39,20 @@ its authorized discussion projection.
 | W5 | TASK-011-T3-FT-004-W5 | comments, reactions, and scope | TASK-005-T3-FT-002-W3 |
 | W6 | TASK-016-T3-FT-004-W6 | T3 center-lifecycle isolation for comments and reactions | TASK-011-T3-FT-004-W5 |
 | W6 | TASK-017-T3-FT-004-W6 | T3 center-lifecycle isolation for threaded messages, branches, and tabs | TASK-011-T3-FT-004-W5 |
-| W35 | TASK-102-T3-FT-004-W35 | Atomic named-action transport: migrate existing Lesson Context form callers, add server-composed Collaboration projection and authorized actions | TASK-016-T3-FT-004-W6, TASK-017-T3-FT-004-W6, TASK-039-T3-FT-003-W10 |
-| W35 | TASK-107-T3-FT-004-W35 | Enforce current Lesson Context class/lesson scope for named Collaboration comment edits after the TASK-102 Attempt 3 failure | TASK-016-T3-FT-004-W6, TASK-017-T3-FT-004-W6, TASK-039-T3-FT-003-W10 |
+| W35 | TASK-102-T3-FT-004-W35 | Historical failed browser transport attempt; route lesson-selector equality is accepted out of scope under clarified REQ-014, with identity/evidence/retry history preserved | TASK-016-T3-FT-004-W6, TASK-017-T3-FT-004-W6, TASK-039-T3-FT-003-W10 |
+| W35 | TASK-107-T3-FT-004-W35 | Completed optional hardening for named Collaboration comment edits; current route lesson equality is not required by REQ-014 | TASK-016-T3-FT-004-W6, TASK-017-T3-FT-004-W6, TASK-039-T3-FT-003-W10 |
 | W36 | TASK-103-T3-FT-004-W36 | Complete Collaboration UI in Lesson Context and disposable shared/personal browser proof on the corrected named transport | TASK-107-T3-FT-004-W35 |
 
 `TASK-012-T2-FT-004-W6` is a preserved historical `failed` task with an
 explicit `superseded` disposition; it is not an executable replacement or
 dependency for downstream work.
 
-`TASK-102-T3-FT-004-W35` is also preserved as the historical failed browser
-transport attempt after three unsuccessful attempts. It is not a dependency or
-source of fresh proof for `TASK-107`; the new W35 follow-up depends only on the
-completed W6 isolation cards and the completed shared Lesson Context navigation
-outcome.
+`TASK-102-T3-FT-004-W35` remains a historical failed attempt after three
+unsuccessful attempts. The operator clarified REQ-014 so its route
+lesson-selector equality finding is out of scope; Attempt 1–3 evidence and
+retry history remain preserved, and no retry or replacement task is required.
+`TASK-107` remains completed optional hardening and is not required to satisfy
+the clarified REQ-014 semantics.
 
 ## Controlled re-tier rebuild
 

@@ -92,14 +92,16 @@ this boundary confirmation.
 
 | Wave | Task | Owns | Dependencies |
 |---|---|---|---|
-| W35 | [TASK-102-T3-FT-004-W35](../../.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json) | Historical failed browser transport attempt; identity, evidence, retry history, and `failed` status are preserved and it is not executable | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
-| W35 | [TASK-107-T3-FT-004-W35](../../.memory-bank/tasks/TASK-107-T3-FT-004-W35.task.json) | Fixed-semantics correction for current class/lesson scope on named `editFieldComment`, with fresh T3 forged-context RED/GREEN proof | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
+| W35 | [TASK-102-T3-FT-004-W35](../../.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json) | Historical failed named-action/browser transport attempt; route lesson-selector equality is out of scope under clarified REQ-014, with Attempt 1–3 evidence preserved | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
+| W35 | [TASK-107-T3-FT-004-W35](../../.memory-bank/tasks/TASK-107-T3-FT-004-W35.task.json) | Completed optional hardening for current class/lesson scope on named `editFieldComment`; not required by clarified REQ-014 | `TASK-016-T3-FT-004-W6`, `TASK-017-T3-FT-004-W6`, `TASK-039-T3-FT-003-W10` |
 | W36 | [TASK-103-T3-FT-004-W36](../../.memory-bank/tasks/TASK-103-T3-FT-004-W36.task.json) | Complete Lesson Context Collaboration UI and shared/personal disposable Playwright proof on the corrected named transport; identity and planning-boundary `blocked` state are preserved in history | `TASK-107-T3-FT-004-W35` |
 
 `TASK-016`, `TASK-017`, and `TASK-039` are completed dependencies;
-`TASK-012` and failed `TASK-102` are intentionally excluded from executable
-dependency proof. `TASK-107` was the only new planned executable card from this
-reconciliation. `TASK-103` followed it in W36 and its closure is reconciled
+`TASK-012` remains historical/superseded. `TASK-102` remains historical
+failed; its obsolete route-selector finding is excluded from current proof
+under the clarified REQ-014 semantics. `TASK-107` remains completed optional
+hardening.
+`TASK-103` followed it in W36 and its closure is reconciled
 below. No
 production-only acceptance card is needed because the required browser surface
 and disposable verification are repository/runtime outcomes.

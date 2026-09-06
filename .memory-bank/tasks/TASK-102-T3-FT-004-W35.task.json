@@ -64,7 +64,7 @@
     "The existing Lesson Context server composition exposes the permitted shared and personal Collaboration projection for supported fields, comments, reactions, common feed, arbitrary-depth threads, and recent branch tabs without duplicating Collaboration persistence or ownership.",
     "The existing /lesson-context route exports named SvelteKit actions for the existing homework, attendance, material, and payment forms plus the named Collaboration actions, and delegates createFieldComment, editFieldComment, setReaction, createMessage, and replyToMessage through the existing Collaboration public boundary.",
     "Identity & Access owns participant fullName and exposes only the named getParticipantLabels projection; Collaboration selects IDs only after authorizing the current discussion scope, and Lesson Context consumes labels without gaining authority.",
-    "Every Collaboration mutation resolves actor, role, center, class, lesson, optional student scope, target, and ownership on the server before writing; forged role, center, author, class, lesson, student, target, or scope selectors and revoked membership/teacher assignment are denied without state change or unrelated-object disclosure.",
+    "Every Collaboration mutation resolves actor, role, center, class, lesson, optional student scope, target, and ownership on the server before writing; forged authority claims and unauthorized center, class, student, target, or scope selectors and revoked membership/teacher assignment are denied without state change or unrelated-object disclosure. A route lesson selector is navigation context, not an independent authority claim.",
     "Unauthenticated requests without foundation_session and requests with invalid or revoked session tokens are denied for the projection and every Collaboration action before any state change or protected existence is disclosed.",
     {
       "stage": "lifecycle",
@@ -80,6 +80,20 @@
       ],
       "recommended_owner_action": "Create the required TASK-102 bug/follow-up routing through the normal FT-004 planning owner, keep direct dependents blocked, and resume only after reviewed replacement/follow-up readiness; do not run Attempt 4.",
       "lifecycle_changed": true
+    },
+    {
+      "stage": "operator_scope_disposition",
+      "decision": "accepted_out_of_scope",
+      "attempt": "Attempt 3",
+      "verdict": "accepted",
+      "cause": "The operator clarified REQ-014: an already authorized target is not required to match the current URL lesson selector. The sole Attempt 3 failure was that removed route-selector assertion; the remaining task assertions and native gates passed.",
+      "evidence": [
+        ".tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-03.md:19-45",
+        ".memory-bank/requirements.md:106-113",
+        ".memory-bank/contracts/collaboration-browser-surface.md:54-84",
+        ".memory-bank/bugs/TASK-102-lesson-context-route-scope.md"
+      ],
+      "lifecycle_changed": false
     }
   ],
   "docs": [

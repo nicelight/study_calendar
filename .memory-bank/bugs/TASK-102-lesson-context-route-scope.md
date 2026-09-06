@@ -1,6 +1,6 @@
 ---
 description: Scheduler failure note for TASK-102 Attempt 3 route-scope mutation failure.
-status: active
+status: archived
 last_updated: 2026-09-05
 source_of_truth:
   - .memory-bank/bugs/TASK-102-lesson-context-route-scope.md
@@ -25,21 +25,26 @@ Current evidence:
 
 The route passes only `sessionToken`, `commentId`, and `body` to the existing
 Collaboration public method. The method authorizes the stored comment context
-and does not enforce the current route `classId`/`lessonId`, violating the
-accepted deny-before-mutation and current-route-scope semantics of
-`FT-004-AC-005 / REQ-014`. This is a task-local fixed-semantics defect, not a
-planning or authority gap.
+and does not enforce the current route `classId`/`lessonId`.
+
+The `classId`/`lessonId` equality expectation was an over-specified task-local
+check, not a requirement of role/context privacy. The accepted REQ-014
+semantics require actor membership, target authorization, ownership, and
+privacy; they do not require an already authorized target to match a URL
+`lessonId` navigation selector.
 
 ## Scheduler disposition
 
-`TASK-102-T3-FT-004-W35` is `failed` after unsuccessful Attempts 1, 2, and 3;
-retry budget `2/2` is exhausted and no Attempt 4 is permitted. Direct
-dependent `TASK-103-T3-FT-004-W36` is `blocked`. No semantic review, Judge,
-closure, `/mb-sync`, or implementation replay was run.
+Attempts 1–3 and their original evidence remain preserved. The sole Attempt 3
+failure was the now-removed route-selector equality assertion; the other
+task-scoped assertions and native gates passed. The finding is accepted as out
+of scope under the clarified REQ-014 semantics; the historical task remains
+`failed` because its exhausted T3 attempt record cannot be converted to `done`
+without fresh closure-eligible verification. No Attempt 4 or implementation
+replay is required.
 
-## Resume route
+## Current disposition
 
-Resume through the normal `/feature-to-tasks FT-004` planning owner for a
-reviewed correction/follow-up task, then fresh `/review-tasks-plan FT-004`,
-readiness gates, and a new indexed execution identity. Preserve this failed
-record and all Attempt 1–3 evidence; do not reuse it as fresh proof.
+The finding is archived as out of scope by the operator's clarification of
+REQ-014. Preserve this report as historical evidence; do not create a
+correction task or retry for the removed route-selector assertion.

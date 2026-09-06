@@ -4,6 +4,15 @@ status: active
 ---
 # Changelog
 
+## [2026-09-05] — REQ-014 clarification and TASK-102 acceptance
+
+- Clarified REQ-014 and the Collaboration Browser Surface contract: role,
+  membership, ownership, and privacy checks remain mandatory, while an already
+  authorized target does not need to match the current URL `lessonId` selector.
+- Kept `TASK-102-T3-FT-004-W35` historical `failed` while accepting its sole
+  route-selector finding as out of scope. Attempts 1–3 remain preserved; no
+  retry, new task, or reconciliation was created.
+
 ## [2026-09-05] Wave W36 — TASK-103 Collaboration browser UI closure
 
 - Reconciled `TASK-103-T3-FT-004-W36` as `done` from its scheduler-written

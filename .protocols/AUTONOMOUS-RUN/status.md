@@ -16,12 +16,10 @@ status: active
 - queue summary: product `59 done / 4 failed / 0 ready / 0 planned /
   0 in_progress / 0 blocked`; full index `61 done / 4 failed / 0 ready / 0
   planned / 0 in_progress / 0 blocked`.
-- prior terminal reason: TASK-102 reached unsuccessful Attempt 3/3 and
-  exhausted `max_retries_per_task: 2`; the fixed-semantics FAIL-03 is task-local,
-  so scheduler disposition remains `failed`, not a fourth retry. Direct
-  dependent TASK-103 remains `blocked`. The operator explicitly resumed the
-  run through the durable FT-004 planning route; task statuses and evidence are
-  preserved unchanged.
+- prior terminal reason: TASK-102 remains historical `failed` after exhausted
+  Attempt 3/3. The operator clarified REQ-014 and accepted its route
+  lesson-selector equality finding as out of scope; no Attempt 4 or
+  reconciliation was created. TASK-103 and TASK-107 remain `done`.
 - terminal evidence: `.protocols/TASK-102-T3-FT-004-W35/verification.md:133-142`,
   `.tasks/TASK-102-T3-FT-004-W35/TASK-102-T3-FT-004-W35-S-VERIFY-final-report-code-03.md:19-59`,
   `.memory-bank/tasks/TASK-102-T3-FT-004-W35.task.json:4,63-93`,
@@ -2082,9 +2080,9 @@ status: active
   exactly `SEMANTIC_VERDICT: semantic-pass`; the matching feature document
   contains the current `Semantic Verification` section and marker.
 - Scheduler reconciled the feature document lifecycle from `planned` to
-  `verified`. Task lifecycle remains unchanged: TASK-102 `failed`, TASK-107
-  `done`, TASK-103 `done`; TASK-012 historical `failed`/`superseded` evidence
-  remains preserved. No task execution or FT-000 state was reopened.
+  `verified`. Current task lifecycle is TASK-102 `failed`, TASK-107 `done`, and
+  TASK-103 `done`; TASK-012 historical `failed`/`superseded` evidence remains
+  preserved. No task execution or FT-000 state was reopened.
 - The checkpoint is now `current task: none`, `stage: wave-boundary`; next is
   final lint/strict-doctor audit and the required terminal consultation with
   the existing Judge only. No replacement Reviewer or Judge is authorized.
@@ -2135,3 +2133,17 @@ status: active
   TASK-103 and TASK-107 remain done; FT-000 is untouched. Terminal state is
   `STATE: SUCCESS`; there is no resume route unless the operator explicitly
   starts a new run.
+
+## 2026-09-05 — Operator REQ-014 clarification applied
+
+- The operator removed the over-specified requirement that an already
+  authorized Collaboration target must match the current URL `lessonId`.
+  REQ-014 and the Collaboration Browser Surface contract now retain role,
+  center/class/student membership, ownership, and privacy checks while treating
+  the lesson selector as navigation context only.
+- TASK-102 remains historical `failed`; its Attempt 1–3 failure evidence is
+  preserved and the route-selector finding is accepted out of scope. No retry
+  or reconciliation was created. Current queue audit: `61 done / 4 failed / 0
+  pending`.
+- FT-004 remains `verified`, TASK-103/TASK-107 remain `done`, and the run's
+  terminal `STATE: SUCCESS` is unchanged.

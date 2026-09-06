@@ -106,7 +106,10 @@ status: draft
 - **REQ-014 — Role and context privacy:** Every server-side read/change checks
   role and center/class/student membership; students and parents cannot receive
   another student's private data; assigned teachers get full class history only
-  while assigned. (PRD NFR-PRIV-001..004)
+  while assigned. A target that is already authorized for the actor is not
+  required to match the `lessonId` navigation selector in the current
+  `/lesson-context` URL; that selector is navigation context, not a separate
+  authority claim. (PRD NFR-PRIV-001..004)
 - **REQ-015 — Financial correctness:** The same lesson, attendance, price, and
   payment sequence always yields the same balance/allocation; before real data,
   full, partial, excess payment, attendance correction, and historical-price
